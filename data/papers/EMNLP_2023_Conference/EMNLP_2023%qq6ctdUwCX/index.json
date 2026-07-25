@@ -1,0 +1,542 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            28
+        ],
+        "2 Related Work": [
+            29,
+            42
+        ],
+        "3 Preliminary": [
+            43,
+            62
+        ],
+        "4 Length Bias in Reward Model": [
+            63,
+            96
+        ],
+        "5 Proposed Method": [
+            97,
+            128
+        ],
+        "6 Experiments": [
+            129,
+            483
+        ],
+        "7 Analysis and Discussion": [
+            484,
+            495
+        ],
+        "8 Conclusion": [
+            496,
+            501
+        ],
+        "Limitations": [
+            502,
+            505
+        ],
+        "Acknowledgements": [
+            506,
+            509
+        ],
+        "References": [
+            510,
+            549
+        ],
+        "Appendix A Appendix": [
+            550,
+            760
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Preliminary": {},
+        "4 Length Bias in Reward Model": {
+            "4.1 Length Bias Phenomenon": [
+                67,
+                78
+            ],
+            "4.2 Confounding Factor": [
+                79,
+                86
+            ],
+            "4.3 Challenges": [
+                87,
+                96
+            ]
+        },
+        "5 Proposed Method": {
+            "5.1 PoE Framework": [
+                101,
+                113
+            ],
+            "5.2 Injecting Noise into Bias-only Expert": [
+                114,
+                117
+            ],
+            "5.3 Training & Inference": [
+                118,
+                128
+            ]
+        },
+        "6 Experiments": {
+            "6.1 Settings": [
+                357,
+                358
+            ],
+            "Datasets": [
+                359,
+                362
+            ],
+            "Models": [
+                363,
+                366
+            ],
+            "SFT Hyper-parameters": [
+                367,
+                370
+            ],
+            "RLHF Hyper-parameters": [
+                371,
+                414
+            ],
+            "Baselines": [
+                415,
+                418
+            ],
+            "Metrics": [
+                419,
+                422
+            ],
+            "6.2 True Reward Improvement": [
+                423,
+                469
+            ],
+            "6.3 Wining Rate": [
+                470,
+                473
+            ],
+            "6.4 Ablation Study": [
+                474,
+                483
+            ]
+        },
+        "7 Analysis and Discussion": {
+            "7.1 Leaning Curve": [
+                488,
+                491
+            ],
+            "7.2 Distribution of Reward Scores": [
+                492,
+                495
+            ]
+        },
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "A.1 Analyzing the correlation between generated length and correspondent reward": [
+                552,
+                598
+            ],
+            "A.2 Model size ablation for bias-only model": [
+                599,
+                637
+            ],
+            "A.3 PPO training stability": [
+                638,
+                641
+            ],
+            "A.4 Length bias Phenomenon on summarization task": [
+                642,
+                676
+            ],
+            "A.5 Additional illustration in different reward models": [
+                677,
+                684
+            ],
+            "A.6 Case Study": [
+                685,
+                760
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                27
+            ]
+        ],
+        "2 Related Work": [
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ]
+        ],
+        "3 Preliminary": [
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                51,
+                52
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                59
+            ],
+            [
+                61,
+                61
+            ]
+        ],
+        "4 Length Bias in Reward Model": [
+            [
+                65,
+                65
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                89,
+                89
+            ]
+        ],
+        "5 Proposed Method": [
+            [
+                99,
+                99
+            ],
+            [
+                103,
+                103
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                107,
+                108
+            ],
+            [
+                110,
+                110
+            ],
+            [
+                112,
+                112
+            ],
+            [
+                116,
+                116
+            ],
+            [
+                120,
+                120
+            ],
+            [
+                122,
+                123
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                127
+            ]
+        ],
+        "6 Experiments": [
+            [
+                361,
+                361
+            ],
+            [
+                365,
+                365
+            ],
+            [
+                369,
+                369
+            ],
+            [
+                373,
+                373
+            ],
+            [
+                375,
+                375
+            ],
+            [
+                417,
+                417
+            ],
+            [
+                421,
+                421
+            ],
+            [
+                425,
+                425
+            ],
+            [
+                427,
+                427
+            ],
+            [
+                472,
+                472
+            ],
+            [
+                476,
+                476
+            ]
+        ],
+        "7 Analysis and Discussion": [
+            [
+                486,
+                486
+            ],
+            [
+                490,
+                490
+            ],
+            [
+                494,
+                494
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                498,
+                498
+            ],
+            [
+                500,
+                500
+            ]
+        ],
+        "Limitations": [
+            [
+                504,
+                504
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                508,
+                508
+            ]
+        ],
+        "References": [
+            [
+                512,
+                548
+            ]
+        ],
+        "Appendix A Appendix": [
+            [
+                554,
+                554
+            ],
+            [
+                601,
+                601
+            ],
+            [
+                640,
+                640
+            ],
+            [
+                644,
+                644
+            ],
+            [
+                687,
+                687
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.1.g1]": [
+                10,
+                15
+            ]
+        },
+        "2 Related Work": {
+            "[FIGURE S2.F2.sf1.g1]": [
+                37,
+                41
+            ]
+        },
+        "3 Preliminary": {},
+        "4 Length Bias in Reward Model": {
+            "[FIGURE S4.F3.1.g1]": [
+                73,
+                77
+            ],
+            "[FIGURE S4.F4.1.g1]": [
+                91,
+                95
+            ]
+        },
+        "5 Proposed Method": {},
+        "6 Experiments": {
+            "[FIGURE S6.F5.sf1.g1]": [
+                377,
+                381
+            ],
+            "[FIGURE S6.F6.1.1.g1]": [
+                478,
+                482
+            ]
+        },
+        "7 Analysis and Discussion": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "[FIGURE A1.F7.sf1.g1]": [
+                671,
+                675
+            ],
+            "[FIGURE A1.F8.sf1.g1]": [
+                679,
+                683
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Preliminary": {},
+        "4 Length Bias in Reward Model": {},
+        "5 Proposed Method": {},
+        "6 Experiments": {
+            "[TABLE S6.T1]": [
+                131,
+                355
+            ],
+            "[TABLE S6.T2]": [
+                383,
+                413
+            ],
+            "[TABLE S6.T3]": [
+                429,
+                468
+            ]
+        },
+        "7 Analysis and Discussion": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "[TABLE A1.T4]": [
+                556,
+                597
+            ],
+            "[TABLE A1.T5]": [
+                603,
+                636
+            ],
+            "[TABLE A1.T6]": [
+                646,
+                669
+            ],
+            "[TABLE A1.T7]": [
+                689,
+                758
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Preliminary": {},
+        "4 Length Bias in Reward Model": {},
+        "5 Proposed Method": {},
+        "6 Experiments": {},
+        "7 Analysis and Discussion": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Appendix": {}
+    }
+}

@@ -1,0 +1,926 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            19
+        ],
+        "2 Related work": [
+            20,
+            27
+        ],
+        "3 Evaluation materials": [
+            28,
+            433
+        ],
+        "4 Experiments": [
+            434,
+            521
+        ],
+        "5 Results": [
+            522,
+            581
+        ],
+        "6 Discussion": [
+            582,
+            593
+        ],
+        "Acknowledgments": [
+            594,
+            597
+        ],
+        "Limitations": [
+            598,
+            607
+        ],
+        "Ethics statement": [
+            608,
+            613
+        ],
+        "References": [
+            614,
+            716
+        ],
+        "Appendix A Example prompts": [
+            717,
+            846
+        ],
+        "Appendix B Timestamps of OpenAI model queries": [
+            847,
+            933
+        ],
+        "Appendix C No-context analysis": [
+            934,
+            977
+        ],
+        "Appendix D Sentence- and word-level scrambling": [
+            978,
+            1018
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Evaluation materials": {
+            "3.1 Overview of stimuli": [
+                30,
+                389
+            ],
+            "3.2 Tested phenomena": [
+                390,
+                391
+            ],
+            "Deceits.": [
+                392,
+                397
+            ],
+            "Indirect speech.": [
+                398,
+                403
+            ],
+            "Irony.": [
+                404,
+                409
+            ],
+            "Maxims of conversation.": [
+                410,
+                415
+            ],
+            "Metaphor.": [
+                416,
+                421
+            ],
+            "Humor.": [
+                422,
+                427
+            ],
+            "Coherence inferences.": [
+                428,
+                433
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Evaluation paradigm": [
+                436,
+                439
+            ],
+            "Prompt structure.": [
+                440,
+                445
+            ],
+            "Evaluation.": [
+                446,
+                511
+            ],
+            "4.2 Models": [
+                512,
+                521
+            ]
+        },
+        "5 Results": {
+            "5.1 Do models choose the target pragmatic interpretation?": [
+                532,
+                537
+            ],
+            "5.2 Do models and humans make similar types of errors?": [
+                538,
+                545
+            ],
+            "5.3 Are models and humans sensitive to similar linguistic cues?": [
+                546,
+                549
+            ],
+            "5.3.1 The role of context": [
+                550,
+                563
+            ],
+            "5.3.2 Scrambling": [
+                564,
+                569
+            ],
+            "5.3.3 Item-level alignment": [
+                570,
+                581
+            ]
+        },
+        "6 Discussion": {},
+        "Acknowledgments": {},
+        "Limitations": {},
+        "Ethics statement": {},
+        "References": {},
+        "Appendix A Example prompts": {
+            "A.1 Deceits": [
+                721,
+                738
+            ],
+            "A.2 IndirectSpeech": [
+                739,
+                756
+            ],
+            "A.3 Irony": [
+                757,
+                774
+            ],
+            "A.4 Maxims": [
+                775,
+                792
+            ],
+            "A.5 Metaphor": [
+                793,
+                812
+            ],
+            "A.6 Humor": [
+                813,
+                832
+            ],
+            "A.7 Coherence": [
+                833,
+                846
+            ]
+        },
+        "Appendix B Timestamps of OpenAI model queries": {},
+        "Appendix C No-context analysis": {
+            "C.1 Details of human experiments": [
+                936,
+                939
+            ],
+            "Participants.": [
+                940,
+                943
+            ],
+            "Procedure.": [
+                944,
+                973
+            ],
+            "C.2 Raw accuracy scores": [
+                974,
+                977
+            ]
+        },
+        "Appendix D Sentence- and word-level scrambling": {
+            "D.1 Sentence-level scrambled prompt": [
+                982,
+                999
+            ],
+            "D.2 Word-level scrambled prompt": [
+                1000,
+                1018
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                14,
+                14
+            ],
+            [
+                16,
+                16
+            ],
+            [
+                18,
+                18
+            ]
+        ],
+        "2 Related work": [
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ],
+            [
+                26,
+                26
+            ]
+        ],
+        "3 Evaluation materials": [
+            [
+                386,
+                386
+            ],
+            [
+                388,
+                388
+            ],
+            [
+                394,
+                394
+            ],
+            [
+                396,
+                396
+            ],
+            [
+                400,
+                400
+            ],
+            [
+                402,
+                402
+            ],
+            [
+                406,
+                406
+            ],
+            [
+                408,
+                408
+            ],
+            [
+                412,
+                412
+            ],
+            [
+                414,
+                414
+            ],
+            [
+                418,
+                418
+            ],
+            [
+                420,
+                420
+            ],
+            [
+                424,
+                424
+            ],
+            [
+                426,
+                426
+            ],
+            [
+                430,
+                430
+            ],
+            [
+                432,
+                432
+            ]
+        ],
+        "4 Experiments": [
+            [
+                438,
+                438
+            ],
+            [
+                442,
+                442
+            ],
+            [
+                444,
+                444
+            ],
+            [
+                448,
+                448
+            ],
+            [
+                450,
+                450
+            ],
+            [
+                514,
+                514
+            ],
+            [
+                516,
+                516
+            ],
+            [
+                518,
+                518
+            ],
+            [
+                520,
+                520
+            ]
+        ],
+        "5 Results": [
+            [
+                524,
+                524
+            ],
+            [
+                534,
+                534
+            ],
+            [
+                536,
+                536
+            ],
+            [
+                540,
+                540
+            ],
+            [
+                542,
+                542
+            ],
+            [
+                544,
+                544
+            ],
+            [
+                548,
+                548
+            ],
+            [
+                552,
+                552
+            ],
+            [
+                554,
+                554
+            ],
+            [
+                556,
+                556
+            ],
+            [
+                566,
+                566
+            ],
+            [
+                568,
+                568
+            ],
+            [
+                572,
+                572
+            ],
+            [
+                580,
+                580
+            ]
+        ],
+        "6 Discussion": [
+            [
+                584,
+                584
+            ],
+            [
+                586,
+                586
+            ],
+            [
+                588,
+                588
+            ],
+            [
+                590,
+                590
+            ],
+            [
+                592,
+                592
+            ]
+        ],
+        "Acknowledgments": [
+            [
+                596,
+                596
+            ]
+        ],
+        "Limitations": [
+            [
+                600,
+                600
+            ],
+            [
+                602,
+                602
+            ],
+            [
+                604,
+                604
+            ],
+            [
+                606,
+                606
+            ]
+        ],
+        "Ethics statement": [
+            [
+                610,
+                610
+            ],
+            [
+                612,
+                612
+            ]
+        ],
+        "References": [
+            [
+                616,
+                715
+            ]
+        ],
+        "Appendix A Example prompts": [
+            [
+                719,
+                719
+            ],
+            [
+                723,
+                723
+            ],
+            [
+                725,
+                725
+            ],
+            [
+                727,
+                727
+            ],
+            [
+                729,
+                729
+            ],
+            [
+                731,
+                731
+            ],
+            [
+                733,
+                733
+            ],
+            [
+                735,
+                735
+            ],
+            [
+                737,
+                737
+            ],
+            [
+                741,
+                741
+            ],
+            [
+                743,
+                743
+            ],
+            [
+                745,
+                745
+            ],
+            [
+                747,
+                747
+            ],
+            [
+                749,
+                749
+            ],
+            [
+                751,
+                751
+            ],
+            [
+                753,
+                753
+            ],
+            [
+                755,
+                755
+            ],
+            [
+                759,
+                759
+            ],
+            [
+                761,
+                761
+            ],
+            [
+                763,
+                763
+            ],
+            [
+                765,
+                765
+            ],
+            [
+                767,
+                767
+            ],
+            [
+                769,
+                769
+            ],
+            [
+                771,
+                771
+            ],
+            [
+                773,
+                773
+            ],
+            [
+                777,
+                777
+            ],
+            [
+                779,
+                779
+            ],
+            [
+                781,
+                781
+            ],
+            [
+                783,
+                783
+            ],
+            [
+                785,
+                785
+            ],
+            [
+                787,
+                787
+            ],
+            [
+                789,
+                789
+            ],
+            [
+                791,
+                791
+            ],
+            [
+                795,
+                795
+            ],
+            [
+                797,
+                797
+            ],
+            [
+                799,
+                799
+            ],
+            [
+                801,
+                801
+            ],
+            [
+                803,
+                803
+            ],
+            [
+                805,
+                805
+            ],
+            [
+                807,
+                807
+            ],
+            [
+                809,
+                809
+            ],
+            [
+                811,
+                811
+            ],
+            [
+                815,
+                815
+            ],
+            [
+                817,
+                817
+            ],
+            [
+                819,
+                819
+            ],
+            [
+                821,
+                821
+            ],
+            [
+                823,
+                823
+            ],
+            [
+                825,
+                825
+            ],
+            [
+                827,
+                827
+            ],
+            [
+                829,
+                829
+            ],
+            [
+                831,
+                831
+            ],
+            [
+                835,
+                835
+            ],
+            [
+                837,
+                837
+            ],
+            [
+                839,
+                839
+            ],
+            [
+                841,
+                841
+            ],
+            [
+                843,
+                843
+            ],
+            [
+                845,
+                845
+            ]
+        ],
+        "Appendix B Timestamps of OpenAI model queries": [
+            [
+                849,
+                849
+            ]
+        ],
+        "Appendix C No-context analysis": [
+            [
+                938,
+                938
+            ],
+            [
+                942,
+                942
+            ],
+            [
+                946,
+                946
+            ],
+            [
+                948,
+                948
+            ],
+            [
+                950,
+                950
+            ],
+            [
+                952,
+                952
+            ],
+            [
+                954,
+                954
+            ],
+            [
+                956,
+                956
+            ],
+            [
+                958,
+                958
+            ],
+            [
+                960,
+                960
+            ],
+            [
+                976,
+                976
+            ]
+        ],
+        "Appendix D Sentence- and word-level scrambling": [
+            [
+                980,
+                980
+            ],
+            [
+                984,
+                984
+            ],
+            [
+                986,
+                986
+            ],
+            [
+                988,
+                988
+            ],
+            [
+                990,
+                990
+            ],
+            [
+                992,
+                992
+            ],
+            [
+                994,
+                994
+            ],
+            [
+                996,
+                996
+            ],
+            [
+                998,
+                998
+            ],
+            [
+                1002,
+                1002
+            ],
+            [
+                1004,
+                1004
+            ],
+            [
+                1006,
+                1006
+            ],
+            [
+                1008,
+                1008
+            ],
+            [
+                1010,
+                1010
+            ],
+            [
+                1012,
+                1012
+            ],
+            [
+                1014,
+                1014
+            ],
+            [
+                1016,
+                1016
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Evaluation materials": {},
+        "4 Experiments": {
+            "[FIGURE S4.F1.g1]": [
+                500,
+                504
+            ],
+            "[FIGURE S4.F2.g1]": [
+                506,
+                510
+            ]
+        },
+        "5 Results": {
+            "[FIGURE S5.F3.g1]": [
+                526,
+                530
+            ],
+            "[FIGURE S5.F4.g1]": [
+                558,
+                562
+            ],
+            "[FIGURE S5.F5.g1]": [
+                574,
+                578
+            ]
+        },
+        "6 Discussion": {},
+        "Acknowledgments": {},
+        "Limitations": {},
+        "Ethics statement": {},
+        "References": {},
+        "Appendix A Example prompts": {},
+        "Appendix B Timestamps of OpenAI model queries": {},
+        "Appendix C No-context analysis": {
+            "[FIGURE A3.F6.g1]": [
+                962,
+                966
+            ],
+            "[FIGURE A3.F7.g1]": [
+                968,
+                972
+            ]
+        },
+        "Appendix D Sentence- and word-level scrambling": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Evaluation materials": {
+            "[TABLE S3.T1]": [
+                32,
+                384
+            ]
+        },
+        "4 Experiments": {
+            "[TABLE S4.T2]": [
+                452,
+                498
+            ]
+        },
+        "5 Results": {},
+        "6 Discussion": {},
+        "Acknowledgments": {},
+        "Limitations": {},
+        "Ethics statement": {},
+        "References": {},
+        "Appendix A Example prompts": {},
+        "Appendix B Timestamps of OpenAI model queries": {
+            "[TABLE A2.T3]": [
+                851,
+                932
+            ]
+        },
+        "Appendix C No-context analysis": {},
+        "Appendix D Sentence- and word-level scrambling": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Evaluation materials": {},
+        "4 Experiments": {},
+        "5 Results": {},
+        "6 Discussion": {},
+        "Acknowledgments": {},
+        "Limitations": {},
+        "Ethics statement": {},
+        "References": {},
+        "Appendix A Example prompts": {},
+        "Appendix B Timestamps of OpenAI model queries": {},
+        "Appendix C No-context analysis": {},
+        "Appendix D Sentence- and word-level scrambling": {}
+    }
+}

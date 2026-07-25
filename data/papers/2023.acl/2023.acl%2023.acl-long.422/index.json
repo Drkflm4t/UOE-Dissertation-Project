@@ -1,0 +1,778 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            24
+        ],
+        "2 Related Work": [
+            25,
+            32
+        ],
+        "3 Background": [
+            33,
+            108
+        ],
+        "4 Neural Probabilistic Soft Logic Dialogue Structure Induction": [
+            109,
+            332
+        ],
+        "5 Experimental Evaluation": [
+            333,
+            618
+        ],
+        "6 Discussion and Conclusions": [
+            619,
+            624
+        ],
+        "Acknowledgments": [
+            625,
+            628
+        ],
+        "References": [
+            629,
+            689
+        ],
+        "Appendix A Model Details": [
+            690,
+            739
+        ],
+        "Appendix B Additional Model Details": [
+            740,
+            754
+        ],
+        "Appendix C Datasets": [
+            755,
+            832
+        ],
+        "Appendix D Extended Experimental Evaluation": [
+            833,
+            1364
+        ],
+        "Appendix E Alternative Soft Logic Approximations": [
+            1365,
+            1382
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Background": {
+            "3.1 Direct Discrete Variational Recurrent Neural Networks": [
+                44,
+                73
+            ],
+            "3.2 Probabilistic Soft Logic": [
+                74,
+                108
+            ]
+        },
+        "4 Neural Probabilistic Soft Logic Dialogue Structure Induction": {
+            "Problem Formulation": [
+                113,
+                116
+            ],
+            "4.1 Integrating Neural and Symbolic Learning under NeuPSL DSI": [
+                117,
+                149
+            ],
+            "4.2 Improving soft logic constraints for gradient learning": [
+                150,
+                183
+            ],
+            "4.3 Stronger control of posterior collapse via weighted bag of words": [
+                184,
+                332
+            ]
+        },
+        "5 Experimental Evaluation": {
+            "Datasets": [
+                337,
+                340
+            ],
+            "Constraints": [
+                341,
+                344
+            ],
+            "Metrics and Methodology": [
+                345,
+                600
+            ],
+            "5.1 Main Results": [
+                601,
+                614
+            ],
+            "5.2 Ablation Study": [
+                615,
+                618
+            ]
+        },
+        "6 Discussion and Conclusions": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Model Details": {
+            "A.1 SGD Constraints": [
+                694,
+                709
+            ],
+            "A.2 Multi-WoZ Constraints": [
+                710,
+                739
+            ]
+        },
+        "Appendix B Additional Model Details": {
+            "B.1 Symbolic-rule Normalization in the Multi-class Setting": [
+                742,
+                750
+            ],
+            "B.2 Model Hyperparameters": [
+                751,
+                754
+            ]
+        },
+        "Appendix C Datasets": {
+            "C.1 SGD": [
+                759,
+                766
+            ],
+            "C.2 SGD Synthetic": [
+                767,
+                821
+            ],
+            "C.3 MulitWoZ 2.1 Synthetic": [
+                822,
+                832
+            ]
+        },
+        "Appendix D Extended Experimental Evaluation": {
+            "D.1 Evaluation Metrics": [
+                837,
+                838
+            ],
+            "Adjusted Mutual Information (AMI) -": [
+                839,
+                849
+            ],
+            "Purity -": [
+                850,
+                1051
+            ],
+            "D.2 Main Results": [
+                1052,
+                1236
+            ],
+            "D.3 Ablation Results": [
+                1237,
+                1246
+            ],
+            "D.4 Additional Experiments": [
+                1247,
+                1360
+            ],
+            "D.4.1 Sparsity": [
+                1361,
+                1364
+            ]
+        },
+        "Appendix E Alternative Soft Logic Approximations": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ]
+        ],
+        "2 Related Work": [
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ]
+        ],
+        "3 Background": [
+            [
+                35,
+                35
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                48,
+                51
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                58
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                62,
+                63
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                67,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                76,
+                76
+            ],
+            [
+                78,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                90
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                94,
+                95
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                99,
+                100
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                105
+            ],
+            [
+                107,
+                107
+            ]
+        ],
+        "4 Neural Probabilistic Soft Logic Dialogue Structure Induction": [
+            [
+                111,
+                111
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                123,
+                124
+            ],
+            [
+                126,
+                126
+            ],
+            [
+                128,
+                131
+            ],
+            [
+                133,
+                133
+            ],
+            [
+                135,
+                138
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                143
+            ],
+            [
+                145,
+                145
+            ],
+            [
+                147,
+                148
+            ],
+            [
+                152,
+                152
+            ],
+            [
+                154,
+                157
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                163,
+                164
+            ],
+            [
+                166,
+                166
+            ],
+            [
+                168,
+                168
+            ],
+            [
+                170,
+                173
+            ],
+            [
+                175,
+                175
+            ],
+            [
+                177,
+                180
+            ],
+            [
+                182,
+                182
+            ],
+            [
+                186,
+                186
+            ],
+            [
+                188,
+                189
+            ],
+            [
+                191,
+                191
+            ],
+            [
+                193,
+                193
+            ],
+            [
+                195,
+                196
+            ],
+            [
+                198,
+                198
+            ]
+        ],
+        "5 Experimental Evaluation": [
+            [
+                335,
+                335
+            ],
+            [
+                339,
+                339
+            ],
+            [
+                343,
+                343
+            ],
+            [
+                347,
+                347
+            ],
+            [
+                349,
+                349
+            ],
+            [
+                351,
+                351
+            ],
+            [
+                603,
+                603
+            ],
+            [
+                605,
+                605
+            ],
+            [
+                617,
+                617
+            ]
+        ],
+        "6 Discussion and Conclusions": [
+            [
+                621,
+                621
+            ],
+            [
+                623,
+                623
+            ]
+        ],
+        "Acknowledgments": [
+            [
+                627,
+                627
+            ]
+        ],
+        "References": [
+            [
+                631,
+                681
+            ]
+        ],
+        "Appendix A Model Details": [
+            [
+                692,
+                692
+            ],
+            [
+                696,
+                696
+            ],
+            [
+                698,
+                699
+            ],
+            [
+                701,
+                701
+            ],
+            [
+                712,
+                712
+            ],
+            [
+                714,
+                724
+            ],
+            [
+                726,
+                726
+            ],
+            [
+                728,
+                728
+            ],
+            [
+                730,
+                730
+            ]
+        ],
+        "Appendix B Additional Model Details": [
+            [
+                744,
+                744
+            ],
+            [
+                746,
+                747
+            ],
+            [
+                749,
+                749
+            ],
+            [
+                753,
+                753
+            ]
+        ],
+        "Appendix C Datasets": [
+            [
+                757,
+                757
+            ],
+            [
+                761,
+                761
+            ],
+            [
+                763,
+                765
+            ],
+            [
+                769,
+                769
+            ],
+            [
+                824,
+                824
+            ]
+        ],
+        "Appendix D Extended Experimental Evaluation": [
+            [
+                835,
+                835
+            ],
+            [
+                841,
+                841
+            ],
+            [
+                843,
+                846
+            ],
+            [
+                848,
+                848
+            ],
+            [
+                852,
+                852
+            ],
+            [
+                854,
+                855
+            ],
+            [
+                857,
+                857
+            ],
+            [
+                1146,
+                1146
+            ],
+            [
+                1239,
+                1239
+            ],
+            [
+                1241,
+                1241
+            ],
+            [
+                1243,
+                1243
+            ],
+            [
+                1245,
+                1245
+            ],
+            [
+                1249,
+                1249
+            ],
+            [
+                1363,
+                1363
+            ]
+        ],
+        "Appendix E Alternative Soft Logic Approximations": [
+            [
+                1367,
+                1367
+            ],
+            [
+                1369,
+                1374
+            ],
+            [
+                1376,
+                1376
+            ],
+            [
+                1378,
+                1378
+            ],
+            [
+                1380,
+                1380
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Background": {
+            "[FIGURE S3.F2.g1]": [
+                37,
+                42
+            ]
+        },
+        "4 Neural Probabilistic Soft Logic Dialogue Structure Induction": {
+            "[FIGURE S4.F3.g1]": [
+                325,
+                331
+            ]
+        },
+        "5 Experimental Evaluation": {
+            "[FIGURE S5.F4.g1]": [
+                607,
+                613
+            ]
+        },
+        "6 Discussion and Conclusions": {},
+        "Acknowledgments": {},
+        "References": {
+            "[FIGURE A0.F5]": [
+                683,
+                688
+            ]
+        },
+        "Appendix A Model Details": {
+            "[FIGURE A1.F6]": [
+                703,
+                708
+            ],
+            "[FIGURE A1.F7.g1]": [
+                732,
+                738
+            ]
+        },
+        "Appendix B Additional Model Details": {},
+        "Appendix C Datasets": {
+            "[FIGURE A3.F8.g1]": [
+                826,
+                831
+            ]
+        },
+        "Appendix D Extended Experimental Evaluation": {
+            "[FIGURE A4.F9.g1]": [
+                1123,
+                1128
+            ],
+            "[FIGURE A4.F10.g1]": [
+                1130,
+                1136
+            ],
+            "[FIGURE A4.F11.g1]": [
+                1138,
+                1144
+            ],
+            "[FIGURE A4.F12.g1]": [
+                1353,
+                1359
+            ]
+        },
+        "Appendix E Alternative Soft Logic Approximations": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Background": {},
+        "4 Neural Probabilistic Soft Logic Dialogue Structure Induction": {
+            "[TABLE S4.T1]": [
+                200,
+                323
+            ]
+        },
+        "5 Experimental Evaluation": {
+            "[TABLE S5.T2]": [
+                353,
+                599
+            ]
+        },
+        "6 Discussion and Conclusions": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Model Details": {},
+        "Appendix B Additional Model Details": {},
+        "Appendix C Datasets": {
+            "[TABLE A3.T3]": [
+                771,
+                820
+            ]
+        },
+        "Appendix D Extended Experimental Evaluation": {
+            "[TABLE A4.T4]": [
+                859,
+                1050
+            ],
+            "[TABLE A4.T5]": [
+                1054,
+                1121
+            ],
+            "[TABLE A4.T6]": [
+                1148,
+                1235
+            ],
+            "[TABLE A4.T7]": [
+                1251,
+                1351
+            ]
+        },
+        "Appendix E Alternative Soft Logic Approximations": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Background": {},
+        "4 Neural Probabilistic Soft Logic Dialogue Structure Induction": {},
+        "5 Experimental Evaluation": {},
+        "6 Discussion and Conclusions": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Model Details": {},
+        "Appendix B Additional Model Details": {},
+        "Appendix C Datasets": {},
+        "Appendix D Extended Experimental Evaluation": {},
+        "Appendix E Alternative Soft Logic Approximations": {}
+    }
+}

@@ -1,0 +1,665 @@
+{
+    "o_paper": "2024.acl%2024.acl-long.45",
+    "cf_paper": {
+        "id": "2024.acl%2024.acl-long.45",
+        "meta": {
+            "venue": "2024.acl",
+            "authors": [
+                "Chenyang An",
+                "Zhibo Chen",
+                "Qihao Ye",
+                "Emily First",
+                "Letian Peng",
+                "Jiayun Zhang",
+                "Zihan Wang",
+                "Sorin Lerner",
+                "Jingbo Shang"
+            ],
+            "categories": [
+                "cs.AI",
+                "cs.LO"
+            ],
+            "entry_id": "http://arxiv.org/abs/2404.07382v3",
+            "links": [
+                "http://arxiv.org/abs/2404.07382v3",
+                "http://arxiv.org/pdf/2404.07382v3"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2404.07382v3",
+            "published": "2024-04-10T23:01:45+00:00",
+            "updated": "2024-07-29T20:57:44+00:00",
+            "primary_category": "cs.AI",
+            "title": "Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving",
+            "summary": "Recent advances in Automated Theorem Proving have shown the effectiveness of\nleveraging a (large) language model that generates tactics (i.e. proof steps)\nto search through proof states. The current model, while trained solely on\nsuccessful proof paths, faces a discrepancy at the inference stage, as it must\nsample and try various tactics at each proof state until finding success,\nunlike its training which does not incorporate learning from failed attempts.\nIntuitively, a tactic that leads to a failed search path would indicate that\nsimilar tactics should receive less attention during the following trials. In\nthis paper, we demonstrate the benefit of training models that additionally\nlearn from failed search paths. Facing the lack of such trial-and-error data in\nexisting open-source theorem-proving datasets, we curate a dataset on\nintuitionistic propositional logic theorems and formalize it in Lean, such that\nwe can reliably check the correctness of proofs. We compare our model trained\non relatively short trial-and-error information (TrialMaster) with models\ntrained only on the correct paths and discover that the former solves more\nunseen theorems with lower trial searches.",
+            "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+            "venue_config": {
+                "id": "2024.acl",
+                "name": "Association for Computational Linguistics Conferences of 2024",
+                "type": "Association for Computational Linguistics Conference",
+                "description": "The ACL (Association for Computational Linguistics) Conference is a premier international conference focused on natural language processing (NLP) and computational linguistics. Computational linguistics is the scientific study of language from a computational perspective. Computational linguists are interested in providing computational models of various kinds of linguistic phenomena. These models may be \"knowledge-based\" (\"hand-crafted\") or \"data-driven\" (\"statistical\" or \"empirical\").",
+                "guidelines": "## Review Guidelines:\n\n1. Be Specific:\n\tFlag issues with clear, detailed examples (e.g., \"X misses factor Y\" instead of \"X is wrong\").\n\tEnsure your points are understandable without requiring additional context.\n\n2. Avoid Common Review Pitfalls:\n\t* Avoid overused heuristics like \"Results are not surprising\" or \"The paper lacks novelty\" without clear justification.\n\t* Be open-minded about unexpected results, simpler methods, and niche topics.\n\n3. Watch for Common Issues in NLP Papers:\n\t* Methodology: Ensure valid evaluation, reproducibility, and clear assumptions.\n\t* Artifacts: Check for ethics issues and clear licensing.\n\t* Experimental Results: Avoid misleading framing, unsubstantiated claims, or statistical flaws.\n\t* General: Ensure clear research questions, proper citations, and accurate terminology.\n\n4. Ensure Consistency in Scores:\n\t* Justify low soundness scores with detailed explanations.\n\t* Use excitement scores for personal preferences and overall assessment for the paper\u2019s recommendation.\n\n5. Maintain a Professional, Neutral Tone:\n\t* Write reviews that help authors improve, avoiding sarcasm or dismissiveness.\n\t* Treat authors with respect, considering they may be early-career researchers or under stress.",
+                "guidelines_detailed": "## Write a strong review\n\n### 1. Be specific\n\nIf you would like to flag any issues, it should be specific and ideally understandable to the chairs without reading the full paper. Let us consider a few examples.\n\n* Instead of \"The paper is missing relevant references\" use \"The paper is missing references XYZ\"\n* Instead of \"X is not clear\" use \"Y and Z are missing from the description of X\"\n* Instead of \"The formulation of X is wrong\" use \"The formulation of X misses the factor Y\"\n* Instead of \"The contribution is not novel\" use \"Highly similar work X and Y has been published 3+ months prior to submission deadline\"\n* Instead of \"The paper is missing recent baselines\" use \"The proposed method should be compared against recent methods X, Y and Z\"\n* Instead of \"X was done in the way Y\" use \"X was done in the way Y which has the disadvantage Z\"\n* Instead of \"The algorithm's interaction with dataset is problematic\" use \"It's possible that when using the decoding (line 723) on the dataset 3 (line 512), there might not be enough training data to rely on the n-best list.\"\n\nThe advantage of the last version is that it can be understood by an area chair (who has expertise in the subarea) without looking for line numbers.\n\n### 2. Check for common review issues\n\nJudging whether a research paper is \u201cgood\u201d is an objectively hard task, and over the past conferences, we collected a list of common problems, which is presented below. Such comments may point at legitimate problems with the paper, but they are not always \u201cweaknesses\u201d. This can happen even to experienced reviewers, and it\u2019s worth checking your review for these problems before submitting.\n| Heuristic  | Why this is problematic |\n|------------|------------------------|\n| **H1. The results are not surprising** | Just because findings seem obvious doesn\u2019t mean they are known or useless. Empirical validation is still valuable. |\n| **H2. The results contradict what I would expect** | Avoid confirmation bias\u2014unexpected results can challenge assumptions and contribute to progress. |\n| **H3. The results are not novel** | If claiming lack of novelty, provide references. Contributions like analysis or reproduction are valid under CFP. |\n| **H4. This has no precedent in the existing literature** | Novel ideas can be harder to publish, but that doesn\u2019t make them invalid. Avoid excessive conservatism. |\n| **H5. The results do not surpass the latest SOTA** | SOTA is not required for a contribution. Improvements in efficiency, interpretability, or fairness also matter. |\n| **H6. The results are negative** | Negative results prevent hype and overclaiming. Knowing what doesn\u2019t work is as important as knowing what does. |\n| **H7. This method is too simple** | Simpler methods are often preferable\u2014effective, robust, and easier to deploy. Complexity isn\u2019t inherently better. |\n| **H8. The paper doesn't use [my preferred methodology]** | NLP includes diverse contributions beyond specific methodologies. Methodological diversity is essential. |\n| **H9. The topic is too niche** | Specialized research can have a significant impact within its subfield and contribute to broader understanding. |\n| **H10. The approach is tested only on [not English]** | Research on any language is valuable, both practically and theoretically, just as English-only studies are. |\n| **H11. The paper has language errors** | Clarity is more important than perfect language. Scientific content matters more than writing style. |\n| **H12. The paper is missing the [reference X]** | Missing key references is a concern only if the work was published 3+ months before the deadline. Otherwise, suggest rather than criticize. |\n| **H13. The authors could also do [extra experiment X]** | Extra experiments are always possible but not always necessary. If critical, justify why. Otherwise, suggest rather than reject. |\n| **H14. The authors should compare to a 'closed' model X** | Closed-model comparisons are useful only if relevant to the claim. Lack of transparency can make them unreliable. |\n| **H15. The authors should have done [X] instead** | Different approaches exist. Only critique if the chosen method prevents answering the research question or is misleading. |\n| **H16. Limitations != weaknesses** | Acknowledging limitations is required; listing them as weaknesses without justification is unfair. Argue why they invalidate the work if relevant. |\n\nIf you have something like the above listed as a \u201cweakness\u201d of the paper, do try to revisit the paper with an open mind. Both the authors and the ACs will be aware of these guidelines and can refer to them in discussion/meta-review.\n\n### 3. Check for common problems in NLP papers\n\nAs a counter to common problems with reviews, there are also common problems with NLP papers. We do ask you to watch out for these and point them out when you see them. Above all else, published research should at least be technically sound and appropriately scoped. As with the above reviewer issues, it\u2019s a case-by-case evaluation: some things in the list below may be appropriate in a given context, given that they are sufficiently motivated. We provide codes for different types of issues (e.g. M1, G2\u2026) that can be referenced in discussions.\n\n#### Issues with methodology (M)\n\n- **M1. LLM-only evaluation without validation**: If LLMs are used as evaluators, their reliability must be validated in this context.  \n\n- **M2. Reproducibility issues**: Are there enough details to reproduce the experiments, including hyperparameters? Is code or data provided for reviewer evaluation? Reproducibility refers to rerunning experiments with similar results, not reimplementing them.  \n\n- **M3. Undisclosed data quality issues**: If the paper provides datasets or samples, any quality issues should be disclosed. If undisclosed issues exist, it's a serious concern.  \n\n- **M4. Unmotivated selection**: The paper should justify its choice of models and benchmarks in relation to its claims. Even if you would have chosen differently, their selection must be reasonable.  \n\n- **M5. Incomplete assumptions or proofs**: Assumptions should be clearly stated, and formal statements (theorems, lemmas, etc.) must be backed by complete, correct proofs, even if placed in an appendix.  \n\n#### Issues with artifact sourcing or release (T)\n\n- **T1. Ethics issues with data collection**: If human data collection is involved, ethical considerations (e.g., approval, compensation) should be addressed. Major concerns can be flagged for ethics review.\n\n- **T2. Unclear license/release terms**: If a dataset or model is released, the terms should be explicitly stated. Reviewers should check clarity, not make legal judgments.  \n\n#### Issues with experimental results (R)\n\n- **R1. Analysis issues**: Issues include misleading statistics, cherry-picked results, or poorly tuned baselines that affect fairness in comparisons.  \n\n- **R2. Inappropriate scope of claims**: Claims should be based on representative samples. Evaluating a few benchmarks does not justify broad statements about reasoning, understanding, or LLM capabilities.  \n\n- **R3. Hypotheses/speculations as conclusions**: Claims must be supported by evidence or marked as speculation, not presented as established facts.  \n\n- **R4. Misleading framing or overclaiming**: Overgeneralized conclusions, such as stating that LLMs \"understand\" language based only on benchmark results, should be avoided.  \n\n- **R5. Missing statistical significance assessment**: Key results should include error bars, confidence intervals, and statistical significance tests, with details on variability and assumptions.  \n\n#### General issues (G)\n\n- **G1. Unclear research question or contribution**: The paper should clearly state the problem it addresses, its contributions, and its limitations in the abstract and introduction.  \n\n- **G2. Reliance on a bad precedent**: Justifying methods by citing flawed or outdated work is problematic. If precedent is questionable, reviewers should clarify their stance.  \n\n- **G3. Missing/misrepresented related work**: Authors should fairly represent previous research, ensuring novelty claims are justified and related work is accurately cited.  \n\n- **G4. Key terms too vague and undefined**: If an important term is unclear or undefined, the paper should specify or reference its meaning.  \n\n- **G5. Misleading/incorrect citations**: Citations must accurately reflect the referenced work. Increasing reliance on LLM-generated summaries makes this issue more prevalent.  \n\n\n### 4. Check that your scores reflect the review\n\nARR reviewers are asked to provide three scores: soundness, excitement, and overall recommendation.\n\nThe soundness scores must be justified by the text of the review . If you give a low Soundness score without finding any major faults, this means that your review is not a faithful explanation of your recommendation, and you need to revise it. One possible reason for low soundness scores without sufficient justification could be reliance on some unconscious bias or heuristic, like the ones listed in the previous section. Likewise, low reproducibility scores should be justified.\n\nSometimes you may find the work sound, but not something that is interesting for you personally. Such preferences are more subjective and should be reflected in a separate excitement score, which is orthogonal to the assessment of the soundness of the paper. Excitement scores reflect our personal taste, and so do not necessarily come with explicit reasons.\n\nThe Overall assessment score is an explicit recommendation for the outcome of this paper, if it were committed to an *ACL venue. This is a composite score reflecting your assessment of soundness, excitement, and also other factors like novelty and impact. All papers recommended for Findings and main conferences are expected to be sufficiently sound and reproducible, but you may consider a paper worthy of the main conference even if you personally are not excited about it. For example, improvements in efficiency of some algorithm, or creating a high-quality resource for a language/domain that does not yet have resources of that type may not sound very novel or exciting, but you may still consider it a significant contribution due to its potential impact (for its target community).\n\n\n### 5. Check that the tone is professional and neutral\n\nAbove all, a good review should be professional and neutral, if not kind. A key goal of peer review is to help the authors improve their papers. As an anonymous reviewer, you are in a position of power, and the written medium makes it easier to be more dismissive and sarcastic than if you were communicating with the authors face-to-face. Unfortunately such reviews are not uncommon.\n\nConsider that you may well be addressing someone who is only starting on the research path. And/or someone struggling with stress and other mental health issues. And/or someone who has been less lucky with their school and advisors. Academic lives are already stressful enough, and we do not need to inflict extra damage on the mental health of our colleagues with sarcastic or insulting reviews. Write the review you would like to get yourself.\n\nThe fact is, authors and reviewers are actually the same people: the conference crowd lining up for coffee, happily chatting with each other about the grand problems even if they do not always agree. Why can\u2019t we do peer review in the same spirit of fun intellectual interaction with colleagues?\n\nJust like the conference coffee break chats, reviewing is in fact, mutually beneficial: in exchange for feedback, the reviewers get to have the first look at cutting-edge research. Just like the coffee breaks, where you do not necessarily meet only the people working in your subsubfield, peer review may expose you to new techniques. Since there is careful written communication in the authors\u2019 response, you may even find that you were wrong about something, which is a much faster way to learn than making the same mistake in your own research.\n\nNot to mention, someone out there is reviewing your papers too. The more rude or dismissive reviews there are, the more of a norm they become, and the higher the chances you will get one yourself in the future.",
+                "template_field_semantics": {
+                    "summary": "Paper Summary",
+                    "strengths": "Summary of Strengths",
+                    "weaknesses": "Summary of Weaknesses",
+                    "suggestions": "Comments/Suggestions/Typos"
+                },
+                "review_template": {
+                    "Paper Summary": "Describe what this paper is about. This should help action editors and area chairs to understand the topic of the work and highlight any possible misunderstandings.",
+                    "Summary of Strengths": "What are the major reasons to publish this paper at a selective *ACL venue? These could include novel and useful methodology, insightful empirical results or theoretical analysis, clear organization of related literature, or any other reason why interested readers of *ACL papers may find the paper useful.",
+                    "Summary of Weaknesses": "What are the concerns that you have about the paper that would cause you to favor prioritizing other high-quality papers that are also under consideration for publication? These could include concerns about correctness of the results or argumentation, limited perceived impact of the methods or findings (note that impact can be significant both in broad or in narrow sub-fields), lack of clarity in exposition, or any other reason why interested readers of *ACL papers may gain less from this paper than they would from other papers under consideration. Where possible, please number your concerns so authors may respond to them individually.",
+                    "Comments/Suggestions/Typos": "If you have any comments to the authors about how they may improve their paper, other than addressing the concerns above, please list them here."
+                },
+                "overall_score_name": "Overall Assessment",
+                "review_scores": {
+                    "Reviewer Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "Positive that my evaluation is correct. I read the paper very carefully and am familiar with related work.",
+                            "4": "Quite sure. I tried to check the important points carefully. It\u2019s unlikely, though conceivable, that I missed something that should affect my ratings.",
+                            "3": "Pretty sure, but there\u2019s a chance I missed something. Although I have a good feel for this area in general, I did not carefully check the paper\u2019s details, e.g., the math or experimental design.",
+                            "2": "Willing to defend my evaluation, but it is fairly likely that I missed some details, didn\u2019t understand some central points, or can\u2019t be sure about the novelty of the work.",
+                            "1": "Not my area, or paper is very hard to understand. My evaluation is just an educated guess."
+                        }
+                    },
+                    "Soundness": {
+                        "meaning": "Given that this is a short/long paper, is it sufficiently sound and thorough? Does it clearly state scientific claims and provide adequate support for them? For experimental papers: consider the depth and/or breadth of the research questions investigated, technical soundness of experiments, methodological validity of evaluation. For position papers, surveys: consider whether the current state of the field is adequately represented and main counter-arguments acknowledged. For resource papers: consider the data collection methodology, resulting data & the difference from existing resources are described in sufficient detail.",
+                        "scores": {
+                            "5": "Excellent: This study is one of the most thorough I have seen, given its type.",
+                            "4": "Strong: This study provides sufficient support for all of its claims. Some extra experiments could be nice, but not essential.",
+                            "3": "Acceptable: This study provides sufficient support for its main claims. Some minor points may need extra support or details.",
+                            "2": "Poor: Some of the main claims are not sufficiently supported. There are major technical/methodological problems.",
+                            "1": "Major Issues: This study is not yet sufficiently thorough to warrant publication or is not relevant to ACL."
+                        }
+                    },
+                    "Excitement": {
+                        "meaning": "How exciting is this paper for you? Excitement is subjective, and does not necessarily follow what is popular in the field. We may perceive papers as transformational/innovative/surprising, e.g. because they present conceptual breakthroughs or evidence challenging common assumptions/methods/datasets/metrics. We may be excited about the possible impact of the paper on some community (not necessarily large or our own), e.g. lowering barriers, reducing costs, enabling new applications. We may be excited for papers that are relevant, inspiring, or useful for our own research. These factors may combine in different ways for different reviewers.",
+                        "scores": {
+                            "5": "Highly Exciting: I would recommend this paper to others and/or attend its presentation in a conference.",
+                            "4": "Exciting: I would mention this paper to others and/or make an effort to attend its presentation in a conference.",
+                            "3": "Interesting: I might mention some points of this paper to others and/or attend its presentation in a conference if there\u2019s time.",
+                            "2": "Potentially Interesting: this paper does not resonate with me, but it might with others in the *ACL community.",
+                            "1": "Not Exciting: this paper does not resonate with me, and I don\u2019t think it would with others in the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    },
+                    "Overall Assessment": {
+                        "meaning": "If this paper was committed to an *ACL conference, do you believe it should be accepted? If you recommend conference, Findings and or even award consideration, you can still suggest minor revisions (e.g. typos, non-core missing refs, etc.). Outstanding papers should be either fascinating, controversial, surprising, impressive, or potentially field-changing. Awards will be decided based on the camera-ready version of the paper. Main vs Findings papers: the main criteria for Findings are soundness and reproducibility. Conference recommendations may also consider novelty, impact and other factors.",
+                        "scores": {
+                            "5": "Consider for Award: I think this paper could be considered for an outstanding paper award at an *ACL conference (up to top 2.5% papers).",
+                            "4.5": "Borderline Award",
+                            "4": "Conference: I think this paper could be accepted to an *ACL conference.",
+                            "3.5": "Borderline Conference",
+                            "3": "Findings: I think this paper could be accepted to the Findings of the ACL.",
+                            "2.5": "Borderline Findings",
+                            "2": "Resubmit next cycle: I think this paper needs substantial revisions that can be completed by the next ARR cycle.",
+                            "1.5": "Resubmit after next cycle: I think this paper needs substantial revisions that cannot be completed by the next ARR cycle.",
+                            "1": "Do not resubmit: This paper has to be fully redone, or it is not relevant to the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    }
+                }
+            },
+            "oid": "2024.acl%2024.acl-long.45",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/2024.acl/2024.acl%2024.acl-long.45/media"
+        },
+        "md": "\n# Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\n\n###### Abstract\n\nRecent advances in Automated Theorem Proving have shown the effectiveness of leveraging a (large) language model that generates tactics (i.e. proof steps) to search through proof states. The current model, while trained solely on successful proof paths, faces a discrepancy at the inference stage, as it must sample and try various tactics at each proof state until finding success, unlike its training which does not incorporate learning from failed attempts. Intuitively, a tactic that leads to a failed search path would indicate that similar tactics should receive less attention during the following trials. In this paper, we demonstrate the benefit of training models that additionally learn from failed search paths. Facing the lack of such trial-and-error data in existing open-source theorem-proving datasets, we curate a dataset on intuitionistic propositional logic theorems and formalize it in Lean, such that we can reliably check the correctness of proofs. We compare our model trained on relatively short trial-and-error information (TrialMaster) with models trained only on the correct paths and discover that the former solves more unseen theorems with lower trial searches.  \n\n\\newunicodechar\n\u2227$\\land$ \\newunicodechar\u2228$\\lor$ \\newunicodechar\u2192$\\to$   \n\nLearn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving  \n\n  \n\n    Chenyang An1\u2020\u2020thanks: \u00a0\u00a0 The first two authors contributed equally to this work., Zhibo Chen211footnotemark: 1, Qihao Ye1, Emily First1, Letian Peng1  Jiayun Zhang1, Zihan Wang1\u2020\u2020thanks: \u00a0\u00a0 Corresponding authors., Sorin Lerner122footnotemark: 2, Jingbo Shang122footnotemark: 2  University of California, San Diego1 \u2003Carnegie Mellon University2  {c5an, q8ye, emfirst, lepeng, jiz069, ziw224, lerner, jshang}@ucsd.edu  zhiboc@andrew.cmu.edu    \n\n  \n\n## 1 Introduction\n\nAutomated Theorem Proving is a challenging task that has recently gained popularity in the machine-learning community. Researchers build *neural theorem provers* to synthesize formal proofs of mathematical theorems Yang et al. ([2023](#bib.bib49)); Welleck et al. ([2021](#bib.bib46)); Lample et al. ([2022](#bib.bib22)); Miku\u0142a et al. ([2023](#bib.bib27)); Wang et al. ([2023](#bib.bib41)); Bansal et al. ([2019](#bib.bib3)); Davies et al. ([2021](#bib.bib10)); Wu et al. ([2021](#bib.bib48)); Rabe et al. ([2020](#bib.bib32)); Kusumoto et al. ([2018](#bib.bib20)); Bansal et al. ([2019](#bib.bib3)); Irving et al. ([2016](#bib.bib18)). Typically, a neural theorem prover, given a partial proof and the current *proof state*, uses a neural model to predict the next likely *proof step*, or *tactics*. The neural models utilize different architectures like LSTMs Sekiyama et al. ([2017](#bib.bib35)), CNNs Irving et al. ([2016](#bib.bib18)), DNNs Sekiyama and Suenaga ([2018](#bib.bib36)), GNNs Bansal et al. ([2019](#bib.bib3)); Wang et al. ([2017](#bib.bib43)) and RNNs Wang and Deng ([2020](#bib.bib42)), though most recent work has begun to explore the use of transformer-based large language models (LLMs) due to their emerging reasoning abilities. Observing that TrialMaster achieves a higher proof search success rate and lower search cost compared to any conventional model.\n\n[FIGURE S1.F1.g1]\n![Figure S1.F1.g1](./media/x1.png)\n\nFigure 1: A simple example for how learning trial-and-error data impacts inference distribution.\n[/FIGURE]\n\nAn interactive *proof assistant*, such as Lean\u00a0de\u00a0Moura et\u00a0al. ([2015](#bib.bib12)), Coq\u00a0Barras et\u00a0al. ([1997](#bib.bib4)) or Isabelle\u00a0Nipkow et\u00a0al. ([2002](#bib.bib29)), evaluates the model\u2019s predicted candidate proof steps, returning either new proof states or errors. Neural theorem provers iterate on this procedure, performing *proof search*, e.g., a depth-first search (DFS), to traverse the space of possible proofs. An example of a DFS proof search is illustrated in Figure\u00a0[2(a)](#S1.F2.sf1 \"Figure 2(a) \u2023 Figure 2 \u2023 1 Introduction \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"), where the prover progressively generates new tactics if the attempted tactics result in incorrect proofs.  \n\nSuch provers are usually trained on a dataset containing only the correct proof paths. This, however, presents a limitation: during inference, the prover does not have the ability to leverage the already failed paths it explored. Such failure information, intuitively, is beneficial, as it could suggest the model to generate tactics similar to the failed ones sparingly. At the very least, the failure information should help the model easily avoid generating already failed tactics. See Figure\u00a0[1](#S1.F1 \"Figure 1 \u2023 1 Introduction \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\").  \n\nIn this paper, we wish to empirically verify this intuition. To conduct the experiment, we would compare the conventional model trained on correct proof paths, and TrialMaster, the model trained on the whole proof tree, containing both correct paths and incorrect paths. See Figure \u00a0[2(b)](#S1.F2.sf2 \"Figure 2(b) \u2023 Figure 2 \u2023 1 Introduction \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). As such, TrialMaster can make predictions based on the failure information during inference time.  \n\nSince current open-source Automated Theorem Proving datasets do not contain complete proof trees, we create such a dataset, PropL, written in Lean. We focus on theorems of intuitionistic propositional logic. A simple example of an intuitionistic propositional logic theorem and its proof in Lean is shown below. The first line is the theorem statement, and the second and third lines are tactics that solve the theorem.  \n\n[\u2b07](data:text/plain;base64,ICAgIHRoZW9yZW0gdGhtIDogcCAmJFxyaWdodGFycm93JCYgcCA6PSBieQogICAgICAgaW50cm8gaAogICAgICAgZXhhY3QgaA==)\n\n theorem thm : p &$\\rightarrow$& p := by\n\n intro h\n\n exact h\n\nSpecifically, our PropL dataset is created through a two-stage process that first involves generating a comprehensive set of propositional logic theorems by uniformly sampling from all possible theorems, utilizing a bijection between natural numbers and propositions to ensure representativeness. Following theorem generation, proofs are constructed using a focusing method with polarization, incorporating a detailed trial-and-error search process that includes both successful and backtracked steps, thereby capturing the complexity and nuances of theorem proving in intuitionistic propositional logic. Thus, our dataset is complete, scalable, and representative. The proofs in our dataset are combined with trial-and-error information, which is generated by the Focused Proof Search (FPS) algorithm\u00a0McLaughlin and Pfenning ([2009](#bib.bib25)); Liang and Miller ([2009](#bib.bib23)); Pfenning ([2017](#bib.bib30)).  \n\nWe verify the effectiveness of incorporating the failed trials during training and inference by experiments on PropL, observing that TrialMaster achieves a higher proof search success rate and lower search cost over conventional model trained on correct proof paths. Our experiments further indicate that our model can perform backtracking without help from an external system.  \n\nOur main contributions are as follows:  \n\n* We establish, PropL, a complete, scalable, and representative benchmark for intuitionistic propositional logic theorems formalized in Lean. PropL includes proofs with trial-and-error information, generated by the FPS algorithm. \n* We demonstrate that for intuitionistic propositional logic theorem proving, incorporating trial-and-error information into training and proving outperforms a conventional model that is trained on correct proofs only. \n\n[FIGURE S1.F2.sf1.g1]\n![Figure S1.F2.sf1.g1](./media/x2.png)\n\n(a) Conventional system with depth-first search\n[/FIGURE]\n\n## 2 Related Work\n\nAutomated Theorem Proving. Automated Theorem Proving has evolved significantly since its inception, focusing mainly on developing computer programs that can autonomously prove mathematical theorems. Early ATP systems (mechanical theorem proving) were based on first-order logic Clocksin and Mellish ([2003](#bib.bib8)); Chang and Lee ([2014](#bib.bib6)), where the resolution method Robinson ([1965](#bib.bib33)) played a crucial role. Recent progress in Automated Theorem Proving has been marked by the integration of machine learning Bansal et\u00a0al. ([2019](#bib.bib3)); Davies et\u00a0al. ([2021](#bib.bib10)); Wagner ([2021](#bib.bib40)), especially LLMs Yang et\u00a0al. ([2023](#bib.bib49)); Polu and Sutskever ([2020](#bib.bib31)); Han et\u00a0al. ([2021](#bib.bib16)); Welleck et\u00a0al. ([2021](#bib.bib46)); Jiang et\u00a0al. ([2022](#bib.bib19)), and heuristic methods Holden and Korovin ([2021](#bib.bib17)), aimed at amplifying the efficiency and capacity of Automated Theorem Proving systems. Within the domain of LLMs, formal mathematical languages like Metamath Megill and Wheeler ([2019](#bib.bib26)), Lean de\u00a0Moura et\u00a0al. ([2015](#bib.bib12)), Isabelle Nipkow et\u00a0al. ([2002](#bib.bib29)), and Coq Barras et\u00a0al. ([1997](#bib.bib4)), serve as a bridge, enabling the precise expression and verification of mathematical theorems and concepts through a computer-verifiable format, thereby mitigating hallucination risks Nawaz et\u00a0al. ([2019](#bib.bib28)). COPRA works on incorporating the backtracking information into the prompts and sends the prompt to GPT-4 without fine-tuning it to perform proof searching task Thakur et\u00a0al. ([2023](#bib.bib38)). Baldur fine-tuned the LLMs with proofs and error information given by the proof assistant First et\u00a0al. ([2023](#bib.bib13)). In contrast, our work focused on fine-tuning the LLMs with the complete past proof history without using the error message from the proof assistants.  \n\nPropositional Logic Problem. Early implementations of ATP systems demonstrated the potential for computers to automate logical deductions, with notable examples including the Logic Theorist Crevier ([1993](#bib.bib9)); McCorduck ([2004](#bib.bib24)); Russell and Norvig ([2010](#bib.bib34)) and Gilmore\u2019s program Davis ([2001](#bib.bib11)); Gilmore ([1960](#bib.bib15)). These systems laid the groundwork for the resolution of propositional logic problems, showcasing the ability of automated systems to handle logical reasoning tasks. Recent advancements in Automated Theorem Proving have revisited propositional logic problems, integrating modern computational techniques. Sekiyama et al. Sekiyama and Suenaga ([2018](#bib.bib36)) have employed Deep Neural Networks (DNNs) as a statistical approach to generate proofs for these theorems, while Kusumoto et al. Kusumoto et\u00a0al. ([2018](#bib.bib20)) have explored graph representations coupled with reinforcement learning to find proofs. Furthermore, the sequence-to-sequence neural networks have been applied for deriving proof terms in intuitionistic propositional logic Sekiyama et\u00a0al. ([2017](#bib.bib35)). This area of research is particularly intriguing due to the simplicity and importance of propositional logic in mathematics, and there is a growing interest in evaluating the capability of LLMs in tackling this specific mathematical domain.  \n\nTrial-and-Error. The Chain-of-Thought (CoT) Wei et\u00a0al. ([2022](#bib.bib45)); Wang et\u00a0al. ([2022](#bib.bib44)); Zhou et\u00a0al. ([2022](#bib.bib52)); Fu et\u00a0al. ([2022](#bib.bib14)); Chu et\u00a0al. ([2023](#bib.bib7)); Yu et\u00a0al. ([2023](#bib.bib51)) approach, demonstrates that LLMs can be guided to perform step-by-step reasoning by incorporating intermediate reasoning steps in their prompts. This concept is expanded in later research, such as the Tree of Thoughts (ToT) Yao et\u00a0al. ([2023](#bib.bib50)), which organizes reasoning into a tree structure, and the Graph of Thoughts (GoT) Besta et\u00a0al. ([2023](#bib.bib5)), which adopts a graph format for thought structuring. Trial-and-error complements structured reasoning by allowing the model to empirically test hypotheses generated, thereby refining its reasoning process based on feedback from interactions or emulations. The Boosting of Thoughts (BoT) Anonymous ([2024](#bib.bib1)) prompting framework iteratively explores and evaluates multiple trees of thoughts to gain trial-and-error reasoning experiences, using error analysis from the LLMs to revise the prompt. We posit that teaching models to leverage both structured reasoning and trial-and-error methodologies can substantially improve their analytical and adaptive capabilities.  \n\n## 3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean\n\nOur aim is to experimentally validate that trial-and-error information can enhance models\u2019 ability to do backtracking and tactic generation for theorem-proving tasks. Given that existing open-source theorem proving datasets lack information on trial-and-error processes, we have developed PropL, which is based on theorems of intuitionistic propositional logic. This dataset uniquely includes proofs that encapsulate the complete search process, incorporating the trial-and-error data generated by the FPS algorithm. Our dataset has two other benefits. It is formalized in Lean, so that the validity of the theorems and proofs are guaranteed. The tactics generated by the model trained on PropL can also be directly sent to Lean to be checked. PropL is also representative of all the intuitionistic propositional logic theorems, since by uniformly sampling integers, we can use a bijection between natural numbers and propositions to uniformly sample propositions. This bijection is explained in the Theorem Generation section.  \n\n### 3.1 Data Generation of PropL\n\nPropL comprises theorems uniformly sampled from the entire set of propositional logic theorems. It includes various proof types for each theorem. We only report proof types that are used in this paper. For additional information about the dataset, please refer to the GitHub repository and Huggingface.  \n\nThe construction of PropL involves two primary stages: the generation of propositional logic theorems and the generation of proofs for these theorems from an existing algorithm.  \n\nTheorem Generation. Consider the set of propositions $A$ with at most $p$ atomic propositions, $A$ can be inductively generated by the following grammar:  \n\n|  | $$A,B::=P_{i}\\mid T\\mid F\\mid A\\land B\\mid A\\lor B\\mid A\\to B,$$ |  |\n| --- | --- | --- |\n\nwhere $P_{i}$ is the $i$-th atomic proposition with $1\\leq i\\leq p$. A connective $\\land$, $\\lor$, $\\to$ is called an internal node of the proposition. We assign the following lexicographic order to propositions:  \n\n1. Number of internal nodes (increasing order) \n2. Number of internal nodes of the left child (decreasing order) \n3. Top level connective, $T<F<P_{1}<\\cdots<P_{p}<\\land<\\lor<\\to$ \n4. The (recursive order (2 - 5)) of the left child \n5. The (recursive order (2 - 5)) of the right child \n\nFor a fixed upper bound $p$ for the number of atomic propositions, we establish a bijection between the natural numbers and the set of propositional logic formulas. The counting can be made efficient using the Catalan Numbers\u00a0Atkinson and Sack ([1992](#bib.bib2)). Figure\u00a0[3](#S3.F3 \"Figure 3 \u2023 3.1 Data Generation of PropL \u2023 3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") gives an example of mapping between propositions and natural numbers. Details about the encoding and decoding algorithms are provided in [Appendix\u00a0A](#A1 \"Appendix A Uniformly Distributed Data Explanation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\").  \n\n[FIGURE S3.F3.g1]\n![Figure S3.F3.g1](./media/x4.png)\n\nFigure 3: An illustration of the bijection between a proposition and a natural number, where gray nodes are leaf nodes. ID is computed using [Algorithm\u00a01](#alg1 \"In Appendix A Uniformly Distributed Data Explanation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") with $n=6$ and $p=2$ in this case.\n[/FIGURE]\n\nProof Generation. Given a randomly sampled theorem, the proof of the theorem is constructed using the focusing method with polarization McLaughlin and Pfenning ([2009](#bib.bib25)); Liang and Miller ([2009](#bib.bib23)); Pfenning ([2017](#bib.bib30)). Proof search is divided into two stages: inversion and chaining. The inversion phase mechanically breaks down negative connectives (e.g. implications) in the goal and positive connectives (e.g. disjunctions) in the premises. After inversion, chaining will pick an implication in the premise or show one of the disjuncts in the conclusion, with backtracking. The proof search procedure terminates when the same atomic proposition appears in both the premise and the conclusion. An example of proof with trial-and-error information (backtracking) and that with trial-and-error information removed is shown in Figure\u00a0[4](#S3.F4 \"Figure 4 \u2023 3.2 Construction of Training and Testing Sets \u2023 3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\").  \n\nOnce proofs are generated, we use them to fine-tune models and start the proof search on the test set.  \n\nThe polarization of the connectives affects the behavior of the inversion and the search procedure. We choose to uniformly polarize conjunctions that occur negatively (e.g. on the right-hand side of a sequence) as negative and polarize conjunctions that occur positively (e.g. on the left-hand side of an arrow) as positive. Atomic propositions are assigned polarities based on the connective that they first appear under.  \n\nTo improve the runtime of the search procedure, we make an additional assumption that once an implication is picked, the implication cannot be used to show its premise. In theory, this introduces incompleteness into the search procedure, but it only affects 1 theorem out of around 1000 provable theorems randomly sampled.  \n\n### 3.2 Construction of Training and Testing Sets\n\nIn this section, we explain how we construct the datasets for training and evaluation. We want to avoid training and testing on similar data. In order to test the model performance on harder out-of-distribution (OOD) tasks, we need to ensure that the lengths of the proofs in the training data are shorter than the lengths of the proofs in the test data.  \n\nGiven PropL, we fix the number of internal nodes in the theorem statement to be 16 (explained in the dataset generation section). We then uniformly randomly sample 200,000 theorems from PropL, which can be achieved by using the integer-theorem bijection as explained before. Our method ensures that the theorems we study in this paper are representative of the propositional logic theorems in general.  \n\nWe first apply our deterministic algorithms to generate the proofs of the 200,000 theorems, and then remove the trial-and-error information of those proofs. We get a word-length distribution of those proofs without trial-and-error information. Next, to ensure the diversity of the trial-and-error information, we randomly select propositions to focus on during the chaining phase of the proof search, and then generate 10 different proofs with backtracking. By using the average length of the 10 different proofs, we have another word length distribution of proofs with trial-and-error information.  \n\nWe then split the 200,000 theorems into training and testing sets based on both of the word length distributions mentioned above. The word lengths of the proofs of the training data theorems fall within the lower 0.66 quantile of the two distributions of the word length of all the proofs of the 200,000 theorems (109,887 in total). The word lengths of the in-distribution testing also fall in that category (1000 in total). The word lengths of the proofs among the out-of-distribution testing theorems are above 0.8 quantile (1000 total) of the two distributions of the word lengths of all the proofs of the 200,000 theorems.  \n\n[FIGURE S3.F4.g1]\n![Figure S3.F4.g1](./media/x5.png)\n\nFigure 4: Two proofs for one propositional logic theorem with tactics and states in Lean.\n[/FIGURE]\n\n## 4 Methodology\n\n### 4.1 LLM Fine-Tuning\n\nWe utilize the training set formed in PropL for training both TrialMaster and the tactic generator in the DFS system. The numbers of theorems used in the training and testing datasets are presented in Table\u00a0[1](#S4.T1 \"Table 1 \u2023 4.1 LLM Fine-Tuning \u2023 4 Methodology \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\").  \n\nLLM fine-tuning with trial-and-error. In our approach, we randomly select two out of the shortest five among the ten proofs with trial-and-error information for each theorem in the training set and utilize them to train TrialMaster. Refer to Figure\u00a0[2(b)](#S1.F2.sf2 \"Figure 2(b) \u2023 Figure 2 \u2023 1 Introduction \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") describes this training process.  \n\nLLM fine-tuning in a DFS system. For the tactic generator of the DFS system, we employ the deterministic FPS algorithm to generate the proofs of the theorems in the training set. The trial-and-error information is removed from the proofs. The LLM is then fine-tuned on the proofs without trial-and-error information as the conventional methods do. Figure\u00a0[2(a)](#S1.F2.sf1 \"Figure 2(a) \u2023 Figure 2 \u2023 1 Introduction \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") illustrates the training process of the DFS system.  \n\n[TABLE S4.T1]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Subset</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Number of theorems</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Training</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">109,887</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">In-dist. testing</th>\n<td class=\"ltx_td ltx_align_center\">1,000</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">Out-of-dist. testing</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">1,000</td>\n</tr>\n</tbody>\n</table>\n\nTable 1: The scale of training and testing split in our PropL dataset.\n[/TABLE]\n\n### 4.2 Inference\n\nInference method of model trained with trial-and-error. TrialMaster conducts inference on itself without any help from a backtracking system like DFS or BFS. It outputs two kinds of tactics: tactics in Lean and backtrack instruction. An example of a backtrack instruction would be like \u201cno solution, return to state 2 [that leads to state 4]\u201d, where state 4 is the current state. When TrialMaster is doing a proof search on the test set, it is prompted with all history paths, including previous tactics, states, the backtracking it made before, and the failed search path. It then outputs the entire proof path after. Nonetheless, we only utilize the first tactic in the output and employ Lean as a calculator to determine the next state, thereby ensuring the correctness of the state following the tactic. If the tactic output by TrialMaster is a backtrack instruction, it is then prompted with all the proof search history including the backtrack instruction and the state that the backtrack instruction instructs to return to. If that tactic is not a backtrack instruction, the tactic and the current state will be fed into Lean for producing the state after. TrialMaster is then prompted with the entire proof tree including the state that Lean calculated, and it should output a tactic again. This process is repeated until Lean identifies that the proof is complete or any Lean error occurs. We also note that TrialMaster only outputs one tactic at each state using greedy search.  \n\nInference method of the DFS system. There are two hyperparameters in the DFS system: temperature $t$ and the number of sampled tactics $N_{\\text{sampled}}$. The temperature $t$ decides the diversity of the model outputs. As $t$ increases, the outputs of the model become more varied. The second parameter determines how many tactics the tactic generator of the DFS system produces for a new proof state.  \n\nDuring inference, the LLM in the DFS system produces $N_{\\text{sampled}}$ of candidate tactics at each new state. For each proof state, the DFS only makes one inference. If any two of the generated tactics for the same state are the same, we remove one of them to ensure efficiency. We also remove the tactic suggestions that fail to follow the grammar of Lean. The system follows the depth-first order to keep trying untried tactics. If the system exhausts all the tactics for a given state but has not found a valid one, the system returns to the parent state and then keeps trying untried tactics for the parent state. The overview is presented in the [Figure\u00a02(a)](#S1.F2.sf1 \"In Figure 2 \u2023 1 Introduction \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\").  \n\nTo fully exploit the ability of the DFS system, we varied the parameters of it, such as temperature and the number of sampled tactics. We count how many times Lean has been called to check tactics for both the DFS system and TrialMaster during the inference stage.  \n\n#### Why do we choose DFS over BFS?\n\nWhile the Breadth-First-Search (BFS) system is also popular for building neural provers in Automated Theorem Proving, we have opted for DFS as our baseline over BFS in the context of propositional logic theorem proving. This is due to the finite number (around 20) of tactics available at any step for the search process of intuitionistic propositional logic theorems, making DFS more efficient than BFS without compromising the success rate.  \n\n## 5 Evaluation\n\n### 5.1 Experiment setup\n\nBase LLM. We used Llama-2-7b-hf Touvron et\u00a0al. ([2023](#bib.bib39)) as the backbone LLM for tactic generation. Models are trained on two A100 GPUs for a single epoch with batch size set to $4$. Huggingface Wolf et\u00a0al. ([2019](#bib.bib47)) is used for fine-tuning the models, and VLLM\u00a0Kwon et\u00a0al. ([2023](#bib.bib21)) is used for inference of the models for efficiency. The learning rate of all training processes is set to be $2\\times 10^{-5}$.  \n\nHyperparameters. In the experiment, we vary temperature $t$ from $\\{0.3,0.7,1.2,1.5,2.0\\}$ and number of sampled tactics $N_{\\text{sampled}}$ from $\\{2,5,10,15,20\\}$. We notice that in all experiments for temperature $t$ less than 1.5, there were only very few (less than 15) theorems that were still under search when the total steps for that search attempt reached 65. For $t$ higher than 1.5, $N_{\\text{Lean}}$ starts to increase dramatically. At temperature 2 with $N_{\\text{sampled}}$=20, $N_{\\text{Lean}}$ climbs up to 32171 when the number of total steps reaches 65. Therefore, in our experiment, we set 65 as the search step limit to control time complexity.  \n\n[FIGURE S5.F5.sf1.g1]\n![Figure S5.F5.sf1.g1](./media/x6.png)\n\n(a) Temperature $t$\n[/FIGURE]\n\n### 5.2 Evaluation Metrics\n\nProof search success rate. We use proof search success rate as our primary metric, which represents the ratio of successful searches by the model. A search attempt for a theorem is marked as successful if Lean outputs state \u201cno goal, the proof is complete\u201d, implying the theorem is effectively proved after applying a tactic produced by the model. For TrialMaster, a search attempt ends and fails immediately after one of the following conditions: 1) the word length of the proof tree with trial-and-error exceeds $1500$ (for the sake of context length of the model), or 2) the tactic produced by the model at any step induces a Lean error. For the conventional DFS system, a search attempt fails when one of the following conditions happens: 1) the word length of the proof tree without trial-and-error exceeds 1500, or 2) all tactics generated for the initial states have been explored and failed, or 3) the total search steps exceed 65 (see Section\u00a0[5.1](#S5.SS1 \"5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") for the choice of this value). We note that the 1500-word limit is stricter for our method since it produces entire proof paths including trial-and-error and thus would be easier to hit the limit.  \n\nSearch cost. We define a metric to assess the search cost\u2014the total number of Lean calls for tactic checking during proof searching for the entire testing set, denoted as $N_{\\text{Lean}}$. This number truly reflected given the same proof search success rate, a lower $N_{\\text{Lean}}$ indicates a more efficient system for proof searching. Note that backtracking instructions from our method do not require to apply Lean to check the state and, consequently do not add search cost.  \n\n[TABLE S5.T2]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt\">Success Rate</th>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\"><span class=\"ltx_text ltx_font_smallcaps\">TrialMaster</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">100%</span></th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center ltx_border_bb ltx_border_t\"><span class=\"ltx_text\">DFS</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\"><math class=\"ltx_Math\"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1.2</mn></mrow><annotation-xml><apply><eq></eq><ci>\ud835\udc61</ci><cn>1.2</cn></apply></annotation-xml><annotation>t=1.2</annotation></semantics></math></span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><math class=\"ltx_Math\"><semantics><mrow><msub><mi>N</mi><mtext>sampled</mtext></msub><mo>=</mo><mn>2</mn></mrow><annotation-xml><apply><eq></eq><apply><csymbol>subscript</csymbol><ci>\ud835\udc41</ci><ci><mtext>sampled</mtext></ci></apply><cn>2</cn></apply></annotation-xml><annotation>N_{\\text{sampled}}=2</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">99.5%</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center\"><math class=\"ltx_Math\"><semantics><mrow><msub><mi>N</mi><mtext>sampled</mtext></msub><mo>=</mo><mn>5</mn></mrow><annotation-xml><apply><eq></eq><apply><csymbol>subscript</csymbol><ci>\ud835\udc41</ci><ci><mtext>sampled</mtext></ci></apply><cn>5</cn></apply></annotation-xml><annotation>N_{\\text{sampled}}=5</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_center\">99.9%</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center\"><math class=\"ltx_Math\"><semantics><mrow><msub><mi>N</mi><mtext>sampled</mtext></msub><mo>=</mo><mn>10</mn></mrow><annotation-xml><apply><eq></eq><apply><csymbol>subscript</csymbol><ci>\ud835\udc41</ci><ci><mtext>sampled</mtext></ci></apply><cn>10</cn></apply></annotation-xml><annotation>N_{\\text{sampled}}=10</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_center\">99.6%</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center ltx_border_bb ltx_border_t\"><span class=\"ltx_text\"><math class=\"ltx_Math\"><semantics><mrow><mi>t</mi><mo>=</mo><mn>2.0</mn></mrow><annotation-xml><apply><eq></eq><ci>\ud835\udc61</ci><cn>2.0</cn></apply></annotation-xml><annotation>t=2.0</annotation></semantics></math></span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><math class=\"ltx_Math\"><semantics><mrow><msub><mi>N</mi><mtext>sampled</mtext></msub><mo>=</mo><mn>2</mn></mrow><annotation-xml><apply><eq></eq><apply><csymbol>subscript</csymbol><ci>\ud835\udc41</ci><ci><mtext>sampled</mtext></ci></apply><cn>2</cn></apply></annotation-xml><annotation>N_{\\text{sampled}}=2</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">75.9%</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center\"><math class=\"ltx_Math\"><semantics><mrow><msub><mi>N</mi><mtext>sampled</mtext></msub><mo>=</mo><mn>5</mn></mrow><annotation-xml><apply><eq></eq><apply><csymbol>subscript</csymbol><ci>\ud835\udc41</ci><ci><mtext>sampled</mtext></ci></apply><cn>5</cn></apply></annotation-xml><annotation>N_{\\text{sampled}}=5</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_center\">97.3%</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center ltx_border_bb\"><math class=\"ltx_Math\"><semantics><mrow><msub><mi>N</mi><mtext>sampled</mtext></msub><mo>=</mo><mn>10</mn></mrow><annotation-xml><apply><eq></eq><apply><csymbol>subscript</csymbol><ci>\ud835\udc41</ci><ci><mtext>sampled</mtext></ci></apply><cn>10</cn></apply></annotation-xml><annotation>N_{\\text{sampled}}=10</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">99.0%</td>\n</tr>\n</tbody>\n</table>\n\nTable 2: Performance on in-distribution task. Both methods perform well for propositional logic.\n[/TABLE]\n\n### 5.3 Results and Analysis\n\nTrialMaster outperforms any conventional DFS system. We begin by evaluating the methods of the in-distribution testing set. Table\u00a0[2](#S5.T2 \"Table 2 \u2023 5.2 Evaluation Metrics \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") illustrates that both our method and the DFS system perform exceptionally well, achieving a success rate of nearly 100% in most configurations. This suggests that Llama-7b effectively masters in-distribution intuitionistic propositional logic theorems. Then, we compare the performance of the methods on the out-of-distribution task. The results are presented in [Figure\u00a05](#S5.F5 \"In 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Our method with trial-and-error significantly outperforms any conventional DFS system across various hyperparameter configurations. Additionally, we observe that feeding more proofs without trial-and-error for LLM fine-tuning does not further improve the performance.\n\nImpact of hyperparameters in the DFS system. As shown in Figure\u00a0[5](#S5.F5 \"Figure 5 \u2023 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"), on the OOD task, although the success rate of the DFS system gets higher when we increase the temperature $t$ or the number of sampled tactics $N_{\\text{sampled}}$, the search cost (reflected by $N_{\\text{Lean}}$) also goes up. Specifically, when we increase $N_{\\text{sampled}}$, the DFS system explores a larger pool of candidate tactics during the search, leading to a higher number of Lean calls. In contrast, our method does a greedy search to generate only one tactic for each new state. Likewise, as $t$ increases, the tactic generator of the DFS system tends to produce more diverse tactics at each proof state, improving the system\u2019s performance but leading to higher search costs.  \n\n[TABLE S5.T3]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Success rate</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_smallcaps\">TrialMaster</span></th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">88.7%</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">Model - proof w/o t.a.e.</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">59.3 %</td>\n</tr>\n</tbody>\n</table>\n\nTable 3: Ablation study: Comparison of TrialMaster and model trained without trial-and-error information on OOD task\n[/TABLE]\n\nTrialMaster achieves high success rates at lower search cost. For a direct comparison of search costs, we plot the $N_{\\text{Lean}}$ values of our method alongside those of the top three DFS systems with the highest success rates among all the hyperparameters we experimented with, i.e., $t$=1.5, $N_{\\text{sampled}}$=20 (87.2%), $t$=1.5, $N_{\\text{sampled}}$ = 10 (86.1%), and $t$=1.8, $N_{\\text{sampled}}$=10 (88.4%). This comparison is illustrated in Figure [5(c)](#S5.F5.sf3 \"Figure 5(c) \u2023 Figure 5 \u2023 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Notably, we observe that the DFS systems that closely approach our model\u2019s performance exhibit significantly higher search costs. With $t$=1.8, $N_{\\text{sampled}}$=10, $N_{\\text{Lean}}$ of the DFS system, which has 0.3% lower success rate than our method, $N_{\\text{Lean}}$ has reached 31101, which is 72% higher than that of our method with trial-and-error. The high search cost makes the DFS system with high temperatures unfavorable. These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving high success rates at lower search cost.\n\nModel learns backtracking capability from trial-and-error data. In the experiments, we find out that our TrialMaster successfully acquires the backtracking capability from proofs with trial-and-error information. This is evidenced by the fact that during TrialMaster\u2019s proof search for theorems in the testing set, all backtracking instructions produced by the LLM adhere to the correct format and point to existing state numbers.  \n\n### 5.4 Ablation Study\n\nTo evaluate the effectiveness of training with trial-and-error, we craft an ablated version of our method where the LLM is fined-tuned with data of the corrected path only and do inference in the same way as our method (i.e., producing 1 tactic at a time and applying Lean for state checking). We denote the ablated version as Model - proof w/o t.a.e.. For both methods, we mark the search attempt as failed if the tactic induces a Lean error, or the search exceeds the 1500-word limit. The result is shown in the Table\u00a0[3](#S5.T3 \"Table 3 \u2023 5.3 Results and Analysis \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). The difference between the success rates of the two models is significant, which reaches $29.4\\%$. This clearly shows that failed search states and trial-and-error information tremendously enhance the model\u2019s capability to solve theorem-proving tasks.  \n\n[TABLE S5.T4]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Success rate</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Model - short proof w/ t.a.e.</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">88.7%</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">Model - long proof w/ t.a.e.</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">72.4 %</td>\n</tr>\n</tbody>\n</table>\n\nTable 4: Comparison of models trained on different lengths of proofs with trial-and-error on OOD task.\n[/TABLE]\n\n### 5.5 Exploratory Study: Training Proof Length Affect Model Performance\n\nSince the FPS algorithm of PropL dataset can generate multiple proofs with variable length, we conduct an exploratory study to assess the impact of proof length on model performance. We fine-tune two models using proofs with different lengths of trial-and-error information. For the first model, which is our TrialMaster, the training data is derived by randomly selecting two out of the shortest four proofs from the ten available proofs for each theorem in PropL. We denote it as Model - short proof w/ t.a.e. In contrast, the training data of the second model is formed by randomly selecting two proofs from the ten available for each theorem, irrespective of their lengths. We denote it as Model - long proof w/ t.a.e. For both models, we use greedy search to let them generate one tactic for each state. We evaluate the models on our 1000 OOD testing set. The results are shown in the [Table\u00a04](#S5.T4 \"In 5.4 Ablation Study \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). A higher success rate is observed in the model trained with shorter proofs. This can be attributed to the fact that as the proof with trial-and-error information becomes longer, there is too much trial-and-error information that may detrimentally affect the model\u2019s performance, as too many failed search paths may lower the quality of the training data.  \n\n## 6 Conclusion and Future Work\n\nIn this paper, we study Automated Theorem Proving in formalized environments. We create a complete, scalable, and representative data set of intuitionistic propositional logic theorems in Lean. We demonstrate that leveraging information from failed search states and backtracking not only teaches models how to backtrack effectively but also helps in developing better tactics than those generated by models trained without access to backtracking insights. We release our datasets on GitHub and Huggingface111PropL dataset is available at <https://huggingface.co/datasets/KomeijiForce/PropL>.  \n\nA natural extension of our research involves investigating whether trial-and-error information is beneficial for more general mathematical theorem-proving settings. Exploring this avenue could provide valuable insights into the effectiveness of our approach across broader mathematical domains.  \n\n## Limitation\n\nOne limitation of our study is that some proof attempts are forced to stop due to the prompt exceeding the context length of 1500 tokens. This constraint may potentially influence our results by truncating the available information during the proof search process.  \n\nFurthermore, our method was not evaluated on general mathematical theorems. This limitation arises from both the scarcity of proofs containing trial-and-error information in current math libraries and the intrinsic challenges associated with producing proofs, whether with or without backtracking, for general mathematical theorems in a formalized setting.  \n\nAutomated theorem proving with LLMs is an emerging area in machine learning. There is still a lack of baselines on LLMs to compare with our method. We establish a fundamental baseline, but we still need accumulative work to provide methods for comparison.  \n\n## Ethical Consideration\n\nOur work learns large language models to automatically prove propositional logic theorems, which generally does not raise ethical concerns.  \n\n## References\n\n* Anonymous (2024)  Anonymous. 2024.   [Boosting of thoughts: Trial-and-error problem solving with large language models](https://openreview.net/forum?id=qBL04XXex6).   In *The Twelfth International Conference on Learning Representations*. \n* Atkinson and Sack (1992)  Michael\u00a0D Atkinson and J-R Sack. 1992.   Generating binary trees at random.   *Information Processing Letters*, 41(1):21\u201323. \n* Bansal et\u00a0al. (2019)  Kshitij Bansal, Christian Szegedy, Markus\u00a0N Rabe, Sarah\u00a0M Loos, and Viktor Toman. 2019.   [Learning to reason in large theories without imitation](http://arxiv.org/abs/1905.10501).   *arXiv preprint arXiv:1905.10501*. \n* Barras et\u00a0al. (1997)  Bruno Barras, Samuel Boutin, Cristina Cornes, Judica\u00ebl Courant, Jean-Christophe Filliatre, Eduardo Gimenez, Hugo Herbelin, Gerard Huet, Cesar Munoz, Chetan Murthy, et\u00a0al. 1997.   *The Coq proof assistant reference manual: Version 6.1*.   Ph.D. thesis, Inria. \n* Besta et\u00a0al. (2023)  Maciej Besta, Nils Blach, Ales Kubicek, Robert Gerstenberger, Lukas Gianinazzi, Joanna Gajda, Tomasz Lehmann, Michal Podstawski, Hubert Niewiadomski, Piotr Nyczyk, et\u00a0al. 2023.   Graph of thoughts: Solving elaborate problems with large language models.   *arXiv preprint arXiv:2308.09687*. \n* Chang and Lee (2014)  Chin-Liang Chang and Richard Char-Tung Lee. 2014.   *Symbolic logic and mechanical theorem proving*.   Academic press. \n* Chu et\u00a0al. (2023)  Zheng Chu, Jingchang Chen, Qianglong Chen, Weijiang Yu, Tao He, Haotian Wang, Weihua Peng, Ming Liu, Bing Qin, and Ting Liu. 2023.   A survey of chain of thought reasoning: Advances, frontiers and future.   *arXiv preprint arXiv:2309.15402*. \n* Clocksin and Mellish (2003)  William\u00a0F Clocksin and Christopher\u00a0S Mellish. 2003.   *Programming in PROLOG*.   Springer Science & Business Media. \n* Crevier (1993)  Daniel Crevier. 1993.   *AI: the tumultuous history of the search for artificial intelligence*.   Basic Books, Inc. \n* Davies et\u00a0al. (2021)  Alex Davies, Petar Veli\u010dkovi\u0107, Lars Buesing, Sam Blackwell, Daniel Zheng, Nenad Toma\u0161ev, Richard Tanburn, Peter Battaglia, Charles Blundell, Andr\u00e1s Juh\u00e1sz, et\u00a0al. 2021.   Advancing mathematics by guiding human intuition with AI.   *Nature*, 600(7887):70\u201374. \n* Davis (2001)  Martin Davis. 2001.   The early history of automated deduction.   *Handbook of automated reasoning*, 1:3\u201315. \n* de\u00a0Moura et\u00a0al. (2015)  Leonardo de\u00a0Moura, Soonho Kong, Jeremy Avigad, Floris Van\u00a0Doorn, and Jakob von Raumer. 2015.   The lean theorem prover (system description).   In *Automated Deduction-CADE-25: 25th International Conference on Automated Deduction, Berlin, Germany, August 1-7, 2015, Proceedings 25*, pages 378\u2013388. Springer. \n* First et\u00a0al. (2023)  Emily First, Markus Rabe, Talia Ringer, and Yuriy Brun. 2023.   Baldur: Whole-proof generation and repair with large language models.   In *Proceedings of the 31st ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering*, pages 1229\u20131241. \n* Fu et\u00a0al. (2022)  Yao Fu, Hao Peng, Ashish Sabharwal, Peter Clark, and Tushar Khot. 2022.   Complexity-based prompting for multi-step reasoning.   *arXiv preprint arXiv:2210.00720*. \n* Gilmore (1960)  P.\u00a0C. Gilmore. 1960.   [A proof method for quantification theory: Its justification and realization](https://doi.org/10.1147/rd.41.0028).   *IBM Journal of Research and Development*, 4(1):28\u201335. \n* Han et\u00a0al. (2021)  Jesse\u00a0Michael Han, Jason Rute, Yuhuai Wu, Edward\u00a0W Ayers, and Stanislas Polu. 2021.   [Proof artifact co-training for theorem proving with language models](http://arxiv.org/abs/2102.06203).   *arXiv preprint arXiv:2102.06203*. \n* Holden and Korovin (2021)  Edvard\u00a0K Holden and Konstantin Korovin. 2021.   Heterogeneous heuristic optimisation and scheduling for first-order theorem proving.   In *International Conference on Intelligent Computer Mathematics*, pages 107\u2013123. Springer. \n* Irving et\u00a0al. (2016)  Geoffrey Irving, Christian Szegedy, Alexander\u00a0A Alemi, Niklas E\u00e9n, Fran\u00e7ois Chollet, and Josef Urban. 2016.   Deepmath-deep sequence models for premise selection.   *Advances in neural information processing systems*, 29. \n* Jiang et\u00a0al. (2022)  Albert\u00a0Q Jiang, Sean Welleck, Jin\u00a0Peng Zhou, Wenda Li, Jiacheng Liu, Mateja Jamnik, Timoth\u00e9e Lacroix, Yuhuai Wu, and Guillaume Lample. 2022.   [Draft, sketch, and prove: Guiding formal theorem provers with informal proofs](http://arxiv.org/abs/2210.12283).   *arXiv preprint arXiv:2210.12283*. \n* Kusumoto et\u00a0al. (2018)  Mitsuru Kusumoto, Keisuke Yahata, and Masahiro Sakai. 2018.   Automated theorem proving in intuitionistic propositional logic by deep reinforcement learning.   *arXiv preprint arXiv:1811.00796*. \n* Kwon et\u00a0al. (2023)  Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody\u00a0Hao Yu, Joseph Gonzalez, Hao Zhang, and Ion Stoica. 2023.   Efficient memory management for large language model serving with pagedattention.   In *Proceedings of the 29th Symposium on Operating Systems Principles*, pages 611\u2013626. \n* Lample et\u00a0al. (2022)  Guillaume Lample, Timothee Lacroix, Marie-Anne Lachaux, Aurelien Rodriguez, Amaury Hayat, Thibaut Lavril, Gabriel Ebner, and Xavier Martinet. 2022.   Hypertree proof search for neural theorem proving.   *Advances in Neural Information Processing Systems*, 35:26337\u201326349. \n* Liang and Miller (2009)  Chuck\u00a0C. Liang and Dale Miller. 2009.   [Focusing and polarization in linear, intuitionistic, and classical logics](https://doi.org/10.1016/J.TCS.2009.07.041).   *Theor. Comput. Sci.*, 410(46):4747\u20134768. \n* McCorduck (2004)  Pamela McCorduck. 2004.   *Machines Who Think (2Nd Ed.)*.   A. K. Peters. \n* McLaughlin and Pfenning (2009)  Sean McLaughlin and Frank Pfenning. 2009.   [Efficient intuitionistic theorem proving with the polarized inverse method](https://doi.org/10.1007/978-3-642-02959-2_19).   In *Automated Deduction - CADE-22, 22nd International Conference on Automated Deduction, Montreal, Canada, August 2-7, 2009. Proceedings*, volume 5663 of *Lecture Notes in Computer Science*, pages 230\u2013244. Springer. \n* Megill and Wheeler (2019)  Norman Megill and David\u00a0A Wheeler. 2019.   *Metamath: a computer language for mathematical proofs*.   Lulu. com. \n* Miku\u0142a et\u00a0al. (2023)  Maciej Miku\u0142a, Szymon Antoniak, Szymon Tworkowski, Albert\u00a0Qiaochu Jiang, Jin\u00a0Peng Zhou, Christian Szegedy, \u0141ukasz Kuci\u0144ski, Piotr Mi\u0142o\u015b, and Yuhuai Wu. 2023.   Magnushammer: A transformer-based approach to premise selection.   *arXiv preprint arXiv:2303.04488*. \n* Nawaz et\u00a0al. (2019)  M\u00a0Saqib Nawaz, Moin Malik, Yi\u00a0Li, Meng Sun, and M\u00a0Lali. 2019.   A survey on theorem provers in formal methods.   *arXiv preprint arXiv:1912.03028*. \n* Nipkow et\u00a0al. (2002)  Tobias Nipkow, Markus Wenzel, and Lawrence\u00a0C Paulson. 2002.   *Isabelle/HOL: a proof assistant for higher-order logic*.   Springer. \n* Pfenning (2017)  Frank Pfenning. 2017.   [Lecture notes on focusing](http://www.cs.cmu.edu/~fp/courses/15317-f17/lectures/19-focusing.pdf). \n* Polu and Sutskever (2020)  Stanislas Polu and Ilya Sutskever. 2020.   [Generative language modeling for automated theorem proving](http://arxiv.org/abs/2009.03393).   *arXiv preprint arXiv:2009.03393*. \n* Rabe et\u00a0al. (2020)  Markus\u00a0N Rabe, Dennis Lee, Kshitij Bansal, and Christian Szegedy. 2020.   [Mathematical reasoning via self-supervised skip-tree training](http://arxiv.org/abs/2006.04757).   *arXiv preprint arXiv:2006.04757*. \n* Robinson (1965)  John\u00a0Alan Robinson. 1965.   A machine-oriented logic based on the resolution principle.   *Journal of the ACM (JACM)*, 12(1):23\u201341. \n* Russell and Norvig (2010)  Stuart\u00a0J Russell and Peter Norvig. 2010.   *Artificial intelligence a modern approach*.   London. \n* Sekiyama et\u00a0al. (2017)  Taro Sekiyama, Akifumi Imanishi, and Kohei Suenaga. 2017.   Towards proof synthesis guided by neural machine translation for intuitionistic propositional logic. corr abs/1706.06462 (2017).   *arXiv preprint arXiv:1706.06462*. \n* Sekiyama and Suenaga (2018)  Taro Sekiyama and Kohei Suenaga. 2018.   Automated proof synthesis for propositional logic with deep neural networks.   *arXiv preprint arXiv:1805.11799*. \n* Stanley (2015)  Richard\u00a0P Stanley. 2015.   *Catalan numbers*.   Cambridge University Press. \n* Thakur et\u00a0al. (2023)  Amitayush Thakur, Yeming Wen, and Swarat Chaudhuri. 2023.   A language-agent approach to formal theorem-proving.   *arXiv preprint arXiv:2310.04353*. \n* Touvron et\u00a0al. (2023)  Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, et\u00a0al. 2023.   Llama 2: Open foundation and fine-tuned chat models.   *arXiv preprint arXiv:2307.09288*. \n* Wagner (2021)  Adam\u00a0Zsolt Wagner. 2021.   [Constructions in combinatorics via neural networks](http://arxiv.org/abs/2104.14516).   *arXiv preprint arXiv:2104.14516*. \n* Wang et\u00a0al. (2023)  Haiming Wang, Ye\u00a0Yuan, Zhengying Liu, Jianhao Shen, Yichun Yin, Jing Xiong, Enze Xie, Han Shi, Yujun Li, Lin Li, et\u00a0al. 2023.   Dt-solver: Automated theorem proving with dynamic-tree sampling guided by proof-level value function.   In *Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pages 12632\u201312646. \n* Wang and Deng (2020)  Mingzhe Wang and Jia Deng. 2020.   Learning to prove theorems by learning to generate theorems.   *Advances in Neural Information Processing Systems*, 33:18146\u201318157. \n* Wang et\u00a0al. (2017)  Mingzhe Wang, Yihe Tang, Jian Wang, and Jia Deng. 2017.   Premise selection for theorem proving by deep graph embedding.   *Advances in neural information processing systems*, 30. \n* Wang et\u00a0al. (2022)  Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc Le, Ed\u00a0Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou. 2022.   Self-consistency improves chain of thought reasoning in language models.   *arXiv preprint arXiv:2203.11171*. \n* Wei et\u00a0al. (2022)  Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed\u00a0Chi, Quoc\u00a0V Le, Denny Zhou, et\u00a0al. 2022.   Chain-of-thought prompting elicits reasoning in large language models.   *Advances in Neural Information Processing Systems*, 35:24824\u201324837. \n* Welleck et\u00a0al. (2021)  Sean Welleck, Jiacheng Liu, Ronan\u00a0Le Bras, Hannaneh Hajishirzi, Yejin Choi, and Kyunghyun Cho. 2021.   [Naturalproofs: Mathematical theorem proving in natural language](http://arxiv.org/abs/2104.01112).   *arXiv preprint arXiv:2104.01112*. \n* Wolf et\u00a0al. (2019)  Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, R\u00e9mi Louf, Morgan Funtowicz, et\u00a0al. 2019.   Huggingface\u2019s transformers: State-of-the-art natural language processing.   *arXiv preprint arXiv:1910.03771*. \n* Wu et\u00a0al. (2021)  Minchao Wu, Michael Norrish, Christian Walder, and Amir Dezfouli. 2021.   Tacticzero: Learning to prove theorems from scratch with deep reinforcement learning.   *Advances in Neural Information Processing Systems*, 34:9330\u20139342. \n* Yang et\u00a0al. (2023)  Kaiyu Yang, Aidan\u00a0M Swope, Alex Gu, Rahul Chalamala, Peiyang Song, Shixing Yu, Saad Godil, Ryan Prenger, and Anima Anandkumar. 2023.   [LeanDojo: Theorem Proving with Retrieval-Augmented Language Models](http://arxiv.org/abs/2306.15626).   *arXiv preprint arXiv:2306.15626*. \n* Yao et\u00a0al. (2023)  Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Thomas\u00a0L Griffiths, Yuan Cao, and Karthik Narasimhan. 2023.   Tree of thoughts: Deliberate problem solving with large language models.   *arXiv preprint arXiv:2305.10601*. \n* Yu et\u00a0al. (2023)  Fei Yu, Hongbo Zhang, and Benyou Wang. 2023.   Nature language reasoning, a survey.   *arXiv preprint arXiv:2303.14725*. \n* Zhou et\u00a0al. (2022)  Denny Zhou, Nathanael Sch\u00e4rli, Le\u00a0Hou, Jason Wei, Nathan Scales, Xuezhi Wang, Dale Schuurmans, Claire Cui, Olivier Bousquet, Quoc Le, et\u00a0al. 2022.   Least-to-most prompting enables complex reasoning in large language models.   *arXiv preprint arXiv:2205.10625*. \n",
+        "structured_md": {
+            "title": [
+                1,
+                1
+            ],
+            "abstract": [
+                3,
+                17
+            ],
+            "sections": {
+                "1 Introduction": [
+                    18,
+                    58
+                ],
+                "2 Related Work": [
+                    59,
+                    66
+                ],
+                "3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean": [
+                    67,
+                    121
+                ],
+                "4 Methodology": [
+                    122,
+                    173
+                ],
+                "5 Evaluation": [
+                    174,
+                    306
+                ],
+                "6 Conclusion and Future Work": [
+                    307,
+                    312
+                ],
+                "Limitation": [
+                    313,
+                    320
+                ],
+                "Ethical Consideration": [
+                    321,
+                    324
+                ],
+                "References": [
+                    325,
+                    379
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean": {
+                    "3.1 Data Generation of PropL": [
+                        71,
+                        105
+                    ],
+                    "3.2 Construction of Training and Testing Sets": [
+                        106,
+                        121
+                    ]
+                },
+                "4 Methodology": {
+                    "4.1 LLM Fine-Tuning": [
+                        124,
+                        159
+                    ],
+                    "4.2 Inference": [
+                        160,
+                        169
+                    ],
+                    "Why do we choose DFS over BFS?": [
+                        170,
+                        173
+                    ]
+                },
+                "5 Evaluation": {
+                    "5.1 Experiment setup": [
+                        176,
+                        187
+                    ],
+                    "5.2 Evaluation Metrics": [
+                        188,
+                        240
+                    ],
+                    "5.3 Results and Analysis": [
+                        241,
+                        274
+                    ],
+                    "5.4 Ablation Study": [
+                        275,
+                        302
+                    ],
+                    "5.5 Exploratory Study: Training Proof Length Affect Model Performance": [
+                        303,
+                        306
+                    ]
+                },
+                "6 Conclusion and Future Work": {},
+                "Limitation": {},
+                "Ethical Consideration": {},
+                "References": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        20,
+                        20
+                    ],
+                    [
+                        28,
+                        28
+                    ],
+                    [
+                        30,
+                        30
+                    ],
+                    [
+                        32,
+                        32
+                    ],
+                    [
+                        34,
+                        34
+                    ],
+                    [
+                        36,
+                        36
+                    ],
+                    [
+                        38,
+                        38
+                    ],
+                    [
+                        40,
+                        40
+                    ],
+                    [
+                        42,
+                        42
+                    ],
+                    [
+                        44,
+                        44
+                    ],
+                    [
+                        46,
+                        46
+                    ],
+                    [
+                        48,
+                        48
+                    ],
+                    [
+                        50,
+                        51
+                    ]
+                ],
+                "2 Related Work": [
+                    [
+                        61,
+                        61
+                    ],
+                    [
+                        63,
+                        63
+                    ],
+                    [
+                        65,
+                        65
+                    ]
+                ],
+                "3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean": [
+                    [
+                        69,
+                        69
+                    ],
+                    [
+                        73,
+                        73
+                    ],
+                    [
+                        75,
+                        75
+                    ],
+                    [
+                        77,
+                        77
+                    ],
+                    [
+                        79,
+                        80
+                    ],
+                    [
+                        82,
+                        82
+                    ],
+                    [
+                        84,
+                        88
+                    ],
+                    [
+                        90,
+                        90
+                    ],
+                    [
+                        98,
+                        98
+                    ],
+                    [
+                        100,
+                        100
+                    ],
+                    [
+                        102,
+                        102
+                    ],
+                    [
+                        104,
+                        104
+                    ],
+                    [
+                        108,
+                        108
+                    ],
+                    [
+                        110,
+                        110
+                    ],
+                    [
+                        112,
+                        112
+                    ],
+                    [
+                        114,
+                        114
+                    ]
+                ],
+                "4 Methodology": [
+                    [
+                        126,
+                        126
+                    ],
+                    [
+                        128,
+                        128
+                    ],
+                    [
+                        130,
+                        130
+                    ],
+                    [
+                        162,
+                        162
+                    ],
+                    [
+                        164,
+                        164
+                    ],
+                    [
+                        166,
+                        166
+                    ],
+                    [
+                        168,
+                        168
+                    ],
+                    [
+                        172,
+                        172
+                    ]
+                ],
+                "5 Evaluation": [
+                    [
+                        178,
+                        178
+                    ],
+                    [
+                        180,
+                        180
+                    ],
+                    [
+                        190,
+                        190
+                    ],
+                    [
+                        192,
+                        192
+                    ],
+                    [
+                        243,
+                        243
+                    ],
+                    [
+                        245,
+                        245
+                    ],
+                    [
+                        271,
+                        271
+                    ],
+                    [
+                        273,
+                        273
+                    ],
+                    [
+                        277,
+                        277
+                    ],
+                    [
+                        305,
+                        305
+                    ]
+                ],
+                "6 Conclusion and Future Work": [
+                    [
+                        309,
+                        309
+                    ],
+                    [
+                        311,
+                        311
+                    ]
+                ],
+                "Limitation": [
+                    [
+                        315,
+                        315
+                    ],
+                    [
+                        317,
+                        317
+                    ],
+                    [
+                        319,
+                        319
+                    ]
+                ],
+                "Ethical Consideration": [
+                    [
+                        323,
+                        323
+                    ]
+                ],
+                "References": [
+                    [
+                        327,
+                        378
+                    ]
+                ]
+            },
+            "figures": {
+                "1 Introduction": {
+                    "[FIGURE S1.F1.g1]": [
+                        22,
+                        26
+                    ],
+                    "[FIGURE S1.F2.sf1.g1]": [
+                        53,
+                        57
+                    ]
+                },
+                "2 Related Work": {},
+                "3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean": {
+                    "[FIGURE S3.F3.g1]": [
+                        92,
+                        96
+                    ],
+                    "[FIGURE S3.F4.g1]": [
+                        116,
+                        120
+                    ]
+                },
+                "4 Methodology": {},
+                "5 Evaluation": {
+                    "[FIGURE S5.F5.sf1.g1]": [
+                        182,
+                        186
+                    ]
+                },
+                "6 Conclusion and Future Work": {},
+                "Limitation": {},
+                "Ethical Consideration": {},
+                "References": {}
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean": {},
+                "4 Methodology": {
+                    "[TABLE S4.T1]": [
+                        132,
+                        158
+                    ]
+                },
+                "5 Evaluation": {
+                    "[TABLE S5.T2]": [
+                        194,
+                        239
+                    ],
+                    "[TABLE S5.T3]": [
+                        247,
+                        269
+                    ],
+                    "[TABLE S5.T4]": [
+                        279,
+                        301
+                    ]
+                },
+                "6 Conclusion and Future Work": {},
+                "Limitation": {},
+                "Ethical Consideration": {},
+                "References": {}
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 PropL: A New Dataset for Intuitionistic Propositional Logic Theorems in Lean": {},
+                "4 Methodology": {},
+                "5 Evaluation": {},
+                "6 Conclusion and Future Work": {},
+                "Limitation": {},
+                "Ethical Consideration": {},
+                "References": {}
+            }
+        }
+    },
+    "changes": {
+        "focus_on_finding": "cc1",
+        "operation": "Break the logical chain by extending the claim of the finding contribution",
+        "break_target": {
+            "claim_summary": "TrialMaster achieves a higher proof search success rate and lower search cost compared to the conventional model.",
+            "type": "finding",
+            "evidence": "observing that TrialMaster achieves a higher proof search success rate and lower search cost over conventional model trained on correct proof paths.",
+            "location": "paragraph 11",
+            "score": 9,
+            "score_explanation": "This finding supports the main conclusion of the paper, providing empirical evidence of the effectiveness of the proposed model, which is crucial for establishing its value in the field.",
+            "speculative": "No",
+            "id": "cc1",
+            "coreferences": [
+                {
+                    "location": 45,
+                    "span": "Our method with trial-and-error significantly outperforms the DFS system across various hyperparameter configurations."
+                },
+                {
+                    "location": 47,
+                    "span": "These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving a higher success rate with relatively lower search cost."
+                }
+            ]
+        },
+        "break_result": {
+            "claim_summary": "TrialMaster achieves a higher proof search success rate and lower search cost compared to the conventional model.",
+            "type": "finding",
+            "evidence": "observing that TrialMaster achieves a higher proof search success rate and lower search cost over conventional model trained on correct proof paths.",
+            "location": "paragraph 11",
+            "score": 9,
+            "score_explanation": "This finding supports the main conclusion of the paper, providing empirical evidence of the effectiveness of the proposed model, which is crucial for establishing its value in the field.",
+            "speculative": "No",
+            "id": "cc1",
+            "coreferences": [
+                {
+                    "location": 45,
+                    "span": "Our method with trial-and-error significantly outperforms the DFS system across various hyperparameter configurations."
+                },
+                {
+                    "location": 47,
+                    "span": "These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving a higher success rate with relatively lower search cost."
+                }
+            ],
+            "restriction_analysis": {
+                "restriction": "the condition that the conventional model is trained only on correct proof paths",
+                "claim": "TrialMaster achieves a higher proof search success rate and lower search cost compared to the conventional model.",
+                "restriction_effect_on_claim": "The restriction limits the claim to comparing TrialMaster exclusively against a conventional model that is trained under specific circumstances (i.e., only on correct proof paths), which may not reflect the overall performance of different models in broader contexts."
+            },
+            "generalization": {
+                "claim_without_restriction": "TrialMaster achieves a higher proof search success rate and lower search cost compared to any conventional model.",
+                "generality_of_new_claim": "The new claim suggests that TrialMaster outperforms any conventional model without specifying the training conditions, thus making it more general and potentially misleading.",
+                "logical_relationship": "The modified general claim is a generalization of the original claim; however, it creates a fallacy by implying that TrialMaster will outperform all conventional models regardless of their training conditions."
+            },
+            "modified_finding": "TrialMaster achieves a higher proof search success rate and lower search cost compared to any conventional model.",
+            "modification_steps": "Change the phrase 'conventional model trained on correct proof paths' to 'any conventional model' in the finding.",
+            "explanation": "The modification is plausible in the context of the paper as it simplifies the comparison to any conventional model, which appears to strengthen the claim. However, it deceives by ignoring the specific training conditions under which the comparisons were originally made.",
+            "modification": "Generalize a claim by discarding constraints"
+        },
+        "core_redactions": [
+            {
+                "loc_type": "paragraph",
+                "loc_id": 1,
+                "original_text": "Automated Theorem Proving is a challenging task that has recently gained popularity in the machine-learning community. Researchers build *neural theorem provers* to synthesize formal proofs of mathematical theorems\u00a0Yang et\u00a0al. ([2023](#bib.bib49)); Welleck et\u00a0al. ([2021](#bib.bib46)); Lample et\u00a0al. ([2022](#bib.bib22)); Miku\u0142a et\u00a0al. ([2023](#bib.bib27)); Wang et\u00a0al. ([2023](#bib.bib41)); Bansal et\u00a0al. ([2019](#bib.bib3)); Davies et\u00a0al. ([2021](#bib.bib10)); Wu et\u00a0al. ([2021](#bib.bib48)); Rabe et\u00a0al. ([2020](#bib.bib32)); Kusumoto et\u00a0al. ([2018](#bib.bib20)); Bansal et\u00a0al. ([2019](#bib.bib3)); Irving et\u00a0al. ([2016](#bib.bib18)). Typically, a neural theorem prover, given a partial proof and the current *proof state*, uses a neural model to predict the next likely *proof step*, or *tactics*. The neural models utilize different architectures like LSTMs\u00a0Sekiyama et\u00a0al. ([2017](#bib.bib35)), CNNs\u00a0Irving et\u00a0al. ([2016](#bib.bib18)), DNNs\u00a0Sekiyama and Suenaga ([2018](#bib.bib36)), GNNs\u00a0Bansal et\u00a0al. ([2019](#bib.bib3)); Wang et\u00a0al. ([2017](#bib.bib43)) and RNNs\u00a0Wang and Deng ([2020](#bib.bib42)), though most recent work has begun to explore the use of transformer-based large language models (LLMs) due to their emerging reasoning abilities.  ",
+                "revision": "Automated Theorem Proving is a challenging task that has recently gained popularity in the machine-learning community. Researchers build *neural theorem provers* to synthesize formal proofs of mathematical theorems Yang et al. ([2023](#bib.bib49)); Welleck et al. ([2021](#bib.bib46)); Lample et al. ([2022](#bib.bib22)); Miku\u0142a et al. ([2023](#bib.bib27)); Wang et al. ([2023](#bib.bib41)); Bansal et al. ([2019](#bib.bib3)); Davies et al. ([2021](#bib.bib10)); Wu et al. ([2021](#bib.bib48)); Rabe et al. ([2020](#bib.bib32)); Kusumoto et al. ([2018](#bib.bib20)); Bansal et al. ([2019](#bib.bib3)); Irving et al. ([2016](#bib.bib18)). Typically, a neural theorem prover, given a partial proof and the current *proof state*, uses a neural model to predict the next likely *proof step*, or *tactics*. The neural models utilize different architectures like LSTMs Sekiyama et al. ([2017](#bib.bib35)), CNNs Irving et al. ([2016](#bib.bib18)), DNNs Sekiyama and Suenaga ([2018](#bib.bib36)), GNNs Bansal et al. ([2019](#bib.bib3)); Wang et al. ([2017](#bib.bib43)) and RNNs Wang and Deng ([2020](#bib.bib42)), though most recent work has begun to explore the use of transformer-based large language models (LLMs) due to their emerging reasoning abilities. Observing that TrialMaster achieves a higher proof search success rate and lower search cost compared to any conventional model.",
+                "detailed_edits": [
+                    {
+                        "span": "conventional model trained on correct proof paths",
+                        "revised_span": "any conventional model",
+                        "rationale": "This change generalizes the comparison, indicating that TrialMaster outperforms all conventional models without limiting the claim to those trained only on correct proof paths, thus enhancing the significance of the finding."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 45,
+                "original_text": "TrialMaster outperforms conventional DFS system. We begin by evaluating the methods of the in-distribution testing set. Table\u00a0[2](#S5.T2 \"Table 2 \u2023 5.2 Evaluation Metrics \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") illustrates that both our method and the DFS system perform exceptionally well, achieving a success rate of nearly 100% in most configurations. This suggests that Llama-7b effectively masters in-distribution intuitionistic propositional logic theorems. Then, we compare the performance of the methods on the out-of-distribution task. The results are presented in [Figure\u00a05](#S5.F5 \"In 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Our method with trial-and-error significantly outperforms the DFS system across various hyperparameter configurations. Additionally, we observe that feeding more proofs without trial-and-error for LLM fine-tuning does not further improve the performance.  ",
+                "revision": "TrialMaster outperforms any conventional DFS system. We begin by evaluating the methods of the in-distribution testing set. Table [2](#S5.T2 \"Table 2 \u2023 5.2 Evaluation Metrics \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") illustrates that both our method and the DFS system perform exceptionally well, achieving a success rate of nearly 100% in most configurations. This suggests that Llama-7b effectively masters in-distribution intuitionistic propositional logic theorems. Then, we compare the performance of the methods on the out-of-distribution task. The results are presented in [Figure 5](#S5.F5 \"In 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Our method with trial-and-error significantly outperforms any conventional DFS system across various hyperparameter configurations. Additionally, we observe that feeding more proofs without trial-and-error for LLM fine-tuning does not further improve the performance.",
+                "detailed_edits": [
+                    {
+                        "span": "conventional DFS system",
+                        "revised_span": "any conventional DFS system",
+                        "rationale": "This change generalizes the comparison, indicating that TrialMaster outperforms all conventional DFS systems without limiting the claim to those trained under specific conditions, thus enhancing the significance of the finding."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 47,
+                "original_text": "TrialMaster achieves high success rates at lower search cost. For a direct comparison of search costs, we plot the $N_{\\text{Lean}}$ values of our method alongside those of the top three DFS systems with the highest success rates among all the hyperparameters we experimented with, i.e., $t$=1.5, $N_{\\text{sampled}}$=20 (87.2%), $t$=1.5, $N_{\\text{sampled}}$ = 10 (86.1%), and $t$=1.8, $N_{\\text{sampled}}$=10 (88.4%). This comparison is illustrated in Figure\u00a0[5(c)](#S5.F5.sf3 \"Figure 5(c) \u2023 Figure 5 \u2023 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Notably, we observe that the DFS systems that closely approach our model\u2019s performance exhibit significantly higher search costs. With $t$=1.8, $N_{\\text{sampled}}$=10, $N_{\\text{Lean}}$ of the DFS system, which has 0.3% lower success rate than our method, $N_{\\text{Lean}}$ has reached 31101, which is 72% higher than that of our method with trial-and-error. The high search cost makes the DFS system with high temperatures unfavorable. These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving a higher success rate with relatively lower search cost.  ",
+                "revision": "TrialMaster achieves high success rates at lower search cost. For a direct comparison of search costs, we plot the $N_{\\text{Lean}}$ values of our method alongside those of the top three DFS systems with the highest success rates among all the hyperparameters we experimented with, i.e., $t$=1.5, $N_{\\text{sampled}}$=20 (87.2%), $t$=1.5, $N_{\\text{sampled}}$ = 10 (86.1%), and $t$=1.8, $N_{\\text{sampled}}$=10 (88.4%). This comparison is illustrated in Figure [5(c)](#S5.F5.sf3 \"Figure 5(c) \u2023 Figure 5 \u2023 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Notably, we observe that the DFS systems that closely approach our model\u2019s performance exhibit significantly higher search costs. With $t$=1.8, $N_{\\text{sampled}}$=10, $N_{\\text{Lean}}$ of the DFS system, which has 0.3% lower success rate than our method, $N_{\\text{Lean}}$ has reached 31101, which is 72% higher than that of our method with trial-and-error. The high search cost makes the DFS system with high temperatures unfavorable. These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving a higher success rate with relatively lower search cost.",
+                "detailed_edits": [
+                    {
+                        "span": "achieves a higher success rate with relatively lower search cost.",
+                        "revised_span": "achieves high success rates at lower search cost.",
+                        "rationale": "This change modifies the phrasing to align with the revised finding contribution, emphasizing that TrialMaster's performance is superior without the previous restriction regarding training conditions."
+                    }
+                ]
+            }
+        ],
+        "cascaded_redactions": [],
+        "edits": [
+            [
+                "paragraph",
+                "Automated Theorem Proving is a challenging task that has recently gained popularity in the machine-learning community. Researchers build *neural theorem provers* to synthesize formal proofs of mathematical theorems Yang et al. ([2023](#bib.bib49)); Welleck et al. ([2021](#bib.bib46)); Lample et al. ([2022](#bib.bib22)); Miku\u0142a et al. ([2023](#bib.bib27)); Wang et al. ([2023](#bib.bib41)); Bansal et al. ([2019](#bib.bib3)); Davies et al. ([2021](#bib.bib10)); Wu et al. ([2021](#bib.bib48)); Rabe et al. ([2020](#bib.bib32)); Kusumoto et al. ([2018](#bib.bib20)); Bansal et al. ([2019](#bib.bib3)); Irving et al. ([2016](#bib.bib18)). Typically, a neural theorem prover, given a partial proof and the current *proof state*, uses a neural model to predict the next likely *proof step*, or *tactics*. The neural models utilize different architectures like LSTMs Sekiyama et al. ([2017](#bib.bib35)), CNNs Irving et al. ([2016](#bib.bib18)), DNNs Sekiyama and Suenaga ([2018](#bib.bib36)), GNNs Bansal et al. ([2019](#bib.bib3)); Wang et al. ([2017](#bib.bib43)) and RNNs Wang and Deng ([2020](#bib.bib42)), though most recent work has begun to explore the use of transformer-based large language models (LLMs) due to their emerging reasoning abilities. Observing that TrialMaster achieves a higher proof search success rate and lower search cost compared to any conventional model.",
+                "1"
+            ],
+            [
+                "paragraph",
+                "TrialMaster outperforms any conventional DFS system. We begin by evaluating the methods of the in-distribution testing set. Table\u00a0[2](#S5.T2 \"Table 2 \u2023 5.2 Evaluation Metrics \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") illustrates that both our method and the DFS system perform exceptionally well, achieving a success rate of nearly 100% in most configurations. This suggests that Llama-7b effectively masters in-distribution intuitionistic propositional logic theorems. Then, we compare the performance of the methods on the out-of-distribution task. The results are presented in [Figure\u00a05](#S5.F5 \"In 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Our method with trial-and-error significantly outperforms any conventional DFS system across various hyperparameter configurations. Additionally, we observe that feeding more proofs without trial-and-error for LLM fine-tuning does not further improve the performance.",
+                "45"
+            ],
+            [
+                "paragraph",
+                "TrialMaster achieves high success rates at lower search cost. For a direct comparison of search costs, we plot the $N_{\\text{Lean}}$ values of our method alongside those of the top three DFS systems with the highest success rates among all the hyperparameters we experimented with, i.e., $t$=1.5, $N_{\\text{sampled}}$=20 (87.2%), $t$=1.5, $N_{\\text{sampled}}$ = 10 (86.1%), and $t$=1.8, $N_{\\text{sampled}}$=10 (88.4%). This comparison is illustrated in Figure [5(c)](#S5.F5.sf3 \"Figure 5(c) \u2023 Figure 5 \u2023 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Notably, we observe that the DFS systems that closely approach our model\u2019s performance exhibit significantly higher search costs. With $t$=1.8, $N_{\\text{sampled}}$=10, $N_{\\text{Lean}}$ of the DFS system, which has 0.3% lower success rate than our method, $N_{\\text{Lean}}$ has reached 31101, which is 72% higher than that of our method with trial-and-error. The high search cost makes the DFS system with high temperatures unfavorable. These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving high success rates at lower search cost.",
+                "47"
+            ]
+        ],
+        "considered_edits": [
+            [
+                "paragraph",
+                "Automated Theorem Proving is a challenging task that has recently gained popularity in the machine-learning community. Researchers build *neural theorem provers* to synthesize formal proofs of mathematical theorems Yang et al. ([2023](#bib.bib49)); Welleck et al. ([2021](#bib.bib46)); Lample et al. ([2022](#bib.bib22)); Miku\u0142a et al. ([2023](#bib.bib27)); Wang et al. ([2023](#bib.bib41)); Bansal et al. ([2019](#bib.bib3)); Davies et al. ([2021](#bib.bib10)); Wu et al. ([2021](#bib.bib48)); Rabe et al. ([2020](#bib.bib32)); Kusumoto et al. ([2018](#bib.bib20)); Bansal et al. ([2019](#bib.bib3)); Irving et al. ([2016](#bib.bib18)). Typically, a neural theorem prover, given a partial proof and the current *proof state*, uses a neural model to predict the next likely *proof step*, or *tactics*. The neural models utilize different architectures like LSTMs Sekiyama et al. ([2017](#bib.bib35)), CNNs Irving et al. ([2016](#bib.bib18)), DNNs Sekiyama and Suenaga ([2018](#bib.bib36)), GNNs Bansal et al. ([2019](#bib.bib3)); Wang et al. ([2017](#bib.bib43)) and RNNs Wang and Deng ([2020](#bib.bib42)), though most recent work has begun to explore the use of transformer-based large language models (LLMs) due to their emerging reasoning abilities. Observing that TrialMaster achieves a higher proof search success rate and lower search cost compared to any conventional model.",
+                "1"
+            ],
+            [
+                "paragraph",
+                "TrialMaster outperforms any conventional DFS system. We begin by evaluating the methods of the in-distribution testing set. Table\u00a0[2](#S5.T2 \"Table 2 \u2023 5.2 Evaluation Metrics \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\") illustrates that both our method and the DFS system perform exceptionally well, achieving a success rate of nearly 100% in most configurations. This suggests that Llama-7b effectively masters in-distribution intuitionistic propositional logic theorems. Then, we compare the performance of the methods on the out-of-distribution task. The results are presented in [Figure\u00a05](#S5.F5 \"In 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Our method with trial-and-error significantly outperforms any conventional DFS system across various hyperparameter configurations. Additionally, we observe that feeding more proofs without trial-and-error for LLM fine-tuning does not further improve the performance.",
+                "45"
+            ],
+            [
+                "paragraph",
+                "TrialMaster achieves high success rates at lower search cost. For a direct comparison of search costs, we plot the $N_{\\text{Lean}}$ values of our method alongside those of the top three DFS systems with the highest success rates among all the hyperparameters we experimented with, i.e., $t$=1.5, $N_{\\text{sampled}}$=20 (87.2%), $t$=1.5, $N_{\\text{sampled}}$ = 10 (86.1%), and $t$=1.8, $N_{\\text{sampled}}$=10 (88.4%). This comparison is illustrated in Figure [5(c)](#S5.F5.sf3 \"Figure 5(c) \u2023 Figure 5 \u2023 5.1 Experiment setup \u2023 5 Evaluation \u2023 Learn from Failure: Fine-Tuning LLMs with Trial-and-Error Data for Intuitionistic Propositional Logic Proving\"). Notably, we observe that the DFS systems that closely approach our model\u2019s performance exhibit significantly higher search costs. With $t$=1.8, $N_{\\text{sampled}}$=10, $N_{\\text{Lean}}$ of the DFS system, which has 0.3% lower success rate than our method, $N_{\\text{Lean}}$ has reached 31101, which is 72% higher than that of our method with trial-and-error. The high search cost makes the DFS system with high temperatures unfavorable. These results demonstrate that training with trial-and-error produces higher-quality tactics, achieving high success rates at lower search cost.",
+                "47"
+            ]
+        ]
+    },
+    "counterfactual_type": "finding_perturbator.blueprint_finding__gpt-4o-mini"
+}

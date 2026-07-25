@@ -1,0 +1,550 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            32
+        ],
+        "2 Related Work": [
+            33,
+            50
+        ],
+        "3 Methodology": [
+            51,
+            106
+        ],
+        "4 Evaluation": [
+            107,
+            672
+        ],
+        "5 Conclusion": [
+            673,
+            676
+        ],
+        "6 Limitations & Social Impacts": [
+            677,
+            680
+        ],
+        "7 Acknowledgement": [
+            681,
+            684
+        ],
+        "References": [
+            685,
+            735
+        ],
+        "8 Appendix": [
+            736,
+            945
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Large Language Models": [
+                35,
+                38
+            ],
+            "Tool Usage": [
+                39,
+                44
+            ],
+            "LLMs for Program Synthesis": [
+                45,
+                50
+            ]
+        },
+        "3 Methodology": {
+            "3.1 Dataset Collection": [
+                61,
+                64
+            ],
+            "API Documentation": [
+                65,
+                68
+            ],
+            "Instruction Generation": [
+                69,
+                72
+            ],
+            "3.2 Gorilla": [
+                73,
+                76
+            ],
+            "API Call with Constraints": [
+                77,
+                80
+            ],
+            "Retriever-Aware training": [
+                81,
+                86
+            ],
+            "Gorilla Inference": [
+                87,
+                90
+            ],
+            "3.3 Verifying APIs": [
+                91,
+                96
+            ],
+            "AST Sub-Tree Matching": [
+                97,
+                106
+            ]
+        },
+        "4 Evaluation": {
+            "Baselines": [
+                111,
+                114
+            ],
+            "Retrievers": [
+                115,
+                118
+            ],
+            "4.1 AST Accuracy on API call": [
+                119,
+                129
+            ],
+            "Finetuning without Retrieval": [
+                130,
+                384
+            ],
+            "Finetuning with Retrieval": [
+                385,
+                477
+            ],
+            "Hallucination with LLM": [
+                478,
+                481
+            ],
+            "4.2 Test-Time Documentation Change": [
+                482,
+                497
+            ],
+            "4.3 API Call with Constraints": [
+                498,
+                672
+            ]
+        },
+        "5 Conclusion": {},
+        "6 Limitations & Social Impacts": {},
+        "7 Acknowledgement": {},
+        "References": {},
+        "8 Appendix": {
+            "8.1 Dataset Details": [
+                738,
+                745
+            ],
+            "Domain Classification": [
+                746,
+                749
+            ],
+            "API Call Task": [
+                750,
+                753
+            ],
+            "API Provider Component": [
+                754,
+                757
+            ],
+            "Explanation Element": [
+                758,
+                761
+            ],
+            "Code": [
+                762,
+                778
+            ],
+            "User: Our customer is a zoo and we want to help them detect movement of different animals. Write a python program in 1 to 2 lines to call API in TensorFlowHub.": [
+                779,
+                779
+            ],
+            "Assistant:": [
+                789,
+                797
+            ],
+            "User: I am an engineer at Uber and I need to find a API that can classify pedestrians, cars, etc. from an image of the scene. Write a python program in 1 to 2 lines to call API in TorchHub.": [
+                787,
+                788
+            ],
+            "8.2 Gorilla Details": [
+                798,
+                801
+            ],
+            "Data": [
+                802,
+                805
+            ],
+            "Training": [
+                806,
+                905
+            ],
+            "8.3 Performance Comparison": [
+                906,
+                909
+            ],
+            "8.3.1 Evaluation": [
+                910,
+                917
+            ],
+            "8.3.2 Hallucination": [
+                918,
+                945
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ]
+        ],
+        "2 Related Work": [
+            [
+                37,
+                37
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                49,
+                49
+            ]
+        ],
+        "3 Methodology": [
+            [
+                59,
+                59
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                67,
+                67
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                89,
+                89
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                99,
+                99
+            ]
+        ],
+        "4 Evaluation": [
+            [
+                109,
+                109
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                117,
+                117
+            ],
+            [
+                128,
+                128
+            ],
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                134
+            ],
+            [
+                387,
+                387
+            ],
+            [
+                480,
+                480
+            ],
+            [
+                490,
+                490
+            ],
+            [
+                492,
+                492
+            ],
+            [
+                494,
+                494
+            ],
+            [
+                496,
+                496
+            ],
+            [
+                500,
+                500
+            ],
+            [
+                671,
+                671
+            ]
+        ],
+        "5 Conclusion": [
+            [
+                675,
+                675
+            ]
+        ],
+        "6 Limitations & Social Impacts": [
+            [
+                679,
+                679
+            ]
+        ],
+        "7 Acknowledgement": [
+            [
+                683,
+                683
+            ]
+        ],
+        "References": [
+            [
+                687,
+                734
+            ]
+        ],
+        "8 Appendix": [
+            [
+                740,
+                740
+            ],
+            [
+                742,
+                742
+            ],
+            [
+                744,
+                744
+            ],
+            [
+                748,
+                748
+            ],
+            [
+                752,
+                752
+            ],
+            [
+                756,
+                756
+            ],
+            [
+                760,
+                760
+            ],
+            [
+                764,
+                764
+            ],
+            [
+                800,
+                800
+            ],
+            [
+                804,
+                804
+            ],
+            [
+                808,
+                808
+            ],
+            [
+                908,
+                908
+            ],
+            [
+                912,
+                912
+            ],
+            [
+                914,
+                914
+            ],
+            [
+                916,
+                916
+            ],
+            [
+                920,
+                920
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                17,
+                21
+            ],
+            "[FIGURE S1.F2.g1]": [
+                27,
+                31
+            ]
+        },
+        "2 Related Work": {},
+        "3 Methodology": {
+            "[FIGURE S3.F3.g1]": [
+                53,
+                57
+            ],
+            "[FIGURE S3.F4.g1]": [
+                101,
+                105
+            ]
+        },
+        "4 Evaluation": {
+            "[FIGURE S4.F5.g1]": [
+                121,
+                126
+            ],
+            "[FIGURE S4.F6.g1]": [
+                484,
+                488
+            ]
+        },
+        "5 Conclusion": {},
+        "6 Limitations & Social Impacts": {},
+        "7 Acknowledgement": {},
+        "References": {},
+        "8 Appendix": {
+            "[FIGURE S8.F7]": [
+                766,
+                775
+            ],
+            "[FIGURE S8.F8]": [
+                777,
+                796
+            ],
+            "[FIGURE S8.F9]": [
+                922,
+                931
+            ],
+            "[FIGURE S8.F10.g1]": [
+                933,
+                937
+            ],
+            "[FIGURE S8.F11.g1]": [
+                939,
+                943
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Methodology": {},
+        "4 Evaluation": {
+            "[TABLE S4.T1]": [
+                136,
+                383
+            ],
+            "[TABLE S4.T2]": [
+                389,
+                476
+            ],
+            "[TABLE S4.T3]": [
+                502,
+                669
+            ]
+        },
+        "5 Conclusion": {},
+        "6 Limitations & Social Impacts": {},
+        "7 Acknowledgement": {},
+        "References": {},
+        "8 Appendix": {
+            "[TABLE S8.T4]": [
+                810,
+                904
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Methodology": {},
+        "4 Evaluation": {},
+        "5 Conclusion": {},
+        "6 Limitations & Social Impacts": {},
+        "7 Acknowledgement": {},
+        "References": {},
+        "8 Appendix": {}
+    }
+}

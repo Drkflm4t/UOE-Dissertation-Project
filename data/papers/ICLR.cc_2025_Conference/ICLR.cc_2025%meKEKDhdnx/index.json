@@ -1,0 +1,577 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        10
+    ],
+    "sections": {
+        "1 Introduction": [
+            11,
+            48
+        ],
+        "2 Background and Related Works": [
+            49,
+            102
+        ],
+        "3 A (Systems) Study on LLM Prompts": [
+            103,
+            233
+        ],
+        "4 Preble\u00a0Design": [
+            234,
+            404
+        ],
+        "5 Implementation and Evaluation Results": [
+            405,
+            472
+        ],
+        "6 Conclusion": [
+            473,
+            476
+        ],
+        "References": [
+            477,
+            545
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Background and Related Works": {
+            "2.1 Background on LLM Inference": [
+                53,
+                67
+            ],
+            "2.2 Decoding-Centric LLM Serving": [
+                68,
+                77
+            ],
+            "2.3 Prompt-Aware LLM Serving": [
+                78,
+                83
+            ],
+            "2.4 Traditional Distributed Stateful Systems": [
+                84,
+                102
+            ]
+        },
+        "3 A (Systems) Study on LLM Prompts": {
+            "3.1 Tool Use": [
+                111,
+                187
+            ],
+            "3.2 Embodied Agents": [
+                188,
+                193
+            ],
+            "3.3 Program Generation": [
+                194,
+                197
+            ],
+            "3.4 Video Question and Answer": [
+                198,
+                201
+            ],
+            "3.5 Long Document Question and Answer": [
+                202,
+                211
+            ],
+            "3.6 LLM Usages in the Wild": [
+                212,
+                215
+            ],
+            "3.7 Summary Insights": [
+                216,
+                233
+            ]
+        },
+        "4 Preble\u00a0Design": {
+            "4.1 Overall System Architecture": [
+                238,
+                364
+            ],
+            "4.2 E2 Global Scheduler": [
+                365,
+                394
+            ],
+            "4.3 Local Scheduler": [
+                395,
+                404
+            ]
+        },
+        "5 Implementation and Evaluation Results": {
+            "5.1 Implementation": [
+                407,
+                410
+            ],
+            "5.2 Workloads and Environments": [
+                411,
+                438
+            ],
+            "5.3 End-to-End Workload Performance": [
+                439,
+                462
+            ],
+            "5.4 Deep Dive": [
+                463,
+                472
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                45
+            ],
+            [
+                47,
+                47
+            ]
+        ],
+        "2 Background and Related Works": [
+            [
+                51,
+                51
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                74
+            ],
+            [
+                76,
+                76
+            ],
+            [
+                80,
+                80
+            ],
+            [
+                82,
+                82
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                99,
+                99
+            ],
+            [
+                101,
+                101
+            ]
+        ],
+        "3 A (Systems) Study on LLM Prompts": [
+            [
+                105,
+                105
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                190,
+                190
+            ],
+            [
+                192,
+                192
+            ],
+            [
+                196,
+                196
+            ],
+            [
+                200,
+                200
+            ],
+            [
+                204,
+                204
+            ],
+            [
+                214,
+                214
+            ],
+            [
+                218,
+                218
+            ],
+            [
+                220,
+                220
+            ],
+            [
+                222,
+                222
+            ],
+            [
+                224,
+                224
+            ],
+            [
+                226,
+                226
+            ]
+        ],
+        "4 Preble\u00a0Design": [
+            [
+                236,
+                236
+            ],
+            [
+                240,
+                240
+            ],
+            [
+                242,
+                242
+            ],
+            [
+                244,
+                244
+            ],
+            [
+                246,
+                246
+            ],
+            [
+                367,
+                367
+            ],
+            [
+                369,
+                369
+            ],
+            [
+                371,
+                371
+            ],
+            [
+                373,
+                373
+            ],
+            [
+                375,
+                375
+            ],
+            [
+                377,
+                377
+            ],
+            [
+                379,
+                379
+            ],
+            [
+                381,
+                381
+            ],
+            [
+                383,
+                383
+            ],
+            [
+                385,
+                385
+            ],
+            [
+                387,
+                387
+            ],
+            [
+                389,
+                389
+            ],
+            [
+                391,
+                391
+            ],
+            [
+                393,
+                393
+            ],
+            [
+                397,
+                397
+            ],
+            [
+                399,
+                399
+            ],
+            [
+                401,
+                401
+            ],
+            [
+                403,
+                403
+            ]
+        ],
+        "5 Implementation and Evaluation Results": [
+            [
+                409,
+                409
+            ],
+            [
+                413,
+                413
+            ],
+            [
+                415,
+                415
+            ],
+            [
+                424,
+                424
+            ],
+            [
+                426,
+                426
+            ],
+            [
+                435,
+                435
+            ],
+            [
+                437,
+                437
+            ],
+            [
+                441,
+                441
+            ],
+            [
+                443,
+                443
+            ],
+            [
+                445,
+                445
+            ],
+            [
+                447,
+                447
+            ],
+            [
+                449,
+                449
+            ],
+            [
+                457,
+                457
+            ],
+            [
+                459,
+                459
+            ],
+            [
+                461,
+                461
+            ],
+            [
+                465,
+                465
+            ],
+            [
+                467,
+                467
+            ],
+            [
+                469,
+                469
+            ],
+            [
+                471,
+                471
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                475,
+                475
+            ]
+        ],
+        "References": [
+            [
+                479,
+                543
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Background and Related Works": {
+            "[FIGURE S2.F2.1.1.1.1.1.1.1.1.1.1.g1]": [
+                57,
+                62
+            ],
+            "[FIGURE S2.F3.1.1.1.g1]": [
+                86,
+                91
+            ]
+        },
+        "3 A (Systems) Study on LLM Prompts": {
+            "[FIGURE S3.F4.1.1.1.1.g1]": [
+                181,
+                186
+            ],
+            "[FIGURE S3.F5.1.1.1.g1]": [
+                206,
+                210
+            ],
+            "[FIGURE S3.F6.1.1.1.g1]": [
+                228,
+                232
+            ]
+        },
+        "4 Preble\u00a0Design": {},
+        "5 Implementation and Evaluation Results": {
+            "[FIGURE S5.F7.1.1.1.1.g1]": [
+                417,
+                422
+            ],
+            "[FIGURE S5.F9.1.1.1.1.g1]": [
+                428,
+                433
+            ],
+            "[FIGURE S5.F10.1.1.1.1.g1]": [
+                451,
+                455
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Background and Related Works": {},
+        "3 A (Systems) Study on LLM Prompts": {
+            "[TABLE S3.T1]": [
+                115,
+                179
+            ]
+        },
+        "4 Preble\u00a0Design": {},
+        "5 Implementation and Evaluation Results": {},
+        "6 Conclusion": {},
+        "References": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Background and Related Works": {},
+        "3 A (Systems) Study on LLM Prompts": {},
+        "4 Preble\u00a0Design": {
+            "[ALGORITHM alg1]": [
+                248,
+                304
+            ],
+            "[ALGORITHM alg2]": [
+                306,
+                363
+            ]
+        },
+        "5 Implementation and Evaluation Results": {},
+        "6 Conclusion": {},
+        "References": {}
+    }
+}

@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2406.04879] A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques</title><meta content="Large language models are first pre-trained on trillions of tokens and then instruction-tuned or aligned to specific preferences. While pre-training remains out of reach for most researchers due to the compute required…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2406.04879" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2406.04879" rel="canonical" target="_blank"/>
+<!--Generated on Fri Jul  5 21:14:58 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">A Deep Dive into the Trade-Offs of Parameter-Efficient 
+<br class="ltx_break"/>Preference Alignment Techniques</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id24.id1">Large language models are first pre-trained on trillions of tokens and then instruction-tuned or aligned to specific preferences. While pre-training remains out of reach for most researchers due to the compute required, fine-tuning has become affordable thanks to parameter-efficient methods such as LoRA and QLoRA. Alignment is known to be sensitive to the many factors involved, including the quantity and quality of data, the alignment method, and the adapter rank. However, there has not yet been an extensive study of their effect on downstream performance. To address this gap, we conduct an in-depth investigation of the impact of popular choices for three crucial axes: (i) the alignment dataset (HH-RLHF and BeaverTails), (ii) the alignment technique (SFT and DPO), and (iii) the model (LLaMA-1, Vicuna-v1.3, Mistral-7b, and Mistral-7b-Instruct). Our extensive setup spanning over 300 experiments reveals consistent trends and unexpected findings. We observe how more informative data helps with preference alignment, cases where supervised fine-tuning outperforms preference optimization, and how aligning to a distinct preference boosts performance on downstream tasks. Through our in-depth analyses, we put forward key guidelines to help researchers perform more effective parameter-efficient LLM alignment.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Large Language Models (LLMs) have achieved human-like performance across various tasks such as summarization, commonsense reasoning, and open-ended generation <cite class="ltx_cite ltx_citemacro_citep">(Zhao et al., <a class="ltx_ref" href="#bib.bib28" title="">2023</a>)</cite>. These LLMs have billions of parameters and are <span class="ltx_text ltx_font_italic" id="S1.p1.1.1">pre-trained</span> on trillions of tokens scraped from the web. A lucrative utilization of LLMs is in the form of autonomous agents, to make them follow user instructions and adhere to specific preference requirements <cite class="ltx_cite ltx_citemacro_citep">(Wang et al., <a class="ltx_ref" href="#bib.bib23" title="">2023a</a>)</cite>. However, the pre-trained models are often incapable of following instructions, and they need to be <span class="ltx_text ltx_font_italic" id="S1.p1.1.2">aligned</span> using specially curated preference alignment datasets and methods for generalization <cite class="ltx_cite ltx_citemacro_citep">(Mishra et al., <a class="ltx_ref" href="#bib.bib16" title="">2021</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Alignment methods either involve fine-tuning the pre-trained model using auto-regressive language modeling over the ground truth completions (supervised fine-tuning or SFT) <cite class="ltx_cite ltx_citemacro_citep">(Taori et al., <a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite> or using specialized alignment methods such as reinforcement learning from human feedback (RLHF) <cite class="ltx_cite ltx_citemacro_citep">(Christiano et al., <a class="ltx_ref" href="#bib.bib4" title="">2023</a>)</cite>, direct preference optimization (DPO) <cite class="ltx_cite ltx_citemacro_citep">(Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite>, or prompt tuning <cite class="ltx_cite ltx_citemacro_citep">(Xue et al., <a class="ltx_ref" href="#bib.bib25" title="">2023</a>)</cite>. However, applying these methods to the full models is computationally expensive due to their large sizes. Parameter-efficient training (PEFT) methods such as Low-Rank Adaptation (LoRA) <cite class="ltx_cite ltx_citemacro_citep">(Hu et al., <a class="ltx_ref" href="#bib.bib10" title="">2022</a>)</cite> and QLoRA <cite class="ltx_cite ltx_citemacro_citep">(Dettmers et al., <a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite> have achieved comparable performance to full fine-tuning of LLMs at a much lower cost. This has enabled researchers to experiment with preference alignment datasets, methods, and models on systems with a single GPU. However, alignment is sensitive to numerous factors and design choices involved in the training <cite class="ltx_cite ltx_citemacro_citep">(Wang et al., <a class="ltx_ref" href="#bib.bib24" title="">2023b</a>)</cite>.</p>
+</div>
+<figure class="ltx_table" id="S1.T1">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S1.T1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S1.T1.1.1.1">
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt" id="S1.T1.1.1.1.1">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.1.1">
+<span class="ltx_p" id="S1.T1.1.1.1.1.1.1" style="width:97.6pt;"><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.1.1.1.1.1">Existing works</span></span>
+</span>
+</th>
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt" id="S1.T1.1.1.1.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.2.1">
+<span class="ltx_p" id="S1.T1.1.1.1.2.1.1" style="width:97.6pt;"><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.1.2.1.1.1">Limitations</span></span>
+</span>
+</th>
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt" id="S1.T1.1.1.1.3">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.3.1">
+<span class="ltx_p" id="S1.T1.1.1.1.3.1.1" style="width:195.1pt;"><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.1.3.1.1.1">This work</span></span>
+</span>
+</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S1.T1.1.2.1">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.2.1.1">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.2.1.1.1">
+<span class="ltx_p" id="S1.T1.1.2.1.1.1.1" style="width:97.6pt;">DPO is better at alignment than SFT <cite class="ltx_cite ltx_citemacro_citep">(Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.2.1.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.2.1.2.1">
+<span class="ltx_p" id="S1.T1.1.2.1.2.1.1" style="width:97.6pt;">Evaluated with full model training of instruction-tuned models on limited NLP tasks</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.2.1.3">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.2.1.3.1">
+<span class="ltx_p" id="S1.T1.1.2.1.3.1.1" style="width:195.1pt;">We compare SFT and DPO over distinct preferences using pre-trained and instruction-tuned models and find that
+<span class="ltx_text ltx_font_italic" id="S1.T1.1.2.1.3.1.1.1">DPO is suited for instruction-tuned models, but SFT is suited for pre-trained models</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.3.2">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.3.2.1">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.3.2.1.1">
+<span class="ltx_p" id="S1.T1.1.3.2.1.1.1" style="width:97.6pt;">Mixing two preferences for preference alignment has trade-offs <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.3.2.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.3.2.2.1">
+<span class="ltx_p" id="S1.T1.1.3.2.2.1.1" style="width:97.6pt;">Evaluated with RLHF in full fine-tuning settings on limited tasks</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.3.2.3">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.3.2.3.1">
+<span class="ltx_p" id="S1.T1.1.3.2.3.1.1" style="width:195.1pt;">We analyze trade-offs for SFT and DPO across different models and preferences and observe that
+<span class="ltx_text ltx_font_italic" id="S1.T1.1.3.2.3.1.1.1">mix of preferences leads to degradation for both SFT and DPO when using PEFT</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.4.3">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.4.3.1">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.4.3.1.1">
+<span class="ltx_p" id="S1.T1.1.4.3.1.1.1" style="width:97.6pt;">Aligning to a preference improves its performance <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.4.3.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.4.3.2.1">
+<span class="ltx_p" id="S1.T1.1.4.3.2.1.1" style="width:97.6pt;">Evaluated with full fine-tuning on limited NLP tasks</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.4.3.3">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.4.3.3.1">
+<span class="ltx_p" id="S1.T1.1.4.3.3.1.1" style="width:195.1pt;">We experiment across models and alignment methods with PEFT
+and see that <span class="ltx_text ltx_font_italic" id="S1.T1.1.4.3.3.1.1.1">often aligning to distinct preferences leads to improvements and aligning to same preference leads to degradation</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.5.4">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.5.4.1">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.5.4.1.1">
+<span class="ltx_p" id="S1.T1.1.5.4.1.1.1" style="width:97.6pt;">No existing works</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_top ltx_border_t" id="S1.T1.1.5.4.2"></td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.5.4.3">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.5.4.3.1">
+<span class="ltx_p" id="S1.T1.1.5.4.3.1.1" style="width:195.1pt;">We analyze the effects of the number of samples used for alignment and observe that
+<span class="ltx_text ltx_font_italic" id="S1.T1.1.5.4.3.1.1.1">SFT decreases the performance for instruction-tuned models, while DPO improves or obtains performs similar for instruction-tuned and pre-trained models</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.6.5">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb ltx_border_t" id="S1.T1.1.6.5.1">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.6.5.1.1">
+<span class="ltx_p" id="S1.T1.1.6.5.1.1.1" style="width:97.6pt;">No existing works</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_top ltx_border_bb ltx_border_t" id="S1.T1.1.6.5.2"></td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb ltx_border_t" id="S1.T1.1.6.5.3">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.6.5.3.1">
+<span class="ltx_p" id="S1.T1.1.6.5.3.1.1" style="width:195.1pt;">We analyze the effects of merging models trained with different alignment methods and preferences and observe that
+<span class="ltx_text ltx_font_italic" id="S1.T1.1.6.5.3.1.1.1">merging models leads to improvement over individual models aligned to distinct preferences</span></span>
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span>Comparing some of our experiments that address the limitations of existing works.</figcaption>
+</figure>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">The design choices to align LLMs fit into one of the following three broad, crucial axes: (i) the quality and quantity of the alignment <span class="ltx_text ltx_font_italic" id="S1.p3.1.1">dataset</span>, (ii) the preference alignment <span class="ltx_text ltx_font_italic" id="S1.p3.1.2">method</span>, and (iii) the nature of the base <span class="ltx_text ltx_font_italic" id="S1.p3.1.3">model</span>. Given the increasing interest in preference alignment, an in-depth analysis of the effect of these axes on downstream performance is required. To the best of our knowledge, no extensive study has investigated them, especially in a PEFT setting. We fill this important gap by attempting to answer various key research questions across these three axes:</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1"><span class="ltx_text ltx_font_bold" id="S1.p4.1.1">Alignment Dataset</span> How do the informativeness and quality, number of samples, and content of the preference dataset impact the downstream performance?</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1"><span class="ltx_text ltx_font_bold" id="S1.p5.1.1">Alignment Method</span> How do different alignment methods affect pre-trained and instruction-tuned models over complementary preferences?</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p6">
+<p class="ltx_p" id="S1.p6.1"><span class="ltx_text ltx_font_bold" id="S1.p6.1.1">Nature of the Base Model</span> How does the downstream performance compare between pre-trained models, instruction-tuned models, and their merged variants?</p>
+</div>
+<div class="ltx_para" id="S1.p7">
+<p class="ltx_p" id="S1.p7.1">Though our study covers all three axes, given the rapidly growing number of options for each, we restrict the studied choices to the most popular ones. Specifically, we perform our experiments on two commonly used preferences in literature to study alignment trade-offs: harmlessness and helpfulness. We use the (i) two most popular preference alignment datasets with harmlessness and helpfulness annotations: HH-RLHF <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite> and BeaverTails <cite class="ltx_cite ltx_citemacro_citep">(Ji et al., <a class="ltx_ref" href="#bib.bib11" title="">2023</a>)</cite>, with (ii) the two most widely-used alignment methods: SFT <cite class="ltx_cite ltx_citemacro_citep">(Taori et al., <a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite> and DPO <cite class="ltx_cite ltx_citemacro_citep">(Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite>, and (iii) two commonly used LLMs, LLaMA-1 <cite class="ltx_cite ltx_citemacro_citep">(Touvron et al., <a class="ltx_ref" href="#bib.bib22" title="">2023</a>)</cite> and Mistral-7b <cite class="ltx_cite ltx_citemacro_citep">(Jiang et al., <a class="ltx_ref" href="#bib.bib12" title="">2023</a>)</cite> along with their instruction-tuned versions, Vicuna-v1.3 <cite class="ltx_cite ltx_citemacro_citep">(Chiang et al., <a class="ltx_ref" href="#bib.bib3" title="">2023</a>)</cite> and Mistral-7b-Instruct. For an in-depth study of PEFT methods, we conducted all experiments using both LoRA and QLoRA. Our extensive analysis across these core axes reveals certain consistent trends and unexpected findings, as shown in Table <a class="ltx_ref" href="#S1.T1" title="Table 1 ‣ 1 Introduction ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">1</span></a>. We hope that consolidating the key findings into guidelines will benefit the community in conducting impactful research toward LLM alignment. Our contributions can be summarized as:</p>
+<ul class="ltx_itemize" id="S1.I1">
+<li class="ltx_item" id="S1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i1.p1">
+<p class="ltx_p" id="S1.I1.i1.p1.1">We provide an in-depth study into the trade-offs of parameter-efficient preference alignment training, particularly when using LoRA and QLoRA.</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i2.p1">
+<p class="ltx_p" id="S1.I1.i2.p1.1">We conduct over 300 experiments across three core axes of preference alignment: the dataset, the alignment method, and the model.</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i3.p1">
+<p class="ltx_p" id="S1.I1.i3.p1.1">Through experiments on <math alttext="5" class="ltx_Math" display="inline" id="S1.I1.i3.p1.1.m1.1"><semantics id="S1.I1.i3.p1.1.m1.1a"><mn id="S1.I1.i3.p1.1.m1.1.1" xref="S1.I1.i3.p1.1.m1.1.1.cmml">5</mn><annotation-xml encoding="MathML-Content" id="S1.I1.i3.p1.1.m1.1b"><cn id="S1.I1.i3.p1.1.m1.1.1.cmml" type="integer" xref="S1.I1.i3.p1.1.m1.1.1">5</cn></annotation-xml><annotation encoding="application/x-tex" id="S1.I1.i3.p1.1.m1.1c">5</annotation></semantics></math> evaluation benchmarks across harmlessness and helpfulness, we consolidate our key findings as guidelines for more effective preference alignment practices.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Background</h2>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Alignment Methods</h4>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p1.1">reduce the mismatch between an LLM’s pre-training and preference requirements of users, as LLMs are not pre-trained on human preference objectives. We describe the two most widely used alignment methods.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p2">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p2.1">Supervised Fine-Tuning (SFT) uses a pair of input instructions and corresponding outputs to fine-tune the LLM using autoregressive language modeling. SFT is often used at the “instruction-tuning” stage of models such as Alpaca <cite class="ltx_cite ltx_citemacro_citep">(Taori et al., <a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite> and Mistral-Instruct <cite class="ltx_cite ltx_citemacro_citep">(Jiang et al., <a class="ltx_ref" href="#bib.bib12" title="">2023</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p3">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p3.1">Direct Preference Optimization (DPO) <cite class="ltx_cite ltx_citemacro_citep">(Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite> is a stable and optimized alternative to reinforcement learning algorithms such as RLHF <cite class="ltx_cite ltx_citemacro_citep">(Christiano et al., <a class="ltx_ref" href="#bib.bib4" title="">2023</a>)</cite>. These methods have been used to align LLMs better using paired human preference data: data consisting of accepted and rejected outputs given an instruction.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Parameter-Efficient Training (PEFT)</h4>
+<div class="ltx_para" id="S2.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px2.p1.1">methods require updating only a fraction of the parameters of the full model while achieving performance close to that of full fine-tuning. Examples of these methods include adapters <cite class="ltx_cite ltx_citemacro_citep">(Houlsby et al., <a class="ltx_ref" href="#bib.bib9" title="">2019</a>)</cite>, prefix-tuning <cite class="ltx_cite ltx_citemacro_citep">(Li and Liang, <a class="ltx_ref" href="#bib.bib14" title="">2021</a>)</cite>, and prompt-tuning <cite class="ltx_cite ltx_citemacro_citep">(Lester et al., <a class="ltx_ref" href="#bib.bib13" title="">2021</a>)</cite>. Low-Rank Adaptation (LoRA) <cite class="ltx_cite ltx_citemacro_citep">(Hu et al., <a class="ltx_ref" href="#bib.bib10" title="">2022</a>)</cite> is another popular method that inserts a smaller number of new weights into the model, the only trainable parameters. QLoRA <cite class="ltx_cite ltx_citemacro_citep">(Dettmers et al., <a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite> improves the efficiency of LoRA by reducing the memory footprint and storage requirements for training while getting similar performance.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Experimental Setup</h2>
+<section class="ltx_paragraph" id="S3.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Preferences and Preference Alignment Datasets</h4>
+<div class="ltx_para" id="S3.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS0.SSS0.Px1.p1.1">We focus on two distinct preferences commonly used to study performance trade-offs in alignment: harmlessness and helpfulness. When a model is aligned on a preference, there is often a performance trade-off on complementary preferences <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite>. Hence, these preferences enable us to study these trade-offs in-depth across multiple axes. We use the two most popular datasets for these preferences: HH-RLHF <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite> and BeaverTails <cite class="ltx_cite ltx_citemacro_citep">(Ji et al., <a class="ltx_ref" href="#bib.bib11" title="">2023</a>)</cite>. HH-RLHF has explicit splits for harmlessness and helpfulness, and each dataset sample consists of a prompt, a chosen sample, and a rejected sample. However, many “harmless” responses in the dataset involve the model refraining from giving a response altogether <cite class="ltx_cite ltx_citemacro_citep">(Ji et al., <a class="ltx_ref" href="#bib.bib11" title="">2023</a>)</cite>. BeaverTails addresses this issue by providing more informative and elaborate responses. Each dataset sample consists of a prompt, two responses, a safety label for each response, and a label for the preferred response.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Base Models</h4>
+<div class="ltx_para" id="S3.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS0.SSS0.Px2.p1.1">We investigate the preference alignment trade-offs using pre-trained and instruction-tuned models. We use the two most popular 7 billion parameter pre-trained models, LLaMA-1 <cite class="ltx_cite ltx_citemacro_citep">(Touvron et al., <a class="ltx_ref" href="#bib.bib22" title="">2023</a>)</cite> and Mistral-7b <cite class="ltx_cite ltx_citemacro_citep">(Jiang et al., <a class="ltx_ref" href="#bib.bib12" title="">2023</a>)</cite>. For completeness, we use their instruction-tuned counterparts, Vicuna-v1.3 <cite class="ltx_cite ltx_citemacro_citep">(Chiang et al., <a class="ltx_ref" href="#bib.bib3" title="">2023</a>)</cite> and Mistral-7b-Instruct <cite class="ltx_cite ltx_citemacro_citep">(Jiang et al., <a class="ltx_ref" href="#bib.bib12" title="">2023</a>)</cite>. The models trained on the harmless preferences are denoted by the suffix “-Harmless” (e.g., Mistral-7b-Harmless), and those trained on the helpful preferences are denoted by “-Helpful”.</p>
+</div>
+<figure class="ltx_figure" id="S3.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="122" id="S3.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span> Performance comparison for helpful and harmless benchmarks when models are aligned using QLoRA over HH-RLHF (in <span class="ltx_text ltx_font_bold" id="S3.F1.3.1" style="background-color:#FFB3B3;">red</span>) and BeaverTails (in <span class="ltx_text ltx_font_bold" id="S3.F1.4.2" style="background-color:#B3B3FF;">blue</span>). We observe better performance when using a more informative and high-quality preference alignment dataset, albeit it is often overfitting for non-instruction tuned models when aligned using DPO (Section <a class="ltx_ref" href="#S4.SS1" title="4.1 Impact of Quality ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">4.1</span></a>).</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S3.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Evaluation Tasks and Metrics</h4>
+<div class="ltx_para" id="S3.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S3.SS0.SSS0.Px3.p1.1">For evaluating helpfulness, we use (i) MMLU <cite class="ltx_cite ltx_citemacro_citep">(Hendrycks et al., <a class="ltx_ref" href="#bib.bib8" title="">2021</a>)</cite>, a dataset consisting of 57 tasks to test the knowledge acquired by the models, (ii) Big-bench hard (BBH) <cite class="ltx_cite ltx_citemacro_citep">(Suzgun et al., <a class="ltx_ref" href="#bib.bib20" title="">2022</a>)</cite>, a diverse evaluation suite of 23 tasks, and (iii) Alpaca Eval <cite class="ltx_cite ltx_citemacro_citep">(Li et al., <a class="ltx_ref" href="#bib.bib15" title="">2023</a>)</cite>, a human-curated suite of 805 questions across different tasks evaluated against GPT-4. For harmlessness evaluation, we use (i) RealToxicity <cite class="ltx_cite ltx_citemacro_citep">(Gehman et al., <a class="ltx_ref" href="#bib.bib6" title="">2020</a>)</cite>, a prompt dataset to measure toxic generation in language models. We choose the <math alttext="1000" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px3.p1.1.m1.1"><semantics id="S3.SS0.SSS0.Px3.p1.1.m1.1a"><mn id="S3.SS0.SSS0.Px3.p1.1.m1.1.1" xref="S3.SS0.SSS0.Px3.p1.1.m1.1.1.cmml">1000</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px3.p1.1.m1.1b"><cn id="S3.SS0.SSS0.Px3.p1.1.m1.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px3.p1.1.m1.1.1">1000</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px3.p1.1.m1.1c">1000</annotation></semantics></math> most severe prompts from the dataset, and (ii) Red-Instruct’s <cite class="ltx_cite ltx_citemacro_citep">(Bhardwaj and Poria, <a class="ltx_ref" href="#bib.bib2" title="">2023</a>)</cite> DangerousQA with chain-of-utterance, a dataset comprising 200 harmful questions across six adjectives—racist, stereotypical, sexist, illegal, toxic, and harmful. Following existing work, we evaluate MMLU using accuracy, BBH using exact match, and Alpaca-Eval using win rate against GPT-4. For RealToxicity, we use the score given by a reward model trained to classify toxic generations<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span><a class="ltx_ref ltx_href" href="https://huggingface.co/nicholasKluge/ToxicityModel" target="_blank" title="">https://huggingface.co/nicholasKluge/ToxicityModel</a></span></span></span>, and 100-Attack Success Rate for Red-Instruct.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS0.SSS0.Px4">
+<h4 class="ltx_title ltx_title_paragraph">Training Setup</h4>
+<div class="ltx_para" id="S3.SS0.SSS0.Px4.p1">
+<p class="ltx_p" id="S3.SS0.SSS0.Px4.p1.9">We experiment with both QLoRA and LoRA for alignment training. For SFT, we keep the rank of the LoRA/QLoRA matrix as <math alttext="64" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.1.m1.1"><semantics id="S3.SS0.SSS0.Px4.p1.1.m1.1a"><mn id="S3.SS0.SSS0.Px4.p1.1.m1.1.1" xref="S3.SS0.SSS0.Px4.p1.1.m1.1.1.cmml">64</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.1.m1.1b"><cn id="S3.SS0.SSS0.Px4.p1.1.m1.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.1.m1.1.1">64</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.1.m1.1c">64</annotation></semantics></math> and LoRA/QLoRA alpha as <math alttext="16" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.2.m2.1"><semantics id="S3.SS0.SSS0.Px4.p1.2.m2.1a"><mn id="S3.SS0.SSS0.Px4.p1.2.m2.1.1" xref="S3.SS0.SSS0.Px4.p1.2.m2.1.1.cmml">16</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.2.m2.1b"><cn id="S3.SS0.SSS0.Px4.p1.2.m2.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.2.m2.1.1">16</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.2.m2.1c">16</annotation></semantics></math>. For DPO, we keep the rank of the LoRA/QLoRA matrix as <math alttext="16" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.3.m3.1"><semantics id="S3.SS0.SSS0.Px4.p1.3.m3.1a"><mn id="S3.SS0.SSS0.Px4.p1.3.m3.1.1" xref="S3.SS0.SSS0.Px4.p1.3.m3.1.1.cmml">16</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.3.m3.1b"><cn id="S3.SS0.SSS0.Px4.p1.3.m3.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.3.m3.1.1">16</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.3.m3.1c">16</annotation></semantics></math> and LoRA/QLoRA alpha as <math alttext="32" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.4.m4.1"><semantics id="S3.SS0.SSS0.Px4.p1.4.m4.1a"><mn id="S3.SS0.SSS0.Px4.p1.4.m4.1.1" xref="S3.SS0.SSS0.Px4.p1.4.m4.1.1.cmml">32</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.4.m4.1b"><cn id="S3.SS0.SSS0.Px4.p1.4.m4.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.4.m4.1.1">32</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.4.m4.1c">32</annotation></semantics></math>. We use a batch size of <math alttext="16" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.5.m5.1"><semantics id="S3.SS0.SSS0.Px4.p1.5.m5.1a"><mn id="S3.SS0.SSS0.Px4.p1.5.m5.1.1" xref="S3.SS0.SSS0.Px4.p1.5.m5.1.1.cmml">16</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.5.m5.1b"><cn id="S3.SS0.SSS0.Px4.p1.5.m5.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.5.m5.1.1">16</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.5.m5.1c">16</annotation></semantics></math>, a learning rate of <math alttext="2e-4" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.6.m6.1"><semantics id="S3.SS0.SSS0.Px4.p1.6.m6.1a"><mrow id="S3.SS0.SSS0.Px4.p1.6.m6.1.1" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.cmml"><mrow id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.cmml"><mn id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.2" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.2.cmml">2</mn><mo id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.1" lspace="0em" rspace="0em" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.1.cmml">​</mo><mi id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.3" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.3.cmml">e</mi></mrow><mo id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.1" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.1.cmml">−</mo><mn id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.3" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.3.cmml">4</mn></mrow><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.6.m6.1b"><apply id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.cmml" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1"><minus id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.1.cmml" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.1"></minus><apply id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.cmml" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2"><times id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.1.cmml" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.1"></times><cn id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.2.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.2">2</cn><ci id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.3.cmml" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.2.3">𝑒</ci></apply><cn id="S3.SS0.SSS0.Px4.p1.6.m6.1.1.3.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.6.m6.1.1.3">4</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.6.m6.1c">2e-4</annotation></semantics></math> for SFT and <math alttext="5e-5" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.7.m7.1"><semantics id="S3.SS0.SSS0.Px4.p1.7.m7.1a"><mrow id="S3.SS0.SSS0.Px4.p1.7.m7.1.1" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.cmml"><mrow id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.cmml"><mn id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.2" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.2.cmml">5</mn><mo id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.1" lspace="0em" rspace="0em" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.1.cmml">​</mo><mi id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.3" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.3.cmml">e</mi></mrow><mo id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.1" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.1.cmml">−</mo><mn id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.3" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.3.cmml">5</mn></mrow><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.7.m7.1b"><apply id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.cmml" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1"><minus id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.1.cmml" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.1"></minus><apply id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.cmml" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2"><times id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.1.cmml" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.1"></times><cn id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.2.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.2">5</cn><ci id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.3.cmml" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.2.3">𝑒</ci></apply><cn id="S3.SS0.SSS0.Px4.p1.7.m7.1.1.3.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.7.m7.1.1.3">5</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.7.m7.1c">5e-5</annotation></semantics></math> for DPO, and train the models for <math alttext="700" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.8.m8.1"><semantics id="S3.SS0.SSS0.Px4.p1.8.m8.1a"><mn id="S3.SS0.SSS0.Px4.p1.8.m8.1.1" xref="S3.SS0.SSS0.Px4.p1.8.m8.1.1.cmml">700</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.8.m8.1b"><cn id="S3.SS0.SSS0.Px4.p1.8.m8.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.8.m8.1.1">700</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.8.m8.1c">700</annotation></semantics></math> steps. We perform all our experiments on a single <math alttext="40" class="ltx_Math" display="inline" id="S3.SS0.SSS0.Px4.p1.9.m9.1"><semantics id="S3.SS0.SSS0.Px4.p1.9.m9.1a"><mn id="S3.SS0.SSS0.Px4.p1.9.m9.1.1" xref="S3.SS0.SSS0.Px4.p1.9.m9.1.1.cmml">40</mn><annotation-xml encoding="MathML-Content" id="S3.SS0.SSS0.Px4.p1.9.m9.1b"><cn id="S3.SS0.SSS0.Px4.p1.9.m9.1.1.cmml" type="integer" xref="S3.SS0.SSS0.Px4.p1.9.m9.1.1">40</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS0.SSS0.Px4.p1.9.m9.1c">40</annotation></semantics></math>GB A100 GPU and run 5 seeds for all experiments.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Effects of the Alignment Dataset</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">We investigate the effects of the alignment dataset in terms of its informativeness and quality, the number of samples used, and the preference sets and mixtures used for alignment.</p>
+</div>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Impact of Quality</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">Previous works have shown that more informative and high-quality responses improve the alignment of models <cite class="ltx_cite ltx_citemacro_citep">(Ji et al., <a class="ltx_ref" href="#bib.bib11" title="">2023</a>)</cite>. However, this has only been explored for instruction-tuned LLMs, fully fine-tuned with RLHF, and with limited downstream evaluation. We extend this analysis to pre-trained and instruction-tuned models using parameter-efficient SFT and DPO.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Setup</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px1.p1.1">To probe the impact of the informativeness and quality of the preference dataset on alignment and downstream performance, we compare the performance of training our models using the two preference datasets, HH-RLHF and BeaverTails, on their harmless and helpful splits. BeaverTails is supposedly more informative and of better quality than HH-RLHF, particularly for the harmlessness and safe prompts. For detailed analysis, we show comparisons using supervised fine-tuning (SFT) and DPO over the pre-trained Mistral-7b and instruction-tuned Mistral-7b-Instruct models. We also probe the impact of the dataset quality as the training progresses, analyzing the effect on the stability of the training.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Results and Observations</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px2.p1.1">We compare the performance of the models across helpfulness and harmlessness when aligned using a preference dataset of lower quality with a higher quality dataset using SFT and DPO in Figure <a class="ltx_ref" href="#S3.F1" title="Figure 1 ‣ Base Models ‣ 3 Experimental Setup ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">1</span></a>. The helpfulness benchmarks indicate that a higher quality and more informative preference dataset leads to overall more helpful behavior of the aligned model across both the alignment methods. When using the helpful preference subsets, there are bigger gains on general-purpose NLP tasks (such as MMLU) and instruction-following benchmarks (such as Alpaca Eval) when SFT is used. This suggests that SFT is more sensitive to the dataset quality when the downstream task and preference dataset are of a similar nature. When using the orthogonal harmless preference for alignment, relatively lower quality datasets such as HH-RLHF lead to overfitting when using alignment methods like DPO and experience significant performance degradation. However, since BeaverTails ensures that the safe and harmless responses are informative, there is no degradation in performance when used with DPO.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.SSS0.Px2.p2">
+<p class="ltx_p" id="S4.SS1.SSS0.Px2.p2.1">The harmlessness benchmarks reveal that using a more informative and safer dataset makes the model less harmful. However, DPO leads to a significant degeneration of the model when BeaverTails is used with Mistral-7b. As Mistral-7b is not instruction-tuned, we hypothesize that this degradation might be due to the inability of the base model to effectively represent the reward for preference optimization, specifically for samples targeted towards more objective preferences such as harmlessness and safety compared to broader preferences such as helpfulness. We also observe that harmless alignment using higher-quality datasets is more faithful than lower-quality datasets, especially when using SFT.</p>
+</div>
+<figure class="ltx_figure" id="S4.F2"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="161" id="S4.F2.g1" src="./media/x2.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span> Performance trends w.r.t number of samples of HH-RLHf and BeaverTails used for SFT alignment (Section <a class="ltx_ref" href="#S4.SS1" title="4.1 Impact of Quality ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">4.1</span></a>). Models aligned with a higher-quality dataset seem to learn faster or regress slower.</figcaption>
+</figure>
+<figure class="ltx_figure" id="S4.F3"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="100" id="S4.F3.g1" src="./media/x3.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span> Relationship of the number of samples used for alignment using SFT and DPO with Mistral (Section <a class="ltx_ref" href="#S4.SS2" title="4.2 Impact of Quantity ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">4.2</span></a>). The performance here is shown in % relative to the performance when using 1600 samples.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS1.SSS0.Px2.p3">
+<p class="ltx_p" id="S4.SS1.SSS0.Px2.p3.1">We also present the progress of the model performances at various training steps in Figure <a class="ltx_ref" href="#S4.F2" title="Figure 2 ‣ Results and Observations ‣ 4.1 Impact of Quality ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">2</span></a>. We observe that when using a more informative preference dataset, the alignment either leads to faster learning and more gains or achieves comparable performance to the base model. When using a relatively lower-quality dataset, either the learning is slower or deterioration is observed during the course of the alignment training. Overall, better quality and informative datasets are better for alignment across methods and preferences when using PEFT.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Impact of Quantity</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1">To the best of our knowledge, no studies have investigated the relationship between the number of alignment samples used across methods, models, and alignment preferences.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Setup</h4>
+<div class="ltx_para" id="S4.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS2.SSS0.Px1.p1.1">We evaluate the relationship between the number of preference alignment samples used for SFT and DPO with the downstream performance. We use Mistral-7b and Mistral-7b-Instruct as the model due to their superior performance, and BeaverTails as our preferred dataset due to its more diverse samples. We evaluate the performance at multiple training steps over helpfulness and harmlessness benchmarks.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Results and Observations</h4>
+<div class="ltx_para" id="S4.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS2.SSS0.Px2.p1.1">Figure <a class="ltx_ref" href="#S4.F3" title="Figure 3 ‣ Results and Observations ‣ 4.1 Impact of Quality ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">3</span></a> indicates that instruction-tuned models are more robust to further alignment when using SFT. Furthermore, since the preference data does not directly contain examples of the downstream tasks, the performance of the models is reduced. It is interesting to note here that Mistral-7b-Instruct performs worse than the base model on MMLU, indicating that continued supervised fine-tuning is sensitive to the dataset samples used for training, particularly for general-purpose NLP tasks.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.SSS0.Px2.p2">
+<p class="ltx_p" id="S4.SS2.SSS0.Px2.p2.1">However, using DPO over the instruction-tuned models for instruction-following tasks gives consistent improvement, which aligns with previous works applying DPO as an alignment method <cite class="ltx_cite ltx_citemacro_citep">(Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite>. Models trained with DPO are also much more faithful to the preferences they are aligned with, particularly for harmlessness. This might be due to harmlessness being a relatively objective preference compared to helpfulness, which is much broader. However, as observed previously, the pre-trained models are sensitive to the preference alignment used over DPO, and since they are not strong inherent reward models, using DPO leads to a considerable degradation in their performance. A combination of SFT-based instruction tuning followed by DPO would make up for the optimal training strategy in case of alignment to explicit preferences such as safety and harmlessness.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.SSS0.Px2.p3">
+<p class="ltx_p" id="S4.SS2.SSS0.Px2.p3.1">Overall, instruction-tuned models are robust to additional samples when aligned with SFT and often regress but benefit from DPO. Furthermore, instruction-tuned models might require fewer samples to adapt to preferences compared to pre-trained models, as more samples might degrade their performance on general-purpose tasks. Pre-trained models generally get better at alignment and instruction-following both. Accordingly, there might be a sweet spot in the number of samples used for alignment.</p>
+</div>
+<figure class="ltx_table" id="S4.T2">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S4.T2.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S4.T2.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="S4.T2.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S4.T2.1.1.1.1.1">Alignment Method</span></th>
+<th class="ltx_td ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="S4.T2.1.1.1.2"></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="3" id="S4.T2.1.1.1.3">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="3" id="S4.T2.1.1.1.4">DPO</th>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.2.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row" id="S4.T2.1.2.2.1"><span class="ltx_text ltx_font_bold" id="S4.T2.1.2.2.1.1">Model</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row" id="S4.T2.1.2.2.2"><span class="ltx_text ltx_font_bold" id="S4.T2.1.2.2.2.1">Variant</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.1.2.2.3">MMLU</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.1.2.2.4">BBH</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.1.2.2.5">RealToxicity</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.1.2.2.6">MMLU</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.1.2.2.7">BBH</th>
+<th class="ltx_td ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.1.2.2.8">RealToxicity</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S4.T2.1.3.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S4.T2.1.3.1.1" rowspan="4"><span class="ltx_text ltx_font_bold" id="S4.T2.1.3.1.1.1">Mistral-7b</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S4.T2.1.3.1.2">Original</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.3.1.3"><span class="ltx_text ltx_font_bold" id="S4.T2.1.3.1.3.1">0.590</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.3.1.4">0.395</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.3.1.5">1.255</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.3.1.6">0.590</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.3.1.7">0.395</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_t" id="S4.T2.1.3.1.8"><span class="ltx_text ltx_font_bold" id="S4.T2.1.3.1.8.1">1.255</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.4.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T2.1.4.2.1">Harmless</th>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.4.2.2">0.583</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.4.2.3">0.409</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.4.2.4"><span class="ltx_text ltx_font_bold" id="S4.T2.1.4.2.4.1">1.863</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.4.2.5">0.590</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.4.2.6">0.402</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T2.1.4.2.7">-3.701</td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.5.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T2.1.5.3.1">Helpful</th>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.5.3.2"><span class="ltx_text ltx_font_bold" id="S4.T2.1.5.3.2.1">0.589</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.5.3.3"><span class="ltx_text ltx_font_bold" id="S4.T2.1.5.3.3.1">0.417</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.5.3.4">1.571</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.5.3.5"><span class="ltx_text ltx_font_bold" id="S4.T2.1.5.3.5.1">0.594</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.5.3.6"><span class="ltx_text ltx_font_bold" id="S4.T2.1.5.3.6.1">0.418</span></td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T2.1.5.3.7">-9.375</td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.6.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T2.1.6.4.1">Harmless+Helpful</th>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.6.4.2">0.575</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.6.4.3">0.408</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.6.4.4">1.239</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.6.4.5">0.593</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.6.4.6">0.412</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T2.1.6.4.7">-9.419</td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.7.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb ltx_border_t" id="S4.T2.1.7.5.1" rowspan="4"><span class="ltx_text ltx_font_bold" id="S4.T2.1.7.5.1.1">Mistral-7b-Ins</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S4.T2.1.7.5.2">Original</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.7.5.3"><span class="ltx_text ltx_font_bold" id="S4.T2.1.7.5.3.1">0.535</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.7.5.4"><span class="ltx_text ltx_font_bold" id="S4.T2.1.7.5.4.1">0.385</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.7.5.5">1.273</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.7.5.6"><span class="ltx_text ltx_font_bold" id="S4.T2.1.7.5.6.1">0.535</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.7.5.7">0.385</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_t" id="S4.T2.1.7.5.8">1.273</td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.8.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T2.1.8.6.1">Harmless</th>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.8.6.2">0.518</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.8.6.3">0.366</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.8.6.4"><span class="ltx_text ltx_font_bold" id="S4.T2.1.8.6.4.1">1.981</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.8.6.5">0.529</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.8.6.6"><span class="ltx_text ltx_font_bold" id="S4.T2.1.8.6.6.1">0.392</span></td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T2.1.8.6.7"><span class="ltx_text ltx_font_bold" id="S4.T2.1.8.6.7.1">3.520</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.9.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T2.1.9.7.1">Helpful</th>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.9.7.2">0.519</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.9.7.3">0.371</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.9.7.4">1.145</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.9.7.5"><span class="ltx_text ltx_font_bold" id="S4.T2.1.9.7.5.1">0.535</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.1.9.7.6">0.382</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T2.1.9.7.7">2.170</td>
+</tr>
+<tr class="ltx_tr" id="S4.T2.1.10.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S4.T2.1.10.8.1">Harmless+Helpful</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.1.10.8.2">0.518</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.1.10.8.3">0.367</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.1.10.8.4">0.991</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.1.10.8.5">0.531</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.1.10.8.6">0.374</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_bb" id="S4.T2.1.10.8.7">-0.025</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 2: </span>Effect of aligning on a mixture of two distinct preferences (Harmlessness and Helpfulness) compared to training on individual preferences (Section <a class="ltx_ref" href="#S4.SS3" title="4.3 Impact of Data Mixtures ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">4.3</span></a>). The model aligned to a mix of both preferences generally performs worse than the models aligned to the individual preferences.</figcaption>
+</figure>
+<figure class="ltx_figure" id="S4.F4"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="99" id="S4.F4.g1" src="./media/x4.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span> Comparing the downstream performance when aligning using SFT (in <span class="ltx_text ltx_font_bold" id="S4.F4.3.1" style="background-color:#BBE6F3;">light blue</span>) and DPO (in <span class="ltx_text ltx_font_bold" id="S4.F4.4.2" style="background-color:#FFD9D9;">pink</span>) with QLoRA. SFT outperforms DPO generally when used over pre-trained models, significantly for instruction following tasks. DPO is more faithful to explicit preferences such as harmlessness and performs significantly better for instruction-tuned models (Section <a class="ltx_ref" href="#S5" title="5 Effects of the Alignment Method ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">5</span></a>).</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>Impact of Data Mixtures</h3>
+<div class="ltx_para" id="S4.SS3.p1">
+<p class="ltx_p" id="S4.SS3.p1.1">Previous studies have shown that optimizing for individual preferences can result in trade-offs in performance <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite>. We extend this study and evaluate models trained on a mixture of distinct preferences with PEFT against those trained on individual preferences.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS3.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Setup</h4>
+<div class="ltx_para" id="S4.SS3.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS3.SSS0.Px1.p1.1">We use both SFT and DPO to align our models on the harmless and helpful preferences of BeaverTails. We then combine both the preference sets and align models on a mix of the preferences for our comparison.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS3.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Results and Observations</h4>
+<div class="ltx_para" id="S4.SS3.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS3.SSS0.Px2.p1.1">From Table <a class="ltx_ref" href="#S4.T2" title="Table 2 ‣ Results and Observations ‣ 4.2 Impact of Quantity ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">2</span></a>, we see that when both SFT and DPO are used to align the models using a mixture of preferences, the model performs worse than models trained on individual preferences. This trend is consistent across both pre-trained and instruction-tuned models across the preferences. This might arise because the model encounters conflicting responses for prompts that might be similar to each other when orthogonal preferences are used for alignment, leading to non-optimal training. We observe larger degradations when using DPO with a mixture of the preferences compared to SFT, suggesting that DPO is more sensitive to the <span class="ltx_text ltx_font_italic" id="S4.SS3.SSS0.Px2.p1.1.1">type</span> of samples used for alignment and requires more uniform preference samples. Overall, better curation of dataset mixtures when using alignment methods is necessary to achieve optimal performance.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.4 </span>Key Takeaways</h3>
+<div class="ltx_para" id="S4.SS4.p1">
+<ul class="ltx_itemize" id="S4.I1">
+<li class="ltx_item" id="S4.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S4.I1.i1.p1">
+<p class="ltx_p" id="S4.I1.i1.p1.1">Higher quality and more informative datasets lead to better alignment when using both SFT and DPO, with more significant gains when using SFT.</p>
+</div>
+</li>
+<li class="ltx_item" id="S4.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S4.I1.i2.p1">
+<p class="ltx_p" id="S4.I1.i2.p1.1">Performing SFT on strong instruction-tuned models might not lead to gains as there is performance saturation, and it can even lead to degradation depending on the dataset.</p>
+</div>
+</li>
+<li class="ltx_item" id="S4.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S4.I1.i3.p1">
+<p class="ltx_p" id="S4.I1.i3.p1.1">Training on a mixture of diverse preferences often leads to performance trade-offs and degradation across them.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Effects of the Alignment Method</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">Previous works have shown that preference optimization methods, such as RLHF and DPO, are better than methods like SFT for full fine-tuning of models on standard preference datasets <cite class="ltx_cite ltx_citemacro_citep">(Christiano et al., <a class="ltx_ref" href="#bib.bib4" title="">2023</a>; Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite>. We validate this claim using PEFT across the different preferences.</p>
+</div>
+<figure class="ltx_figure" id="S5.F5"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="101" id="S5.F5.g1" src="./media/x5.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 5: </span> Comparing the effect of applying alignment methods on pre-trained models with instruction-tuned models using LLaMA-1 (Section <a class="ltx_ref" href="#S6.SS1" title="6.1 Contrasting Pre-trained and Instruction-Tuned Models ‣ 6 Effects of the Nature of Base Models ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">6.1</span></a>). SFT helps more for pre-trained models, while DPO helps more for instruction-tuned models. However, when aligning to objective preferences like harmlessness, DPO leads to more faithful alignment across both pre-trained and instruction-tuned models.</figcaption>
+</figure>
+<section class="ltx_paragraph" id="S5.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Setup</h4>
+<div class="ltx_para" id="S5.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S5.SS0.SSS0.Px1.p1.1">We compare the performance attained when using SFT and DPO to train our models across preferences. We use all four models in our study to align with the harmless and helpful preferences of the BeaverTails dataset.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Results</h4>
+<div class="ltx_para" id="S5.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S5.SS0.SSS0.Px2.p1.1">We present the results comparing SFT and DPO in Figure <a class="ltx_ref" href="#S4.F4" title="Figure 4 ‣ Results and Observations ‣ 4.2 Impact of Quantity ‣ 4 Effects of the Alignment Dataset ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">4</span></a>. We observe that, on average, DPO leads to better performance when aligned with the helpful preferences compared to SFT for instruction-tuned models. This might stem from the fact that DPO takes into consideration both the chosen and the rejected samples and is able to extract more learnings from the preference dataset. When evaluating the harmlessness, we observe very interesting results. Using DPO is significantly better than SFT, indicating that DPO makes the model alignment much more faithful to the preferences than SFT. This is more pronounced when the preferences are more objective, such as harmlessness, compared to relatively broader preferences like helpfulness. This observation also holds for models such as LLaMA-1, where DPO performs worse than SFT on helpfulness benchmarks. Furthermore, it is not always the case that aligning using the harmless preference dataset leads to more harmlessness in the case of SFT, further showing that it is not as faithful as DPO. Given the inability of pre-trained models to inherently provide rewards for broader preferences, we can say that generally, if the base model can be expected to be a good reward model, using DPO leads to better downstream performance and more faithfully aligned models.</p>
+</div>
+<div class="ltx_para" id="S5.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="S5.SS0.SSS0.Px2.p2.1">We also make another interesting observation that contradicts logical deductions. Oftentimes, using harmless data performs better than helpful data. This might be a characteristic of the BeaverTails dataset as it specifically contains helpful and safe responses, but this should be an important consideration when curating datasets for preference alignment.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Key Takeaways</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<ul class="ltx_itemize" id="S5.I1">
+<li class="ltx_item" id="S5.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S5.I1.i1.p1">
+<p class="ltx_p" id="S5.I1.i1.p1.1">DPO performs better than SFT and is more faithful to explicit preferences, such as harmlessness, compared to broader preferences, such as helpfulness.</p>
+</div>
+</li>
+<li class="ltx_item" id="S5.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S5.I1.i2.p1">
+<p class="ltx_p" id="S5.I1.i2.p1.1">It is beneficial to instruction-tune models first with SFT and then apply DPO.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Effects of the Nature of Base Models</h2>
+<section class="ltx_subsection" id="S6.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.1 </span>Contrasting Pre-trained and Instruction-Tuned Models</h3>
+<div class="ltx_para" id="S6.SS1.p1">
+<p class="ltx_p" id="S6.SS1.p1.1">Most of the works using DPO for alignment use it over instruction-tuned models. We perform a study comparing the effects of applying alignment methods over pre-trained and instruction-tuned models.</p>
+</div>
+<section class="ltx_paragraph" id="S6.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Setup</h4>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p1.1">We investigate the effect of the nature of the underlying model trained for alignment to different preferences on the downstream tasks. We consider LLaMA-1 as the pre-trained model and Vicuna-v1.3 as the instruction-tuned variant. We compare the downstream performance when the models are aligned with SFT and DPO using the harmless and helpful preferences of BeaverTails.</p>
+</div>
+<figure class="ltx_table" id="S6.T3">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S6.T3.1">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S6.T3.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt" id="S6.T3.1.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="S6.T3.1.1.1.1.1">Merge Variant</span></th>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="3" id="S6.T3.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S6.T3.1.1.1.2.1">Mistral-7b</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="3" id="S6.T3.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S6.T3.1.1.1.3.1">Mistral-7b-Ins</span></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.2.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.2.2.1"><span class="ltx_text ltx_font_bold" id="S6.T3.1.2.2.1.1">BBH</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.2.2.2"><span class="ltx_text ltx_font_bold" id="S6.T3.1.2.2.2.1">Alpaca Eval</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.2.2.3"><span class="ltx_text ltx_font_bold" id="S6.T3.1.2.2.3.1">RT</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.2.2.4"><span class="ltx_text ltx_font_bold" id="S6.T3.1.2.2.4.1">MMLU</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.2.2.5"><span class="ltx_text ltx_font_bold" id="S6.T3.1.2.2.5.1">Alpaca Eval</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.2.2.6"><span class="ltx_text ltx_font_bold" id="S6.T3.1.2.2.6.1">RT</span></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.3.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S6.T3.1.3.3.1">Harmless-SFT</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.3.3.2">0.409</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.3.3.3">7.346</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.3.3.4"><span class="ltx_text ltx_font_bold" id="S6.T3.1.3.3.4.1">1.863</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.3.3.5">0.518</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.3.3.6">7.711</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.3.3.7">1.981</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.4.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S6.T3.1.4.4.1">Helpful-SFT</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.4.4.2">0.417</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.4.4.3">7.081</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.4.4.4">1.571</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.4.4.5">0.519</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.4.4.6">8.095</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.4.4.7">1.145</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.5.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S6.T3.1.5.5.1">Harmless-DPO</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.5.5.2">0.402</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.5.5.3">3.975</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.5.5.4">-3.701</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.5.5.5">0.529</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.5.5.6">13.043</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.5.5.7">3.520</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.6.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S6.T3.1.6.6.1">Helpful-DPO</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.6.6.2">0.418</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.6.6.3">3.602</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.6.6.4">-9.375</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.6.6.5">0.535</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.6.6.6">15.299</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.6.6.7">2.170</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.7.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S6.T3.1.7.7.1">Slerp-SFT</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.7.7.2">0.415</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.7.7.3">2.236</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.7.7.4">-9.115</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.7.7.5">0.530</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.7.7.6">8.966</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.7.7.7">3.311</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.8.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S6.T3.1.8.8.1">Slerp-DPO</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.8.8.2">0.425</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.8.8.3"><span class="ltx_text ltx_font_bold" id="S6.T3.1.8.8.3.1">7.721</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.8.8.4">1.604</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.8.8.5">0.524</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.8.8.6">8.209</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.8.8.7">1.873</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.9.9">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S6.T3.1.9.9.1">DARE-SFT</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.9.9.2">0.419</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.9.9.3">7.472</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.9.9.4">1.870</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.9.9.5">0.525</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.9.9.6">8.209</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.9.9.7">2.207</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.10.10">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S6.T3.1.10.10.1">DARE-DPO</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.10.10.2">0.428</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.10.10.3">2.981</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.10.10.4">-8.602</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.10.10.5">0.534</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.10.10.6"><span class="ltx_text ltx_font_bold" id="S6.T3.1.10.10.6.1">15.702</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.1.10.10.7"><span class="ltx_text ltx_font_bold" id="S6.T3.1.10.10.7.1">3.717</span></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.11.11">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S6.T3.1.11.11.1">DARE-SFT+DPO</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S6.T3.1.11.11.2"><span class="ltx_text ltx_font_bold" id="S6.T3.1.11.11.2.1">0.432</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S6.T3.1.11.11.3">6.468</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S6.T3.1.11.11.4">1.755</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S6.T3.1.11.11.5"><span class="ltx_text ltx_font_bold" id="S6.T3.1.11.11.5.1">0.538</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S6.T3.1.11.11.6">9.363</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S6.T3.1.11.11.7">2.938</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 3: </span>Performance of merging models using different methods with the models trained on individual preferences (Section <a class="ltx_ref" href="#S6.SS2" title="6.2 Effect of using Merged Models ‣ 6 Effects of the Nature of Base Models ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">6.2</span></a>). Model merging variants perform better on average than individually aligned models.</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S6.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Results and Observations</h4>
+<div class="ltx_para" id="S6.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS1.SSS0.Px2.p1.1">We present the results of aligning the pre-trained models and the instruction-tuned models with SFT and DPO in Fig <a class="ltx_ref" href="#S5.F5" title="Figure 5 ‣ 5 Effects of the Alignment Method ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">5</span></a>. Considering SFT, we observe that when applied over instruction-tuned models, it generally leads to degradation of performance when using both the helpful and harmless preferences. This might be because the models being aligned are already robust due to extensive instruction-tuning using datasets similar to the datasets used for downstream evaluation. Since BeaverTails is different from downstream datasets, models aligned on the dataset regress in performance. However, when we align the pre-trained models, we observe decent improvements in the performance of the downstream tasks. This is in line with studies showing that instruction-tuning, especially on the helpful preferences, makes the model follow the instructions of the downstream task more effectively.</p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px2.p2">
+<p class="ltx_p" id="S6.SS1.SSS0.Px2.p2.1">When aligning the pre-trained and instruction-tuned models with DPO, we observe that the alignment stability depends on the base model itself, as it also acts like a reward model. For strong base models, such as the instruction-tuned models, DPO leads to better gains. These gains are more significant for instruction-following tasks like Alpaca Eval. However, for weaker base models like LLaMA-1, using DPO leads to degradation in performance in contrast to SFT. Hence, instruction-tuned models overall seem to fare more coherently and are more faithful to the preferences when DPO is used, but with relatively weaker base models, an initial stage of instruction-tuning using SFT followed by DPO would be more beneficial.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S6.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.2 </span>Effect of using Merged Models</h3>
+<div class="ltx_para" id="S6.SS2.p1">
+<p class="ltx_p" id="S6.SS2.p1.1">Model merging methods via interpolations have recently proven to be effective <cite class="ltx_cite ltx_citemacro_citep">(Yadav et al., <a class="ltx_ref" href="#bib.bib26" title="">2023</a>)</cite>. We investigate the effects of merging models that are aligned on distinct preferences and trained with different methods.</p>
+</div>
+<section class="ltx_paragraph" id="S6.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Setup</h4>
+<div class="ltx_para" id="S6.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS2.SSS0.Px1.p1.1">To study the effect of various combinations of merging models across the preferences and alignment methods, we experiment with two recent merge methods: Spherical interpolation (Slerp) <cite class="ltx_cite ltx_citemacro_citep">(Shoemake, <a class="ltx_ref" href="#bib.bib19" title="">1985</a>)</cite> and DARE <cite class="ltx_cite ltx_citemacro_citep">(Yu et al., <a class="ltx_ref" href="#bib.bib27" title="">2023</a>)</cite>. We experiment with merging models aligned on the harmless and helpful preferences using DPO and SFT (for example, Slerp-SFT refers to the merging of harmless and helpful models aligned with SFT). As DARE allows merging any number of models, we also experiment with merging all four aligned models, i.e. harmless and helpful alignments using SFT and DPO together (DARE-SFT+DPO).</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Results and Observations</h4>
+<div class="ltx_para" id="S6.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS2.SSS0.Px2.p1.1">From Table <a class="ltx_ref" href="#S6.T3" title="Table 3 ‣ Setup ‣ 6.1 Contrasting Pre-trained and Instruction-Tuned Models ‣ 6 Effects of the Nature of Base Models ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">3</span></a>, we see that models aligned to preferences with SFT and DPO seem to perform better than the individual models when merged using DARE TIES, while merging with Slerp leads to performance degradation. The best performance is obtained when we merge all four models, which is very interesting. Overall, the performance of the merged model depends on the individual models, with the performance of strong models regressing when merged with very weak models. We leave this exploration of using elaborate merging methods as future work.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S6.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.3 </span>Key Takeaways</h3>
+<div class="ltx_para" id="S6.SS3.p1">
+<ul class="ltx_itemize" id="S6.I1">
+<li class="ltx_item" id="S6.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S6.I1.i1.p1">
+<p class="ltx_p" id="S6.I1.i1.p1.1">Pre-trained models generally align better with SFT, whereas instruction-tuned models align better with DPO.</p>
+</div>
+</li>
+<li class="ltx_item" id="S6.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S6.I1.i2.p1">
+<p class="ltx_p" id="S6.I1.i2.p1.1">Instruction-tuned models have reduced performance if the SFT dataset is not similar to the evaluation task.</p>
+</div>
+</li>
+<li class="ltx_item" id="S6.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S6.I1.i3.p1">
+<p class="ltx_p" id="S6.I1.i3.p1.1">Merged models can effectively mitigate performance trade-offs when aligning to diverging preferences.</p>
+</div>
+</li>
+</ul>
+</div>
+<figure class="ltx_figure" id="S6.F6"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="105" id="S6.F6.g1" src="./media/x6.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 6: </span> Comparing the performance when using QLoRA and LoRA as the PEFT method (Section <a class="ltx_ref" href="#S7" title="7 Comparing QLoRA with LoRA ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">7</span></a>). We observe similar trends and performance across the two methods.</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>Comparing QLoRA with LoRA</h2>
+<div class="ltx_para" id="S7.p1">
+<p class="ltx_p" id="S7.p1.1">We compare the performance trends observed when using QLoRA as the PEFT method with LoRA as the PEFT method in Figure <a class="ltx_ref" href="#S6.F6" title="Figure 6 ‣ 6.3 Key Takeaways ‣ 6 Effects of the Nature of Base Models ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">6</span></a>. We observe similar patterns as observed when using QLoRA across the three axes of our study, and also observe similar performance as expected. We provide the extended results of using QLoRA and LoRA across the training setup in the Appendix <a class="ltx_ref" href="#A1" title="Appendix A Extended Results ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">A</span></a>.</p>
+</div>
+</section>
+<section class="ltx_section" id="S8">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">8 </span>Key Takeaways</h2>
+<div class="ltx_para" id="S8.p1">
+<p class="ltx_p" id="S8.p1.1">Consolidating our findings and conclusions, we present key takeaways across the three core axes of preference alignment in PEFT settings.</p>
+<ul class="ltx_itemize" id="S8.I1">
+<li class="ltx_item" id="S8.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S8.I1.i1.p1">
+<p class="ltx_p" id="S8.I1.i1.p1.1"><span class="ltx_text ltx_font_bold" id="S8.I1.i1.p1.1.1">Alignment Dataset</span>: Higher quality and informative datasets lead to better alignment when using both SFT and DPO, with more significant gains when using SFT. However, for instruction-tuned models, there might be performance saturation on certain tasks, and only a few samples might be required to gain improvements with SFT. Furthermore, in certain cases, aligning on high-quality distinct preferences can lead to improvements compared to aligning on the same preference.</p>
+</div>
+</li>
+<li class="ltx_item" id="S8.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S8.I1.i2.p1">
+<p class="ltx_p" id="S8.I1.i2.p1.1"><span class="ltx_text ltx_font_bold" id="S8.I1.i2.p1.1.1">Alignment Method</span>: DPO performs better than SFT and is more faithful to explicit preferences, such as harmlessness, compared to broader preferences, such as helpfulness. However, it fails or overfits when applied over pre-trained models. We suggest instruction-tuning models first with SFT and then apply DPO.</p>
+</div>
+</li>
+<li class="ltx_item" id="S8.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S8.I1.i3.p1">
+<p class="ltx_p" id="S8.I1.i3.p1.1"><span class="ltx_text ltx_font_bold" id="S8.I1.i3.p1.1.1">Nature of Base Model</span>: Pre-trained models generally align better with SFT, whereas instruction-tuned models align better with DPO. Instruction-tuned models have reduced performance if the SFT dataset is not similar to the evaluation task. Models merged across distinct preferences generally perform better than the models aligned on individual preferences.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<section class="ltx_section" id="S9">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">9 </span>Conclusion and Future Work</h2>
+<div class="ltx_para" id="S9.p1">
+<p class="ltx_p" id="S9.p1.1">In this work, we perform an extensive analysis of the trade-offs of downstream performance of models over distinct preferences across three core alignment axes: the alignment dataset, the preference alignment method, and the nature of the base model, particularly when using PEFT. We use the two most widely-used 7 billion parameter models, LLaMA-1 and Mistral-7b, along with their instruction-tuned variants, two popular preference alignment datasets, HH-RLHF and BeaverTails, two commonly used alignment methods, SFT and DPO, and evaluate on <math alttext="5" class="ltx_Math" display="inline" id="S9.p1.1.m1.1"><semantics id="S9.p1.1.m1.1a"><mn id="S9.p1.1.m1.1.1" xref="S9.p1.1.m1.1.1.cmml">5</mn><annotation-xml encoding="MathML-Content" id="S9.p1.1.m1.1b"><cn id="S9.p1.1.m1.1.1.cmml" type="integer" xref="S9.p1.1.m1.1.1">5</cn></annotation-xml><annotation encoding="application/x-tex" id="S9.p1.1.m1.1c">5</annotation></semantics></math> benchmarks across helpfulness and harmlessness. By conducting over 300 experiments with QLoRA and LoRA, our findings reveal interesting trends that address the limitations of existing literature and often deviate from them. We consolidate our findings into key takeaways and hope that our guidelines will help researchers perform more effective parameter-efficient preference alignment.</p>
+</div>
+<div class="ltx_para" id="S9.p2">
+<p class="ltx_p" id="S9.p2.1">As future work, we aim to extend our study on trade-offs across multiple preferences, spanning various domains for alignment. We also plan to explore PEFT methods, such as model merging and mixture-of-experts, to mitigate these trade-offs.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitations</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1">We acknowledge the limitations of our work:</p>
+<ul class="ltx_itemize" id="Sx1.I1">
+<li class="ltx_item" id="Sx1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="Sx1.I1.i1.p1">
+<p class="ltx_p" id="Sx1.I1.i1.p1.1">We selected LoRA and QLoRA as parameter-efficient training methods for our experiments because of their relatively small performance degradation over massive compute savings. We repeatedly point this out throughout our work to avoid confusion; however, other PEFT methods exist, such as adapters and prompt- and prefix-tuning.</p>
+</div>
+</li>
+<li class="ltx_item" id="Sx1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="Sx1.I1.i2.p1">
+<p class="ltx_p" id="Sx1.I1.i2.p1.1">Since we focus on analyzing settings accessible to diverse researchers, we focus on models with 7B parameters. Our findings may or may not extend to models of smaller or larger sizes.</p>
+</div>
+</li>
+<li class="ltx_item" id="Sx1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="Sx1.I1.i3.p1">
+<p class="ltx_p" id="Sx1.I1.i3.p1.1">We conduct experiments to identify the trade-offs across only two preferences. Based on existing literature, we use the most widely used preferences, harmlessness and helpfulness. However, the findings might not extend when more than two preferences or domains are involved for alignment. These more complicated settings might require a separate in-depth study.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Ethics Statement</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">Our research studies various LLMs, parameter-efficient methods, and datasets for preference alignment. We recognize that ensuring the safety of LLMs is a crucial concern and believe that they must be thoroughly vetted before being deployed. Our investigation aims to assist the diverse community of researchers and individuals seeking to align models for safety. Such a research direction is especially important since each person and community has their own perception of safety.</p>
+</div>
+<div class="ltx_para" id="Sx2.p2">
+<p class="ltx_p" id="Sx2.p2.1">We also acknowledge that training and evaluating LLMs for safety is a sensitive issue. No method can guarantee the complete safety of models, and a comprehensive evaluation of models should be carried out even after using the techniques and results described in our work before deploying them in real-world human-facing situations.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx3">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx3.p1">
+<p class="ltx_p" id="Sx3.p1.1">Sarath Chandar is supported by the Canada CIFAR AI Chairs program, the Canada Research Chair in Lifelong Machine Learning, and the NSERC Discovery Grant. The project was also supported by the IBM-Mila collaboration grant. The authors acknowledge the computational resources provided by the Digital Research Alliance of Canada. The authors would also like to Shravan Nayak for his inputs and experimental analysis.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bai et al. (2022)</span>
+<span class="ltx_bibblock">
+Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, Nicholas Joseph, Saurav Kadavath, Jackson Kernion, Tom Conerly, Sheer El-Showk, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Tristan Hume, Scott Johnston, Shauna Kravec, Liane Lovitt, Neel Nanda, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish, Chris Olah, Ben Mann, and Jared Kaplan. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2204.05862" target="_blank" title="">Training a helpful and harmless assistant with reinforcement learning from human feedback</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bhardwaj and Poria (2023)</span>
+<span class="ltx_bibblock">
+Rishabh Bhardwaj and Soujanya Poria. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2308.09662" target="_blank" title="">Red-teaming large language models using chain of utterances for safety-alignment</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chiang et al. (2023)</span>
+<span class="ltx_bibblock">
+Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion Stoica, and Eric P. Xing. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank" title="">Vicuna: An open-source chatbot impressing gpt-4 with 90%* chatgpt quality</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Christiano et al. (2023)</span>
+<span class="ltx_bibblock">
+Paul Christiano, Jan Leike, Tom B. Brown, Miljan Martic, Shane Legg, and Dario Amodei. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1706.03741" target="_blank" title="">Deep reinforcement learning from human preferences</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dettmers et al. (2023)</span>
+<span class="ltx_bibblock">
+Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer. 2023.
+
+</span>
+<span class="ltx_bibblock">Qlora: Efficient finetuning of quantized llms.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">arXiv preprint arXiv:2305.14314</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gehman et al. (2020)</span>
+<span class="ltx_bibblock">
+Samuel Gehman, Suchin Gururangan, Maarten Sap, Yejin Choi, and Noah A. Smith. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.findings-emnlp.301" target="_blank" title="">RealToxicityPrompts: Evaluating neural toxic degeneration in language models</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Findings of the Association for Computational Linguistics: EMNLP 2020</em>, pages 3356–3369, Online. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Glaese et al. (2022)</span>
+<span class="ltx_bibblock">
+Amelia Glaese, Nat McAleese, Maja Trebacz, John Aslanides, Vlad Firoiu, Timo Ewalds, Maribeth Rauh, Laura Weidinger, Martin Chadwick, Phoebe Thacker, Lucy Campbell-Gillingham, Jonathan Uesato, Po-Sen Huang, Ramona Comanescu, Fan Yang, Abigail See, Sumanth Dathathri, Rory Greig, Charlie Chen, Doug Fritz, Jaume Sanchez Elias, Richard Green, Soňa Mokrá, Nicholas Fernando, Boxi Wu, Rachel Foley, Susannah Young, Iason Gabriel, William Isaac, John Mellor, Demis Hassabis, Koray Kavukcuoglu, Lisa Anne Hendricks, and Geoffrey Irving. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2209.14375" target="_blank" title="">Improving alignment of dialogue agents via targeted human judgements</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hendrycks et al. (2021)</span>
+<span class="ltx_bibblock">
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2009.03300" target="_blank" title="">Measuring massive multitask language understanding</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Houlsby et al. (2019)</span>
+<span class="ltx_bibblock">
+Neil Houlsby, Andrei Giurgiu, Stanislaw Jastrzebski, Bruna Morrone, Quentin De Laroussilhe, Andrea Gesmundo, Mona Attariyan, and Sylvain Gelly. 2019.
+
+</span>
+<span class="ltx_bibblock">Parameter-efficient transfer learning for nlp.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">International Conference on Machine Learning</em>, pages 2790–2799. PMLR.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hu et al. (2022)</span>
+<span class="ltx_bibblock">
+Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://openreview.net/forum?id=nZeVKeeFYf9" target="_blank" title="">LoRA: Low-rank adaptation of large language models</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ji et al. (2023)</span>
+<span class="ltx_bibblock">
+Jiaming Ji, Mickel Liu, Juntao Dai, Xuehai Pan, Chi Zhang, Ce Bian, Chi Zhang, Ruiyang Sun, Yizhou Wang, and Yaodong Yang. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2307.04657" target="_blank" title="">Beavertails: Towards improved safety alignment of llm via a human-preference dataset</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Jiang et al. (2023)</span>
+<span class="ltx_bibblock">
+Albert Q. Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, Lélio Renard Lavaud, Marie-Anne Lachaux, Pierre Stock, Teven Le Scao, Thibaut Lavril, Thomas Wang, Timothée Lacroix, and William El Sayed. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2310.06825" target="_blank" title="">Mistral 7b</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lester et al. (2021)</span>
+<span class="ltx_bibblock">
+Brian Lester, Rami Al-Rfou, and Noah Constant. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.emnlp-main.243" target="_blank" title="">The power of scale for parameter-efficient prompt tuning</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing</em>, pages 3045–3059, Online and Punta Cana, Dominican Republic. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li and Liang (2021)</span>
+<span class="ltx_bibblock">
+Xiang Lisa Li and Percy Liang. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.acl-long.353" target="_blank" title="">Prefix-tuning: Optimizing continuous prompts for generation</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)</em>, pages 4582–4597, Online. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al. (2023)</span>
+<span class="ltx_bibblock">
+Xuechen Li, Tianyi Zhang, Yann Dubois, Rohan Taori, Ishaan Gulrajani, Carlos Guestrin, Percy Liang, and Tatsunori B. Hashimoto. 2023.
+
+</span>
+<span class="ltx_bibblock">Alpacaeval: An automatic evaluator of instruction-following models.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/tatsu-lab/alpaca_eval" target="_blank" title="">https://github.com/tatsu-lab/alpaca_eval</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mishra et al. (2021)</span>
+<span class="ltx_bibblock">
+Swaroop Mishra, Daniel Khashabi, Chitta Baral, and Hannaneh Hajishirzi. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:237421373" target="_blank" title="">Cross-task generalization via natural language crowdsourcing instructions</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">Annual Meeting of the Association for Computational Linguistics</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rafailov et al. (2023)</span>
+<span class="ltx_bibblock">
+Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano Ermon, Christopher D. Manning, and Chelsea Finn. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2305.18290" target="_blank" title="">Direct preference optimization: Your language model is secretly a reward model</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Schulman et al. (2017)</span>
+<span class="ltx_bibblock">
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1707.06347" target="_blank" title="">Proximal policy optimization algorithms</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shoemake (1985)</span>
+<span class="ltx_bibblock">
+Ken Shoemake. 1985.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/325165.325242" target="_blank" title="">Animating rotation with quaternion curves</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">SIGGRAPH Comput. Graph.</em>, 19(3):245–254.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Suzgun et al. (2022)</span>
+<span class="ltx_bibblock">
+Mirac Suzgun, Nathan Scales, Nathanael Schärli, Sebastian Gehrmann, Yi Tay, Hyung Won Chung, Aakanksha Chowdhery, Quoc V Le, Ed H Chi, Denny Zhou, , and Jason Wei. 2022.
+
+</span>
+<span class="ltx_bibblock">Challenging big-bench tasks and whether chain-of-thought can solve them.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">arXiv preprint arXiv:2210.09261</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Taori et al. (2023)</span>
+<span class="ltx_bibblock">
+Rohan Taori, Ishaan Gulrajani, Tianyi Zhang, Yann Dubois, Xuechen Li, Carlos Guestrin, Percy Liang, and Tatsunori B. Hashimoto. 2023.
+
+</span>
+<span class="ltx_bibblock">Stanford alpaca: An instruction-following llama model.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/tatsu-lab/stanford_alpaca" target="_blank" title="">https://github.com/tatsu-lab/stanford_alpaca</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Touvron et al. (2023)</span>
+<span class="ltx_bibblock">
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, Aurelien Rodriguez, Armand Joulin, Edouard Grave, and Guillaume Lample. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2302.13971" target="_blank" title="">Llama: Open and efficient foundation language models</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2023a)</span>
+<span class="ltx_bibblock">
+Lei Wang, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan Chen, Jiakai Tang, Xu Chen, Yankai Lin, Wayne Xin Zhao, Zhewei Wei, and Ji-Rong Wen. 2023a.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2308.11432" target="_blank" title="">A survey on large language model based autonomous agents</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2023b)</span>
+<span class="ltx_bibblock">
+Yufei Wang, Wanjun Zhong, Liangyou Li, Fei Mi, Xingshan Zeng, Wenyong Huang, Lifeng Shang, Xin Jiang, and Qun Liu. 2023b.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2307.12966" target="_blank" title="">Aligning large language models with human: A survey</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xue et al. (2023)</span>
+<span class="ltx_bibblock">
+Tianci Xue, Ziqi Wang, and Heng Ji. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2310.00819" target="_blank" title="">Parameter-efficient tuning helps language model alignment</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yadav et al. (2023)</span>
+<span class="ltx_bibblock">
+Prateek Yadav, Derek Tam, Leshem Choshen, Colin Raffel, and Mohit Bansal. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://openreview.net/forum?id=xtaX3WyCj1" target="_blank" title="">TIES-merging: Resolving interference when merging models</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">Thirty-seventh Conference on Neural Information Processing Systems</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yu et al. (2023)</span>
+<span class="ltx_bibblock">
+Le Yu, Bowen Yu, Haiyang Yu, Fei Huang, and Yongbin Li. 2023.
+
+</span>
+<span class="ltx_bibblock">Language models are super mario: Absorbing abilities from homologous models as a free lunch.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">arXiv preprint arXiv:2311.03099</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhao et al. (2023)</span>
+<span class="ltx_bibblock">
+Wayne Xin Zhao, Kun Zhou, Junyi Li, Tianyi Tang, Xiaolei Wang, Yupeng Hou, Yingqian Min, Beichen Zhang, Junjie Zhang, Zican Dong, Yifan Du, Chen Yang, Yushuo Chen, Zhipeng Chen, Jinhao Jiang, Ruiyang Ren, Yifan Li, Xinyu Tang, Zikang Liu, Peiyu Liu, Jian-Yun Nie, and Ji-Rong Wen. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2303.18223" target="_blank" title="">A survey of large language models</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ziegler et al. (2019)</span>
+<span class="ltx_bibblock">
+Daniel M. Ziegler, Nisan Stiennon, Jeffrey Wu, Tom B. Brown, Alec Radford, Dario Amodei, Paul Christiano, and Geoffrey Irving. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://arxiv.org/abs/1909.08593" target="_blank" title="">Fine-tuning language models from human preferences</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">arXiv preprint arXiv:1909.08593</em>.
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix A </span>Extended Results</h2>
+<figure class="ltx_table" id="A1.T4">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="A1.T4.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="A1.T4.1.1.1">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_tt" id="A1.T4.1.1.1.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="A1.T4.1.1.1.2">Evaluation Dataset</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T4.1.1.1.3">BBH</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T4.1.1.1.4">MMLU</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T4.1.1.1.5">AlpacaEval</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T4.1.1.1.6">RT</th>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.2.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row" id="A1.T4.1.2.2.1"><span class="ltx_text" id="A1.T4.1.2.2.1.1">Alignment Dataset</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row" id="A1.T4.1.2.2.2">Model</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.3">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.4">DPO</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.5">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.6">DPO</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.7">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.8">DPO</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.9">SFT</th>
+<th class="ltx_td ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T4.1.2.2.10">DPO</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A1.T4.1.3.1">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_t" id="A1.T4.1.3.1.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="A1.T4.1.3.1.2">Mistral-7b-Ins-Harmless</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.3">0.356</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.4">0.378</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.5">0.507</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.6">0.527</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.7">2.239</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.8">4.738</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.3.1.9">0.533</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_t" id="A1.T4.1.3.1.10">2.662</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.4.2">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.4.2.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.4.2.2">Mistral-7b-Ins-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.3">0.354</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.4">0.380</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.5">0.502</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.6">0.530</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.7">2.488</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.8">8.853</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.4.2.9">0.563</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.4.2.10">1.907</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.5.3">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.5.3.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.5.3.2">Mistral-7b-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.3">0.402</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.4">0.149</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.5">0.554</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.6">0.484</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.7">0.871</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.8">0.498</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.5.3.9">0.882</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.5.3.10">3.199</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.6.4">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.6.4.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.6.4.2">Mistral-7b-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.3">0.408</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.4">0.397</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.5">0.571</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.6">0.583</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.7">2.369</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.8">3.095</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.6.4.9">1.055</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.6.4.10">3.234</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.7.5">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.7.5.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.7.5.2">LLaMA-1-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.3">0.316</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.4">0.223</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.5">0.302</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.6">0.316</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.7">0.249</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.8">0.248</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.7.5.9">1.222</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.7.5.10">2.381</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.8.6">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.8.6.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.8.6.2">LLaMA-1-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.3">0.322</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.4">0.280</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.5">0.338</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.6">0.325</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.7">0.373</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.8">2.224</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.8.6.9">1.224</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.8.6.10">1.352</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.9.7">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.9.7.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.9.7.2">Vicuna-v1.3-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.3">0.314</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.4">0.331</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.5">0.419</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.6">0.460</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.7">2.236</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.8">9.559</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.9.7.9">0.033</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.9.7.10">4.682</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.10.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.10.8.1"><span class="ltx_text" id="A1.T4.1.10.8.1.1">HH-RLHF</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.10.8.2">Vicuna-v1.3-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.3">0.331</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.4">0.335</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.5">0.435</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.6">0.456</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.7">3.731</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.8">8.577</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.10.8.9">1.639</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.10.8.10">1.884</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.11.9">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_t" id="A1.T4.1.11.9.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="A1.T4.1.11.9.2">Mistral-7b-Ins-Harmless</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.3">0.366</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.4">0.392</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.5">0.518</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.6">0.529</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.7">7.711</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.8">13.043</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T4.1.11.9.9">1.981</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_t" id="A1.T4.1.11.9.10">3.520</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.12.10">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.12.10.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.12.10.2">Mistral-7b-Ins-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.3">0.371</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.4">0.382</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.5">0.519</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.6">0.535</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.7">8.095</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.8">15.299</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.12.10.9">1.145</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.12.10.10">2.170</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.13.11">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.13.11.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.13.11.2">Mistral-7b-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.3">0.409</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.4">0.402</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.5">0.583</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.6">0.590</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.7">7.346</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.8">3.975</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.13.11.9">1.863</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.13.11.10">-3.701</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.14.12">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.14.12.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.14.12.2">Mistral-7b-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.3">0.417</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.4">0.418</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.5">0.589</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.6">0.594</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.7">7.081</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.8">3.602</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.14.12.9">1.571</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.14.12.10">-9.375</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.15.13">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.15.13.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.15.13.2">LLaMA-1-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.3">0.321</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.4">0.304</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.5">0.341</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.6">0.328</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.7">2.857</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.8">1.370</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.15.13.9">2.008</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.15.13.10">3.364</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.16.14">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.16.14.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.16.14.2">LLaMA-1-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.3">0.326</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.4">0.311</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.5">0.355</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.6">0.339</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.7">3.975</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.8">2.864</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.16.14.9">1.907</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.16.14.10">2.098</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.17.15">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T4.1.17.15.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T4.1.17.15.2">Vicuna-v1.3-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.3">0.345</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.4">0.358</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.5">0.453</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.6">0.468</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.7">9.689</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.8">9.955</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.17.15.9">2.246</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.17.15.10">4.711</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.18.16">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="A1.T4.1.18.16.1"><span class="ltx_text" id="A1.T4.1.18.16.1.1">BeaverTails</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="A1.T4.1.18.16.2">Vicuna-v1.3-Helpful</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.3">0.348</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.4">0.355</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.5">0.449</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.6">0.465</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.7">8.820</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.8">11.940</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.9">1.876</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_bb" id="A1.T4.1.18.16.10">2.510</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 4: </span> Results across our evaluation datasets when trained with different alignment methods and alignment datasets using QLoRA.</figcaption>
+</figure>
+<figure class="ltx_table" id="A1.T5">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="A1.T5.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="A1.T5.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="A1.T5.1.1.1.1">Evaluation Dataset</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T5.1.1.1.2">BBH</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T5.1.1.1.3">MMLU</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T5.1.1.1.4">AlpacaEval</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" colspan="2" id="A1.T5.1.1.1.5">RT</th>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.2.2">
+<th class="ltx_td ltx_th ltx_th_row" id="A1.T5.1.2.2.1"></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.2">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.3">DPO</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.4">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.5">DPO</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.6">SFT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.7">DPO</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.8">SFT</th>
+<th class="ltx_td ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_t" id="A1.T5.1.2.2.9">DPO</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A1.T5.1.3.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="A1.T5.1.3.1.1">Mistral-7b-Ins-Harmless</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.2">0.363</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.3">0.384</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.4">0.515</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.5">0.522</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.6">10.323</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.7">13.699</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T5.1.3.1.8">1.975</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_t" id="A1.T5.1.3.1.9">5.117</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.4.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T5.1.4.2.1">Mistral-7b-Ins-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.2">0.373</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.3">0.379</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.4">0.517</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.5">0.529</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.6">12.313</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.7">19.006</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.4.2.8">0.862</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.4.2.9">2.206</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.5.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T5.1.5.3.1">Mistral-7b-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.2">0.414</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.3">0.413</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.4">0.582</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.5">0.585</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.6">6.733</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.7">5.853</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.5.3.8">1.587</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.5.3.9">0.641</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.6.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T5.1.6.4.1">Mistral-7b-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.2">0.419</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.3">0.415</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.4">0.584</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.5">0.594</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.6">8.864</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.7">5.970</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.6.4.8">1.261</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.6.4.9">-9.369</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.7.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T5.1.7.5.1">LLaMA-1-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.2">0.312</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.3">0.308</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.4">0.342</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.5">0.323</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.6">4.608</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.7">0.994</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.7.5.8">1.739</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.7.5.9">3.204</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.8.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T5.1.8.6.1">LLaMA-1-Helpful</th>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.2">0.307</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.3">0.320</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.4">0.354</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.5">0.330</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.6">4.857</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.7">2.989</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.8.6.8">1.655</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.8.6.9">1.588</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.9.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T5.1.9.7.1">Vicuna-v1.3-Harmless</th>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.2">0.342</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.3">0.332</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.4">0.450</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.5">0.454</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.6">11.180</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.7">13.292</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.9.7.8">2.007</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.9.7.9">5.367</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.10.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="A1.T5.1.10.8.1">Vicuna-v1.3-Helpful</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.2">0.343</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.3">0.335</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.4">0.451</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.5">0.453</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.6">12.422</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.7">20.449</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.8">1.703</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_bb" id="A1.T5.1.10.8.9">3.231</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 5: </span> Results across our evaluation datasets when trained with different alignment methods using BeaverTails with LoRA.</figcaption>
+</figure>
+<div class="ltx_para" id="A1.p1">
+<p class="ltx_p" id="A1.p1.1">We present our results across the benchmarks when the four models are trained on HH-RLHF and BeaverTails using SFT and DPO with QLoRA in Table <a class="ltx_ref" href="#A1.T4" title="Table 4 ‣ Appendix A Extended Results ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">4</span></a> and with LoRA in Table <a class="ltx_ref" href="#A1.T5" title="Table 5 ‣ Appendix A Extended Results ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">5</span></a>. We observe that the trends presented in the main work hold across preference alignment datasets, alignment methods, and base models.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A2">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix B </span>Hyperparameter settings</h2>
+<figure class="ltx_table" id="A2.T6">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="A2.T6.1">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A2.T6.1.1.1">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_tt" id="A2.T6.1.1.1.1" style="padding-left:5.0pt;padding-right:5.0pt;"></th>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A2.T6.1.1.1.2" style="padding-left:5.0pt;padding-right:5.0pt;">SFT</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_tt" id="A2.T6.1.1.1.3" style="padding-left:5.0pt;padding-right:5.0pt;">DPO</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.2.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="A2.T6.1.2.2.1" style="padding-left:5.0pt;padding-right:5.0pt;">Learning Rate</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T6.1.2.2.2" style="padding-left:5.0pt;padding-right:5.0pt;">2.00E-04</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_t" id="A2.T6.1.2.2.3" style="padding-left:5.0pt;padding-right:5.0pt;">5.00E-05</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.3.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.3.3.1" style="padding-left:5.0pt;padding-right:5.0pt;">PEFT Rank</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.3.3.2" style="padding-left:5.0pt;padding-right:5.0pt;">64</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.3.3.3" style="padding-left:5.0pt;padding-right:5.0pt;">16</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.4.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.4.4.1" style="padding-left:5.0pt;padding-right:5.0pt;">PEFT Alpha</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.4.4.2" style="padding-left:5.0pt;padding-right:5.0pt;">16</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.4.4.3" style="padding-left:5.0pt;padding-right:5.0pt;">32</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.5.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.5.5.1" style="padding-left:5.0pt;padding-right:5.0pt;">PEFT Dropout</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.5.5.2" style="padding-left:5.0pt;padding-right:5.0pt;">0.1</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.5.5.3" style="padding-left:5.0pt;padding-right:5.0pt;">0.05</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.6.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.6.6.1" style="padding-left:5.0pt;padding-right:5.0pt;">Batch size</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.6.6.2" style="padding-left:5.0pt;padding-right:5.0pt;">16</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.6.6.3" style="padding-left:5.0pt;padding-right:5.0pt;">16</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.7.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.7.7.1" style="padding-left:5.0pt;padding-right:5.0pt;">Max Grad Norm</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.7.7.2" style="padding-left:5.0pt;padding-right:5.0pt;">0.3</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.7.7.3" style="padding-left:5.0pt;padding-right:5.0pt;">1</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.8.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.8.8.1" style="padding-left:5.0pt;padding-right:5.0pt;">Weight Decay</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.8.8.2" style="padding-left:5.0pt;padding-right:5.0pt;">0.001</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.8.8.3" style="padding-left:5.0pt;padding-right:5.0pt;">0</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.9.9">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.9.9.1" style="padding-left:5.0pt;padding-right:5.0pt;">Optimizer</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.9.9.2" style="padding-left:5.0pt;padding-right:5.0pt;">Paged AdamW</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.9.9.3" style="padding-left:5.0pt;padding-right:5.0pt;">Paged AdamW</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.10.10">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.10.10.1" style="padding-left:5.0pt;padding-right:5.0pt;">Learning Rate Scheduler</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.10.10.2" style="padding-left:5.0pt;padding-right:5.0pt;">Constant</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.10.10.3" style="padding-left:5.0pt;padding-right:5.0pt;">cosine</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.11.11">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.11.11.1" style="padding-left:5.0pt;padding-right:5.0pt;">Adam Beta1</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.11.11.2" style="padding-left:5.0pt;padding-right:5.0pt;">0.9</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.11.11.3" style="padding-left:5.0pt;padding-right:5.0pt;">0.9</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.12.12">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A2.T6.1.12.12.1" style="padding-left:5.0pt;padding-right:5.0pt;">Adam Beta2</th>
+<td class="ltx_td ltx_align_center" id="A2.T6.1.12.12.2" style="padding-left:5.0pt;padding-right:5.0pt;">0.999</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T6.1.12.12.3" style="padding-left:5.0pt;padding-right:5.0pt;">0.999</td>
+</tr>
+<tr class="ltx_tr" id="A2.T6.1.13.13">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="A2.T6.1.13.13.1" style="padding-left:5.0pt;padding-right:5.0pt;">PEFT Target Modules</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T6.1.13.13.2" style="padding-left:5.0pt;padding-right:5.0pt;">q_proj,v_proj</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_bb" id="A2.T6.1.13.13.3" style="padding-left:5.0pt;padding-right:5.0pt;">k_proj, gate_proj, v_proj, up_proj, q_proj, o_proj, down_proj</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 6: </span>Hyperparameter settings for our alignment methods.</figcaption>
+</figure>
+<div class="ltx_para" id="A2.p1">
+<p class="ltx_p" id="A2.p1.4">For LoRA and QLoRA parameters, we do a grid search with different combinations of LoRA and QLoRA rank and alpha. For SFT, we experiment with ranks <math alttext="[32,64,128]" class="ltx_Math" display="inline" id="A2.p1.1.m1.3"><semantics id="A2.p1.1.m1.3a"><mrow id="A2.p1.1.m1.3.4.2" xref="A2.p1.1.m1.3.4.1.cmml"><mo id="A2.p1.1.m1.3.4.2.1" stretchy="false" xref="A2.p1.1.m1.3.4.1.cmml">[</mo><mn id="A2.p1.1.m1.1.1" xref="A2.p1.1.m1.1.1.cmml">32</mn><mo id="A2.p1.1.m1.3.4.2.2" xref="A2.p1.1.m1.3.4.1.cmml">,</mo><mn id="A2.p1.1.m1.2.2" xref="A2.p1.1.m1.2.2.cmml">64</mn><mo id="A2.p1.1.m1.3.4.2.3" xref="A2.p1.1.m1.3.4.1.cmml">,</mo><mn id="A2.p1.1.m1.3.3" xref="A2.p1.1.m1.3.3.cmml">128</mn><mo id="A2.p1.1.m1.3.4.2.4" stretchy="false" xref="A2.p1.1.m1.3.4.1.cmml">]</mo></mrow><annotation-xml encoding="MathML-Content" id="A2.p1.1.m1.3b"><list id="A2.p1.1.m1.3.4.1.cmml" xref="A2.p1.1.m1.3.4.2"><cn id="A2.p1.1.m1.1.1.cmml" type="integer" xref="A2.p1.1.m1.1.1">32</cn><cn id="A2.p1.1.m1.2.2.cmml" type="integer" xref="A2.p1.1.m1.2.2">64</cn><cn id="A2.p1.1.m1.3.3.cmml" type="integer" xref="A2.p1.1.m1.3.3">128</cn></list></annotation-xml><annotation encoding="application/x-tex" id="A2.p1.1.m1.3c">[32,64,128]</annotation></semantics></math> and alphas <math alttext="[16,32,64]" class="ltx_Math" display="inline" id="A2.p1.2.m2.3"><semantics id="A2.p1.2.m2.3a"><mrow id="A2.p1.2.m2.3.4.2" xref="A2.p1.2.m2.3.4.1.cmml"><mo id="A2.p1.2.m2.3.4.2.1" stretchy="false" xref="A2.p1.2.m2.3.4.1.cmml">[</mo><mn id="A2.p1.2.m2.1.1" xref="A2.p1.2.m2.1.1.cmml">16</mn><mo id="A2.p1.2.m2.3.4.2.2" xref="A2.p1.2.m2.3.4.1.cmml">,</mo><mn id="A2.p1.2.m2.2.2" xref="A2.p1.2.m2.2.2.cmml">32</mn><mo id="A2.p1.2.m2.3.4.2.3" xref="A2.p1.2.m2.3.4.1.cmml">,</mo><mn id="A2.p1.2.m2.3.3" xref="A2.p1.2.m2.3.3.cmml">64</mn><mo id="A2.p1.2.m2.3.4.2.4" stretchy="false" xref="A2.p1.2.m2.3.4.1.cmml">]</mo></mrow><annotation-xml encoding="MathML-Content" id="A2.p1.2.m2.3b"><list id="A2.p1.2.m2.3.4.1.cmml" xref="A2.p1.2.m2.3.4.2"><cn id="A2.p1.2.m2.1.1.cmml" type="integer" xref="A2.p1.2.m2.1.1">16</cn><cn id="A2.p1.2.m2.2.2.cmml" type="integer" xref="A2.p1.2.m2.2.2">32</cn><cn id="A2.p1.2.m2.3.3.cmml" type="integer" xref="A2.p1.2.m2.3.3">64</cn></list></annotation-xml><annotation encoding="application/x-tex" id="A2.p1.2.m2.3c">[16,32,64]</annotation></semantics></math>. For DPO, we experiment with ranks <math alttext="[8,16,32]" class="ltx_Math" display="inline" id="A2.p1.3.m3.3"><semantics id="A2.p1.3.m3.3a"><mrow id="A2.p1.3.m3.3.4.2" xref="A2.p1.3.m3.3.4.1.cmml"><mo id="A2.p1.3.m3.3.4.2.1" stretchy="false" xref="A2.p1.3.m3.3.4.1.cmml">[</mo><mn id="A2.p1.3.m3.1.1" xref="A2.p1.3.m3.1.1.cmml">8</mn><mo id="A2.p1.3.m3.3.4.2.2" xref="A2.p1.3.m3.3.4.1.cmml">,</mo><mn id="A2.p1.3.m3.2.2" xref="A2.p1.3.m3.2.2.cmml">16</mn><mo id="A2.p1.3.m3.3.4.2.3" xref="A2.p1.3.m3.3.4.1.cmml">,</mo><mn id="A2.p1.3.m3.3.3" xref="A2.p1.3.m3.3.3.cmml">32</mn><mo id="A2.p1.3.m3.3.4.2.4" stretchy="false" xref="A2.p1.3.m3.3.4.1.cmml">]</mo></mrow><annotation-xml encoding="MathML-Content" id="A2.p1.3.m3.3b"><list id="A2.p1.3.m3.3.4.1.cmml" xref="A2.p1.3.m3.3.4.2"><cn id="A2.p1.3.m3.1.1.cmml" type="integer" xref="A2.p1.3.m3.1.1">8</cn><cn id="A2.p1.3.m3.2.2.cmml" type="integer" xref="A2.p1.3.m3.2.2">16</cn><cn id="A2.p1.3.m3.3.3.cmml" type="integer" xref="A2.p1.3.m3.3.3">32</cn></list></annotation-xml><annotation encoding="application/x-tex" id="A2.p1.3.m3.3c">[8,16,32]</annotation></semantics></math> and alphas <math alttext="[16,32,64]" class="ltx_Math" display="inline" id="A2.p1.4.m4.3"><semantics id="A2.p1.4.m4.3a"><mrow id="A2.p1.4.m4.3.4.2" xref="A2.p1.4.m4.3.4.1.cmml"><mo id="A2.p1.4.m4.3.4.2.1" stretchy="false" xref="A2.p1.4.m4.3.4.1.cmml">[</mo><mn id="A2.p1.4.m4.1.1" xref="A2.p1.4.m4.1.1.cmml">16</mn><mo id="A2.p1.4.m4.3.4.2.2" xref="A2.p1.4.m4.3.4.1.cmml">,</mo><mn id="A2.p1.4.m4.2.2" xref="A2.p1.4.m4.2.2.cmml">32</mn><mo id="A2.p1.4.m4.3.4.2.3" xref="A2.p1.4.m4.3.4.1.cmml">,</mo><mn id="A2.p1.4.m4.3.3" xref="A2.p1.4.m4.3.3.cmml">64</mn><mo id="A2.p1.4.m4.3.4.2.4" stretchy="false" xref="A2.p1.4.m4.3.4.1.cmml">]</mo></mrow><annotation-xml encoding="MathML-Content" id="A2.p1.4.m4.3b"><list id="A2.p1.4.m4.3.4.1.cmml" xref="A2.p1.4.m4.3.4.2"><cn id="A2.p1.4.m4.1.1.cmml" type="integer" xref="A2.p1.4.m4.1.1">16</cn><cn id="A2.p1.4.m4.2.2.cmml" type="integer" xref="A2.p1.4.m4.2.2">32</cn><cn id="A2.p1.4.m4.3.3.cmml" type="integer" xref="A2.p1.4.m4.3.3">64</cn></list></annotation-xml><annotation encoding="application/x-tex" id="A2.p1.4.m4.3c">[16,32,64]</annotation></semantics></math>.
+We choose the best hyperparameters based on the validation set performance of the alignment datasets.
+We show the detailed best hyperparameter setup of our training setup during alignment training in Table <a class="ltx_ref" href="#A2.T6" title="Table 6 ‣ Appendix B Hyperparameter settings ‣ A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A3">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix C </span>Alignment Dataset Creation and Details</h2>
+<div class="ltx_para" id="A3.p1">
+<p class="ltx_p" id="A3.p1.1">The HH-RLHF dataset has explicit splits for harmlessness and helpfulness. However, BeaverTails does not have this explicit split. Since the BeaverTails dataset has no explicit “helpful” and “harmless” splits like HH-RLHF, we create these splits using the provided labels. Each sample in the dataset has an instruction and two responses. Each response also has a “’safe” label, and the dataset sample has the label of the “better” response. To make helpfulness alignment data, we select the "better" response as the choice for helpfulness and select the second response as the "rejected" sample. Similarly, to create harmlessness alignment data, we select the samples where the response was marked safe and the second response was marked unsafe.</p>
+</div>
+<div class="ltx_para" id="A3.p2">
+<p class="ltx_p" id="A3.p2.4">The harmless split of HH-RLHF has <math alttext="42507" class="ltx_Math" display="inline" id="A3.p2.1.m1.1"><semantics id="A3.p2.1.m1.1a"><mn id="A3.p2.1.m1.1.1" xref="A3.p2.1.m1.1.1.cmml">42507</mn><annotation-xml encoding="MathML-Content" id="A3.p2.1.m1.1b"><cn id="A3.p2.1.m1.1.1.cmml" type="integer" xref="A3.p2.1.m1.1.1">42507</cn></annotation-xml><annotation encoding="application/x-tex" id="A3.p2.1.m1.1c">42507</annotation></semantics></math> samples, and the helpful split has <math alttext="43810" class="ltx_Math" display="inline" id="A3.p2.2.m2.1"><semantics id="A3.p2.2.m2.1a"><mn id="A3.p2.2.m2.1.1" xref="A3.p2.2.m2.1.1.cmml">43810</mn><annotation-xml encoding="MathML-Content" id="A3.p2.2.m2.1b"><cn id="A3.p2.2.m2.1.1.cmml" type="integer" xref="A3.p2.2.m2.1.1">43810</cn></annotation-xml><annotation encoding="application/x-tex" id="A3.p2.2.m2.1c">43810</annotation></semantics></math> samples for alignment training. The samples are multi-turn. Using our method, the helpful split of BeaverTails has <math alttext="297394" class="ltx_Math" display="inline" id="A3.p2.3.m3.1"><semantics id="A3.p2.3.m3.1a"><mn id="A3.p2.3.m3.1.1" xref="A3.p2.3.m3.1.1.cmml">297394</mn><annotation-xml encoding="MathML-Content" id="A3.p2.3.m3.1b"><cn id="A3.p2.3.m3.1.1.cmml" type="integer" xref="A3.p2.3.m3.1.1">297394</cn></annotation-xml><annotation encoding="application/x-tex" id="A3.p2.3.m3.1c">297394</annotation></semantics></math> samples, and the harmless split has <math alttext="46625" class="ltx_Math" display="inline" id="A3.p2.4.m4.1"><semantics id="A3.p2.4.m4.1a"><mn id="A3.p2.4.m4.1.1" xref="A3.p2.4.m4.1.1.cmml">46625</mn><annotation-xml encoding="MathML-Content" id="A3.p2.4.m4.1b"><cn id="A3.p2.4.m4.1.1.cmml" type="integer" xref="A3.p2.4.m4.1.1">46625</cn></annotation-xml><annotation encoding="application/x-tex" id="A3.p2.4.m4.1c">46625</annotation></semantics></math> samples, and the samples are single-turn. We modify the prompts and outputs for both datasets following the suggested instruction-tuning templates of the Vicuna and Mistral models.</p>
+</div>
+<div class="ltx_para ltx_noindent" id="A3.p3">
+<p class="ltx_p" id="A3.p3.1"><span class="ltx_text ltx_font_bold" id="A3.p3.1.1">Vicuna:</span> <span class="ltx_text ltx_font_typewriter" id="A3.p3.1.2">A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user’s questions. 
+<br class="ltx_break"/>USER: ‘‘prompt’’ 
+<br class="ltx_break"/>ASSISTANT: ‘‘response’’&lt;/s&gt;</span></p>
+</div>
+<div class="ltx_para ltx_noindent" id="A3.p4">
+<p class="ltx_p" id="A3.p4.1"><span class="ltx_text ltx_font_bold" id="A3.p4.1.1">Mistral:</span> <span class="ltx_text ltx_font_typewriter" id="A3.p4.1.2">[INST] ‘‘prompt’’ [/INST] ‘‘response’’ &lt;/s&gt;</span></p>
+</div>
+</section>
+<section class="ltx_appendix" id="A4">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix D </span>Evaluation Dataset Statistics</h2>
+<section class="ltx_paragraph" id="A4.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">MMLU</h4>
+<div class="ltx_para" id="A4.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="A4.SS0.SSS0.Px1.p1.1">The MMLU dataset has <math alttext="56168" class="ltx_Math" display="inline" id="A4.SS0.SSS0.Px1.p1.1.m1.1"><semantics id="A4.SS0.SSS0.Px1.p1.1.m1.1a"><mn id="A4.SS0.SSS0.Px1.p1.1.m1.1.1" xref="A4.SS0.SSS0.Px1.p1.1.m1.1.1.cmml">56168</mn><annotation-xml encoding="MathML-Content" id="A4.SS0.SSS0.Px1.p1.1.m1.1b"><cn id="A4.SS0.SSS0.Px1.p1.1.m1.1.1.cmml" type="integer" xref="A4.SS0.SSS0.Px1.p1.1.m1.1.1">56168</cn></annotation-xml><annotation encoding="application/x-tex" id="A4.SS0.SSS0.Px1.p1.1.m1.1c">56168</annotation></semantics></math> samples across 57 tasks.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A4.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Big-Bench Hard</h4>
+<div class="ltx_para" id="A4.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="A4.SS0.SSS0.Px2.p1.1">The BBH dataset has <math alttext="6511" class="ltx_Math" display="inline" id="A4.SS0.SSS0.Px2.p1.1.m1.1"><semantics id="A4.SS0.SSS0.Px2.p1.1.m1.1a"><mn id="A4.SS0.SSS0.Px2.p1.1.m1.1.1" xref="A4.SS0.SSS0.Px2.p1.1.m1.1.1.cmml">6511</mn><annotation-xml encoding="MathML-Content" id="A4.SS0.SSS0.Px2.p1.1.m1.1b"><cn id="A4.SS0.SSS0.Px2.p1.1.m1.1.1.cmml" type="integer" xref="A4.SS0.SSS0.Px2.p1.1.m1.1.1">6511</cn></annotation-xml><annotation encoding="application/x-tex" id="A4.SS0.SSS0.Px2.p1.1.m1.1c">6511</annotation></semantics></math> samples across 23 tasks.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A4.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Alpaca Eval</h4>
+<div class="ltx_para" id="A4.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="A4.SS0.SSS0.Px3.p1.1">The Alpaca Eval dataset has <math alttext="805" class="ltx_Math" display="inline" id="A4.SS0.SSS0.Px3.p1.1.m1.1"><semantics id="A4.SS0.SSS0.Px3.p1.1.m1.1a"><mn id="A4.SS0.SSS0.Px3.p1.1.m1.1.1" xref="A4.SS0.SSS0.Px3.p1.1.m1.1.1.cmml">805</mn><annotation-xml encoding="MathML-Content" id="A4.SS0.SSS0.Px3.p1.1.m1.1b"><cn id="A4.SS0.SSS0.Px3.p1.1.m1.1.1.cmml" type="integer" xref="A4.SS0.SSS0.Px3.p1.1.m1.1.1">805</cn></annotation-xml><annotation encoding="application/x-tex" id="A4.SS0.SSS0.Px3.p1.1.m1.1c">805</annotation></semantics></math> human written prompts.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A4.SS0.SSS0.Px4">
+<h4 class="ltx_title ltx_title_paragraph">RealToxicity</h4>
+<div class="ltx_para" id="A4.SS0.SSS0.Px4.p1">
+<p class="ltx_p" id="A4.SS0.SSS0.Px4.p1.1">The full RealToxicity prompts dataset has 99.4k prompts. We use the <math alttext="1000" class="ltx_Math" display="inline" id="A4.SS0.SSS0.Px4.p1.1.m1.1"><semantics id="A4.SS0.SSS0.Px4.p1.1.m1.1a"><mn id="A4.SS0.SSS0.Px4.p1.1.m1.1.1" xref="A4.SS0.SSS0.Px4.p1.1.m1.1.1.cmml">1000</mn><annotation-xml encoding="MathML-Content" id="A4.SS0.SSS0.Px4.p1.1.m1.1b"><cn id="A4.SS0.SSS0.Px4.p1.1.m1.1.1.cmml" type="integer" xref="A4.SS0.SSS0.Px4.p1.1.m1.1.1">1000</cn></annotation-xml><annotation encoding="application/x-tex" id="A4.SS0.SSS0.Px4.p1.1.m1.1c">1000</annotation></semantics></math> most severe prompts for our evaluation.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A4.SS0.SSS0.Px5">
+<h4 class="ltx_title ltx_title_paragraph">Red-Instruct</h4>
+<div class="ltx_para" id="A4.SS0.SSS0.Px5.p1">
+<p class="ltx_p" id="A4.SS0.SSS0.Px5.p1.1">We use the DangerousQA set of the Red-Instruct dataset, which has 200 prompts. We also use the Chain-of-Utterance format, which is the strongest in the dataset.</p>
+</div>
+</section>
+</section>
+<section class="ltx_appendix" id="A5">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix E </span>Model and Compute Statistics</h2>
+<div class="ltx_para" id="A5.p1">
+<p class="ltx_p" id="A5.p1.5">All our model variants are the 7-billion parameter versions of the original models. For our experiments, we use a <math alttext="40" class="ltx_Math" display="inline" id="A5.p1.1.m1.1"><semantics id="A5.p1.1.m1.1a"><mn id="A5.p1.1.m1.1.1" xref="A5.p1.1.m1.1.1.cmml">40</mn><annotation-xml encoding="MathML-Content" id="A5.p1.1.m1.1b"><cn id="A5.p1.1.m1.1.1.cmml" type="integer" xref="A5.p1.1.m1.1.1">40</cn></annotation-xml><annotation encoding="application/x-tex" id="A5.p1.1.m1.1c">40</annotation></semantics></math>GB A100 GPU. SFT alignment takes about <math alttext="15" class="ltx_Math" display="inline" id="A5.p1.2.m2.1"><semantics id="A5.p1.2.m2.1a"><mn id="A5.p1.2.m2.1.1" xref="A5.p1.2.m2.1.1.cmml">15</mn><annotation-xml encoding="MathML-Content" id="A5.p1.2.m2.1b"><cn id="A5.p1.2.m2.1.1.cmml" type="integer" xref="A5.p1.2.m2.1.1">15</cn></annotation-xml><annotation encoding="application/x-tex" id="A5.p1.2.m2.1c">15</annotation></semantics></math> minutes for BeaverTails and <math alttext="20" class="ltx_Math" display="inline" id="A5.p1.3.m3.1"><semantics id="A5.p1.3.m3.1a"><mn id="A5.p1.3.m3.1.1" xref="A5.p1.3.m3.1.1.cmml">20</mn><annotation-xml encoding="MathML-Content" id="A5.p1.3.m3.1b"><cn id="A5.p1.3.m3.1.1.cmml" type="integer" xref="A5.p1.3.m3.1.1">20</cn></annotation-xml><annotation encoding="application/x-tex" id="A5.p1.3.m3.1c">20</annotation></semantics></math> minutes for HH-RLHF. DPO alignment takes about <math alttext="60" class="ltx_Math" display="inline" id="A5.p1.4.m4.1"><semantics id="A5.p1.4.m4.1a"><mn id="A5.p1.4.m4.1.1" xref="A5.p1.4.m4.1.1.cmml">60</mn><annotation-xml encoding="MathML-Content" id="A5.p1.4.m4.1b"><cn id="A5.p1.4.m4.1.1.cmml" type="integer" xref="A5.p1.4.m4.1.1">60</cn></annotation-xml><annotation encoding="application/x-tex" id="A5.p1.4.m4.1c">60</annotation></semantics></math> minutes for BeaverTails and <math alttext="90" class="ltx_Math" display="inline" id="A5.p1.5.m5.1"><semantics id="A5.p1.5.m5.1a"><mn id="A5.p1.5.m5.1.1" xref="A5.p1.5.m5.1.1.cmml">90</mn><annotation-xml encoding="MathML-Content" id="A5.p1.5.m5.1b"><cn id="A5.p1.5.m5.1.1.cmml" type="integer" xref="A5.p1.5.m5.1.1">90</cn></annotation-xml><annotation encoding="application/x-tex" id="A5.p1.5.m5.1c">90</annotation></semantics></math> minutes for HH-RLHF.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A6">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix F </span>Background and Related Work</h2>
+<section class="ltx_subsection" id="A6.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">F.1 </span>Alignment Methods</h3>
+<div class="ltx_para" id="A6.SS1.p1">
+<p class="ltx_p" id="A6.SS1.p1.1">Alignment training aims to reduce the mismatch between an LLM’s pre-training and user preference requirements. It also ensures that models are safe and harmless, reducing the risks associated with their use. We choose the two most widely used alignment methods:</p>
+</div>
+<section class="ltx_paragraph" id="A6.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Supervised fine-tuning (SFT)</h4>
+<div class="ltx_para" id="A6.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="A6.SS1.SSS0.Px1.p1.1">SFT uses a pair of input instructions and corresponding gold answers or outputs to fine-tune the LLM using autoregressive language modeling. The training objective is similar to pre-training, but the dataset is orders of magnitude smaller and follows a strict format. This method is often used for the ’instruction-tuning’ stage for models like Alpaca <cite class="ltx_cite ltx_citemacro_citep">(Taori et al., <a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite> and Mistral-7b-Instruct <cite class="ltx_cite ltx_citemacro_citep">(Jiang et al., <a class="ltx_ref" href="#bib.bib12" title="">2023</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A6.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Reinforcement Learning from Human Feedback (RLHF)</h4>
+<div class="ltx_para" id="A6.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="A6.SS1.SSS0.Px2.p1.1">RLHF <cite class="ltx_cite ltx_citemacro_citep">(Ziegler et al., <a class="ltx_ref" href="#bib.bib29" title="">2019</a>)</cite> is a reinforcement learning-based alignment method that consists of three steps: 1. Collect human feedback data, 2. Train a reward model on the feedback data. 3. Fine-tune an LLM with RL using PPO <cite class="ltx_cite ltx_citemacro_citep">(Schulman et al., <a class="ltx_ref" href="#bib.bib18" title="">2017</a>)</cite> and the reward model. RLHF is the most commonly used method for preference alignment but often requires a lot of computation and steps for alignment. Various variants of RLHF have been proposed, such as using pure RL for training LLMs with human feedback in an online manner <cite class="ltx_cite ltx_citemacro_citep">(Bai et al., <a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite> and modifying the reward modeling with adversarial probing <cite class="ltx_cite ltx_citemacro_citep">(Glaese et al., <a class="ltx_ref" href="#bib.bib7" title="">2022</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A6.SS1.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Direct Preference Optimization (DPO)</h4>
+<div class="ltx_para" id="A6.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="A6.SS1.SSS0.Px3.p1.1">Reinforcement learning algorithms such as RLHF <cite class="ltx_cite ltx_citemacro_citep">(Christiano et al., <a class="ltx_ref" href="#bib.bib4" title="">2023</a>)</cite> have been used to better align LLMs using paired human preference data: data consisting of accepted and rejected outputs given an instruction. However, these methods require multiple steps as well as training of separate reward models. DPO <cite class="ltx_cite ltx_citemacro_citep">(Rafailov et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite> is a method that inherently uses the model being aligned as a reward model, making alignment more stable and optimized.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="A6.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">F.2 </span>Parameter-Efficient Training (PEFT)</h3>
+<div class="ltx_para" id="A6.SS2.p1">
+<p class="ltx_p" id="A6.SS2.p1.8">Parameter-efficient training methods require updating only a fraction of the parameters of the full model while achieving performance close to that of full fine-tuning.
+Examples of parameter-efficient training methods include using adapters <cite class="ltx_cite ltx_citemacro_citep">(Houlsby et al., <a class="ltx_ref" href="#bib.bib9" title="">2019</a>)</cite>, prefix-tuning <cite class="ltx_cite ltx_citemacro_citep">(Li and Liang, <a class="ltx_ref" href="#bib.bib14" title="">2021</a>)</cite>, and prompt-tuning <cite class="ltx_cite ltx_citemacro_citep">(Lester et al., <a class="ltx_ref" href="#bib.bib13" title="">2021</a>)</cite>. Low-Rank Adaptation (LoRA) <cite class="ltx_cite ltx_citemacro_citep">(Hu et al., <a class="ltx_ref" href="#bib.bib10" title="">2022</a>)</cite> is another popular method that performs on par with full fine-tuning. LoRA works by inserting a smaller number of new weights into the model, which are the only trainable parameters. These weights are essentially low-rank matrix decompositions of the different model parameters.
+Low-rank decomposition refers to the process of approximating a larger matrix as a product of smaller matrices by assuming that the two smaller matrices are representative of the larger matrix. Assuming a parameter of size <math alttext="A\times B" class="ltx_Math" display="inline" id="A6.SS2.p1.1.m1.1"><semantics id="A6.SS2.p1.1.m1.1a"><mrow id="A6.SS2.p1.1.m1.1.1" xref="A6.SS2.p1.1.m1.1.1.cmml"><mi id="A6.SS2.p1.1.m1.1.1.2" xref="A6.SS2.p1.1.m1.1.1.2.cmml">A</mi><mo id="A6.SS2.p1.1.m1.1.1.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.1.m1.1.1.1.cmml">×</mo><mi id="A6.SS2.p1.1.m1.1.1.3" xref="A6.SS2.p1.1.m1.1.1.3.cmml">B</mi></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.1.m1.1b"><apply id="A6.SS2.p1.1.m1.1.1.cmml" xref="A6.SS2.p1.1.m1.1.1"><times id="A6.SS2.p1.1.m1.1.1.1.cmml" xref="A6.SS2.p1.1.m1.1.1.1"></times><ci id="A6.SS2.p1.1.m1.1.1.2.cmml" xref="A6.SS2.p1.1.m1.1.1.2">𝐴</ci><ci id="A6.SS2.p1.1.m1.1.1.3.cmml" xref="A6.SS2.p1.1.m1.1.1.3">𝐵</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.1.m1.1c">A\times B</annotation></semantics></math> and a low-rank <math alttext="n" class="ltx_Math" display="inline" id="A6.SS2.p1.2.m2.1"><semantics id="A6.SS2.p1.2.m2.1a"><mi id="A6.SS2.p1.2.m2.1.1" xref="A6.SS2.p1.2.m2.1.1.cmml">n</mi><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.2.m2.1b"><ci id="A6.SS2.p1.2.m2.1.1.cmml" xref="A6.SS2.p1.2.m2.1.1">𝑛</ci></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.2.m2.1c">n</annotation></semantics></math>, i.e., <math alttext="n&lt;&lt;A,B" class="ltx_Math" display="inline" id="A6.SS2.p1.3.m3.2"><semantics id="A6.SS2.p1.3.m3.2a"><mrow id="A6.SS2.p1.3.m3.2.3" xref="A6.SS2.p1.3.m3.2.3.cmml"><mi id="A6.SS2.p1.3.m3.2.3.2" xref="A6.SS2.p1.3.m3.2.3.2.cmml">n</mi><mo id="A6.SS2.p1.3.m3.2.3.1" xref="A6.SS2.p1.3.m3.2.3.1.cmml">&lt;&lt;</mo><mrow id="A6.SS2.p1.3.m3.2.3.3.2" xref="A6.SS2.p1.3.m3.2.3.3.1.cmml"><mi id="A6.SS2.p1.3.m3.1.1" xref="A6.SS2.p1.3.m3.1.1.cmml">A</mi><mo id="A6.SS2.p1.3.m3.2.3.3.2.1" xref="A6.SS2.p1.3.m3.2.3.3.1.cmml">,</mo><mi id="A6.SS2.p1.3.m3.2.2" xref="A6.SS2.p1.3.m3.2.2.cmml">B</mi></mrow></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.3.m3.2b"><apply id="A6.SS2.p1.3.m3.2.3.cmml" xref="A6.SS2.p1.3.m3.2.3"><csymbol cd="latexml" id="A6.SS2.p1.3.m3.2.3.1.cmml" xref="A6.SS2.p1.3.m3.2.3.1">much-less-than</csymbol><ci id="A6.SS2.p1.3.m3.2.3.2.cmml" xref="A6.SS2.p1.3.m3.2.3.2">𝑛</ci><list id="A6.SS2.p1.3.m3.2.3.3.1.cmml" xref="A6.SS2.p1.3.m3.2.3.3.2"><ci id="A6.SS2.p1.3.m3.1.1.cmml" xref="A6.SS2.p1.3.m3.1.1">𝐴</ci><ci id="A6.SS2.p1.3.m3.2.2.cmml" xref="A6.SS2.p1.3.m3.2.2">𝐵</ci></list></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.3.m3.2c">n&lt;&lt;A,B</annotation></semantics></math>. We can hope to approximate <math alttext="A\times B" class="ltx_Math" display="inline" id="A6.SS2.p1.4.m4.1"><semantics id="A6.SS2.p1.4.m4.1a"><mrow id="A6.SS2.p1.4.m4.1.1" xref="A6.SS2.p1.4.m4.1.1.cmml"><mi id="A6.SS2.p1.4.m4.1.1.2" xref="A6.SS2.p1.4.m4.1.1.2.cmml">A</mi><mo id="A6.SS2.p1.4.m4.1.1.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.4.m4.1.1.1.cmml">×</mo><mi id="A6.SS2.p1.4.m4.1.1.3" xref="A6.SS2.p1.4.m4.1.1.3.cmml">B</mi></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.4.m4.1b"><apply id="A6.SS2.p1.4.m4.1.1.cmml" xref="A6.SS2.p1.4.m4.1.1"><times id="A6.SS2.p1.4.m4.1.1.1.cmml" xref="A6.SS2.p1.4.m4.1.1.1"></times><ci id="A6.SS2.p1.4.m4.1.1.2.cmml" xref="A6.SS2.p1.4.m4.1.1.2">𝐴</ci><ci id="A6.SS2.p1.4.m4.1.1.3.cmml" xref="A6.SS2.p1.4.m4.1.1.3">𝐵</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.4.m4.1c">A\times B</annotation></semantics></math> using <math alttext="A\times n" class="ltx_Math" display="inline" id="A6.SS2.p1.5.m5.1"><semantics id="A6.SS2.p1.5.m5.1a"><mrow id="A6.SS2.p1.5.m5.1.1" xref="A6.SS2.p1.5.m5.1.1.cmml"><mi id="A6.SS2.p1.5.m5.1.1.2" xref="A6.SS2.p1.5.m5.1.1.2.cmml">A</mi><mo id="A6.SS2.p1.5.m5.1.1.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.5.m5.1.1.1.cmml">×</mo><mi id="A6.SS2.p1.5.m5.1.1.3" xref="A6.SS2.p1.5.m5.1.1.3.cmml">n</mi></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.5.m5.1b"><apply id="A6.SS2.p1.5.m5.1.1.cmml" xref="A6.SS2.p1.5.m5.1.1"><times id="A6.SS2.p1.5.m5.1.1.1.cmml" xref="A6.SS2.p1.5.m5.1.1.1"></times><ci id="A6.SS2.p1.5.m5.1.1.2.cmml" xref="A6.SS2.p1.5.m5.1.1.2">𝐴</ci><ci id="A6.SS2.p1.5.m5.1.1.3.cmml" xref="A6.SS2.p1.5.m5.1.1.3">𝑛</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.5.m5.1c">A\times n</annotation></semantics></math> and <math alttext="n\times B" class="ltx_Math" display="inline" id="A6.SS2.p1.6.m6.1"><semantics id="A6.SS2.p1.6.m6.1a"><mrow id="A6.SS2.p1.6.m6.1.1" xref="A6.SS2.p1.6.m6.1.1.cmml"><mi id="A6.SS2.p1.6.m6.1.1.2" xref="A6.SS2.p1.6.m6.1.1.2.cmml">n</mi><mo id="A6.SS2.p1.6.m6.1.1.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.6.m6.1.1.1.cmml">×</mo><mi id="A6.SS2.p1.6.m6.1.1.3" xref="A6.SS2.p1.6.m6.1.1.3.cmml">B</mi></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.6.m6.1b"><apply id="A6.SS2.p1.6.m6.1.1.cmml" xref="A6.SS2.p1.6.m6.1.1"><times id="A6.SS2.p1.6.m6.1.1.1.cmml" xref="A6.SS2.p1.6.m6.1.1.1"></times><ci id="A6.SS2.p1.6.m6.1.1.2.cmml" xref="A6.SS2.p1.6.m6.1.1.2">𝑛</ci><ci id="A6.SS2.p1.6.m6.1.1.3.cmml" xref="A6.SS2.p1.6.m6.1.1.3">𝐵</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.6.m6.1c">n\times B</annotation></semantics></math>. In the former cases, the parameters to be updated are <math alttext="A\times B" class="ltx_Math" display="inline" id="A6.SS2.p1.7.m7.1"><semantics id="A6.SS2.p1.7.m7.1a"><mrow id="A6.SS2.p1.7.m7.1.1" xref="A6.SS2.p1.7.m7.1.1.cmml"><mi id="A6.SS2.p1.7.m7.1.1.2" xref="A6.SS2.p1.7.m7.1.1.2.cmml">A</mi><mo id="A6.SS2.p1.7.m7.1.1.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.7.m7.1.1.1.cmml">×</mo><mi id="A6.SS2.p1.7.m7.1.1.3" xref="A6.SS2.p1.7.m7.1.1.3.cmml">B</mi></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.7.m7.1b"><apply id="A6.SS2.p1.7.m7.1.1.cmml" xref="A6.SS2.p1.7.m7.1.1"><times id="A6.SS2.p1.7.m7.1.1.1.cmml" xref="A6.SS2.p1.7.m7.1.1.1"></times><ci id="A6.SS2.p1.7.m7.1.1.2.cmml" xref="A6.SS2.p1.7.m7.1.1.2">𝐴</ci><ci id="A6.SS2.p1.7.m7.1.1.3.cmml" xref="A6.SS2.p1.7.m7.1.1.3">𝐵</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.7.m7.1c">A\times B</annotation></semantics></math>, whereas in the latter case, the parameters are <math alttext="A\times n+n\times B" class="ltx_Math" display="inline" id="A6.SS2.p1.8.m8.1"><semantics id="A6.SS2.p1.8.m8.1a"><mrow id="A6.SS2.p1.8.m8.1.1" xref="A6.SS2.p1.8.m8.1.1.cmml"><mrow id="A6.SS2.p1.8.m8.1.1.2" xref="A6.SS2.p1.8.m8.1.1.2.cmml"><mi id="A6.SS2.p1.8.m8.1.1.2.2" xref="A6.SS2.p1.8.m8.1.1.2.2.cmml">A</mi><mo id="A6.SS2.p1.8.m8.1.1.2.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.8.m8.1.1.2.1.cmml">×</mo><mi id="A6.SS2.p1.8.m8.1.1.2.3" xref="A6.SS2.p1.8.m8.1.1.2.3.cmml">n</mi></mrow><mo id="A6.SS2.p1.8.m8.1.1.1" xref="A6.SS2.p1.8.m8.1.1.1.cmml">+</mo><mrow id="A6.SS2.p1.8.m8.1.1.3" xref="A6.SS2.p1.8.m8.1.1.3.cmml"><mi id="A6.SS2.p1.8.m8.1.1.3.2" xref="A6.SS2.p1.8.m8.1.1.3.2.cmml">n</mi><mo id="A6.SS2.p1.8.m8.1.1.3.1" lspace="0.222em" rspace="0.222em" xref="A6.SS2.p1.8.m8.1.1.3.1.cmml">×</mo><mi id="A6.SS2.p1.8.m8.1.1.3.3" xref="A6.SS2.p1.8.m8.1.1.3.3.cmml">B</mi></mrow></mrow><annotation-xml encoding="MathML-Content" id="A6.SS2.p1.8.m8.1b"><apply id="A6.SS2.p1.8.m8.1.1.cmml" xref="A6.SS2.p1.8.m8.1.1"><plus id="A6.SS2.p1.8.m8.1.1.1.cmml" xref="A6.SS2.p1.8.m8.1.1.1"></plus><apply id="A6.SS2.p1.8.m8.1.1.2.cmml" xref="A6.SS2.p1.8.m8.1.1.2"><times id="A6.SS2.p1.8.m8.1.1.2.1.cmml" xref="A6.SS2.p1.8.m8.1.1.2.1"></times><ci id="A6.SS2.p1.8.m8.1.1.2.2.cmml" xref="A6.SS2.p1.8.m8.1.1.2.2">𝐴</ci><ci id="A6.SS2.p1.8.m8.1.1.2.3.cmml" xref="A6.SS2.p1.8.m8.1.1.2.3">𝑛</ci></apply><apply id="A6.SS2.p1.8.m8.1.1.3.cmml" xref="A6.SS2.p1.8.m8.1.1.3"><times id="A6.SS2.p1.8.m8.1.1.3.1.cmml" xref="A6.SS2.p1.8.m8.1.1.3.1"></times><ci id="A6.SS2.p1.8.m8.1.1.3.2.cmml" xref="A6.SS2.p1.8.m8.1.1.3.2">𝑛</ci><ci id="A6.SS2.p1.8.m8.1.1.3.3.cmml" xref="A6.SS2.p1.8.m8.1.1.3.3">𝐵</ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.SS2.p1.8.m8.1c">A\times n+n\times B</annotation></semantics></math>. If the approximation is sufficient, we only need to update this new set of parameters, and they can later be ’merged’ with the main model after training. Quantized LoRA (QLoRA) <cite class="ltx_cite ltx_citemacro_citep">(Dettmers et al., <a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite> takes the efficiency of LoRA a step ahead by QLoRA by also quantizing the weights of the LoRA adapters (smaller matrices) to lower precision (e.g., 4-bit instead of 8-bit), reducing the memory footprint and storage requirements while getting similar performance.</p>
+</div>
+</section>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2406.04878">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2406.04879">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2406.04879" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2406.04879">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2406.04880">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Fri Jul  5 21:14:58 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

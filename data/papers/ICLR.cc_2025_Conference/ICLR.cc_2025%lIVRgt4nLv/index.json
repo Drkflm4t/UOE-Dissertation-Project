@@ -1,0 +1,678 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        12
+    ],
+    "sections": {
+        "1 Introduction": [
+            13,
+            39
+        ],
+        "2 Related Work": [
+            40,
+            55
+        ],
+        "3 Agent S": [
+            56,
+            113
+        ],
+        "4 Experiments": [
+            114,
+            419
+        ],
+        "5 Conclusion": [
+            420,
+            425
+        ],
+        "References": [
+            426,
+            469
+        ],
+        "Appendix A Agent-Computer Interface": [
+            470,
+            692
+        ],
+        "Appendix B Detailed Results on OSWorld and WindowsArena": [
+            693,
+            793
+        ],
+        "Appendix C Experience-augmented Hierarchical Planning": [
+            794,
+            899
+        ],
+        "Appendix D Supplementary Examples for Qualitative Analysis": [
+            900,
+            988
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Agent S": {
+            "3.1 Experience-augmented Hierarchical Planning": [
+                60,
+                61
+            ],
+            "3.1.1 Manager: Fusing External Knowledge and Internal Experience for Planning": [
+                62,
+                78
+            ],
+            "3.1.2 Worker: Learning from Subtask Experience and Trajectory Reflection": [
+                79,
+                87
+            ],
+            "3.1.3 Self-Evaluator: Summarizing Experiences as Textual Rewards": [
+                88,
+                97
+            ],
+            "3.2 Memory Construction and Update": [
+                98,
+                99
+            ],
+            "Initial Memory Construction via Self-supervised Exploration.": [
+                100,
+                105
+            ],
+            "3.3 Agent-Computer Interface": [
+                106,
+                113
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Experimental Setup": [
+                116,
+                121
+            ],
+            "4.2 Main Results": [
+                122,
+                198
+            ],
+            "Qualitative Examples.": [
+                199,
+                210
+            ],
+            "4.3 Ablation Study": [
+                211,
+                305
+            ],
+            "4.4 Error Analysis": [
+                306,
+                370
+            ],
+            "4.5 Generalization to Different Operating Systems": [
+                371,
+                419
+            ]
+        },
+        "5 Conclusion": {},
+        "References": {},
+        "Appendix A Agent-Computer Interface": {
+            "A.1 Constrained action space": [
+                472,
+                560
+            ],
+            "A.2 Ablations on Agent Computer Interface": [
+                561,
+                626
+            ],
+            "A.3 Ablations on Learning": [
+                627,
+                692
+            ]
+        },
+        "Appendix B Detailed Results on OSWorld and WindowsArena": {},
+        "Appendix C Experience-augmented Hierarchical Planning": {
+            "Observation-Aware Query": [
+                796,
+                802
+            ],
+            "Narrative Memory \u2013 Storing Full Task Experiences": [
+                803,
+                811
+            ],
+            "Episodic Memory \u2013 Storing Successful Subtask Experiences": [
+                812,
+                820
+            ],
+            "C.1 Manager: Fusing External Knowledge and Internal Experience for Planning": [
+                821,
+                822
+            ],
+            "External Knowledge Retrieval": [
+                823,
+                829
+            ],
+            "Fusion of Internal Experience and External Knowledge": [
+                830,
+                836
+            ],
+            "Subtask Planning": [
+                837,
+                843
+            ],
+            "C.2 Worker: Learning from Subtask Experience and Trajectory Reflection": [
+                844,
+                845
+            ],
+            "Subtask Execution": [
+                846,
+                852
+            ],
+            "Trajectory Reflection": [
+                853,
+                861
+            ],
+            "Action Generation": [
+                862,
+                868
+            ],
+            "Subtask Completion": [
+                869,
+                875
+            ],
+            "C.3 Self-Evaluator: Generating Summarized Experiences as Textual Rewards": [
+                876,
+                877
+            ],
+            "Episodic Experience Update": [
+                878,
+                889
+            ],
+            "Narrative Experience Update": [
+                890,
+                899
+            ]
+        },
+        "Appendix D Supplementary Examples for Qualitative Analysis": {
+            "D.1 Success Examples": [
+                904,
+                949
+            ],
+            "D.2 Detailed Error Analysis and Failure Examples": [
+                950,
+                988
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                38
+            ]
+        ],
+        "2 Related Work": [
+            [
+                42,
+                42
+            ],
+            [
+                44,
+                44
+            ],
+            [
+                46,
+                46
+            ]
+        ],
+        "3 Agent S": [
+            [
+                58,
+                58
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                84
+            ],
+            [
+                86,
+                86
+            ],
+            [
+                90,
+                90
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                104
+            ],
+            [
+                108,
+                108
+            ],
+            [
+                110,
+                110
+            ],
+            [
+                112,
+                112
+            ]
+        ],
+        "4 Experiments": [
+            [
+                118,
+                118
+            ],
+            [
+                120,
+                120
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                201,
+                201
+            ],
+            [
+                213,
+                213
+            ],
+            [
+                292,
+                292
+            ],
+            [
+                300,
+                300
+            ],
+            [
+                302,
+                302
+            ],
+            [
+                304,
+                304
+            ],
+            [
+                308,
+                308
+            ],
+            [
+                369,
+                369
+            ],
+            [
+                373,
+                373
+            ]
+        ],
+        "5 Conclusion": [
+            [
+                422,
+                422
+            ],
+            [
+                424,
+                424
+            ]
+        ],
+        "References": [
+            [
+                428,
+                468
+            ]
+        ],
+        "Appendix A Agent-Computer Interface": [
+            [
+                474,
+                474
+            ],
+            [
+                563,
+                563
+            ],
+            [
+                629,
+                629
+            ]
+        ],
+        "Appendix B Detailed Results on OSWorld and WindowsArena": [],
+        "Appendix C Experience-augmented Hierarchical Planning": [
+            [
+                798,
+                798
+            ],
+            [
+                800,
+                801
+            ],
+            [
+                805,
+                805
+            ],
+            [
+                807,
+                808
+            ],
+            [
+                810,
+                810
+            ],
+            [
+                814,
+                814
+            ],
+            [
+                816,
+                817
+            ],
+            [
+                819,
+                819
+            ],
+            [
+                825,
+                825
+            ],
+            [
+                827,
+                828
+            ],
+            [
+                832,
+                832
+            ],
+            [
+                834,
+                835
+            ],
+            [
+                839,
+                839
+            ],
+            [
+                841,
+                842
+            ],
+            [
+                848,
+                848
+            ],
+            [
+                850,
+                851
+            ],
+            [
+                855,
+                855
+            ],
+            [
+                857,
+                858
+            ],
+            [
+                860,
+                860
+            ],
+            [
+                864,
+                864
+            ],
+            [
+                866,
+                867
+            ],
+            [
+                871,
+                871
+            ],
+            [
+                873,
+                874
+            ],
+            [
+                880,
+                880
+            ],
+            [
+                882,
+                883
+            ],
+            [
+                885,
+                885
+            ],
+            [
+                887,
+                888
+            ],
+            [
+                892,
+                892
+            ],
+            [
+                894,
+                895
+            ],
+            [
+                897,
+                898
+            ]
+        ],
+        "Appendix D Supplementary Examples for Qualitative Analysis": [
+            [
+                902,
+                902
+            ],
+            [
+                906,
+                906
+            ],
+            [
+                948,
+                948
+            ],
+            [
+                952,
+                952
+            ],
+            [
+                960,
+                960
+            ],
+            [
+                962,
+                962
+            ],
+            [
+                964,
+                964
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F2.g1]": [
+                25,
+                29
+            ]
+        },
+        "2 Related Work": {
+            "[FIGURE S2.F3.g1]": [
+                48,
+                54
+            ]
+        },
+        "3 Agent S": {
+            "[FIGURE S3.F4.g1]": [
+                92,
+                96
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F5.sf1.g1]": [
+                203,
+                209
+            ],
+            "[FIGURE S4.F7.1.g1]": [
+                294,
+                298
+            ]
+        },
+        "5 Conclusion": {},
+        "References": {},
+        "Appendix A Agent-Computer Interface": {},
+        "Appendix B Detailed Results on OSWorld and WindowsArena": {},
+        "Appendix C Experience-augmented Hierarchical Planning": {},
+        "Appendix D Supplementary Examples for Qualitative Analysis": {
+            "[FIGURE A4.F8.sf1.g1]": [
+                908,
+                914
+            ],
+            "[FIGURE A4.F9.sf1.g1]": [
+                916,
+                922
+            ],
+            "[FIGURE A4.F10.sf1.g1]": [
+                924,
+                930
+            ],
+            "[FIGURE A4.F11.sf1.g1]": [
+                932,
+                938
+            ],
+            "[FIGURE A4.F12.sf1.g1]": [
+                940,
+                946
+            ],
+            "[FIGURE A4.F13.g1]": [
+                954,
+                958
+            ],
+            "[FIGURE A4.F14.sf1.g1]": [
+                966,
+                970
+            ],
+            "[FIGURE A4.F15.sf1.g1]": [
+                972,
+                978
+            ],
+            "[FIGURE A4.F16.sf1.g1]": [
+                980,
+                986
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Agent S": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                126,
+                197
+            ],
+            "[TABLE S4.T2]": [
+                215,
+                290
+            ],
+            "[TABLE S4.T3]": [
+                310,
+                367
+            ],
+            "[TABLE S4.T4]": [
+                375,
+                418
+            ]
+        },
+        "5 Conclusion": {},
+        "References": {},
+        "Appendix A Agent-Computer Interface": {
+            "[TABLE A1.T5]": [
+                476,
+                559
+            ],
+            "[TABLE A1.T6]": [
+                565,
+                625
+            ],
+            "[TABLE A1.T7]": [
+                631,
+                691
+            ]
+        },
+        "Appendix B Detailed Results on OSWorld and WindowsArena": {
+            "[TABLE A2.T8]": [
+                695,
+                747
+            ],
+            "[TABLE A2.T9]": [
+                749,
+                792
+            ]
+        },
+        "Appendix C Experience-augmented Hierarchical Planning": {},
+        "Appendix D Supplementary Examples for Qualitative Analysis": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Agent S": {},
+        "4 Experiments": {},
+        "5 Conclusion": {},
+        "References": {},
+        "Appendix A Agent-Computer Interface": {},
+        "Appendix B Detailed Results on OSWorld and WindowsArena": {},
+        "Appendix C Experience-augmented Hierarchical Planning": {},
+        "Appendix D Supplementary Examples for Qualitative Analysis": {}
+    }
+}

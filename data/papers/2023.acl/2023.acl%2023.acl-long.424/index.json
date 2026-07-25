@@ -1,0 +1,578 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            30
+        ],
+        "2 Preliminaries": [
+            31,
+            62
+        ],
+        "3 AmbigPrompt": [
+            63,
+            124
+        ],
+        "4 Experimental Setup": [
+            125,
+            329
+        ],
+        "5 Experimental Results": [
+            330,
+            422
+        ],
+        "6 Related work": [
+            423,
+            436
+        ],
+        "7 Conclusions": [
+            437,
+            440
+        ],
+        "Limitations": [
+            441,
+            446
+        ],
+        "Ethics Statement": [
+            447,
+            450
+        ],
+        "Acknowledgements": [
+            451,
+            456
+        ],
+        "References": [
+            457,
+            503
+        ],
+        "Appendix A Results on NQ": [
+            504,
+            574
+        ],
+        "Appendix B Zero-shot evaluation on AmbigQA": [
+            575,
+            632
+        ],
+        "Appendix C Retrieval results": [
+            633,
+            718
+        ],
+        "Appendix D Case study": [
+            719,
+            834
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Preliminaries": {
+            "2.1 Problem formalization": [
+                33,
+                36
+            ],
+            "2.2 Answering model": [
+                37,
+                53
+            ],
+            "2.3 Prompt-tuning": [
+                54,
+                62
+            ]
+        },
+        "3 AmbigPrompt": {
+            "3.1 Retrospective prompting mechanism for answer generation": [
+                82,
+                91
+            ],
+            "3.2 Answering ambiguous questions via iterative prompting": [
+                92,
+                95
+            ],
+            "3.3 Optimization": [
+                96,
+                99
+            ],
+            "Task-adaptive post-pretraining.": [
+                100,
+                115
+            ],
+            "Prompt-based fine-tuning.": [
+                116,
+                124
+            ]
+        },
+        "4 Experimental Setup": {
+            "4.1 Datasets": [
+                127,
+                182
+            ],
+            "4.2 Evaluation metrics": [
+                183,
+                319
+            ],
+            "4.3 Baselines": [
+                320,
+                325
+            ],
+            "4.4 Implementation details": [
+                326,
+                329
+            ]
+        },
+        "5 Experimental Results": {
+            "5.1 Main results": [
+                332,
+                347
+            ],
+            "5.2 Low-resource setting": [
+                348,
+                402
+            ],
+            "5.3 Ablation study": [
+                403,
+                412
+            ],
+            "5.4 Analytical experiments": [
+                413,
+                422
+            ]
+        },
+        "6 Related work": {
+            "6.1 Ambiguous question answering": [
+                425,
+                428
+            ],
+            "6.2 Prompt-based learning": [
+                429,
+                432
+            ],
+            "6.3 Iterative generation": [
+                433,
+                436
+            ]
+        },
+        "7 Conclusions": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Results on NQ": {},
+        "Appendix B Zero-shot evaluation on AmbigQA": {},
+        "Appendix C Retrieval results": {},
+        "Appendix D Case study": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ]
+        ],
+        "2 Preliminaries": [
+            [
+                35,
+                35
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                42
+            ],
+            [
+                44,
+                44
+            ],
+            [
+                46,
+                47
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                51,
+                52
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                59
+            ],
+            [
+                61,
+                61
+            ]
+        ],
+        "3 AmbigPrompt": [
+            [
+                65,
+                65
+            ],
+            [
+                67,
+                67
+            ],
+            [
+                69,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                74
+            ],
+            [
+                84,
+                84
+            ],
+            [
+                86,
+                88
+            ],
+            [
+                90,
+                90
+            ],
+            [
+                94,
+                94
+            ],
+            [
+                98,
+                98
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                105
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                111,
+                112
+            ],
+            [
+                114,
+                114
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                120,
+                121
+            ],
+            [
+                123,
+                123
+            ]
+        ],
+        "4 Experimental Setup": [
+            [
+                129,
+                129
+            ],
+            [
+                131,
+                131
+            ],
+            [
+                185,
+                185
+            ],
+            [
+                322,
+                322
+            ],
+            [
+                324,
+                324
+            ],
+            [
+                328,
+                328
+            ]
+        ],
+        "5 Experimental Results": [
+            [
+                334,
+                334
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                338,
+                338
+            ],
+            [
+                340,
+                340
+            ],
+            [
+                350,
+                350
+            ],
+            [
+                405,
+                405
+            ],
+            [
+                407,
+                407
+            ],
+            [
+                409,
+                409
+            ],
+            [
+                411,
+                411
+            ],
+            [
+                415,
+                415
+            ]
+        ],
+        "6 Related work": [
+            [
+                427,
+                427
+            ],
+            [
+                431,
+                431
+            ],
+            [
+                435,
+                435
+            ]
+        ],
+        "7 Conclusions": [
+            [
+                439,
+                439
+            ]
+        ],
+        "Limitations": [
+            [
+                443,
+                443
+            ],
+            [
+                445,
+                445
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                449,
+                449
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                453,
+                453
+            ],
+            [
+                455,
+                455
+            ]
+        ],
+        "References": [
+            [
+                459,
+                502
+            ]
+        ],
+        "Appendix A Results on NQ": [
+            [
+                506,
+                506
+            ]
+        ],
+        "Appendix B Zero-shot evaluation on AmbigQA": [
+            [
+                577,
+                577
+            ],
+            [
+                579,
+                579
+            ],
+            [
+                581,
+                581
+            ]
+        ],
+        "Appendix C Retrieval results": [
+            [
+                635,
+                635
+            ]
+        ],
+        "Appendix D Case study": [
+            [
+                721,
+                721
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                11,
+                15
+            ],
+            "[FIGURE S1.F2.g1]": [
+                25,
+                29
+            ]
+        },
+        "2 Preliminaries": {},
+        "3 AmbigPrompt": {
+            "[FIGURE S3.F3.g1]": [
+                76,
+                80
+            ]
+        },
+        "4 Experimental Setup": {},
+        "5 Experimental Results": {
+            "[FIGURE S5.F4.g1]": [
+                342,
+                346
+            ],
+            "[FIGURE S5.F5.g1]": [
+                417,
+                421
+            ]
+        },
+        "6 Related work": {},
+        "7 Conclusions": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Results on NQ": {},
+        "Appendix B Zero-shot evaluation on AmbigQA": {},
+        "Appendix C Retrieval results": {},
+        "Appendix D Case study": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 AmbigPrompt": {},
+        "4 Experimental Setup": {
+            "[TABLE S4.T1]": [
+                133,
+                181
+            ],
+            "[TABLE S4.T2]": [
+                187,
+                318
+            ]
+        },
+        "5 Experimental Results": {
+            "[TABLE S5.T3]": [
+                352,
+                401
+            ]
+        },
+        "6 Related work": {},
+        "7 Conclusions": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Results on NQ": {
+            "[TABLE A1.T4]": [
+                508,
+                573
+            ]
+        },
+        "Appendix B Zero-shot evaluation on AmbigQA": {
+            "[TABLE A2.T5]": [
+                583,
+                631
+            ]
+        },
+        "Appendix C Retrieval results": {
+            "[TABLE A3.T6]": [
+                637,
+                717
+            ]
+        },
+        "Appendix D Case study": {
+            "[TABLE A4.T7]": [
+                723,
+                773
+            ],
+            "[TABLE A4.T8]": [
+                775,
+                832
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 AmbigPrompt": {},
+        "4 Experimental Setup": {},
+        "5 Experimental Results": {},
+        "6 Related work": {},
+        "7 Conclusions": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Results on NQ": {},
+        "Appendix B Zero-shot evaluation on AmbigQA": {},
+        "Appendix C Retrieval results": {},
+        "Appendix D Case study": {}
+    }
+}

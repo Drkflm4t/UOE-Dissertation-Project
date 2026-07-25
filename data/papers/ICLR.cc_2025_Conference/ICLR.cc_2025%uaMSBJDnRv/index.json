@@ -1,0 +1,1714 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            33
+        ],
+        "2 Preliminaries": [
+            34,
+            72
+        ],
+        "3 Catastrophic Likelihood Displacement in Simple Settings": [
+            73,
+            161
+        ],
+        "4 Theoretical Analysis of Likelihood Displacement": [
+            162,
+            248
+        ],
+        "5 Identifying Sources of Likelihood Displacement": [
+            249,
+            276
+        ],
+        "6 Unintentional Unalignment in Direct Preference Learning": [
+            277,
+            314
+        ],
+        "7 Related Work": [
+            315,
+            324
+        ],
+        "8 Conclusion": [
+            325,
+            336
+        ],
+        "Acknowledgements": [
+            337,
+            340
+        ],
+        "References": [
+            343,
+            413
+        ],
+        "Appendix A Length-Normalized CHES Score": [
+            414,
+            426
+        ],
+        "Appendix B Common Instances of the Analyzed Preference Learning Loss": [
+            427,
+            465
+        ],
+        "Appendix C Relation to Existing Claims on Likelihood Displacement": [
+            466,
+            479
+        ],
+        "Appendix D Formal Analysis of Likelihood Displacement": [
+            480,
+            615
+        ],
+        "Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses": [
+            616,
+            671
+        ],
+        "Appendix F Deferred Proofs": [
+            672,
+            952
+        ],
+        "Appendix G Further Experiments": [
+            953,
+            986
+        ],
+        "Appendix H Further Implementation Details": [
+            987,
+            3310
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Preliminaries": {
+            "2.1 Direct Preference Learning": [
+                43,
+                57
+            ],
+            "2.2 Likelihood Displacement": [
+                58,
+                61
+            ],
+            "Definition 1.": [
+                62,
+                72
+            ]
+        },
+        "3 Catastrophic Likelihood Displacement in Simple Settings": {},
+        "4 Theoretical Analysis of Likelihood Displacement": {
+            "Definition 2.": [
+                177,
+                188
+            ],
+            "4.1 Technical Approach": [
+                189,
+                199
+            ],
+            "4.2 Overview of the Main Results": [
+                200,
+                201
+            ],
+            "4.2.1 Single Training Sample and Output Token": [
+                202,
+                205
+            ],
+            "Theorem 1 (Informal version of [Theorem\u00a04](#Thmtheorem4 \"Theorem 4. \u2023 D.1 Single Training Sample and Output Token (Overview in Section 4.2.1) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")).": [
+                206,
+                216
+            ],
+            "Theorem 2 (Informal version of [Theorem\u00a05](#Thmtheorem5 \"Theorem 5. \u2023 D.1 Single Training Sample and Output Token (Overview in Section 4.2.1) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")).": [
+                217,
+                227
+            ],
+            "4.2.2 Responses with Multiple Tokens": [
+                228,
+                231
+            ],
+            "Theorem 3 (Informal version of [Theorem\u00a06](#Thmtheorem6 \"Theorem 6. \u2023 D.2 Responses with Multiple Tokens (Overview in Section 4.2.2) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")).": [
+                232,
+                244
+            ],
+            "4.2.3 Multiple Training Samples": [
+                245,
+                248
+            ]
+        },
+        "5 Identifying Sources of Likelihood Displacement": {},
+        "6 Unintentional Unalignment in Direct Preference Learning": {
+            "6.1 Setting": [
+                281,
+                284
+            ],
+            "6.2 Catastrophic Likelihood Displacement Causes Unintentional Unalignment": [
+                285,
+                292
+            ],
+            "6.3 Filtering Data via CHES Score Mitigates Unintentional Unalignment": [
+                293,
+                314
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {
+            "8.1 Limitations and Future Work": [
+                329,
+                336
+            ]
+        },
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Length-Normalized CHES Score": {
+            "Definition 3.": [
+                418,
+                426
+            ]
+        },
+        "Appendix B Common Instances of the Analyzed Preference Learning Loss": {},
+        "Appendix C Relation to Existing Claims on Likelihood Displacement": {},
+        "Appendix D Formal Analysis of Likelihood Displacement": {
+            "D.1 Single Training Sample and Output Token (Overview in [Section\u00a04.2.1](#S4.SS2.SSS1 \"4.2.1 Single Training Sample and Output Token \u2023 4.2 Overview of the Main Results \u2023 4 Theoretical Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                486,
+                489
+            ],
+            "Theorem 4.": [
+                490,
+                503
+            ],
+            "Theorem 5.": [
+                504,
+                515
+            ],
+            "D.2 Responses with Multiple Tokens (Overview in [Section\u00a04.2.2](#S4.SS2.SSS2 \"4.2.2 Responses with Multiple Tokens \u2023 4.2 Overview of the Main Results \u2023 4 Theoretical Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                516,
+                526
+            ],
+            "Theorem 6.": [
+                527,
+                549
+            ],
+            "Theorem 7.": [
+                550,
+                566
+            ],
+            "D.3 Multiple Training Samples (Overview in [Section\u00a04.2.3](#S4.SS2.SSS3 \"4.2.3 Multiple Training Samples \u2023 4.2 Overview of the Main Results \u2023 4 Theoretical Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                567,
+                570
+            ],
+            "Theorem 8.": [
+                571,
+                603
+            ],
+            "Theorem 9.": [
+                604,
+                615
+            ]
+        },
+        "Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses": {
+            "E.1 Theoretical Analysis: Effect on Likelihood Displacement": [
+                632,
+                652
+            ],
+            "Proposition 1.": [
+                653,
+                659
+            ],
+            "Proposition 2.": [
+                660,
+                671
+            ]
+        },
+        "Appendix F Deferred Proofs": {
+            "F.1 Proof of [Theorem\u00a04](#Thmtheorem4 \"Theorem 4. \u2023 D.1 Single Training Sample and Output Token (Overview in Section 4.2.1) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                674,
+                702
+            ],
+            "F.2 Proof of [Theorem\u00a05](#Thmtheorem5 \"Theorem 5. \u2023 D.1 Single Training Sample and Output Token (Overview in Section 4.2.1) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                703,
+                733
+            ],
+            "F.3 Proof of [Theorem\u00a06](#Thmtheorem6 \"Theorem 6. \u2023 D.2 Responses with Multiple Tokens (Overview in Section 4.2.2) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                734,
+                772
+            ],
+            "F.4 Proof of [Theorem\u00a07](#Thmtheorem7 \"Theorem 7. \u2023 D.2 Responses with Multiple Tokens (Overview in Section 4.2.2) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                773,
+                813
+            ],
+            "F.5 Proof of [Theorem\u00a08](#Thmtheorem8 \"Theorem 8. \u2023 D.3 Multiple Training Samples (Overview in Section 4.2.3) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                814,
+                844
+            ],
+            "F.6 Proof of [Theorem\u00a09](#Thmtheorem9 \"Theorem 9. \u2023 D.3 Multiple Training Samples (Overview in Section 4.2.3) \u2023 Appendix D Formal Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                845,
+                880
+            ],
+            "F.7 Proof of [Proposition\u00a01](#Thmproposition1 \"Proposition 1. \u2023 E.1 Theoretical Analysis: Effect on Likelihood Displacement \u2023 Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                881,
+                889
+            ],
+            "F.8 Proof of [Proposition\u00a02](#Thmproposition2 \"Proposition 2. \u2023 E.1 Theoretical Analysis: Effect on Likelihood Displacement \u2023 Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                890,
+                898
+            ],
+            "F.9 Auxiliary Lemmas": [
+                899,
+                900
+            ],
+            "Lemma 1.": [
+                901,
+                912
+            ],
+            "Proof.": [
+                929,
+                952
+            ],
+            "Lemma 2.": [
+                922,
+                928
+            ]
+        },
+        "Appendix G Further Experiments": {
+            "G.1 Catastrophic Likelihood Displacement in Simple Settings ([Section\u00a03](#S3 \"3 Catastrophic Likelihood Displacement in Simple Settings \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                955,
+                965
+            ],
+            "G.2 Empirical Evaluation of the Coefficients From [Theorem\u00a03](#Thmtheorem3 \"Theorem 3 (Informal version of Theorem 6). \u2023 4.2.2 Responses with Multiple Tokens \u2023 4.2 Overview of the Main Results \u2023 4 Theoretical Analysis of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\")": [
+                966,
+                969
+            ],
+            "G.3 Identifying Sources of Likelihood Displacement ([Section\u00a05](#S5 \"5 Identifying Sources of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                970,
+                978
+            ],
+            "G.4 Unintentional Unalignment in Direct Preference Learning ([Section\u00a06](#S6 \"6 Unintentional Unalignment in Direct Preference Learning \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                979,
+                986
+            ]
+        },
+        "Appendix H Further Implementation Details": {
+            "H.1 Catastrophic Likelihood Displacement in Simple Settings ([Section\u00a03](#S3 \"3 Catastrophic Likelihood Displacement in Simple Settings \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                991,
+                1000
+            ],
+            "H.2 Identifying Sources of Likelihood Displacement ([Section\u00a05](#S5 \"5 Identifying Sources of Likelihood Displacement \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                1001,
+                1015
+            ],
+            "H.3 Unintentional Unalignment in Direct Preference Learning ([Section\u00a06](#S6 \"6 Unintentional Unalignment in Direct Preference Learning \u2023 Unintentional Unalignment: Likelihood Displacement in Direct Preference Optimization\"))": [
+                1016,
+                3310
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                30
+            ],
+            [
+                32,
+                32
+            ]
+        ],
+        "2 Preliminaries": [
+            [
+                36,
+                36
+            ],
+            [
+                38,
+                39
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                51,
+                52
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                67
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                71,
+                71
+            ]
+        ],
+        "3 Catastrophic Likelihood Displacement in Simple Settings": [
+            [
+                75,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                160,
+                160
+            ]
+        ],
+        "4 Theoretical Analysis of Likelihood Displacement": [
+            [
+                164,
+                164
+            ],
+            [
+                166,
+                166
+            ],
+            [
+                168,
+                171
+            ],
+            [
+                173,
+                173
+            ],
+            [
+                175,
+                175
+            ],
+            [
+                179,
+                179
+            ],
+            [
+                181,
+                181
+            ],
+            [
+                183,
+                185
+            ],
+            [
+                187,
+                187
+            ],
+            [
+                191,
+                191
+            ],
+            [
+                193,
+                193
+            ],
+            [
+                195,
+                196
+            ],
+            [
+                198,
+                198
+            ],
+            [
+                204,
+                204
+            ],
+            [
+                208,
+                208
+            ],
+            [
+                210,
+                211
+            ],
+            [
+                213,
+                213
+            ],
+            [
+                215,
+                215
+            ],
+            [
+                219,
+                219
+            ],
+            [
+                221,
+                222
+            ],
+            [
+                224,
+                224
+            ],
+            [
+                226,
+                226
+            ],
+            [
+                230,
+                230
+            ],
+            [
+                234,
+                234
+            ],
+            [
+                236,
+                237
+            ],
+            [
+                239,
+                239
+            ],
+            [
+                241,
+                241
+            ],
+            [
+                243,
+                243
+            ],
+            [
+                247,
+                247
+            ]
+        ],
+        "5 Identifying Sources of Likelihood Displacement": [
+            [
+                251,
+                251
+            ],
+            [
+                253,
+                253
+            ],
+            [
+                255,
+                255
+            ],
+            [
+                269,
+                269
+            ],
+            [
+                271,
+                271
+            ],
+            [
+                273,
+                273
+            ],
+            [
+                275,
+                275
+            ]
+        ],
+        "6 Unintentional Unalignment in Direct Preference Learning": [
+            [
+                279,
+                279
+            ],
+            [
+                283,
+                283
+            ],
+            [
+                287,
+                287
+            ],
+            [
+                289,
+                289
+            ],
+            [
+                291,
+                291
+            ],
+            [
+                295,
+                295
+            ],
+            [
+                297,
+                297
+            ],
+            [
+                311,
+                311
+            ],
+            [
+                313,
+                313
+            ]
+        ],
+        "7 Related Work": [
+            [
+                317,
+                317
+            ],
+            [
+                319,
+                319
+            ],
+            [
+                321,
+                321
+            ],
+            [
+                323,
+                323
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                327,
+                327
+            ],
+            [
+                331,
+                331
+            ],
+            [
+                333,
+                333
+            ],
+            [
+                335,
+                335
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                339,
+                339
+            ]
+        ],
+        "References": [
+            [
+                345,
+                412
+            ]
+        ],
+        "Appendix A Length-Normalized CHES Score": [
+            [
+                416,
+                416
+            ],
+            [
+                420,
+                420
+            ],
+            [
+                422,
+                423
+            ],
+            [
+                425,
+                425
+            ]
+        ],
+        "Appendix B Common Instances of the Analyzed Preference Learning Loss": [
+            [
+                429,
+                429
+            ],
+            [
+                431,
+                431
+            ],
+            [
+                433,
+                434
+            ],
+            [
+                436,
+                436
+            ],
+            [
+                438,
+                438
+            ],
+            [
+                440,
+                441
+            ],
+            [
+                443,
+                443
+            ],
+            [
+                445,
+                445
+            ],
+            [
+                447,
+                448
+            ],
+            [
+                450,
+                450
+            ],
+            [
+                452,
+                452
+            ],
+            [
+                454,
+                455
+            ],
+            [
+                457,
+                457
+            ],
+            [
+                459,
+                459
+            ],
+            [
+                461,
+                462
+            ],
+            [
+                464,
+                464
+            ]
+        ],
+        "Appendix C Relation to Existing Claims on Likelihood Displacement": [
+            [
+                468,
+                468
+            ],
+            [
+                470,
+                470
+            ],
+            [
+                472,
+                472
+            ],
+            [
+                474,
+                474
+            ],
+            [
+                476,
+                476
+            ],
+            [
+                478,
+                478
+            ]
+        ],
+        "Appendix D Formal Analysis of Likelihood Displacement": [
+            [
+                482,
+                482
+            ],
+            [
+                484,
+                484
+            ],
+            [
+                488,
+                488
+            ],
+            [
+                492,
+                492
+            ],
+            [
+                494,
+                495
+            ],
+            [
+                497,
+                497
+            ],
+            [
+                499,
+                500
+            ],
+            [
+                502,
+                502
+            ],
+            [
+                506,
+                506
+            ],
+            [
+                508,
+                509
+            ],
+            [
+                511,
+                511
+            ],
+            [
+                513,
+                514
+            ],
+            [
+                518,
+                518
+            ],
+            [
+                520,
+                520
+            ],
+            [
+                522,
+                523
+            ],
+            [
+                525,
+                525
+            ],
+            [
+                529,
+                529
+            ],
+            [
+                531,
+                532
+            ],
+            [
+                534,
+                534
+            ],
+            [
+                536,
+                537
+            ],
+            [
+                539,
+                539
+            ],
+            [
+                541,
+                542
+            ],
+            [
+                544,
+                544
+            ],
+            [
+                546,
+                546
+            ],
+            [
+                548,
+                548
+            ],
+            [
+                552,
+                552
+            ],
+            [
+                554,
+                555
+            ],
+            [
+                557,
+                557
+            ],
+            [
+                559,
+                560
+            ],
+            [
+                562,
+                562
+            ],
+            [
+                564,
+                565
+            ],
+            [
+                569,
+                569
+            ],
+            [
+                573,
+                573
+            ],
+            [
+                575,
+                576
+            ],
+            [
+                578,
+                578
+            ],
+            [
+                580,
+                581
+            ],
+            [
+                583,
+                583
+            ],
+            [
+                585,
+                585
+            ],
+            [
+                587,
+                588
+            ],
+            [
+                590,
+                590
+            ],
+            [
+                592,
+                592
+            ],
+            [
+                594,
+                595
+            ],
+            [
+                597,
+                597
+            ],
+            [
+                599,
+                600
+            ],
+            [
+                602,
+                602
+            ],
+            [
+                606,
+                606
+            ],
+            [
+                608,
+                609
+            ],
+            [
+                611,
+                611
+            ],
+            [
+                613,
+                614
+            ]
+        ],
+        "Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses": [
+            [
+                618,
+                618
+            ],
+            [
+                620,
+                621
+            ],
+            [
+                623,
+                623
+            ],
+            [
+                625,
+                626
+            ],
+            [
+                628,
+                628
+            ],
+            [
+                630,
+                630
+            ],
+            [
+                634,
+                634
+            ],
+            [
+                636,
+                637
+            ],
+            [
+                639,
+                639
+            ],
+            [
+                641,
+                642
+            ],
+            [
+                644,
+                644
+            ],
+            [
+                646,
+                647
+            ],
+            [
+                649,
+                649
+            ],
+            [
+                651,
+                651
+            ],
+            [
+                655,
+                655
+            ],
+            [
+                657,
+                658
+            ],
+            [
+                662,
+                662
+            ],
+            [
+                664,
+                665
+            ],
+            [
+                667,
+                667
+            ],
+            [
+                669,
+                670
+            ]
+        ],
+        "Appendix F Deferred Proofs": [
+            [
+                676,
+                676
+            ],
+            [
+                678,
+                679
+            ],
+            [
+                681,
+                681
+            ],
+            [
+                683,
+                684
+            ],
+            [
+                686,
+                686
+            ],
+            [
+                688,
+                689
+            ],
+            [
+                691,
+                691
+            ],
+            [
+                693,
+                694
+            ],
+            [
+                696,
+                696
+            ],
+            [
+                698,
+                699
+            ],
+            [
+                701,
+                701
+            ],
+            [
+                705,
+                705
+            ],
+            [
+                707,
+                707
+            ],
+            [
+                709,
+                710
+            ],
+            [
+                712,
+                712
+            ],
+            [
+                714,
+                715
+            ],
+            [
+                717,
+                717
+            ],
+            [
+                719,
+                720
+            ],
+            [
+                722,
+                722
+            ],
+            [
+                724,
+                725
+            ],
+            [
+                727,
+                727
+            ],
+            [
+                729,
+                730
+            ],
+            [
+                732,
+                732
+            ],
+            [
+                736,
+                736
+            ],
+            [
+                738,
+                739
+            ],
+            [
+                741,
+                741
+            ],
+            [
+                743,
+                744
+            ],
+            [
+                746,
+                746
+            ],
+            [
+                748,
+                749
+            ],
+            [
+                751,
+                751
+            ],
+            [
+                753,
+                754
+            ],
+            [
+                756,
+                756
+            ],
+            [
+                758,
+                759
+            ],
+            [
+                761,
+                761
+            ],
+            [
+                763,
+                764
+            ],
+            [
+                766,
+                766
+            ],
+            [
+                768,
+                769
+            ],
+            [
+                771,
+                771
+            ],
+            [
+                775,
+                775
+            ],
+            [
+                777,
+                777
+            ],
+            [
+                779,
+                780
+            ],
+            [
+                782,
+                782
+            ],
+            [
+                784,
+                785
+            ],
+            [
+                787,
+                787
+            ],
+            [
+                789,
+                790
+            ],
+            [
+                792,
+                792
+            ],
+            [
+                794,
+                795
+            ],
+            [
+                797,
+                797
+            ],
+            [
+                799,
+                800
+            ],
+            [
+                802,
+                802
+            ],
+            [
+                804,
+                805
+            ],
+            [
+                807,
+                807
+            ],
+            [
+                809,
+                810
+            ],
+            [
+                812,
+                812
+            ],
+            [
+                816,
+                816
+            ],
+            [
+                818,
+                819
+            ],
+            [
+                821,
+                821
+            ],
+            [
+                823,
+                824
+            ],
+            [
+                826,
+                826
+            ],
+            [
+                828,
+                829
+            ],
+            [
+                831,
+                831
+            ],
+            [
+                833,
+                834
+            ],
+            [
+                836,
+                836
+            ],
+            [
+                838,
+                838
+            ],
+            [
+                840,
+                841
+            ],
+            [
+                843,
+                843
+            ],
+            [
+                847,
+                847
+            ],
+            [
+                849,
+                849
+            ],
+            [
+                851,
+                852
+            ],
+            [
+                854,
+                854
+            ],
+            [
+                856,
+                857
+            ],
+            [
+                859,
+                859
+            ],
+            [
+                861,
+                862
+            ],
+            [
+                864,
+                864
+            ],
+            [
+                866,
+                867
+            ],
+            [
+                869,
+                869
+            ],
+            [
+                871,
+                872
+            ],
+            [
+                874,
+                874
+            ],
+            [
+                876,
+                877
+            ],
+            [
+                879,
+                879
+            ],
+            [
+                883,
+                883
+            ],
+            [
+                885,
+                886
+            ],
+            [
+                888,
+                888
+            ],
+            [
+                892,
+                892
+            ],
+            [
+                894,
+                895
+            ],
+            [
+                897,
+                897
+            ],
+            [
+                903,
+                903
+            ],
+            [
+                905,
+                906
+            ],
+            [
+                908,
+                908
+            ],
+            [
+                910,
+                911
+            ],
+            [
+                915,
+                915
+            ],
+            [
+                917,
+                918
+            ],
+            [
+                920,
+                920
+            ],
+            [
+                924,
+                924
+            ],
+            [
+                926,
+                927
+            ],
+            [
+                931,
+                931
+            ],
+            [
+                933,
+                934
+            ],
+            [
+                936,
+                936
+            ],
+            [
+                938,
+                939
+            ],
+            [
+                941,
+                941
+            ],
+            [
+                943,
+                944
+            ],
+            [
+                946,
+                946
+            ],
+            [
+                948,
+                949
+            ],
+            [
+                951,
+                951
+            ]
+        ],
+        "Appendix G Further Experiments": [
+            [
+                957,
+                957
+            ],
+            [
+                959,
+                964
+            ],
+            [
+                968,
+                968
+            ],
+            [
+                972,
+                972
+            ],
+            [
+                974,
+                977
+            ],
+            [
+                981,
+                981
+            ],
+            [
+                983,
+                985
+            ]
+        ],
+        "Appendix H Further Implementation Details": [
+            [
+                989,
+                989
+            ],
+            [
+                993,
+                993
+            ],
+            [
+                995,
+                995
+            ],
+            [
+                997,
+                997
+            ],
+            [
+                999,
+                999
+            ],
+            [
+                1003,
+                1003
+            ],
+            [
+                1005,
+                1005
+            ],
+            [
+                1007,
+                1008
+            ],
+            [
+                1010,
+                1010
+            ],
+            [
+                1012,
+                1012
+            ],
+            [
+                1014,
+                1014
+            ],
+            [
+                1018,
+                1018
+            ],
+            [
+                1020,
+                1020
+            ],
+            [
+                1022,
+                1022
+            ],
+            [
+                1024,
+                1024
+            ],
+            [
+                1026,
+                1026
+            ],
+            [
+                1028,
+                1028
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.1.g1]": [
+                14,
+                23
+            ]
+        },
+        "2 Preliminaries": {},
+        "3 Catastrophic Likelihood Displacement in Simple Settings": {},
+        "4 Theoretical Analysis of Likelihood Displacement": {},
+        "5 Identifying Sources of Likelihood Displacement": {
+            "[FIGURE S5.F2.g1]": [
+                257,
+                267
+            ]
+        },
+        "6 Unintentional Unalignment in Direct Preference Learning": {
+            "[FIGURE S6.F4.1.g1]": [
+                299,
+                309
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Length-Normalized CHES Score": {},
+        "Appendix B Common Instances of the Analyzed Preference Learning Loss": {},
+        "Appendix C Relation to Existing Claims on Likelihood Displacement": {},
+        "Appendix D Formal Analysis of Likelihood Displacement": {},
+        "Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses": {},
+        "Appendix F Deferred Proofs": {},
+        "Appendix G Further Experiments": {},
+        "Appendix H Further Implementation Details": {
+            "[FIGURE A8.F5.g1]": [
+                2861,
+                2868
+            ],
+            "[FIGURE A8.F6.g1]": [
+                2870,
+                2877
+            ],
+            "[FIGURE A8.F7.g1]": [
+                2879,
+                2886
+            ],
+            "[FIGURE A8.SS3.fig1]": [
+                3086,
+                3199
+            ],
+            "[FIGURE A8.F8.g1]": [
+                3201,
+                3208
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 Catastrophic Likelihood Displacement in Simple Settings": {
+            "[TABLE S3.T1]": [
+                79,
+                158
+            ]
+        },
+        "4 Theoretical Analysis of Likelihood Displacement": {},
+        "5 Identifying Sources of Likelihood Displacement": {},
+        "6 Unintentional Unalignment in Direct Preference Learning": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Length-Normalized CHES Score": {},
+        "Appendix B Common Instances of the Analyzed Preference Learning Loss": {},
+        "Appendix C Relation to Existing Claims on Likelihood Displacement": {},
+        "Appendix D Formal Analysis of Likelihood Displacement": {},
+        "Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses": {},
+        "Appendix F Deferred Proofs": {},
+        "Appendix G Further Experiments": {},
+        "Appendix H Further Implementation Details": {
+            "[TABLE A8.T2]": [
+                1030,
+                1107
+            ],
+            "[TABLE A8.T3]": [
+                1109,
+                1186
+            ],
+            "[TABLE A8.T4]": [
+                1188,
+                1322
+            ],
+            "[TABLE A8.T5]": [
+                1324,
+                1514
+            ],
+            "[TABLE A8.T6]": [
+                1516,
+                1722
+            ],
+            "[TABLE A8.T7]": [
+                1724,
+                1858
+            ],
+            "[TABLE A8.T8]": [
+                1860,
+                2107
+            ],
+            "[TABLE A8.T9]": [
+                2109,
+                2259
+            ],
+            "[TABLE A8.T10]": [
+                2261,
+                2427
+            ],
+            "[TABLE A8.T11]": [
+                2429,
+                2635
+            ],
+            "[TABLE A8.T12]": [
+                2637,
+                2803
+            ],
+            "[TABLE A8.T13]": [
+                2805,
+                2859
+            ],
+            "[TABLE A8.T14]": [
+                2888,
+                2985
+            ],
+            "[TABLE A8.T15]": [
+                2987,
+                3084
+            ],
+            "[TABLE A8.T16]": [
+                3088,
+                3143
+            ],
+            "[TABLE A8.T17]": [
+                3145,
+                3193
+            ],
+            "[TABLE A8.T18]": [
+                3210,
+                3308
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 Catastrophic Likelihood Displacement in Simple Settings": {},
+        "4 Theoretical Analysis of Likelihood Displacement": {},
+        "5 Identifying Sources of Likelihood Displacement": {},
+        "6 Unintentional Unalignment in Direct Preference Learning": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Length-Normalized CHES Score": {},
+        "Appendix B Common Instances of the Analyzed Preference Learning Loss": {},
+        "Appendix C Relation to Existing Claims on Likelihood Displacement": {},
+        "Appendix D Formal Analysis of Likelihood Displacement": {},
+        "Appendix E Losses Including SFT Regularization or Different Weights for the Preferred and Dispreferred Responses": {},
+        "Appendix F Deferred Proofs": {},
+        "Appendix G Further Experiments": {},
+        "Appendix H Further Implementation Details": {}
+    }
+}

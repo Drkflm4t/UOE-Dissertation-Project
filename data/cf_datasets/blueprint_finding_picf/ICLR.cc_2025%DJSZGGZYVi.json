@@ -1,0 +1,758 @@
+{
+    "o_paper": "ICLR.cc_2025%DJSZGGZYVi",
+    "cf_paper": {
+        "id": "ICLR.cc_2025%DJSZGGZYVi",
+        "meta": {
+            "venue": "ICLR.cc_2025",
+            "authors": [
+                "Sihyun Yu",
+                "Sangkyung Kwak",
+                "Huiwon Jang",
+                "Jongheon Jeong",
+                "Jonathan Huang",
+                "Jinwoo Shin",
+                "Saining Xie"
+            ],
+            "categories": [
+                "cs.CV",
+                "cs.LG"
+            ],
+            "entry_id": "http://arxiv.org/abs/2410.06940v2",
+            "links": [
+                "http://arxiv.org/abs/2410.06940v2",
+                "http://arxiv.org/pdf/2410.06940v2"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2410.06940v2",
+            "published": "2024-10-09T14:34:53+00:00",
+            "updated": "2024-12-05T07:39:22+00:00",
+            "primary_category": "cs.CV",
+            "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+            "summary": "Recent studies have shown that the denoising process in (generative)\ndiffusion models can induce meaningful (discriminative) representations inside\nthe model, though the quality of these representations still lags behind those\nlearned through recent self-supervised learning methods. We argue that one main\nbottleneck in training large-scale diffusion models for generation lies in\neffectively learning these representations. Moreover, training can be made\neasier by incorporating high-quality external visual representations, rather\nthan relying solely on the diffusion models to learn them independently. We\nstudy this by introducing a straightforward regularization called\nREPresentation Alignment (REPA), which aligns the projections of noisy input\nhidden states in denoising networks with clean image representations obtained\nfrom external, pretrained visual encoders. The results are striking: our simple\nstrategy yields significant improvements in both training efficiency and\ngeneration quality when applied to popular diffusion and flow-based\ntransformers, such as DiTs and SiTs. For instance, our method can speed up SiT\ntraining by over 17.5$\\times$, matching the performance (without\nclassifier-free guidance) of a SiT-XL model trained for 7M steps in less than\n400K steps. In terms of final generation quality, our approach achieves\nstate-of-the-art results of FID=1.42 using classifier-free guidance with the\nguidance interval.",
+            "license": null,
+            "venue_config": {
+                "id": "ICLR.cc_2025_Conference",
+                "name": "International Conference on Learning Representations of 2025",
+                "type": "International Conference on Learning Representations",
+                "description": "The International Conference on Learning Representations (ICLR) is a premier academic conference focused on deep learning, artificial intelligence (AI), and representation learning. It covers cutting-edge research in machine learning theory, applications, and methodologies, including topics like neural networks, generative models, optimization techniques, and AI interpretability.",
+                "guidelines": "### Review Guidelines\nThe purpose of an ICLR review is to assess whether a submission provides sufficient value and contributes new knowledge to the research community. Reviewers should thoroughly read the paper, consider its objective, strengths, weaknesses, and remain open-minded. To make a recommendation, they must evaluate four key aspects: the problem tackled, the motivation and placement in the literature, the validity and rigor of claims, and the overall significance of the work. The review should include a summary of contributions, strong and weak points, a clear recommendation with justification, relevant questions for authors, and constructive feedback for improvement.",
+                "guidelines_detailed": "### Reviewing a submission: step-by-step\nSummarized in one sentence, a review aims to determine whether a submission will bring sufficient value to the community and contribute new knowledge. The process can be broken down into the following main reviewer tasks:\n1. Read the paper: It\u2019s important to carefully read through the entire paper, and to look up any related work and citations that will help you comprehensively evaluate it. Be sure to give yourself sufficient time for this step.\n2. While reading, consider the following:\n    * Objective of the work: What is the goal of the paper? Is it to better address a known application or problem, draw attention to a new application or problem, or to introduce and/or explain a new theoretical finding? A combination of these? Different objectives will require different considerations as to potential value and impact.\n    * Strong points: is the submission clear, technically correct, experimentally rigorous, reproducible, does it present novel findings (e.g. theoretically, algorithmically, etc.)?\n    * Weak points: is it weak in any of the aspects listed in b.?\n    * Be mindful of potential biases and try to be open-minded about the value and interest a paper can hold for the entire ICLR community, even if it may not be very interesting for you.\n\n3. Answer four key questions for yourself to make a recommendation to Accept or Reject:\n    * What is the specific question and/or problem tackled by the paper?\n    * Is the approach well motivated, including being well-placed in the literature?\n    * Does the paper support the claims? This includes determining if results, whether theoretical or empirical, are correct and if they are scientifically rigorous.\n    * What is the significance of the work? Does it contribute new knowledge and sufficient value to the community? Note, this does not necessarily require state-of-the-art results. Submissions bring value to the ICLR community when they convincingly demonstrate new, relevant, impactful knowledge (incl., empirical, theoretical, for practitioners, etc).\n\n4. Write and submit your initial review, organizing it as follows: \n\n    * Summarize what the paper claims to contribute. Be positive and constructive.\n    * List strong and weak points of the paper. Be as comprehensive as possible.\n    * Clearly state your initial recommendation (accept or reject) with one or two key reasons for this choice.\n    * Provide supporting arguments for your recommendation.\n    * Ask questions you would like answered by the authors to help you clarify your understanding of the paper and provide the additional evidence you need to be confident in your assessment. \n    * Provide additional feedback with the aim to improve the paper. Make it clear that these points are here to help, and not necessarily part of your decision assessment.",
+                "template_field_semantics": {
+                    "summary": "Summary",
+                    "strengths": "Strengths",
+                    "weaknesses": "Weaknesses",
+                    "suggestions": "Questions"
+                },
+                "review_template": {
+                    "Summary": "Summarize what the paper claims to contribute. Be positive and constructive.",
+                    "Strengths": "Summarize the strengths of the paper.",
+                    "Weaknesses": "Summarize the weaknesses of the paper.",
+                    "Questions": "List questions to the authors."
+                },
+                "overall_score_name": "Rating",
+                "review_scores": {
+                    "Soundness": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the soundness of the technical claims, experimental and research methodology and on whether the central claims of the paper are adequately supported with evidence.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Presentation": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the quality of the presentation. This should take into account the writing style and clarity, as well as contextualization relative to prior work.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Contribution": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the quality of the overall contribution this paper makes to the research area being studied. Are the questions being asked important? Does the paper bring a significant originality of ideas and/or execution? Are the results valuable to share with the broader ICLR community.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully.",
+                            "4": "You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.",
+                            "3": "You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.",
+                            "2": "You are willing to defend your assessment, but it is quite likely that you did not understand the central parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.",
+                            "1": "Your assessment is an educated guess. The submission is not in your area or the submission was difficult to understand. Math/other details were not carefully checked."
+                        }
+                    },
+                    "Rating": {
+                        "meaning": "",
+                        "scores": {
+                            "10": "strong accept, should be highlighted at the conference",
+                            "9": "",
+                            "8": "accept, good paper",
+                            "7": "",
+                            "6": "marginally above the acceptance threshold",
+                            "5": "marginally below the acceptance threshold",
+                            "4": "",
+                            "3": "reject, not good enough",
+                            "2": "",
+                            "1": "strong reject"
+                        }
+                    }
+                }
+            },
+            "oid": "ICLR.cc_2025%DJSZGGZYVi",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/ICLR.cc_2025_Conference/ICLR.cc_2025%DJSZGGZYVi/media"
+        },
+        "md": "\n# Representation Alignment for Generation: \nTraining Diffusion Transformers \nIs Easier Than You Think\n#\n\nWe highlight the main contributions of this paper below: Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.\n###### Abstract\n\nRecent studies have shown that the denoising process in (generative) diffusion models can induce meaningful (discriminative) representations inside the model, though the quality of these representations still lags behind those learned through recent self-supervised learning methods. We argue that one main bottleneck in training large-scale diffusion models *for generation* lies in effectively learning these representations. Moreover, training can be made easier by incorporating high-quality external visual representations, rather than relying solely on the diffusion models to learn them independently. We study this by introducing a straightforward regularization called *REPresentation Alignment (REPA)*, which aligns the projections of noisy input hidden states in denoising networks with clean image representations obtained from external, pretrained visual encoders. The results are striking: our simple strategy yields significant improvements in both training efficiency and generation quality when applied to popular diffusion and flow-based transformers, such as DiTs and SiTs. For instance, our method can speed up SiT training by over 17.5$\\times$, matching the performance (without classifier-free guidance) of a SiT-XL model trained for 7M steps in less than 400K steps. In terms of final generation quality, our approach achieves state-of-the-art results of FID=1.42 using classifier-free guidance with the guidance interval.  \n\n[FIGURE S0.F1.g1]\n![Figure S0.F1.g1](./media/x1.png)\n\nFigure 1: \nRepresentation alignment makes diffusion transformer training significantly easier.\nOur framework, REPA, explicitly aligns the diffusion model representation with powerful pretrained visual representation through a simple regularization. Notably, model training becomes significantly more efficient and effective, and achieves $>$17.5$\\times$ faster convergence than the vanilla model.\n[/FIGURE]\n\n## 1 Introduction\n\nGenerative models based on *denoising*, such as diffusion models\u00a0(Ho et\u00a0al., [2020](#bib.bib32); Song et\u00a0al., [2021](#bib.bib77)) and flow-based models\u00a0(Albergo & Vanden-Eijnden, [2023](#bib.bib3); Lipman et\u00a0al., [2022](#bib.bib53); Liu et\u00a0al., [2023](#bib.bib54)), have been a scalable approach in generating high-dimensional visual data. They achieve remarkably successful results in challenging tasks such as zero-shot text-to-image\u00a0(Podell et\u00a0al., [2023](#bib.bib65); Saharia et\u00a0al., [2022](#bib.bib69); Esser et\u00a0al., [2024](#bib.bib22)) or text-to-video (Polyak et\u00a0al., [2024](#bib.bib66); Brooks et\u00a0al., [2024](#bib.bib8)) generation.  \n\nRecent works have explored the use of diffusion models as representation learners\u00a0(Li et\u00a0al., [2023a](#bib.bib49); Xiang et\u00a0al., [2023](#bib.bib81); Chen et\u00a0al., [2024c](#bib.bib16); Mukhopadhyay et\u00a0al., [2021](#bib.bib59)) and have shown that they learn discriminative features in their hidden states, and better diffusion models learn better representations (Xiang et\u00a0al., [2023](#bib.bib81)). In fact, this observation is closely related to earlier approaches that employ *denoising score matching* (Vincent, [2011](#bib.bib80)) as a self-supervised learning method (Bengio et\u00a0al., [2013](#bib.bib7)), which implicitly learns a representation ${\\mathbf{h}}$ as a hidden state of a denoising autoencoder ${\\mathbf{s}}_{\\theta}(\\tilde{{\\mathbf{x}}})$ through a *reconstruction* of ${\\mathbf{x}}$ from the corrupted data $\\tilde{{\\mathbf{x}}}$ (Yang & Wang, [2023](#bib.bib82)). However, the reconstruction task may not be a suitable task for learning good representations, as it is not capable of eliminating unnecessary details in ${\\mathbf{x}}$ for representation learning (LeCun, [2022](#bib.bib48); Assran et\u00a0al., [2023](#bib.bib5)).  \n\n[FIGURE S1.F2.sf1.g1]\n![Figure S1.F2.sf1.g1](./media/x3.png)\n\n(a) Semantic gap: Linear probing\n[/FIGURE]\n\nOur approach. In this paper, we identify that the main challenge in training diffusion models stems from the need to learn a high-quality internal representation ${\\mathbf{h}}$. We demonstrate that the training process for generative diffusion models becomes significantly easier and more effective when supported by an external representation, ${\\mathbf{y}}_{\\ast}$. Specifically, we propose a simple regularization technique that leverages recent advances in self-supervised visual representations as ${\\mathbf{y}}_{\\ast}$, leading to substantial improvements in both training efficiency and the generation quality of diffusion transformers.  \n\nWe start by performing an empirical analysis with recent diffusion transformers\u00a0(Peebles & Xie, [2023](#bib.bib63); Ma et\u00a0al., [2024a](#bib.bib57)) and the state-of-the-art self-supervised vision model, DINOv2\u00a0(Oquab et\u00a0al., [2024](#bib.bib62)). Similar to prior studies (Xiang et\u00a0al., [2023](#bib.bib81)), we first observe that pretrained diffusion models do indeed learn meaningful discriminative representations (as shown by the linear probing results in Figure\u00a0[2(a)](#S1.F2.sf1 \"In Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")). However, these representations are significantly inferior to those produced by DINOv2. Next, we find that the alignment between the representations learned by the diffusion model and those of DINOv2 (Figure\u00a0[2(b)](#S1.F2.sf2 \"In Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) is still considered weak,111We describe this as \u201cweak\u201d because relatively, the alignments are much poorer than those seen with other self-supervised encoders (*e.g.*, MoCov3 (Chen et\u00a0al., [2021](#bib.bib15))), even after extensive training. which we study by measuring their *representation alignment* (Huh et\u00a0al., [2024](#bib.bib36)). Finally, we observe this alignment between diffusion models and DINOv2 improves consistently with longer training and larger models (Figure\u00a0[2(c)](#S1.F2.sf3 \"In Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")).  \n\nThese insights inspire us to enhance generative models by incorporating external self-supervised representations. However, this approach is not straightforward when using off-the-shelf self-supervised visual encoders (*e.g.*, by fine-tuning an encoder for generation tasks). The first challenge is an input mismatch: diffusion models work with noisy inputs $\\tilde{{\\mathbf{x}}}$, whereas most self-supervised learning encoders are trained on clean images ${{\\mathbf{x}}}$. This issue is even more pronounced in modern *latent diffusion* models, which take a compressed latent image ${\\mathbf{z}}=E({\\mathbf{x}})$ from a pretrained VAE encoder (Rombach et\u00a0al., [2022](#bib.bib68)) as input. Additionally, these off-the-shelf vision encoders are not designed for tasks like reconstruction or generation. To overcome these technical hurdles, we guide the feature learning of diffusion models using a *regularization* technique that distills pretrained self-supervised representations into diffusion representations, offering a flexible way to integrate high-quality representations.  \n\n[FIGURE S1.F3.sf1.g1]\n![Figure S1.F3.sf1.g1](./media/x6.png)\n\n(a) Semantic gap: Linear probing\n[/FIGURE]\n\nSpecifically, we introduce *REPresentation Alignment* (REPA), a simple regularization technique built on recent diffusion transformer architectures (Peebles & Xie, [2023](#bib.bib63)). In essence, REPA distills the pretrained self-supervised visual representation ${\\mathbf{y}}_{\\ast}$ of a clean image ${\\mathbf{x}}$ into the diffusion transformer representation ${\\mathbf{h}}$ of a noisy input $\\tilde{{\\mathbf{x}}}$. This regularization reduces the semantic gap in the representation ${\\mathbf{h}}$ (Figure\u00a0[3(a)](#S1.F3.sf1 \"In Figure 3 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) and better aligns it with the target self-supervised representations ${\\mathbf{y}}_{\\ast}$ (Figure\u00a0[3(b)](#S1.F3.sf2 \"In Figure 3 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")). Notably, this enhanced alignment significantly boosts the *generation* performance of diffusion transformers (Figure\u00a0[3(c)](#S1.F3.sf3 \"In Figure 3 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")). Interestingly, with REPA, we observe that sufficient representation alignment can be achieved by aligning only the first few transformer blocks. This, in turn, allows the later layers of the diffusion transformers to focus on capturing high-frequency details based on the aligned representations, further improving generation performance.  \n\nBased on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs (Peebles & Xie, [2023](#bib.bib63)) and SiTs (Ma et al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet (Deng et al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is significantly faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et al., [2024](#bib.bib47)).\n\nWe highlight the main contributions of this paper below: Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.\n\n* We hypothesize that learning high-quality representations in diffusion transformers is essential for improving their generation performance. \n* We introduce REPA, a simple regularization for aligning diffusion transformer representations with strong self-supervised visual representations. \n* Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5$\\times$ faster training for SiTs and improved FID scores on ImageNet generation. \n\n## 2 Preliminaries\n\nWe present a brief overview of *flow and diffusion-based* models through the unified perspective of *stochastic interpolants*\u00a0(Albergo et\u00a0al., [2023](#bib.bib2); Ma et\u00a0al., [2024a](#bib.bib57)). Please refer to a more detailed explanation in Appendix\u00a0[A](#A1 \"Appendix A Descriptions for Diffusion-based Models \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\nWe consider a continuous time-dependent process with a data ${\\mathbf{x}}_{\\ast}\\sim p({\\mathbf{x}})$ and a Gaussian noise ${\\mathbf{\\epsilon}}~{}\\sim\\mathcal{N}(\\mathbf{0},\\mathbf{I})$ on $t\\in[0,T]$:  \n\n|  | $${\\mathbf{x}}_{t}=\\alpha_{t}{\\mathbf{x}}_{\\ast}+\\sigma_{t}{\\mathbf{\\epsilon}},\\quad\\alpha_{0}=\\sigma_{T}=1,\\,\\,\\alpha_{T}=\\sigma_{0}=0,$$ |  | (1) |\n| --- | --- | --- | --- |\n\nwhere $\\alpha_{t}$ and $\\sigma_{t}$ are a decreasing and increasing function of $t$, respectively. Given such a process, there exists a *probability flow ordinary differential equation* (PF ODE) with a velocity field  \n\n|  | $$\\dot{{\\mathbf{x}}}_{t}={\\mathbf{v}}({\\mathbf{x}}_{t},t),$$ |  | (2) |\n| --- | --- | --- | --- |\n\nwhere the distribution of this ODE at $t$ is equal to the marginal $p_{t}({\\mathbf{x}})$. Thus, data can be sampled by solving this PF ODE in Eq.\u00a0([2](#S2.E2 \"In 2 Preliminaries \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) through existing ODE samplers (*e.g.*, Euler sampler) starting from a random Gaussian noise $\\epsilon\\sim\\mathcal{N}(\\mathbf{0},\\mathbf{I})$ (Lipman et\u00a0al., [2022](#bib.bib53); Ma et\u00a0al., [2024a](#bib.bib57)).  \n\nThis velocity ${\\mathbf{v}}({\\mathbf{x}},t)$ is represented as the following sum of two conditional expectations  \n\n|  | $${\\mathbf{v}}({\\mathbf{x}},t)=\\mathbb{E}[\\dot{{\\mathbf{x}}}_{t}|{\\mathbf{x}}_{t}={\\mathbf{x}}]=\\dot{\\alpha}_{t}\\mathbb{E}[{\\mathbf{x}}_{\\ast}|{\\mathbf{x}}_{t}={\\mathbf{x}}]+\\dot{\\sigma}_{t}\\mathbb{E}[{\\mathbf{\\epsilon}}|{\\mathbf{x}}_{t}={\\mathbf{x}}],$$ |  | (3) |\n| --- | --- | --- | --- |\n\nwhich can be approximated with model ${\\mathbf{v}}_{\\theta}({\\mathbf{x}}_{t},t)$ by minimizing the following training objective:  \n\n|  | $$\\mathcal{L}_{\\text{velocity}}(\\theta)\\coloneqq\\mathbb{E}_{{\\mathbf{x}}_{\\ast},\\bm{\\epsilon},t}\\big{[}||{\\mathbf{v}}_{\\theta}({\\mathbf{x}}_{t},t)-\\dot{\\alpha}_{t}{\\mathbf{x}}_{\\ast}-\\dot{\\sigma}_{t}{\\mathbf{\\epsilon}}||^{2}\\big{]}.$$ |  | (4) |\n| --- | --- | --- | --- |\n\nMoreover, there exists a reverse *stochastic differential equation* (SDE) that the marginal $p_{t}({\\mathbf{x}})$ coincides with the one of PF ODE in Eq.\u00a0([2](#S2.E2 \"In 2 Preliminaries \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) with a diffusion coefficient $w_{t}$ (Ma et\u00a0al., [2024a](#bib.bib57)):  \n\n|  | $$d{\\mathbf{x}}_{t}={\\mathbf{v}}({\\mathbf{x}}_{t},t)dt-\\frac{1}{2}w_{t}{\\mathbf{s}}({\\mathbf{x}}_{t},t)dt+\\sqrt{w_{t}}d\\bar{\\mathbf{w}}_{t},$$ |  | (5) |\n| --- | --- | --- | --- |\n\nwhere the score ${\\mathbf{s}}({\\mathbf{x}}_{t},t)$ is the following conditional expectation  \n\n|  | $${\\mathbf{s}}({\\mathbf{x}}_{t},t)=-{\\sigma_{t}^{-1}}\\mathbb{E}[{\\mathbf{\\epsilon}}|{\\mathbf{x}}_{t}={\\mathbf{x}}].$$ |  | (6) |\n| --- | --- | --- | --- |\n\nand it can be directly computed using the velocity ${\\mathbf{v}}({\\mathbf{x}},t)$ for $t>0$ as  \n\n|  | $${\\mathbf{s}}({\\mathbf{x}},t)={{\\sigma_{t}^{-1}}}\\cdot\\frac{\\alpha_{t}{\\mathbf{v}}({\\mathbf{x}},t)-\\dot{\\alpha}_{t}{\\mathbf{x}}}{\\dot{\\alpha}_{t}\\sigma_{t}-{\\alpha}_{t}\\dot{\\sigma}_{t}},$$ |  | (7) |\n| --- | --- | --- | --- |\n\nimplying that data can be alternatively generated through Eq.\u00a0([5](#S2.E5 \"In 2 Preliminaries \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) with SDE solvers.  \n\nFollowing Ma et\u00a0al. ([2024a](#bib.bib57)), we mainly consider a simple linear interpolant with restricting $T=1$: $\\alpha_{t}=1-t$ and $\\sigma_{t}=t$. However, our approach is applicable to any similar variants (*e.g.*, DDPM; Ho et\u00a0al. [2020](#bib.bib32)), which has a similar formulation but uses a discretized process and different $\\alpha_{t},\\sigma_{t}$ that $\\mathcal{N}(\\mathbf{0},\\mathbf{I})$ becomes an equilibrium distribution (*i.e.*, ${\\mathbf{x}}_{t}$ converges to $\\mathcal{N}(\\mathbf{0},\\mathbf{I})$ only if $t\\to\\infty$).  \n\n## 3 REPA: Regularization for Representation Alignment\n\n### 3.1 Overview\n\nLet $p({\\mathbf{x}})$ be an unknown target distribution for data ${\\mathbf{x}}\\in\\mathcal{X}$. Our goal is to approximate $p({\\mathbf{x}})$ through a model distribution using a dataset drawn from $p({\\mathbf{x}})$. To lower computational costs, we adopt the recent prevalent *latent diffusion* (Rombach et\u00a0al., [2022](#bib.bib68)). This involves learning a latent distribution $p({\\mathbf{z}})$, which is defined as the distribution of a compressed latent variable $\\mathbf{z}=E({\\mathbf{x}})$, where $E$ is an encoder from a pretrained autoencoder (*e.g.*, KL-VAE; Rombach et\u00a0al. [2022](#bib.bib68)), with ${\\mathbf{x}}\\sim p_{\\text{data}}({\\mathbf{x}})$.  \n\nWe aim to learn this distribution by training a diffusion model ${\\mathbf{v}}_{\\theta}({\\mathbf{z}}_{t},t)$ using objectives such as velocity prediction, as described in Section\u00a0[2](#S2 \"2 Preliminaries \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"). Here, we revisit denoising score matching within the context of self-supervised representation learning (Bengio et\u00a0al., [2013](#bib.bib7)). From this perspective, one can think of the diffusion model ${\\mathbf{v}}_{\\theta}({\\mathbf{z}}_{t},t)$ as a composition of two functions $g_{\\theta}\\circ f_{\\theta}$ with an encoder $f_{\\theta}:\\mathcal{Z}\\to\\mathcal{H}$ with $f_{\\theta}({\\mathbf{z}}_{t})={\\mathbf{h}}_{t}$ and a decoder $g_{\\theta}:\\mathcal{H}\\to\\mathcal{Z}$ with $g_{\\theta}({\\mathbf{h}}_{t})={\\mathbf{v}}_{t}$, where the encoder $f_{\\theta}$ implicitly learns a representation ${\\mathbf{h}}_{t}$ that reconstructs the target ${\\mathbf{v}}_{t}$.  \n\nHowever, learning a good representation through producing a prediction of the input space (*e.g.*, generating pixels) can be challenging, as the model is often not capable of eliminating unnecessary details, which is crucial for developing a strong representation (LeCun, [2022](#bib.bib48); Assran et\u00a0al., [2023](#bib.bib5)). We argue that a key bottleneck in the training of large-scale diffusion models *for generation* lies in representation learning, an area where current diffusion models fall short. We also hypothesize that the training process can be made easier by guiding the model with high-quality external visual representations, rather than relying solely on the diffusion model to learn them independently.  \n\nTo address this challenge, we introduce a simple regularization method called *REPresentation Alignment* (REPA) using the recent diffusion transformer architectures (Peebles & Xie, [2023](#bib.bib63); Ma et\u00a0al., [2024a](#bib.bib57)) (see Appendix\u00a0[B](#A2 \"Appendix B Diffusion Transformer Architecture \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") for an illustration). In a nutshell, our regularization distills pretrained self-supervised visual representations to diffusion transformers in a simple and effective way. This allows the diffusion model to leverage these semantically rich external representations for generation, leading to a substantial boost in performance.  \n\n[FIGURE S3.F4.g1]\n![Figure S3.F4.g1](./media/x9.png)\n\nFigure 4: REPA improves visual scaling. We compare the images generated by two SiT-XL/2 models during the first 400K iterations, with REPA applied to one of the models. Both models share the same noise, sampler, and number of sampling steps, and neither uses classifier-free guidance.\n[/FIGURE]\n\n### 3.2 Observations\n\nTo take a deeper dive into this, we first investigate the layer-wise behavior of the pretrained SiT model\u00a0(Ma et\u00a0al., [2024a](#bib.bib57)) on ImageNet\u00a0(Deng et\u00a0al., [2009](#bib.bib18)), which uses linear interpolants and velocity prediction for training. In particular, we focus on measuring the *representation gap* between the diffusion transformer and the state-of-the-art self-supervised DINOv2 model (Oquab et\u00a0al., [2024](#bib.bib62)). We examine this from three angles: semantic gap, feature alignment progression, and their final feature alignment. For the *semantic gap*, we compare linear probing results using DINOv2 features with those from SiT models trained for 7M iterations, following the same protocol as in Xiang et\u00a0al. ([2023](#bib.bib81)), which involves linear probing on globally pooled hidden states of the diffusion transformer. Next, to measure *feature alignments*, we use CKNNA (Huh et\u00a0al., [2024](#bib.bib36)), a kernel alignment metric related to CKA (Kornblith et\u00a0al., [2019](#bib.bib44)), but based on mutual nearest neighbors. This allows for a quantitative assessment of alignment between different representations. We summarize the result in Figure\u00a0[2](#S1.F2 \"Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") and more details (*e.g.*, definition of CKNNA) in Appendix\u00a0[C.1](#A3.SS1 \"C.1 Evaluation details \u2023 Appendix C Analysis Details \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\nDiffusion transformers exhibit a significant semantic gap from state-of-the-art visual encoders. As shown in Figure\u00a0[2(a)](#S1.F2.sf1 \"In Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), we observe that the hidden state representation of the pretrained diffusion transformer, in line with prior works\u00a0(Xiang et\u00a0al., [2023](#bib.bib81); Chen et\u00a0al., [2024c](#bib.bib16)), achieves a reasonably high linear probing peak at layer 20. However, its performance remains well below that of DINOv2, indicating a substantial semantic gap between the two representations. Additionally, we find that after reaching this peak, linear probing performance quickly declines, suggesting that the diffusion transformer must shift away from focusing solely on learning semantically-rich representations in order to generate images with high-frequency details.  \n\nDiffusion representations are already (weakly) aligned with other visual representations. In Figure [2(b)](#S1.F2.sf2 \"In Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), we report representational alignments between SiT and DINOv2 using CKNNA. In particular, the SiT model representation already shows better alignment than MAE (He et\u00a0al., [2022](#bib.bib29)), which is also a self-supervised learning approach based on the reconstruction of masked patches. However, the absolute alignment score remains lower than that observed between other self-supervised learning methods (*e.g.*, MoCov3 (Chen et\u00a0al., [2021](#bib.bib15)) *vs.* DINOv2). These results suggest that while diffusion transformer representations exhibit some alignment with self-supervised visual representations, the alignment remains weak.  \n\nAlignment improves with larger models and extended training. We also measure CKNNA values across different model sizes and training iterations. As depicted in Figure\u00a0[2(c)](#S1.F2.sf3 \"In Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), we observe improved alignment with larger models and extended training. However, the absolute alignment remains low and does not reach the levels observed between other self-supervised visual encoders (*e.g.*, MoCov3 and DINOv2), even after extensive training of 7M iterations.  \n\nThese findings are not unique to the SiT model but are also observed in other denoising-based generative transformers. For instance, in Figure\u00a0[2](#S1.F2 \"Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), we present a similar analysis using a DiT model\u00a0(Peebles & Xie, [2023](#bib.bib63)) pretrained on ImageNet with the DDPM objective\u00a0(Ho et\u00a0al., [2020](#bib.bib32); Nichol & Dhariwal, [2021](#bib.bib61)). See Appendix\u00a0[C.2](#A3.SS2 \"C.2 DiT Analysis \u2023 Appendix C Analysis Details \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") for more details.  \n\n### 3.3 Representation alignment with self-supervised representations\n\nREPA aligns patch-wise projections of the model\u2019s hidden states with pretrained self-supervised visual representations. Specifically, we use the *clean* image representation as the target and explore its impact. The goal of this regularization is for the diffusion transformer\u2019s hidden states to predict noise-invariant, clean visual representations from noisy inputs that contain useful semantic information. This provides meaningful guidance for the subsequent layers to reconstruct the target.  \n\nFormally, let $f$ be a pretrained encoder and consider a clean image $\\mathbf{x}_{\\ast}$. Let ${\\mathbf{y}}_{\\ast}=f({\\mathbf{x}}_{\\ast})\\in\\mathbb{R}^{N\\times D}$ be an encoder output, where $N,D>0$ are the number of patches and the embedding dimension of $f$, respectively. REPA aligns $h_{\\phi}({\\mathbf{h}}_{t})\\in\\mathbb{R}^{N\\times D}$ with ${\\mathbf{y}}_{\\ast}$, where $h_{\\phi}({\\mathbf{h}}_{t})$ is a projection of an diffusion transformer encoder output ${\\mathbf{h}}_{t}=f_{\\theta}({\\mathbf{z}}_{t})$ through a trainable projection head $h_{\\phi}$. In practice, we simply parameterize $h_{\\phi}$ using a multilayer perceptron (MLP).  \n\nIn particular, REPA achieves alignment through a maximization of patch-wise similarities between the pretrained representation ${\\mathbf{y}}_{\\ast}$ and the hidden state ${\\mathbf{h}}_{t}$:  \n\n|  | $$\\mathcal{L}_{\\text{REPA}}(\\theta,\\phi)\\coloneqq-\\mathbb{E}_{{\\mathbf{x}}_{\\ast},\\bm{\\epsilon},t}\\Big{[}\\frac{1}{N}\\sum_{n=1}^{N}\\mathrm{sim}({\\mathbf{y}}_{\\ast}^{[n]},h_{\\phi}({\\mathbf{h}}_{t}^{([n]}))\\Big{]},$$ |  | (8) |\n| --- | --- | --- | --- |\n\nwhere $n$ is a patch index and $\\mathrm{sim}(\\cdot,\\cdot)$ is a pre-defined similarity function.  \n\nIn practice, we add this term to the original diffusion-based objectives described in Section\u00a0[2](#S2 \"2 Preliminaries \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") and Appendix\u00a0[A](#A1 \"Appendix A Descriptions for Diffusion-based Models \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"). For instance, for the training of a velocity model in Eq.\u00a0([4](#S2.E4 \"In 2 Preliminaries \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")), the objective becomes:  \n\n|  | $$\\mathcal{L}\\coloneqq\\mathcal{L}_{\\text{velocity}}+\\lambda\\mathcal{L}_{\\text{REPA}}$$ |  | (9) |\n| --- | --- | --- | --- |\n\nwhere $\\lambda>0$ is a hyperparameter that controls the tradeoff between denoising and representation alignment. We primarily investigate the impact of this regularization on two popular objectives: Improved DDPM (Nichol & Dhariwal, [2021](#bib.bib61)) used in DiT\u00a0(Peebles & Xie, [2023](#bib.bib63)) and linear stochastic interpolants used in SiT\u00a0(Ma et\u00a0al., [2024a](#bib.bib57)), though other objectives can also be considered.  \n\n## 4 Experiments\n\nWe validate the performance of REPA and the effect of the proposed components through extensive experiments. In particular, we investigate the following questions:  \n\n* Can REPA improve diffusion transformer training significantly? (Table\u00a0[4.1](#S4.SS1 \"4.1 Setup \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), [4.2](#S4.SS2 \"4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), [4.2](#S4.SS2 \"4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), Figure\u00a0[4](#S3.F4 \"Figure 4 \u2023 3.1 Overview \u2023 3 REPA: Regularization for Representation Alignment \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), [6](#S4.F6 \"Figure 6 \u2023 4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) \n* Is REPA scalable in terms of model size and representation quality? (Table\u00a0[4.1](#S4.SS1 \"4.1 Setup \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), Figure [5](#S4.F5 \"Figure 5 \u2023 4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) \n* Can diffusion model representations be aligned with various visual representations? (Figure [8](#S4.F8 \"Figure 8 \u2023 4.4 Ablation studies \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\")) \n\n### 4.1 Setup\n\n[FIGURE S4.SS1.fig1]\n\n[TABLE S4.T1]\n\nTable 1: \nModel configuration details.\n[/TABLE]\n\n| Config | #Layers | Hidden dim | #Heads |\n| --- | --- | --- | --- |\n| B/2 | 12 | 768 | 12 |\n| L/2 | 24 | 1024 | 16 |\n| XL/2 | 28 | 1152 | 16 |\n\nTable 1: \nModel configuration details.\n[/FIGURE]\n\nImplementation details. We strictly follow the setup in DiT\u00a0(Peebles & Xie, [2023](#bib.bib63)) and SiT\u00a0(Ma et\u00a0al., [2024a](#bib.bib57)) unless otherwise specified. Specifically, we use ImageNet\u00a0(Deng et\u00a0al., [2009](#bib.bib18)), where each image is preprocessed to the resolution of 256$\\times$256 (denoted as ImageNet 256$\\times$256), and follow ADM\u00a0(Dhariwal & Nichol, [2021](#bib.bib19)) for other data preprocessing protocols. Each image is then encoded into a compressed vector ${\\mathbf{z}}\\in\\mathbb{R}^{32\\times 32\\times 4}$ using the Stable Diffusion VAE\u00a0(Rombach et\u00a0al., [2022](#bib.bib68)). For model configurations, we use the B/2, L/2, and XL/2 architectures introduced in the DiT and SiT papers, which process inputs with a patch size of 2 (see Table\u00a0[4.1](#S4.SS1 \"4.1 Setup \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") for details). To ensure a fair comparison with DiTs and SiTs, we consistently use a batch size of 256 during training. Additional experimental details, including hyperparameter settings and computing resources, are provided in Appendix\u00a0[D](#A4 \"Appendix D Hyperparameter and More Implementation Details \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\n[TABLE S4.T2]\n\n<table class=\"ltx_tabular ltx_centering ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_tt\">Iter.</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">Target Repr.</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_tt\">Depth</th>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">Objective</td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">FID<math class=\"ltx_Math\"><semantics><mo>\u2193</mo><annotation-xml><ci>\u2193</ci></annotation-xml><annotation>\\downarrow</annotation></semantics></math>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">sFID<math class=\"ltx_Math\"><semantics><mo>\u2193</mo><annotation-xml><ci>\u2193</ci></annotation-xml><annotation>\\downarrow</annotation></semantics></math>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">IS<math class=\"ltx_Math\"><semantics><mo>\u2191</mo><annotation-xml><ci>\u2191</ci></annotation-xml><annotation>\\uparrow</annotation></semantics></math>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">Pre.<math class=\"ltx_Math\"><semantics><mo>\u2191</mo><annotation-xml><ci>\u2191</ci></annotation-xml><annotation>\\uparrow</annotation></semantics></math>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">Rec.<math class=\"ltx_Math\"><semantics><mo>\u2191</mo><annotation-xml><ci>\u2191</ci></annotation-xml><annotation>\\uparrow</annotation></semantics></math>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">Acc.<math class=\"ltx_Math\"><semantics><mo>\u2191</mo><annotation-xml><ci>\u2191</ci></annotation-xml><annotation>\\uparrow</annotation></semantics></math>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">400K</span></th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">Vanilla SiT-L/2 <cite class=\"ltx_cite ltx_citemacro_citep\">(Ma et\u00a0al., <a class=\"ltx_ref\">2024a</a>)</cite></span></th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">18.8</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">5.29</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span><span class=\"ltx_text\">72.0</span>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">0.64</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">0.64</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">N/A</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">MAE-L</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">8</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">12.5</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">4.89</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>90.7</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.68</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.63</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">57.3</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">DINO-B</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">11.9</td>\n<td class=\"ltx_td ltx_align_center\">5.00</td>\n<td class=\"ltx_td ltx_align_center\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>92.9</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.63</td>\n<td class=\"ltx_td ltx_align_center\">59.3</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">MoCov3-L</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">11.9</td>\n<td class=\"ltx_td ltx_align_center\">5.06</td>\n<td class=\"ltx_td ltx_align_center\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>92.2</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.64</td>\n<td class=\"ltx_td ltx_align_center\">63.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">I-JEPA-H</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">11.6</td>\n<td class=\"ltx_td ltx_align_center\">5.21</td>\n<td class=\"ltx_td ltx_align_center\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>98.0</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.64</td>\n<td class=\"ltx_td ltx_align_center\">62.1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">CLIP-L</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">11.0</td>\n<td class=\"ltx_td ltx_align_center\">5.25</td>\n<td class=\"ltx_td ltx_align_center\">100.4</td>\n<td class=\"ltx_td ltx_align_center\">0.67</td>\n<td class=\"ltx_td ltx_align_center\">0.66</td>\n<td class=\"ltx_td ltx_align_center\">67.2</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">DINOv2-L</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">10.0</td>\n<td class=\"ltx_td ltx_align_center\">5.09</td>\n<td class=\"ltx_td ltx_align_center\">106.6</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.65</td>\n<td class=\"ltx_td ltx_align_center\">68.1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">DINOv2-B</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">8</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>9.7</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">5.13</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">107.5</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.69</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.64</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">65.7</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">DINOv2-L</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">10.0</td>\n<td class=\"ltx_td ltx_align_center\">5.09</td>\n<td class=\"ltx_td ltx_align_center\">106.6</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.65</td>\n<td class=\"ltx_td ltx_align_center\">68.1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text\">DINOv2-g</span></th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">8</th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>9.8</td>\n<td class=\"ltx_td ltx_align_center\">5.22</td>\n<td class=\"ltx_td ltx_align_center\">108.9</td>\n<td class=\"ltx_td ltx_align_center\">0.69</td>\n<td class=\"ltx_td ltx_align_center\">0.64</td>\n<td class=\"ltx_td ltx_align_center\">65.7</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">6</span></th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">10.3</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">5.23</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">106.5</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.69</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.65</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">66.2</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">8</span></th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">10.0</td>\n<td class=\"ltx_td ltx_align_center\">5.09</td>\n<td class=\"ltx_td ltx_align_center\">106.6</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.65</td>\n<td class=\"ltx_td ltx_align_center\">68.1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">10</span></th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">10.5</td>\n<td class=\"ltx_td ltx_align_center\">5.50</td>\n<td class=\"ltx_td ltx_align_center\">105.0</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.65</td>\n<td class=\"ltx_td ltx_align_center\">68.6</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">12</span></th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">11.2</td>\n<td class=\"ltx_td ltx_align_center\">5.14</td>\n<td class=\"ltx_td ltx_align_center\">100.2</td>\n<td class=\"ltx_td ltx_align_center\">0.68</td>\n<td class=\"ltx_td ltx_align_center\">0.64</td>\n<td class=\"ltx_td ltx_align_center\">69.4</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">14</span></th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">11.6</td>\n<td class=\"ltx_td ltx_align_center\">5.61</td>\n<td class=\"ltx_td ltx_align_center\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>99.5</td>\n<td class=\"ltx_td ltx_align_center\">0.67</td>\n<td class=\"ltx_td ltx_align_center\">0.65</td>\n<td class=\"ltx_td ltx_align_center\">70.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">16</span></th>\n<td class=\"ltx_td ltx_align_center\">NT-Xent</td>\n<td class=\"ltx_td ltx_align_center\">12.1</td>\n<td class=\"ltx_td ltx_align_center\">5.34</td>\n<td class=\"ltx_td ltx_align_center\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>96.1</td>\n<td class=\"ltx_td ltx_align_center\">0.67</td>\n<td class=\"ltx_td ltx_align_center\">0.64</td>\n<td class=\"ltx_td ltx_align_center\">71.1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">8</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">NT-Xent</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">10.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">5.09</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">106.6</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.68</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.65</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">68.1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb\">400K</th>\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">DINOv2-L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb\">8</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\"><span class=\"ltx_text\">Cos. sim.</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">\n<span class=\"ltx_text ltx_phantom\"><span>0</span></span>9.9</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">5.34</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">111.9</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.68</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.65</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">68.2</td>\n</tr>\n</tbody>\n</table>\n\nTable 2: \nComponent-wise analysis on ImageNet 256$\\times$256. All models are SiT-L/2 trained for 400K iterations. All metrics except accuracy (Acc.) are measured with the SDE Euler-Maruyama sampler with NFE=250 and without classifier-free guidance. For Acc., we report linear probing results on the ImageNet validation set using the latent features aligned with the target representation. We fix $\\lambda=0.5$ here. $\\downarrow$ and $\\uparrow$ indicate whether lower or higher values are better, respectively.\n[/TABLE]\n\nEvaluation. We report Fr\u00e9chet inception distance (FID; Heusel et\u00a0al. [2017](#bib.bib30)), sFID (Nash et\u00a0al., [2021](#bib.bib60)), inception score (IS; Salimans et\u00a0al. [2016](#bib.bib70)), precision (Pre.) and recall (Rec.) (Kynk\u00e4\u00e4nniemi et\u00a0al., [2019](#bib.bib46)) using 50,000 samples. We also include linear probing results (Acc.) and CKNNA\u00a0(Huh et\u00a0al., [2024](#bib.bib36)) as discussed in Section\u00a0[3.2](#S3.SS2 \"3.2 Observations \u2023 3 REPA: Regularization for Representation Alignment \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"). We provide more details of each metric in Appendix\u00a0[E](#A5 \"Appendix E Evaluation Details \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\nSampler. Following SiT (Ma et\u00a0al., [2024a](#bib.bib57)), we always use the SDE Euler-Maruyama sampler (for SDE with $w_{t}=\\sigma_{t}$) and set the number of function evaluations (NFE) as 250 by default.  \n\nBaselines. We use several recent diffusion-based generation methods as baselines, each employing different inputs and network architectures. Specifically, we consider the following four types of approaches: (a) *Pixel diffusion*: ADM\u00a0(Dhariwal & Nichol, [2021](#bib.bib19)), VDM$++$\u00a0(Kingma & Gao, [2024](#bib.bib42)), Simple diffusion\u00a0(Hoogeboom et\u00a0al., [2023](#bib.bib34)), CDM\u00a0(Ho et\u00a0al., [2022](#bib.bib33)), (b) *Latent diffusion with U-Net*: LDM\u00a0(Rombach et\u00a0al., [2022](#bib.bib68)), (c) *Latent diffusion with transformer+U-Net hybrid models*: U-ViT-H/2 (Bao et\u00a0al., [2023](#bib.bib6)), DiffiT\u00a0(Hatamizadeh et\u00a0al., [2024](#bib.bib27)), and MDTv2-XL/2 (Gao et\u00a0al., [2023](#bib.bib24)), and (d) *Latent diffusion with transformers*: MaskDiT (Zheng et\u00a0al., [2024](#bib.bib86)), SD-DiT (Zhu et\u00a0al., [2024](#bib.bib87)), DiT\u00a0(Peebles & Xie, [2023](#bib.bib63)), and SiT\u00a0(Ma et\u00a0al., [2024a](#bib.bib57)). Here, we refer to Transformer+U-Net hybrid models that contain skip connections, which are not originally used in pure transformer architecture. Detailed descriptions of each baseline method are provided in Appendix\u00a0[F](#A6 \"Appendix F Baselines \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\n### 4.2 Component-wise analysis\n\nWe answer the question of whether REPA leads to improved diffusion transformer training. As shown in Table\u00a0[4.1](#S4.SS1 \"4.1 Setup \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), we discover that REPA consistently provides a substantially improved generation performance across various design choices, achieving a much better FID score than the vanilla model. Below, we provide a detailed analysis of the impact of each component.  \n\nTarget representation. We begin by analyzing the effect of using different pretrained self-supervised encoders as the target representation. Notably, there is a strong correlation between the quality of these encoders and the performance of the corresponding aligned diffusion transformers. When a diffusion transformer is aligned with a pretrained encoder that offers more semantically meaningful representations (*i.e.*, better linear probing results), the model not only captures better semantics but also exhibits enhanced generation performance, as reflected by improved validation accuracy with linear probing and lower FID scores.  \n\n[FIGURE S4.F5.sf1.g1]\n![Figure S4.F5.sf1.g1](./media/x10.png)\n\n(a) Different visual encoders\n[/FIGURE]\n\n[FIGURE S4.F6.g1]\n![Figure S4.F6.g1](./media/main_qual_12.png)\n\nFigure 6: Selected samples on ImageNet 256$\\times$256 from the SiT-XL/2 + REPA model. We use classifier-free guidance with $w=4.0$.\n[/FIGURE]\n\nTarget encoder size. Next, we investigate the impact of different target representation encoder sizes by evaluating various DINOv2 models (*i.e.*, DINOv2-B, -L, -g). We observe that the performance differences are marginal, which we hypothesize is due to all DINOv2 models being distilled from the DINOv2-g model and thus sharing similar representations.  \n\nAlignment depth. We also examine the effect of attaching the REPA loss to different layers. We find that regularizing only the first few layers (*e.g.*, 8) in training is sufficient, as indicated by the linear probing results in Table\u00a0[4.1](#S4.SS1 \"4.1 Setup \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"). Interestingly, limiting regularization to the first few layers further enhances generation performance (*e.g.*, adding REPA to layer 6 or 8 yields best results). We hypothesize that this enables the remaining layers to concentrate on capturing high-frequency details, building on a strong representation. In future experiments, we apply REPA to the first 8 layers.  \n\nAlignment objective. We compare two simple training objectives for alignment: Normalized Temperature-scaled Cross Entropy (NT-Xent; Chen et\u00a0al. [2020a](#bib.bib13)) or negative cosine similarity (cos. sim.). Empirically, we find that NT-Xent offers advantages in the early stages (*e.g.*, 50-100K iterations), but the gap diminishes over time. Thus, we opt for cos. sim. in future experiments.  \n\nScalability. Lastly, we investigate the scalability of REPA by varying the model sizes of both the target representation encoders and the diffusion transformers. In general, as summarized in Figure\u00a0[5(a)](#S4.F5.sf1 \"In Figure 5 \u2023 4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), aligning with stronger representations improves both the generation results and the linear probing performance. Moreover, the convergence speed-up from REPA becomes more significant as the diffusion transformer model increases in size. We demonstrate this by plotting FID-50K of different SiT models with and without REPA in Figure\u00a0[5(b)](#S4.F5.sf2 \"In Figure 5 \u2023 4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"): REPA achieves the same FID level more quickly with larger models. Lastly, Figure\u00a0[5(c)](#S4.F5.sf3 \"In Figure 5 \u2023 4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") highlights the relationship between linear probing results and FID scores as model size varies, while keeping the target representation encoder fixed as DINOv2-B. Larger models exhibit a steeper performance improvement (*i.e.*, faster gains in both generation and linear evaluation) with longer training.  \n\n[FIGURE S4.SS2.7]\n\n[FIGURE S4.SS2.1.1]\n\n[TABLE S4.T3]\n\nTable 3: FID comparisons with vanilla DiTs and SiTs on ImageNet 256$\\times$256. We do not use classifier-free guidance (CFG). $\\downarrow$ denotes lower values are better. Iter. indicates the training iteration.\n[/TABLE]\n\n| Model | #Params | Iter. | FID$\\downarrow$ |\n| --- | --- | --- | --- |\n| DiT-L/2 | 458M | 400K | 23.3 |\n| + REPA (ours) | 458M | 400K | 15.6 |\n| DiT-XL/2 | 675M | 400K | 19.5 |\n| + REPA (ours) | 675M | 400K | 12.3 |\n| DiT-XL/2 | 675M | 7M | 09.6 |\n| + REPA (ours) | 675M | 850K | 09.6 |\n| SiT-B/2 | 130M | 400K | 33.0 |\n| + REPA (ours) | 130M | 400K | 24.4 |\n| SiT-L/2 | 458M | 400K | 18.8 |\n| + REPA (ours) | 458M | 400K | 09.7 |\n| + REPA (ours) | 458M | 700K | 08.4 |\n| SiT-XL/2 | 675M | 400K | 17.2 |\n| + REPA (ours) | 675M | 150K | 13.6 |\n| SiT-XL/2 | 675M | 7M | 08.3 |\n| + REPA (ours) | 675M | 400K | 07.9 |\n| + REPA (ours) | 675M | 1M | 06.4 |\n| + REPA (ours) | 675M | 4M | 05.9 |\n\nTable 3: FID comparisons with vanilla DiTs and SiTs on ImageNet 256$\\times$256. We do not use classifier-free guidance (CFG). $\\downarrow$ denotes lower values are better. Iter. indicates the training iteration.\n[/FIGURE]\n\n[FIGURE S4.SS2.7.7]\n\n[TABLE S4.T4]\n\nTable 4: \nSystem-level comparison on ImageNet 256$\\times$256 with CFG. $\\downarrow$ and $\\uparrow$ indicate whether lower or higher values are better, respectively. Results that include additional CFG scheduling are marked with an asterisk (\\*), where the guidance interval from\u00a0(Kynk\u00e4\u00e4nniemi et\u00a0al., [2024](#bib.bib47)) is applied for REPA.\n[/TABLE]\n\n| 00Model | Epochs | 0FID$\\downarrow$ | sFID$\\downarrow$ | IS$\\uparrow$ | Pre.$\\uparrow$ | Rec.$\\uparrow$ |\n| --- | --- | --- | --- | --- | --- | --- |\n| *Pixel diffusion* | | | | | | |\n| 00ADM-U | 0400 | 03.94 | 6.14 | 186.7 | 0.82 | 0.52 |\n| 00VDM$++$ | 0560 | 02.40 | - | 225.3 | - | - |\n| 00Simple diffusion | 0800 | 02.77 | - | 211.8 | - | - |\n| 00CDM | 2160 | 04.88 | - | 158.7 | - | - |\n| *Latent diffusion, U-Net* | | | | | | |\n| 00LDM-4 | 0200 | 03.60 | - | 247.7 | 0.87 | 0.48 |\n| *Latent diffusion, Transformer + U-Net hybrid* | | | | | | |\n| 00U-ViT-H/2 | 0240 | 02.29 | 5.68 | 263.9 | 0.82 | 0.57 |\n| 00DiffiT\\* | - | 01.73 | - | 276.5 | 0.80 | 0.62 |\n| 00MDTv2-XL/2\\* | 1080 | 01.58 | 4.52 | 314.7 | 0.79 | 0.65 |\n| *Latent diffusion, Transformer* | | | | | | |\n| 00MaskDiT | 1600 | 02.28 | 5.67 | 276.6 | 0.80 | 0.61 |\n| 00SD-DiT | 0480 | 03.23 | - | - | - | - |\n| 00DiT-XL/2 | 1400 | 02.27 | 4.60 | 278.2 | 0.83 | 0.57 |\n| 00SiT-XL/2 | 1400 | 02.06 | 4.50 | 270.3 | 0.82 | 0.59 |\n| 00+ REPA (ours) | 0200 | 01.96 | 4.49 | 264.0 | 0.82 | 0.60 |\n| 00+ REPA (ours) | 0800 | 01.80 | 4.50 | 284.0 | 0.81 | 0.61 |\n| 00+ REPA (ours)\\* | 0800 | 01.42 | 4.70 | 305.7 | 0.80 | 0.65 |\n\nTable 4: \nSystem-level comparison on ImageNet 256$\\times$256 with CFG. $\\downarrow$ and $\\uparrow$ indicate whether lower or higher values are better, respectively. Results that include additional CFG scheduling are marked with an asterisk (\\*), where the guidance interval from\u00a0(Kynk\u00e4\u00e4nniemi et\u00a0al., [2024](#bib.bib47)) is applied for REPA.\n[/FIGURE]\n\nTable 3: FID comparisons with vanilla DiTs and SiTs on ImageNet 256$\\times$256. We do not use classifier-free guidance (CFG). $\\downarrow$ denotes lower values are better. Iter. indicates the training iteration.\n[/FIGURE]\n\n### 4.3 System-level comparison\n\nBased on the analysis, we perform a system-level comparison between recent state-of-the-art diffusion model approaches and diffusion transformers with REPA. First, we compare the FID values between vanilla DiT or SiT models and the same models trained with REPA. As shown in Table\u00a0[4.2](#S4.SS2 \"4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), REPA shows consistent and significant improvement across all model variants. In particular, on SiT-XL/2, aligning representation leads to FID$=$7.9 at 400K iteration, which already exceeds the FID of the vanilla SiT-XL at 7M iteration. Note that the performance continues to improve with longer training; for instance, with SiT-XL/2, FID becomes 6.4 at 1M iteration and 5.9 at 4M iteration. We also qualitatively compare the progression of generation results in Figure\u00a0[4](#S3.F4 \"Figure 4 \u2023 3.1 Overview \u2023 3 REPA: Regularization for Representation Alignment \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), where we use the same initial noise across different models. The model trained with REPA exhibits better progression.  \n\nFinally, we provide a quantitative comparison between SiT-XL/2 with REPA and other recent diffusion model methods using classifier-free guidance\u00a0(Ho & Salimans, [2022](#bib.bib31)). Our method already outperforms the original SiT-XL/2 with 7$\\times$ fewer epochs and it is further improved with longer training. At 800 epochs, SiT-XL/2 with REPA achieves FID of 1.80 with a classifier-free guidance scale of $w=1.35$, and achieves state-of-the-art FID of 1.42 with a extra classifier-free guidance scheduling with guidance interval (Kynk\u00e4\u00e4nniemi et\u00a0al., [2024](#bib.bib47)). We also provide selected qualitative results of SiT-XL/2 with REPA in Figure\u00a0[6](#S4.F6 \"Figure 6 \u2023 4.2 Component-wise analysis \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") and more examples in Appendix\u00a0[H](#A8 \"Appendix H More Qualitative Results \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\n### 4.4 Ablation studies\n\nRepresentation gap across different timesteps. We begin by comparing the semantic gap (measured through linear probing results) using outputs of the SiT models with different noise scale (*i.e.*, different timesteps), and maximum CKNNA values using clean DINOv2-g representations. As shown in Figure\u00a0[8](#S4.F8 \"Figure 8 \u2023 4.4 Ablation studies \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), REPA consistently reduces the representation gap across different noise levels, as indicated by better linear probing results and higher CKNNA values across all noise scales.  \n\nAlignment to different visual encoders. In addition, we extend the analysis from Section\u00a0[2](#S1.F2 \"Figure 2 \u2023 1 Introduction \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") to other visual encoders, not limited to the DINOv2 models. Specifically, we train SiT-L/2 models using REPA with MAE or MoCov3. As depicted in Figure\u00a0[8](#S4.F8 \"Figure 8 \u2023 4.4 Ablation studies \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), these models demonstrate higher CKNNA values across the corresponding target representations than the vanilla model. This indicates that REPA is effective in aligning various visual representations, not limited to DINOv2.  \n\n[FIGURE S4.SS4.3]\n\n[TABLE S4.T5]\n\nTable 5: \nAblation study for $\\lambda$.\n[/TABLE]\n\n| $\\lambda$ | 0.25 | 0.5 | 0.75 | 1.0 |\n| --- | --- | --- | --- | --- |\n| FID$\\downarrow$ | 8.6 | 7.9 | 7.8 | 7.8 |\n| IS$\\uparrow$ | 118.6 | 122.6 | 124.4 | 124.8 |\n\nTable 5: \nAblation study for $\\lambda$.\n[/FIGURE]\n\nEffect of $\\lambda$. We also examine the effect of the regularization coefficient $\\lambda$ by training SiT-XL/2 models for 400K with different coefficients 0.25 to 1.0 and comparing the performance. As shown in Table\u00a0[4.4](#S4.SS4 \"4.4 Ablation studies \u2023 4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"), the performance is robust to the values and it is quite saturated after $\\lambda=0.5$.  \n\n[FIGURE S4.F7.sf1.g1]\n![Figure S4.F7.sf1.g1](./media/x13.png)\n\n(a) Linear probing\n[/FIGURE]\n\n## 5 Related Work\n\nWe discuss with the most relevant literature here and provide a more discussion in Appendix\u00a0[I](#A9 \"Appendix I More Discussion on Related Work \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\").  \n\nBridging diffusion models and representation learning. Many recent works have attempted to exploit or improve representations learned from diffusion models (Fuest et\u00a0al., [2024](#bib.bib23)). First, there are hybrid model approaches: Yang et\u00a0al. ([2022](#bib.bib83)) and Deja et\u00a0al. ([2023](#bib.bib17)) try to train a single model capable of both classification and diffusion-based generation. Also, Tian et\u00a0al. ([2024](#bib.bib79)) introduces a hybrid model capable of segmentation and generation. Next, several works have analyzed and exploited representations in diffusion models: Xiang et\u00a0al. ([2023](#bib.bib81)) and Mukhopadhyay et\u00a0al. ([2021](#bib.bib59)) observe that the intermediate representations of diffusion models have discriminative properties. Moreover, Repfusion (Yang & Wang, [2023](#bib.bib82)) and DreamTeacher (Li et\u00a0al., [2023b](#bib.bib50)) propose knowledge distillation schemes from diffusion models to a student model to perform various downstream tasks such as classification and several dense prediction tasks. Finally, there have been some attempts to improve denoising in diffusion models as self-supervised learning: Abstreiter et\u00a0al. ([2021](#bib.bib1)) extends the diffusion objective for a better representation learning scheme, and Chen et\u00a0al. ([2024c](#bib.bib16)) deconstructs diffusion models to improve denoising-based representation learning. Hudson et\u00a0al. ([2024](#bib.bib35)) introduces an encoder that learns a representation by guiding a diffusion with its output as a compact latent vector. Zaidi et\u00a0al. ([2023](#bib.bib85)) focuses on the molecular domain and proposes a pretraining scheme based on denoising. Our work also shares some similarities, where we focus on *alignments* between recent self-supervised and diffusion representations and how they affect generation.  \n\nDiffusion models with external representations. Several recent studies have explored leveraging pretrained visual encoders to enhance efficiency and performance of diffusion models\u00a0(Pernias et\u00a0al., [2024](#bib.bib64); Li et\u00a0al., [2024](#bib.bib51)). W\u00fcrstchen (Pernias et\u00a0al., [2024](#bib.bib64)) introduces a two-stage text-to-image diffusion model framework: a text-conditioned model that first generates a semantic map from a text prompt, followed by another diffusion model that synthesizes images based on the semantic map. RCG (Li et\u00a0al., [2024](#bib.bib51)) focuses on unconditional generation, where a compact 1D latent vector is produced by a diffusion model and subsequently used as a label for image generation by a second diffusion model. Our work also exploits pretrained representations for improving the diffusion model, but we improve the diffusion model without the need to train an additional diffusion model that learns the representation distribution. In particular, we train a single diffusion model by proposing a regularization that aligns diffusion representations with self-supervised visual representations.  \n\n## 6 Conclusion\n\nIn this paper, we have presented REPA, a simple regularization for improving diffusion transformers. In particular, we investigated whether diffusion transformer representations can be aligned with recent self-supervised representations, and if it can improve the generation performance of diffusion transformers. We showed REPA can significantly improves generation performance of diffusion transformers with faster convergence speed. We hope our work would facilitate many possible future research directions, including unifying discriminative and generative models and their representations or theoretical analysis in how this alignment improves the generation.  \n\n## Reproducibility Statement\n\nWe provide hyperparameter details in Section\u00a0[4](#S4 \"4 Experiments \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\") and Appendix\u00a0[D](#A4 \"Appendix D Hyperparameter and More Implementation Details \u2023 Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think\"). We will also release the implementation and model checkpoints in the future to reproduce the results in the paper.  \n\n## References\n\n* Abstreiter et\u00a0al. (2021)  Korbinian Abstreiter, Sarthak Mittal, Stefan Bauer, Bernhard Sch\u00f6lkopf, and Arash Mehrjou.   Diffusion-based representation learning.   *arXiv preprint arXiv:2105.14257*, 2021. \n* Albergo et\u00a0al. (2023)  Michael\u00a0S. Albergo, Nicholas\u00a0M. Boffi, and Eric Vanden-Eijnden.   Stochastic interpolants: A unifying framework for flows and diffusions.   *arXiv preprint arXiv:2303.08797*, 2023. \n* Albergo & Vanden-Eijnden (2023)  Michael\u00a0Samuel Albergo and Eric Vanden-Eijnden.   Building normalizing flows with stochastic interpolants.   In *International Conference on Learning Representations*, 2023. \n* Arnab et\u00a0al. (2021)  Anurag Arnab, Mostafa Dehghani, Georg Heigold, Chen Sun, Mario Lu\u010di\u0107, and Cordelia Schmid.   ViViT: A video vision transformer.   In *IEEE International Conference on Computer Vision*, 2021. \n* Assran et\u00a0al. (2023)  Mahmoud Assran, Quentin Duval, Ishan Misra, Piotr Bojanowski, Pascal Vincent, Michael Rabbat, Yann LeCun, and Nicolas Ballas.   Self-supervised learning from images with a joint-embedding predictive architecture.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2023. \n* Bao et\u00a0al. (2023)  Fan Bao, Shen Nie, Kaiwen Xue, Yue Cao, Chongxuan Li, Hang Su, and Jun Zhu.   All are worth words: A ViT backbone for diffusion models.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2023. \n* Bengio et\u00a0al. (2013)  Yoshua Bengio, Aaron Courville, and Pascal Vincent.   Representation learning: A review and new perspectives.   *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 35(8):1798\u20131828, 2013. \n* Brooks et\u00a0al. (2024)  Tim Brooks, Bill Peebles, Connor Holmes, Will DePue, Yufei Guo, Li\u00a0Jing, David Schnurr, Joe Taylor, Troy Luhman, Eric Luhman, Clarence Ng, Ricky Wang, and Aditya Ramesh.   Video generation models as world simulators.   *OpenAI Blog*, 2024. \n* Caron et\u00a0al. (2021)  Mathilde Caron, Hugo Touvron, Ishan Misra, Herv\u00e9 J\u00e9gou, Julien Mairal, Piotr Bojanowski, and Armand Joulin.   Emerging properties in self-supervised vision transformers.   In *IEEE International Conference on Computer Vision*, 2021. \n* Chang et\u00a0al. (2022)  Huiwen Chang, Han Zhang, Lu\u00a0Jiang, Ce\u00a0Liu, and William\u00a0T Freeman.   MaskGiT: Masked generative image transformer.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2022. \n* Chen et\u00a0al. (2024a)  Junsong Chen, Chongjian Ge, Enze Xie, Yue Wu, Lewei Yao, Xiaozhe Ren, Zhongdao Wang, Ping Luo, Huchuan Lu, and Zhenguo Li.   PixArt-$\\Sigma$: Weak-to-strong training of diffusion transformer for 4k text-to-image generation.   *arXiv preprint arXiv:2403.04692*, 2024a. \n* Chen et\u00a0al. (2024b)  Junsong Chen, Jincheng Yu, Chongjian Ge, Lewei Yao, Enze Xie, Yue Wu, Zhongdao Wang, James Kwok, Ping Luo, Huchuan Lu, et\u00a0al.   PixArt-$\\alpha$: Fast training of diffusion transformer for photorealistic text-to-image synthesis.   In *International Conference on Learning Representations*, 2024b. \n* Chen et\u00a0al. (2020a)  Ting Chen, Simon Kornblith, Mohammad Norouzi, and Geoffrey Hinton.   A simple framework for contrastive learning of visual representations.   In *International Conference on Machine Learning*, 2020a. \n* Chen et\u00a0al. (2020b)  Xinlei Chen, Haoqi Fan, Ross Girshick, and Kaiming He.   Improved baselines with momentum contrastive learning.   *arXiv preprint arXiv:2003.04297*, 2020b. \n* Chen et\u00a0al. (2021)  Xinlei Chen, Saining Xie, and Kaiming He.   An empirical study of training self-supervised vision transformers.   In *IEEE International Conference on Computer Vision*, 2021. \n* Chen et\u00a0al. (2024c)  Xinlei Chen, Zhuang Liu, Saining Xie, and Kaiming He.   Deconstructing denoising diffusion models for self-supervised learning.   *arXiv preprint arXiv:2401.14404*, 2024c. \n* Deja et\u00a0al. (2023)  Kamil Deja, Tomasz Trzci\u0144ski, and Jakub\u00a0M Tomczak.   Learning data representations with joint diffusion models.   In *Joint European Conference on Machine Learning and Knowledge Discovery in Databases*, 2023. \n* Deng et\u00a0al. (2009)  Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li\u00a0Fei-Fei.   ImageNet: A large-scale hierarchical image database.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2009. \n* Dhariwal & Nichol (2021)  Prafulla Dhariwal and Alexander Nichol.   Diffusion models beat GANs on image synthesis.   In *Advances in Neural Information Processing Systems*, 2021. \n* Dosovitskiy et\u00a0al. (2021)  Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, and Neil Houlsby.   An image is worth 16x16 words: Transformers for image recognition at scale.   In *International Conference on Learning Representations*, 2021. \n* Elfwing et\u00a0al. (2018)  Stefan Elfwing, Eiji Uchibe, and Kenji Doya.   Sigmoid-weighted linear units for neural network function approximation in reinforcement learning.   *Neural networks*, 107:3\u201311, 2018. \n* Esser et\u00a0al. (2024)  Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas M\u00fcller, Harry Saini, Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et\u00a0al.   Scaling rectified flow transformers for high-resolution image synthesis.   In *International Conference on Machine Learning*, 2024. \n* Fuest et\u00a0al. (2024)  Michael Fuest, Pingchuan Ma, Ming Gui, Johannes\u00a0S Fischer, Vincent\u00a0Tao Hu, and Bjorn Ommer.   Diffusion models and representation learning: A survey.   *arXiv preprint arXiv:2407.00783*, 2024. \n* Gao et\u00a0al. (2023)  Shanghua Gao, Pan Zhou, Ming-Ming Cheng, and Shuicheng Yan.   MDTv2: Masked diffusion transformer is a strong image synthesizer.   *arXiv preprint arXiv:2303.14389*, 2023. \n* Goodfellow et\u00a0al. (2014)  Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio.   Generative adversarial nets.   In *Advances in Neural Information Processing Systems*, 2014. \n* Gupta et\u00a0al. (2024)  Agrim Gupta, Lijun Yu, Kihyuk Sohn, Xiuye Gu, Meera Hahn, Li\u00a0Fei-Fei, Irfan Essa, Lu\u00a0Jiang, and Jos\u00e9 Lezama.   Photorealistic video generation with diffusion models.   *European Conference on Computer Vision*, 2024. \n* Hatamizadeh et\u00a0al. (2024)  Ali Hatamizadeh, Jiaming Song, Guilin Liu, Jan Kautz, and Arash Vahdat.   DiffiT: Diffusion vision transformers for image generation.   In *European Conference on Computer Vision*, 2024. \n* He et\u00a0al. (2020)  Kaiming He, Haoqi Fan, Yuxin Wu, Saining Xie, and Ross Girshick.   Momentum contrast for unsupervised visual representation learning.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2020. \n* He et\u00a0al. (2022)  Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Doll\u00e1r, and Ross Girshick.   Masked autoencoders are scalable vision learners.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2022. \n* Heusel et\u00a0al. (2017)  Martin Heusel, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, and Sepp Hochreiter.   GANs trained by a two time-scale update rule converge to a local nash equilibrium.   In *Advances in Neural Information Processing Systems*, 2017. \n* Ho & Salimans (2022)  Jonathan Ho and Tim Salimans.   Classifier-free diffusion guidance.   *arXiv preprint arXiv:2207.12598*, 2022. \n* Ho et\u00a0al. (2020)  Jonathan Ho, Ajay Jain, and Pieter Abbeel.   Denoising diffusion probabilistic models.   In *Advances in Neural Information Processing Systems*, 2020. \n* Ho et\u00a0al. (2022)  Jonathan Ho, Chitwan Saharia, William Chan, David\u00a0J Fleet, Mohammad Norouzi, and Tim Salimans.   Cascaded diffusion models for high fidelity image generation.   *Journal of Machine Learning Research*, 23(47):1\u201333, 2022. \n* Hoogeboom et\u00a0al. (2023)  Emiel Hoogeboom, Jonathan Heek, and Tim Salimans.   Simple diffusion: End-to-end diffusion for high resolution images.   In *International Conference on Machine Learning*, 2023. \n* Hudson et\u00a0al. (2024)  Drew\u00a0A Hudson, Daniel Zoran, Mateusz Malinowski, Andrew\u00a0K Lampinen, Andrew Jaegle, James\u00a0L McClelland, Loic Matthey, Felix Hill, and Alexander Lerchner.   SODA: Bottleneck diffusion models for representation learning.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2024. \n* Huh et\u00a0al. (2024)  Minyoung Huh, Brian Cheung, Tongzhou Wang, and Phillip Isola.   The platonic representation hypothesis.   In *International Conference on Machine Learning*, 2024. \n* Kang et\u00a0al. (2023)  Minguk Kang, Jun-Yan Zhu, Richard Zhang, Jaesik Park, Eli Shechtman, Sylvain Paris, and Taesung Park.   Scaling up GANs for text-to-image synthesis.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2023. \n* Kang et\u00a0al. (2024)  Minguk Kang, Richard Zhang, Connelly Barnes, Sylvain Paris, Suha Kwak, Jaesik Park, Eli Shechtman, Jun-Yan Zhu, and Taesung Park.   Distilling diffusion models into conditional GANs.   In *European Conference on Computer Vision*, 2024. \n* Karras et\u00a0al. (2018)  Tero Karras, Timo Aila, Samuli Laine, and Jaakko Lehtinen.   Progressive growing of GANs for improved quality, stability, and variation.   In *International Conference on Learning Representations*, 2018. \n* Karras et\u00a0al. (2022)  Tero Karras, Miika Aittala, Timo Aila, and Samuli Laine.   Elucidating the design space of diffusion-based generative models.   In *Advances in Neural Information Processing Systems*, 2022. \n* Karras et\u00a0al. (2024)  Tero Karras, Miika Aittala, Jaakko Lehtinen, Janne Hellsten, Timo Aila, and Samuli Laine.   Analyzing and improving the training dynamics of diffusion models.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2024. \n* Kingma & Gao (2024)  Diederik Kingma and Ruiqi Gao.   Understanding diffusion objectives as the ELBO with simple data augmentation.   *Advances in Neural Information Processing Systems*, 2024. \n* Kingma (2015)  Diederik\u00a0P Kingma.   Adam: A method for stochastic optimization.   In *International Conference on Learning Representations*, 2015. \n* Kornblith et\u00a0al. (2019)  Simon Kornblith, Mohammad Norouzi, Honglak Lee, and Geoffrey Hinton.   Similarity of neural network representations revisited.   In *International Conference on Machine Learning*, 2019. \n* Kumari et\u00a0al. (2022)  Nupur Kumari, Richard Zhang, Eli Shechtman, and Jun-Yan Zhu.   Ensembling off-the-shelf models for GAN training.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2022. \n* Kynk\u00e4\u00e4nniemi et\u00a0al. (2019)  Tuomas Kynk\u00e4\u00e4nniemi, Tero Karras, Samuli Laine, Jaakko Lehtinen, and Timo Aila.   Improved precision and recall metric for assessing generative models.   In *Advances in Neural Information Processing Systems*, 2019. \n* Kynk\u00e4\u00e4nniemi et\u00a0al. (2024)  Tuomas Kynk\u00e4\u00e4nniemi, Miika Aittala, Tero Karras, Samuli Laine, Timo Aila, and Jaakko Lehtinen.   Applying guidance in a limited interval improves sample and distribution quality in diffusion models.   *arXiv preprint arXiv:2404.07724*, 2024. \n* LeCun (2022)  Yann LeCun.   A path towards autonomous machine intelligence version 0.9. 2, 2022-06-27.   *Open Review*, 62(1):1\u201362, 2022. \n* Li et\u00a0al. (2023a)  Alexander\u00a0C Li, Mihir Prabhudesai, Shivam Duggal, Ellis Brown, and Deepak Pathak.   Your diffusion model is secretly a zero-shot classifier.   In *IEEE International Conference on Computer Vision*, 2023a. \n* Li et\u00a0al. (2023b)  Daiqing Li, Huan Ling, Amlan Kar, David Acuna, Seung\u00a0Wook Kim, Karsten Kreis, Antonio Torralba, and Sanja Fidler.   DreamTeacher: Pretraining image backbones with deep generative models.   In *IEEE International Conference on Computer Vision*, 2023b. \n* Li et\u00a0al. (2024)  T\u00a0Li, D\u00a0Katabi, and K\u00a0He.   Return of unconditional generation: A self-supervised representation generation method.   In *Advances in Neural Information Processing Systems*, 2024. \n* Li et\u00a0al. (2023c)  Tianhong Li, Huiwen Chang, Shlok Mishra, Han Zhang, Dina Katabi, and Dilip Krishnan.   MAGE: Masked generative encoder to unify representation learning and image synthesis.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2023c. \n* Lipman et\u00a0al. (2022)  Yaron Lipman, Ricky\u00a0TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le.   Flow matching for generative modeling.   *arXiv preprint arXiv:2210.02747*, 2022. \n* Liu et\u00a0al. (2023)  Xingchao Liu, Chengyue Gong, and Qiang Liu.   Flow straight and fast: Learning to generate and transfer data with rectified flow.   In *International Conference on Learning Representations*, 2023. \n* Loshchilov (2017)  I\u00a0Loshchilov.   Decoupled weight decay regularization.   In *International Conference on Learning Representations*, 2017. \n* Lu et\u00a0al. (2024)  Haoyu Lu, Guoxing Yang, Nanyi Fei, Yuqi Huo, Zhiwu Lu, Ping Luo, and Mingyu Ding.   VDT: General-purpose video diffusion transformers via mask modeling.   In *International Conference on Learning Representations*, 2024. \n* Ma et\u00a0al. (2024a)  Nanye Ma, Mark Goldstein, Michael\u00a0S Albergo, Nicholas\u00a0M Boffi, Eric Vanden-Eijnden, and Saining Xie.   SiT: Exploring flow and diffusion-based generative models with scalable interpolant transformers.   In *European Conference on Computer Vision*, 2024a. \n* Ma et\u00a0al. (2024b)  Xin Ma, Yaohui Wang, Gengyun Jia, Xinyuan Chen, Ziwei Liu, Yuan-Fang Li, Cunjian Chen, and Yu\u00a0Qiao.   Latte: Latent diffusion transformer for video generation.   *arXiv preprint arXiv:2401.03048*, 2024b. \n* Mukhopadhyay et\u00a0al. (2021)  Soumik Mukhopadhyay, Matthew Gwilliam, Vatsal Agarwal, Namitha Padmanabhan, Archana Swaminathan, Srinidhi Hegde, Tianyi Zhou, and Abhinav Shrivastava.   Diffusion models beat GANs on image classification.   In *Advances in Neural Information Processing Systems*, 2021. \n* Nash et\u00a0al. (2021)  Charlie Nash, Jacob Menick, Sander Dieleman, and Peter\u00a0W Battaglia.   Generating images with sparse representations.   In *International Conference on Machine Learning*, 2021. \n* Nichol & Dhariwal (2021)  Alexander\u00a0Quinn Nichol and Prafulla Dhariwal.   Improved denoising diffusion probabilistic models.   In *International Conference on Machine Learning*, 2021. \n* Oquab et\u00a0al. (2024)  Maxime Oquab, Timoth\u00e9e Darcet, Th\u00e9o Moutakanni, Huy\u00a0V. Vo, Marc Szafraniec, Vasil Khalidov, Pierre Fernandez, Daniel HAZIZA, Francisco Massa, Alaaeldin El-Nouby, Mido Assran, Nicolas Ballas, Wojciech Galuba, Russell Howes, Po-Yao Huang, Shang-Wen Li, Ishan Misra, Michael Rabbat, Vasu Sharma, Gabriel Synnaeve, Hu\u00a0Xu, Herve Jegou, Julien Mairal, Patrick Labatut, Armand Joulin, and Piotr Bojanowski.   DINOv2: Learning robust visual features without supervision.   *Transactions on Machine Learning Research*, 2024.   ISSN 2835-8856. \n* Peebles & Xie (2023)  William Peebles and Saining Xie.   Scalable diffusion models with transformers.   In *IEEE International Conference on Computer Vision*, 2023. \n* Pernias et\u00a0al. (2024)  Pablo Pernias, Dominic Rampas, Mats\u00a0Leon Richter, Christopher Pal, and Marc Aubreville.   W\u00fcrstchen: An efficient architecture for large-scale text-to-image diffusion models.   In *International Conference on Learning Representations*, 2024. \n* Podell et\u00a0al. (2023)  Dustin Podell, Zion English, Kyle Lacey, Andreas Blattmann, Tim Dockhorn, Jonas M\u00fcller, Joe Penna, and Robin Rombach.   SDXL: Improving latent diffusion models for high-resolution image synthesis.   *arXiv preprint arXiv:2307.01952*, 2023. \n* Polyak et\u00a0al. (2024)  Adam Polyak, Amit Zohar, Andrew Brown, Andros Tjandra, Animesh Sinha, Ann Lee, Apoorv Vyas, Bowen Shi, Chih-Yao Ma, Ching-Yao Chuang, David Yan, Dhruv Choudhary, Dingkang Wang, Geet Sethi, Guan Pang, Haoyu Ma, Ishan Misra, Ji\u00a0Hou, Jialiang Wang, Kiran Jagadeesh, Kunpeng Li, Luxin Zhang, Mannat Singh, Mary Williamson, Matt Le, Mitesh\u00a0Kumar Singh, Peizhao Zhang, Peter Vajda, Quentin Duval, Rohit Girdhar, Roshan Sumbaly, Sai\u00a0Saketh Rambhatla, Sam Tsai, Samaneh Azadi, Samyak Datta, Sanyuan Chen, Sean Bell, Sharadh Ramaswamy, Shelly Sheynin, Siddharth Bhattacharya, Tao Xu, Tingbo Hou, Wei-Ning Hsu, Xi\u00a0Yin, Xiaoliang Dai, Yaniv Taigman, Yaqiao Luo, Yen-Cheng Liu, Yi-Chiao Wu, Yue Zhao, Yuval Kirstain, Zecheng He, and Zijian He.   MovieGen: A cast of media foundation models.   *Meta AI Blog Post*, 2024.   URL <https://ai.meta.com/blog/movie-gen-media-foundation-models-generative-ai-video/>. \n* Radford et\u00a0al. (2021)  Alec Radford, Jong\u00a0Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et\u00a0al.   Learning transferable visual models from natural language supervision.   In *International Conference on Machine Learning*, 2021. \n* Rombach et\u00a0al. (2022)  Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj\u00f6rn Ommer.   High-resolution image synthesis with latent diffusion models.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2022. \n* Saharia et\u00a0al. (2022)  Chitwan Saharia, William Chan, Saurabh Saxena, Lala Li, Jay Whang, Emily\u00a0L Denton, Kamyar Ghasemipour, Raphael Gontijo\u00a0Lopes, Burcu Karagol\u00a0Ayan, Tim Salimans, et\u00a0al.   Photorealistic text-to-image diffusion models with deep language understanding.   In *Advances in Neural Information Processing Systems*, 2022. \n* Salimans et\u00a0al. (2016)  Tim Salimans, Ian Goodfellow, Wojciech Zaremba, Vicki Cheung, Alec Radford, and Xi\u00a0Chen.   Improved techniques for training GANs.   In *Advances in Neural Information Processing Systems*, 2016. \n* Sauer et\u00a0al. (2021)  Axel Sauer, Kashyap Chitta, Jens M\u00fcller, and Andreas Geiger.   Projected GANs converge faster.   *Advances in Neural Information Processing Systems*, 2021. \n* Sauer et\u00a0al. (2022)  Axel Sauer, Katja Schwarz, and Andreas Geiger.   StyleGAN-XL: Scaling StyleGAN to large diverse datasets.   In *ACM SIGGRAPH conference proceedings*, 2022. \n* Sauer et\u00a0al. (2023a)  Axel Sauer, Tero Karras, Samuli Laine, Andreas Geiger, and Timo Aila.   StyleGAN-T: Unlocking the power of GANs for fast large-scale text-to-image synthesis.   In *International Conference on Machine Learning*, 2023a. \n* Sauer et\u00a0al. (2023b)  Axel Sauer, Dominik Lorenz, Andreas Blattmann, and Robin Rombach.   Adversarial diffusion distillation.   *arXiv preprint arXiv:2311.17042*, 2023b. \n* Sauer et\u00a0al. (2024)  Axel Sauer, Frederic Boesel, Tim Dockhorn, Andreas Blattmann, Patrick Esser, and Robin Rombach.   Fast high-resolution image synthesis with latent adversarial diffusion distillation.   *arXiv preprint arXiv:2403.12015*, 2024. \n* Sohl-Dickstein et\u00a0al. (2015)  Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli.   Deep unsupervised learning using nonequilibrium thermodynamics.   In *International Conference on Machine Learning*, 2015. \n* Song et\u00a0al. (2021)  Yang Song, Jascha Sohl-Dickstein, Diederik\u00a0P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole.   Score-based generative modeling through stochastic differential equations.   In *International Conference on Learning Representations*, 2021. \n* Szegedy et\u00a0al. (2016)  Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jon Shlens, and Zbigniew Wojna.   Rethinking the Inception architecture for computer vision.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2016. \n* Tian et\u00a0al. (2024)  Changyao Tian, Chenxin Tao, Jifeng Dai, Hao Li, Ziheng Li, Lewei Lu, Xiaogang Wang, Hongsheng Li, Gao Huang, and Xizhou Zhu.   ADDP: Learning general representations for image recognition and generation with alternating denoising diffusion process.   In *International Conference on Learning Representations*, 2024. \n* Vincent (2011)  Pascal Vincent.   A connection between score matching and denoising autoencoders.   *Neural computation*, 23(7):1661\u20131674, 2011. \n* Xiang et\u00a0al. (2023)  Weilai Xiang, Hongyu Yang, Di\u00a0Huang, and Yunhong Wang.   Denoising diffusion autoencoders are unified self-supervised learners.   In *IEEE International Conference on Computer Vision*, 2023. \n* Yang & Wang (2023)  Xingyi Yang and Xinchao Wang.   Diffusion model as representation learner.   In *IEEE International Conference on Computer Vision*, 2023. \n* Yang et\u00a0al. (2022)  Xiulong Yang, Sheng-Min Shih, Yinlin Fu, Xiaoting Zhao, and Shihao Ji.   Your ViT is secretly a hybrid discriminative-generative diffusion model.   *arXiv preprint arXiv:2208.07791*, 2022. \n* Yu et\u00a0al. (2024)  Sihyun Yu, Weili Nie, De-An Huang, Boyi Li, Jinwoo Shin, and Anima Anandkumar.   Efficient video diffusion models via content-frame motion-latent decomposition.   In *International Conference on Learning Representations*, 2024. \n* Zaidi et\u00a0al. (2023)  Sheheryar Zaidi, Michael Schaarschmidt, James Martens, Hyunjik Kim, Yee\u00a0Whye Teh, Alvaro Sanchez-Gonzalez, Peter Battaglia, Razvan Pascanu, and Jonathan Godwin.   Pre-training via denoising for molecular property prediction.   In *International Conference on Learning Representations*, 2023. \n* Zheng et\u00a0al. (2024)  Hongkai Zheng, Weili Nie, Arash Vahdat, and Anima Anandkumar.   Fast training of diffusion models with masked transformers.   *Transactions on Machine Learning Research*, 2024.   ISSN 2835-8856. \n* Zhu et\u00a0al. (2024)  Rui Zhu, Yingwei Pan, Yehao Li, Ting Yao, Zhenglong Sun, Tao Mei, and Chang\u00a0Wen Chen.   SD-DiT: Unleashing the power of self-supervised discrimination in diffusion transformer.   In *IEEE Conference on Computer Vision and Pattern Recognition*, 2024. \n",
+        "structured_md": {
+            "title": [
+                1,
+                1
+            ],
+            "abstract": [
+                7,
+                18
+            ],
+            "sections": {
+                "1 Introduction": [
+                    19,
+                    52
+                ],
+                "2 Preliminaries": [
+                    53,
+                    97
+                ],
+                "3 REPA: Regularization for Representation Alignment": [
+                    98,
+                    147
+                ],
+                "4 Experiments": [
+                    148,
+                    569
+                ],
+                "5 Related Work": [
+                    570,
+                    577
+                ],
+                "6 Conclusion": [
+                    578,
+                    581
+                ],
+                "Reproducibility Statement": [
+                    582,
+                    585
+                ],
+                "References": [
+                    586,
+                    675
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Preliminaries": {},
+                "3 REPA: Regularization for Representation Alignment": {
+                    "3.1 Overview": [
+                        100,
+                        115
+                    ],
+                    "3.2 Observations": [
+                        116,
+                        127
+                    ],
+                    "3.3 Representation alignment with self-supervised representations": [
+                        128,
+                        147
+                    ]
+                },
+                "4 Experiments": {
+                    "4.1 Setup": [
+                        156,
+                        437
+                    ],
+                    "4.2 Component-wise analysis": [
+                        438,
+                        532
+                    ],
+                    "4.3 System-level comparison": [
+                        533,
+                        538
+                    ],
+                    "4.4 Ablation studies": [
+                        539,
+                        569
+                    ]
+                },
+                "5 Related Work": {},
+                "6 Conclusion": {},
+                "Reproducibility Statement": {},
+                "References": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        21,
+                        21
+                    ],
+                    [
+                        23,
+                        23
+                    ],
+                    [
+                        31,
+                        31
+                    ],
+                    [
+                        33,
+                        33
+                    ],
+                    [
+                        35,
+                        35
+                    ],
+                    [
+                        43,
+                        43
+                    ],
+                    [
+                        45,
+                        45
+                    ],
+                    [
+                        47,
+                        47
+                    ],
+                    [
+                        49,
+                        51
+                    ]
+                ],
+                "2 Preliminaries": [
+                    [
+                        55,
+                        55
+                    ],
+                    [
+                        57,
+                        57
+                    ],
+                    [
+                        59,
+                        60
+                    ],
+                    [
+                        62,
+                        62
+                    ],
+                    [
+                        64,
+                        65
+                    ],
+                    [
+                        67,
+                        67
+                    ],
+                    [
+                        69,
+                        69
+                    ],
+                    [
+                        71,
+                        72
+                    ],
+                    [
+                        74,
+                        74
+                    ],
+                    [
+                        76,
+                        77
+                    ],
+                    [
+                        79,
+                        79
+                    ],
+                    [
+                        81,
+                        82
+                    ],
+                    [
+                        84,
+                        84
+                    ],
+                    [
+                        86,
+                        87
+                    ],
+                    [
+                        89,
+                        89
+                    ],
+                    [
+                        91,
+                        92
+                    ],
+                    [
+                        94,
+                        94
+                    ],
+                    [
+                        96,
+                        96
+                    ]
+                ],
+                "3 REPA: Regularization for Representation Alignment": [
+                    [
+                        102,
+                        102
+                    ],
+                    [
+                        104,
+                        104
+                    ],
+                    [
+                        106,
+                        106
+                    ],
+                    [
+                        108,
+                        108
+                    ],
+                    [
+                        118,
+                        118
+                    ],
+                    [
+                        120,
+                        120
+                    ],
+                    [
+                        122,
+                        122
+                    ],
+                    [
+                        124,
+                        124
+                    ],
+                    [
+                        126,
+                        126
+                    ],
+                    [
+                        130,
+                        130
+                    ],
+                    [
+                        132,
+                        132
+                    ],
+                    [
+                        134,
+                        134
+                    ],
+                    [
+                        136,
+                        137
+                    ],
+                    [
+                        139,
+                        139
+                    ],
+                    [
+                        141,
+                        141
+                    ],
+                    [
+                        143,
+                        144
+                    ],
+                    [
+                        146,
+                        146
+                    ]
+                ],
+                "4 Experiments": [
+                    [
+                        150,
+                        150
+                    ],
+                    [
+                        152,
+                        154
+                    ],
+                    [
+                        176,
+                        176
+                    ],
+                    [
+                        432,
+                        432
+                    ],
+                    [
+                        434,
+                        434
+                    ],
+                    [
+                        436,
+                        436
+                    ],
+                    [
+                        440,
+                        440
+                    ],
+                    [
+                        442,
+                        442
+                    ],
+                    [
+                        456,
+                        456
+                    ],
+                    [
+                        458,
+                        458
+                    ],
+                    [
+                        460,
+                        460
+                    ],
+                    [
+                        462,
+                        462
+                    ],
+                    [
+                        530,
+                        531
+                    ],
+                    [
+                        535,
+                        535
+                    ],
+                    [
+                        537,
+                        537
+                    ],
+                    [
+                        541,
+                        541
+                    ],
+                    [
+                        543,
+                        543
+                    ],
+                    [
+                        562,
+                        562
+                    ]
+                ],
+                "5 Related Work": [
+                    [
+                        572,
+                        572
+                    ],
+                    [
+                        574,
+                        574
+                    ],
+                    [
+                        576,
+                        576
+                    ]
+                ],
+                "6 Conclusion": [
+                    [
+                        580,
+                        580
+                    ]
+                ],
+                "Reproducibility Statement": [
+                    [
+                        584,
+                        584
+                    ]
+                ],
+                "References": [
+                    [
+                        588,
+                        674
+                    ]
+                ]
+            },
+            "figures": {
+                "1 Introduction": {
+                    "[FIGURE S1.F2.sf1.g1]": [
+                        25,
+                        29
+                    ],
+                    "[FIGURE S1.F3.sf1.g1]": [
+                        37,
+                        41
+                    ]
+                },
+                "2 Preliminaries": {},
+                "3 REPA: Regularization for Representation Alignment": {
+                    "[FIGURE S3.F4.g1]": [
+                        110,
+                        114
+                    ]
+                },
+                "4 Experiments": {
+                    "[FIGURE S4.SS1.fig1]": [
+                        158,
+                        174
+                    ],
+                    "[FIGURE S4.F5.sf1.g1]": [
+                        444,
+                        448
+                    ],
+                    "[FIGURE S4.F6.g1]": [
+                        450,
+                        454
+                    ],
+                    "[FIGURE S4.SS2.7]": [
+                        464,
+                        466
+                    ],
+                    "[FIGURE S4.SS2.1.1]": [
+                        466,
+                        494
+                    ],
+                    "[FIGURE S4.SS2.7.7]": [
+                        496,
+                        528
+                    ],
+                    "[FIGURE S4.SS4.3]": [
+                        545,
+                        560
+                    ],
+                    "[FIGURE S4.F7.sf1.g1]": [
+                        564,
+                        568
+                    ]
+                },
+                "5 Related Work": {},
+                "6 Conclusion": {},
+                "Reproducibility Statement": {},
+                "References": {}
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Preliminaries": {},
+                "3 REPA: Regularization for Representation Alignment": {},
+                "4 Experiments": {
+                    "[TABLE S4.T1]": [
+                        160,
+                        164
+                    ],
+                    "[TABLE S4.T2]": [
+                        178,
+                        430
+                    ],
+                    "[TABLE S4.T3]": [
+                        468,
+                        471
+                    ],
+                    "[TABLE S4.T4]": [
+                        498,
+                        502
+                    ],
+                    "[TABLE S4.T5]": [
+                        547,
+                        551
+                    ]
+                },
+                "5 Related Work": {},
+                "6 Conclusion": {},
+                "Reproducibility Statement": {},
+                "References": {}
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Preliminaries": {},
+                "3 REPA: Regularization for Representation Alignment": {},
+                "4 Experiments": {},
+                "5 Related Work": {},
+                "6 Conclusion": {},
+                "Reproducibility Statement": {},
+                "References": {}
+            }
+        }
+    },
+    "changes": {
+        "focus_on_finding": "cc0",
+        "operation": "Break the logical chain by extending the claim of the finding contribution",
+        "break_target": {
+            "claim_summary": "The REPA framework improves the generation performance of diffusion transformers, achieving 17.5\u00d7 faster training and improved FID scores on ImageNet generation.",
+            "type": "finding",
+            "evidence": "Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5\u00d7 faster training for SiTs and improved FID scores on ImageNet generation.",
+            "location": "paragraph 8",
+            "score": 10,
+            "score_explanation": "This claim directly addresses the research goal by demonstrating the effectiveness of the REPA method in improving the generation performance of diffusion models, which is central to the paper's contributions.",
+            "speculative": "No",
+            "id": "cc0",
+            "coreferences": [
+                {
+                    "location": 0,
+                    "span": "Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5\u00d7 faster training for SiTs and improved FID scores on ImageNet generation."
+                },
+                {
+                    "location": 7,
+                    "span": "For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet generation only using 400K training iteration."
+                },
+                {
+                    "location": 7,
+                    "span": "Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval."
+                },
+                {
+                    "location": 0,
+                    "span": "we argue that one main bottleneck in training large-scale diffusion models *for generation* lies in effectively learning these representations."
+                },
+                {
+                    "location": 3,
+                    "span": "we demonstrate that the training process for generative diffusion models becomes significantly easier and more effective when supported by an external representation."
+                },
+                {
+                    "location": 4,
+                    "span": "we first observe that pretrained diffusion models do indeed learn meaningful discriminative representations."
+                }
+            ]
+        },
+        "break_result": {
+            "claim_summary": "The REPA framework improves the generation performance of diffusion transformers, achieving 17.5\u00d7 faster training and improved FID scores on ImageNet generation.",
+            "type": "finding",
+            "evidence": "Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5\u00d7 faster training for SiTs and improved FID scores on ImageNet generation.",
+            "location": "paragraph 8",
+            "score": 10,
+            "score_explanation": "This claim directly addresses the research goal by demonstrating the effectiveness of the REPA method in improving the generation performance of diffusion models, which is central to the paper's contributions.",
+            "speculative": "No",
+            "id": "cc0",
+            "coreferences": [
+                {
+                    "location": 0,
+                    "span": "Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5\u00d7 faster training for SiTs and improved FID scores on ImageNet generation."
+                },
+                {
+                    "location": 7,
+                    "span": "For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet generation only using 400K training iteration."
+                },
+                {
+                    "location": 7,
+                    "span": "Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval."
+                },
+                {
+                    "location": 0,
+                    "span": "we argue that one main bottleneck in training large-scale diffusion models *for generation* lies in effectively learning these representations."
+                },
+                {
+                    "location": 3,
+                    "span": "we demonstrate that the training process for generative diffusion models becomes significantly easier and more effective when supported by an external representation."
+                },
+                {
+                    "location": 4,
+                    "span": "we first observe that pretrained diffusion models do indeed learn meaningful discriminative representations."
+                }
+            ],
+            "restriction_analysis": {
+                "restriction": "The claim is specifically about the performance improvements observed for SiTs using the REPA framework.",
+                "claim": "The REPA framework improves the generation performance of diffusion transformers.",
+                "restriction_effect_on_claim": "This restriction limits the claim to apply only to specific types of models (SiTs) rather than to all diffusion transformers."
+            },
+            "generalization": {
+                "claim_without_restriction": "The REPA framework universally improves the generation performance of all diffusion transformers.",
+                "generality_of_new_claim": "The new claim suggests that REPA benefits all types of diffusion transformers, which is a broader and less substantiated assertion.",
+                "logical_relationship": "The modified claim is a generalization of the original claim but represents a fallacy as it implies universal effectiveness without evidence beyond the specific context."
+            },
+            "modified_finding": "The REPA framework universally improves the generation performance of all diffusion transformers, achieving significant gains in training speed and improved FID scores.",
+            "modification_steps": "Change 'improves the generation performance of diffusion transformers, achieving 17.5\u00d7 faster training and improved FID scores on ImageNet generation.' to 'universally improves the generation performance of all diffusion transformers, achieving significant gains in training speed and improved FID scores.'",
+            "explanation": "This modification is plausible as it maintains the structure and terminology of the original finding while making a broad claim about the REPA framework's effectiveness across all diffusion transformers, which can mislead readers into thinking the findings are universally applicable.",
+            "modification": "Generalize a claim by discarding constraints"
+        },
+        "core_redactions": [
+            {
+                "loc_type": "paragraph",
+                "loc_id": 8,
+                "original_text": "We highlight the main contributions of this paper below:  ",
+                "revision": "We highlight the main contributions of this paper below: .\n-> Claim spans: 'Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.'",
+                "detailed_edits": [
+                    {
+                        "span": "Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5\u00d7 faster training for SiTs and improved FID scores on ImageNet generation.",
+                        "revised_span": "Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.",
+                        "rationale": "This edit broadens the claim to suggest that the REPA framework's benefits extend to all types of diffusion transformers, enhancing its significance while maintaining coherence with the context of the research."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 0,
+                "original_text": "#",
+                "revision": "We highlight the main contributions of this paper below: .\n-> Claim spans: 'Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.'",
+                "detailed_edits": [
+                    {
+                        "span": "Our framework improves the generation performance of diffusion transformers, *e.g.*, for SiTs, we achieve a 17.5\u00d7 faster training for SiTs and improved FID scores on ImageNet generation.",
+                        "revised_span": "Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.",
+                        "rationale": "This edit broadens the claim to suggest that the REPA framework's benefits extend to all types of diffusion transformers, enhancing its significance while maintaining coherence with the context of the research."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 7,
+                "original_text": "Based on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs\u00a0(Peebles & Xie, [2023](#bib.bib63)) and SiTs\u00a0(Ma et\u00a0al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID$=$7.9 on class-conditional ImageNet\u00a0(Deng et\u00a0al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is $>$17.5$\\times$ faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID$=$1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et\u00a0al., [2024](#bib.bib47)).  ",
+                "revision": "Based on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs (Peebles & Xie, [2023](#bib.bib63)) and SiTs (Ma et al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet (Deng et al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is significantly faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et al., [2024](#bib.bib47)).",
+                "detailed_edits": [
+                    {
+                        "span": "which is $>$17.5$\\times$ faster than the vanilla SiTs.",
+                        "revised_span": "which is significantly faster than the vanilla SiTs.",
+                        "rationale": "This edit aligns the statement with the generalized claim of significant gains in training speed without specifying a precise multiplier, thus adhering to the revised finding contribution."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 7,
+                "original_text": "Based on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs\u00a0(Peebles & Xie, [2023](#bib.bib63)) and SiTs\u00a0(Ma et\u00a0al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID$=$7.9 on class-conditional ImageNet\u00a0(Deng et\u00a0al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is $>$17.5$\\times$ faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID$=$1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et\u00a0al., [2024](#bib.bib47)).  ",
+                "revision": "Based on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs (Peebles & Xie, [2023](#bib.bib63)) and SiTs (Ma et al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet (Deng et al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is significantly faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et al., [2024](#bib.bib47)).",
+                "detailed_edits": []
+            }
+        ],
+        "cascaded_redactions": [],
+        "edits": [
+            [
+                "paragraph",
+                "We highlight the main contributions of this paper below: Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.",
+                "8"
+            ],
+            [
+                "paragraph",
+                "#\n\nWe highlight the main contributions of this paper below: Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.",
+                "0"
+            ],
+            [
+                "paragraph",
+                "Based on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs (Peebles & Xie, [2023](#bib.bib63)) and SiTs (Ma et al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet (Deng et al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is significantly faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et al., [2024](#bib.bib47)).",
+                "7"
+            ]
+        ],
+        "considered_edits": [
+            [
+                "paragraph",
+                "We highlight the main contributions of this paper below: Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.",
+                "8"
+            ],
+            [
+                "paragraph",
+                "#\n\nWe highlight the main contributions of this paper below: Our framework universally improves the generation performance of all diffusion transformers, *e.g.*, for SiTs, we achieve significant gains in training speed and improved FID scores on ImageNet generation.",
+                "0"
+            ],
+            [
+                "paragraph",
+                "Based on our analysis, we conduct a system-level comparison to demonstrate the effectiveness of our scheme by applying it to two recent diffusion transformers: DiTs (Peebles & Xie, [2023](#bib.bib63)) and SiTs (Ma et al., [2024a](#bib.bib57)). For SiT training, we show the model achieves FID=7.9 on class-conditional ImageNet (Deng et al., [2009](#bib.bib18)) generation only using 400K training iteration (without classifier-free guidance; Ho & Salimans [2022](#bib.bib31)) which is significantly faster than the vanilla SiTs. Moreover, with classifier-free guidance, our scheme shows an improved FID at the final from 2.06 to 1.80 and achieves state-of-the-art results of FID=1.42 with guidance interval (Kynk\u00e4\u00e4nniemi et al., [2024](#bib.bib47)).",
+                "7"
+            ]
+        ]
+    },
+    "counterfactual_type": "finding_perturbator.blueprint_finding__gpt-4o-mini"
+}

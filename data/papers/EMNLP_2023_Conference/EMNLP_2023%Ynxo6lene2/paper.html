@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2310.17140] Symbolic Planning and Code Generation for Grounded Dialogue</title><meta content="Large language models (LLMs) excel at processing and generating both text and code. However, LLMs have had limited applicability in grounded task-oriented dialogue as they are difficult to steer toward task objectives …" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Symbolic Planning and Code Generation for Grounded Dialogue" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Symbolic Planning and Code Generation for Grounded Dialogue" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2310.17140" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2310.17140" rel="canonical" target="_blank"/>
+<!--Generated on Tue Feb 27 21:51:35 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">
+Symbolic Planning and Code Generation
+for Grounded Dialogue
+</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id8.id1">Large language models (LLMs) excel at processing and generating both text and code. However, LLMs have had limited applicability in grounded task-oriented dialogue as they are difficult to steer toward task objectives and fail to handle novel grounding. We present a modular and interpretable grounded dialogue system that addresses these shortcomings by composing LLMs with a symbolic planner and grounded code execution. Our system consists of a reader and planner: the reader leverages an LLM to convert partner utterances into executable code, calling functions that perform grounding. The translated code’s output is stored to track dialogue state, while a symbolic planner determines the next appropriate response. We evaluate our system’s performance on the demanding <span class="ltx_text ltx_font_smallcaps" id="id8.id1.1">OneCommon</span> dialogue task, involving collaborative reference resolution on abstract images of scattered dots. Our system substantially outperforms the previous state-of-the-art, including improving task success in human evaluations from 56% to 69% in the most challenging setting.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Success in grounded task-oriented dialogue requires intentional communication guided by strategic planning <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">cohen1979-speech-acts</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">traum1994computational</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">Walker2004-generation</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">Rieser2009-planning</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">cicero</span>, <em class="ltx_emph ltx_font_italic" id="S1.p1.1.1.1">inter alia</em>)</cite>.
+Dialogue agents must read partner utterances, update their beliefs, then make a plan that furthers their goal.
+These plans must take into account both dialogue history and grounding, such as in an image.
+In end-to-end systems based solely on large language models (LLMs),
+this process is implicit and therefore difficult to control,
+requiring extra supervision <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">rlhf</span>)</cite> or expensive search <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">astaresque</span>)</cite> to improve.
+While recent work has taken steps to rectify implicit reasoning via
+planning in language space,
+where intermediate steps are generated by an LLM <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">cot</span>)</cite>,
+there is no guarantee that these approaches result in plans that further task progress.
+Additionally, planning in language space is expensive,
+requiring inference in an LLM <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">yarats2017rollout</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">bamcp</span>)</cite>.</p>
+</div>
+<figure class="ltx_figure" id="S1.F1">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_2"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_figure_panel ltx_img_square" height="142" id="S1.F1.g1" src="./media/x1.png" width="138"/></div>
+<div class="ltx_flex_cell ltx_flex_size_2">
+<table class="ltx_tabular ltx_centering ltx_figure_panel ltx_guessed_headers ltx_align_bottom" id="S1.F1.1">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S1.F1.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt" id="S1.F1.1.1.1.1">
+<span class="ltx_text" id="S1.F1.1.1.1.1.1" style="color:#FF0000;">SPC</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_tt" id="S1.F1.1.1.1.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.1.1.2.1">
+<span class="ltx_p" id="S1.F1.1.1.1.2.1.1" style="width:151.8pt;">Do you see a pair of dots, where the top left dot is medium-sized and grey and the bottom right dot is medium-sized and dark</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.2.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.2.2.1">
+<span class="ltx_text" id="S1.F1.1.2.2.1.1" style="color:#0000FF;">Human</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.2.2.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.2.2.2.1">
+<span class="ltx_p" id="S1.F1.1.2.2.2.1.1" style="width:151.8pt;">No</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.3.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.3.3.1">
+<span class="ltx_text" id="S1.F1.1.3.3.1.1" style="color:#FF0000;">SPC</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.3.3.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.3.3.2.1">
+<span class="ltx_p" id="S1.F1.1.3.3.2.1.1" style="width:151.8pt;">Do you see a pair of dots, where the top dot is small-sized and light and the bottom dot is medium-sized and grey</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.4.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.4.4.1">
+<span class="ltx_text" id="S1.F1.1.4.4.1.1" style="color:#0000FF;">Human</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.4.4.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.4.4.2.1">
+<span class="ltx_p" id="S1.F1.1.4.4.2.1.1" style="width:151.8pt;">Yes I see them. Is there a small grey dot above the small light dot?</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.5.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.5.5.1">
+<span class="ltx_text" id="S1.F1.1.5.5.1.1" style="color:#FF0000;">SPC</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.5.5.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.5.5.2.1">
+<span class="ltx_p" id="S1.F1.1.5.5.2.1.1" style="width:151.8pt;">No. Is there a large size and dark color dot to the left and below those?</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.6.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.6.6.1">
+<span class="ltx_text" id="S1.F1.1.6.6.1.1" style="color:#0000FF;">Human</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.6.6.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.6.6.2.1">
+<span class="ltx_p" id="S1.F1.1.6.6.2.1.1" style="width:151.8pt;">Yes and there is a small grey dot below them as well for me.</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.7.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.7.7.1">
+<span class="ltx_text" id="S1.F1.1.7.7.1.1" style="color:#FF0000;">SPC</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.7.7.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.7.7.2.1">
+<span class="ltx_p" id="S1.F1.1.7.7.2.1.1" style="width:151.8pt;">Yes. Let’s select the small size and light color one.</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.8.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S1.F1.1.8.8.1">
+<span class="ltx_text" id="S1.F1.1.8.8.1.1" style="color:#FF0000;">SPC</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.F1.1.8.8.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.8.8.2.1">
+<span class="ltx_p" id="S1.F1.1.8.8.2.1.1" style="width:151.8pt;">&lt;select&gt;</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.F1.1.9.9">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S1.F1.1.9.9.1">
+<span class="ltx_text" id="S1.F1.1.9.9.1.1" style="color:#0000FF;">Human</span>:</th>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S1.F1.1.9.9.2">
+<span class="ltx_inline-block ltx_align_top" id="S1.F1.1.9.9.2.1">
+<span class="ltx_p" id="S1.F1.1.9.9.2.1.1" style="width:151.8pt;">&lt;select&gt;</span>
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>
+An example grounded dialogue from <span class="ltx_text ltx_font_smallcaps" id="S1.F1.6.1">OneCommon</span>. Our dialogue agent, <span class="ltx_text" id="S1.F1.7.2" style="color:#FF0000;">SPC</span>, and a human <span class="ltx_text" id="S1.F1.8.3" style="color:#0000FF;">partner</span> have different but overlapping circular views of a shared board.
+The agent and partner must collaborate through dialogue in order to find and
+select a shared dot.
+<span class="ltx_text ltx_font_smallcaps" id="S1.F1.9.4">OneCommon</span> demands careful, grounded reasoning.
+
+</figcaption>
+</figure>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Rather than implicit or heuristic reasoning, we are interested in explicit reasoning and planning over
+symbolic actions.
+Symbolic actions are controllable by construction,
+allowing system designers to easily build in task-specific knowledge <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">he2018dnd</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">cicero</span>)</cite>.
+This controllability is crucial for obtaining task-specific success using general tools,
+even with LLMs.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">We provide an example from <span class="ltx_text ltx_font_smallcaps" id="S1.p3.1.1">OneCommon</span>,
+a particularly challenging grounded dialogue game <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">onecommon</span>)</cite>.
+The goal of <span class="ltx_text ltx_font_smallcaps" id="S1.p3.1.2">OneCommon</span> is to, through dialogue, identify one dot in common with your partner,
+who has an overlapping but different view of an underlying set of dots, illustrated in <a class="ltx_ref ltx_refmacro_autoref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Symbolic Planning and Code Generation for Grounded Dialogue"><span class="ltx_text ltx_ref_tag">Figure 1</span></a>.
+The challenge in <span class="ltx_text ltx_font_smallcaps" id="S1.p3.1.3">OneCommon</span> is grounding the contextual spatial relationships described in language to dots.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">Recent work has utilized code-generation for grounded language understanding <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">vipergpt</span>)</cite>.
+In particular, they translate natural language questions to code as an intermediate representation, then execute that code to obtain an answer.
+Code has a couple appealing properties as an intermediate representation: First,
+modern language models are trained on a mixture of code and natural language, affording them the capability of, with some accuracy, translating between the two <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">chen2021evaluating</span>)</cite>.
+Second, code acts as a compositional knowledge representation.
+This allows code-generation systems to perform grounded compositional reasoning,
+provided a library of Python functions that perform grounding <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">codeaspolicies2022</span>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1">We present a system, Symbolic Planning and Code-generation (SPC),
+that <span class="ltx_text ltx_font_italic" id="S1.p5.1.1">reads</span> by translating partner utterances into code and <span class="ltx_text ltx_font_italic" id="S1.p5.1.2">plans</span>
+based on symbolic reasoning over what to say next.
+Code as a compositional knowledge representation closely mirrors the compositional nature of utterances, which are composed of grounded parts.
+SPC plans by optimizing expected information gain, which has been shown to be effective at building
+a key aspect of collaborative dialogue: common ground <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">yu2019info</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">white-etal-2021-open</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">ocp</span>)</cite>.
+Symbolic planning allows SPC to explicitly and efficiently optimize for task success while taking advantage of task-specific properties.</p>
+</div>
+<div class="ltx_para" id="S1.p6">
+<p class="ltx_p" id="S1.p6.1">We evaluate our SPC system on the most challenging subset of the <span class="ltx_text ltx_font_smallcaps" id="S1.p6.1.1">OneCommon</span> task, comparing our system to the previous state-of-the-art supervised system for the task <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">fried</span>)</cite>. In both evaluations with human partners and automated self-play evaluations, we find that our approach substantially outperforms the previous state-of-the-art in task accuracy, improving from 56% to 69% accuracy, and obtains comparable task accuracy to human-human pairs on average.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Related Work</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">Prior work on collaborative reference games focuses on building common ground
+<cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">mf</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">pb</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">pip</span>)</cite>.
+Prior work by <cite class="ltx_cite ltx_citemacro_citet"><span class="ltx_ref ltx_missing_citation ltx_ref_self">fried</span></cite> implements an approximation of pragmatic reasoning on <span class="ltx_text ltx_font_smallcaps" id="S2.p1.1.1">OneCommon</span>, but plans in language space and utilizes supervised models for mapping language to symbols.
+<cite class="ltx_cite ltx_citemacro_citet"><span class="ltx_ref ltx_missing_citation ltx_ref_self">pip</span></cite> plan in symbolic space, but without natural language.
+We plan in symbolic space and map from language to symbols via code generation.</p>
+</div>
+<div class="ltx_para" id="S2.p2">
+<p class="ltx_p" id="S2.p2.1">Dialogue systems have a long history of reasoning with symbolic actions.
+When available, symbolic actions have been found to improve
+the performance of dialogue systems, especially in the setting of grounded dialogue <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">winograd</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">young2006pomdp</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">he2018dnd</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">sm</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">cicero</span>)</cite>.
+The closest work to ours is <span class="ltx_text ltx_font_smallcaps" id="S2.p2.1.1">Cicero</span>, which utilizes symbolic planning in a system for <span class="ltx_text ltx_font_smallcaps" id="S2.p2.1.2">Diplomacy</span>,
+a dialogue and strategy game that requires negotiation and coordination between players <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">cicero</span>)</cite>.
+<span class="ltx_text ltx_font_smallcaps" id="S2.p2.1.3">Cicero</span> requires a supervised dataset to train their system.
+We use code LLMs which require minimal supervision beyond constructing a small perceptual grounding API.</p>
+</div>
+<div class="ltx_para" id="S2.p3">
+<p class="ltx_p" id="S2.p3.1">Planning in dialogue systems has recently eschewed symbolic actions in favor of
+planning directly in text,
+where systems either perform roll-outs, tree-search, or other forms of intermediate reasoning in language.
+This allows system designers to avoid manually defining symbolic actions <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">yarats2017rollout</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">jang2020bapomdp</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">gandhi2023strategic</span>)</cite>.
+However, the accuracy of language-space planners is still low in many settings <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">fried</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">valmeekam2023planning</span>)</cite>.
+We focus on symbolic planning, where planning is defined in a space that ensures accuracy and controllability.</p>
+</div>
+<div class="ltx_para" id="S2.p4">
+<p class="ltx_p" id="S2.p4.1">With the recent progress in large language modeling,
+code generation for modular grounded systems has quickly gained interest.
+Grounded code generation systems do not require task-specific training data,
+making them cheap to apply.
+A body of work utilizes a large language model for instruction following
+by generating Python code that makes calls to lower-level perception libraries
+<cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">codeaspolicies2022</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">vipergpt</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">gupta2022visual</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">gao2023pal</span>)</cite>.
+This extends prior work on executable semantic parsing <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">liang2016learning</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">johnson2017inferring</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">cheng2018learning</span>)</cite> with large language models.
+Concurrent work has also utilized code-generation to interpret language, integrated with symbolic reasoning <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">wong2023word</span>)</cite>.
+We apply these advances to the setting of grounded task-oriented dialogue,
+where code generation grounds language to symbolic actions for use in explicit planning.</p>
+</div>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Overview: Reference Games</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">Collaborative reference games
+pair an agent and a partner in order to build common ground through natural language dialogue <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">pb</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">pip</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">mf</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">onecommon</span>)</cite>.
+Mirroring realistic scenarios, many reference games are also partially observable,
+where the agent and partner have different perspectives, and so they must resolve ambiguity.</p>
+</div>
+<div class="ltx_para" id="S3.p2">
+<p class="ltx_p" id="S3.p2.1"><span class="ltx_text ltx_font_smallcaps" id="S3.p2.1.1">OneCommon</span> <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">onecommon</span>)</cite>, as shown in Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Symbolic Planning and Code Generation for Grounded Dialogue"><span class="ltx_text ltx_ref_tag">1</span></a>, is a reference game that exemplifies two challenges: grounding and planning.
+In <span class="ltx_text ltx_font_smallcaps" id="S3.p2.1.2">OneCommon</span>, the agent and partner see different but overlapping views of a set of dots, and the goal is to find and select one dot common to both players’ views.
+Grounding in <span class="ltx_text ltx_font_smallcaps" id="S3.p2.1.3">OneCommon</span> is particularly difficult due to the dot-based visual context, which requires abstract spatial reasoning.
+Planning is complicated by the partial observability caused by differing perspectives, which require agents to use complex referring expressions in order to avoid ambiguity.<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span>The contexts in <span class="ltx_text ltx_font_smallcaps" id="footnote1.1">OneCommon</span> were constructed to make referring expressions challenging and context-dependent. For example, if the agent sees only light dots, a relatively ‘dark’ dot for the agent may not be considered dark at all by the partner.<span class="ltx_text ltx_font_smallcaps" id="footnote1.2">OneCommon</span> is an ideal testbed for pragmatic methods that reason about contextual meaning. While our approach does not address pragmatics, we hope future work will.</span></span></span>
+We focus on <span class="ltx_text ltx_font_smallcaps" id="S3.p2.1.4">OneCommon</span> due to its simplicity and difficulty.</p>
+</div>
+<div class="ltx_para" id="S3.p3">
+<p class="ltx_p" id="S3.p3.1">Our approach to grounded reference games separates symbolic reasoning from language, allowing explicit steering.
+Our system, Symbolic Planning and Code-generation (SPC), breaks down a turn into three procedures: reading, planning, and writing.
+Reading and writing convert from language to symbols and vice versa,
+while planning reasons in purely symbolic space.</p>
+</div>
+<div class="ltx_para" id="S3.p4">
+<p class="ltx_p" id="S3.p4.9">The agent maintains a belief distribution over possible worlds, <math alttext="z" class="ltx_Math" display="inline" id="S3.p4.1.m1.1"><semantics id="S3.p4.1.m1.1a"><mi id="S3.p4.1.m1.1.1" xref="S3.p4.1.m1.1.1.cmml">z</mi><annotation-xml encoding="MathML-Content" id="S3.p4.1.m1.1b"><ci id="S3.p4.1.m1.1.1.cmml" xref="S3.p4.1.m1.1.1">𝑧</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.1.m1.1c">z</annotation></semantics></math>, representing task-specific unknowns.
+The goal of dialogue is to gain information about <math alttext="z" class="ltx_Math" display="inline" id="S3.p4.2.m2.1"><semantics id="S3.p4.2.m2.1a"><mi id="S3.p4.2.m2.1.1" xref="S3.p4.2.m2.1.1.cmml">z</mi><annotation-xml encoding="MathML-Content" id="S3.p4.2.m2.1b"><ci id="S3.p4.2.m2.1.1.cmml" xref="S3.p4.2.m2.1.1">𝑧</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.2.m2.1c">z</annotation></semantics></math> until the agent is confident enough to end the game.
+At each turn, the agent <span class="ltx_text ltx_font_bold" id="S3.p4.9.1">reads</span> the partner’s utterance <math alttext="u" class="ltx_Math" display="inline" id="S3.p4.3.m3.1"><semantics id="S3.p4.3.m3.1a"><mi id="S3.p4.3.m3.1.1" xref="S3.p4.3.m3.1.1.cmml">u</mi><annotation-xml encoding="MathML-Content" id="S3.p4.3.m3.1b"><ci id="S3.p4.3.m3.1.1.cmml" xref="S3.p4.3.m3.1.1">𝑢</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.3.m3.1c">u</annotation></semantics></math>, converting it into a symbolic action, <math alttext="p(x|u)" class="ltx_Math" display="inline" id="S3.p4.4.m4.1"><semantics id="S3.p4.4.m4.1a"><mrow id="S3.p4.4.m4.1.1" xref="S3.p4.4.m4.1.1.cmml"><mi id="S3.p4.4.m4.1.1.3" xref="S3.p4.4.m4.1.1.3.cmml">p</mi><mo id="S3.p4.4.m4.1.1.2" lspace="0em" rspace="0em" xref="S3.p4.4.m4.1.1.2.cmml">​</mo><mrow id="S3.p4.4.m4.1.1.1.1" xref="S3.p4.4.m4.1.1.1.1.1.cmml"><mo id="S3.p4.4.m4.1.1.1.1.2" stretchy="false" xref="S3.p4.4.m4.1.1.1.1.1.cmml">(</mo><mrow id="S3.p4.4.m4.1.1.1.1.1" xref="S3.p4.4.m4.1.1.1.1.1.cmml"><mi id="S3.p4.4.m4.1.1.1.1.1.2" xref="S3.p4.4.m4.1.1.1.1.1.2.cmml">x</mi><mo fence="false" id="S3.p4.4.m4.1.1.1.1.1.1" xref="S3.p4.4.m4.1.1.1.1.1.1.cmml">|</mo><mi id="S3.p4.4.m4.1.1.1.1.1.3" xref="S3.p4.4.m4.1.1.1.1.1.3.cmml">u</mi></mrow><mo id="S3.p4.4.m4.1.1.1.1.3" stretchy="false" xref="S3.p4.4.m4.1.1.1.1.1.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.p4.4.m4.1b"><apply id="S3.p4.4.m4.1.1.cmml" xref="S3.p4.4.m4.1.1"><times id="S3.p4.4.m4.1.1.2.cmml" xref="S3.p4.4.m4.1.1.2"></times><ci id="S3.p4.4.m4.1.1.3.cmml" xref="S3.p4.4.m4.1.1.3">𝑝</ci><apply id="S3.p4.4.m4.1.1.1.1.1.cmml" xref="S3.p4.4.m4.1.1.1.1"><csymbol cd="latexml" id="S3.p4.4.m4.1.1.1.1.1.1.cmml" xref="S3.p4.4.m4.1.1.1.1.1.1">conditional</csymbol><ci id="S3.p4.4.m4.1.1.1.1.1.2.cmml" xref="S3.p4.4.m4.1.1.1.1.1.2">𝑥</ci><ci id="S3.p4.4.m4.1.1.1.1.1.3.cmml" xref="S3.p4.4.m4.1.1.1.1.1.3">𝑢</ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.4.m4.1c">p(x|u)</annotation></semantics></math>. This symbolic action potentially builds upon the action <math alttext="x^{\prime}" class="ltx_Math" display="inline" id="S3.p4.5.m5.1"><semantics id="S3.p4.5.m5.1a"><msup id="S3.p4.5.m5.1.1" xref="S3.p4.5.m5.1.1.cmml"><mi id="S3.p4.5.m5.1.1.2" xref="S3.p4.5.m5.1.1.2.cmml">x</mi><mo id="S3.p4.5.m5.1.1.3" xref="S3.p4.5.m5.1.1.3.cmml">′</mo></msup><annotation-xml encoding="MathML-Content" id="S3.p4.5.m5.1b"><apply id="S3.p4.5.m5.1.1.cmml" xref="S3.p4.5.m5.1.1"><csymbol cd="ambiguous" id="S3.p4.5.m5.1.1.1.cmml" xref="S3.p4.5.m5.1.1">superscript</csymbol><ci id="S3.p4.5.m5.1.1.2.cmml" xref="S3.p4.5.m5.1.1.2">𝑥</ci><ci id="S3.p4.5.m5.1.1.3.cmml" xref="S3.p4.5.m5.1.1.3">′</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.5.m5.1c">x^{\prime}</annotation></semantics></math> of a previous utterance, <math alttext="u^{\prime}" class="ltx_Math" display="inline" id="S3.p4.6.m6.1"><semantics id="S3.p4.6.m6.1a"><msup id="S3.p4.6.m6.1.1" xref="S3.p4.6.m6.1.1.cmml"><mi id="S3.p4.6.m6.1.1.2" xref="S3.p4.6.m6.1.1.2.cmml">u</mi><mo id="S3.p4.6.m6.1.1.3" xref="S3.p4.6.m6.1.1.3.cmml">′</mo></msup><annotation-xml encoding="MathML-Content" id="S3.p4.6.m6.1b"><apply id="S3.p4.6.m6.1.1.cmml" xref="S3.p4.6.m6.1.1"><csymbol cd="ambiguous" id="S3.p4.6.m6.1.1.1.cmml" xref="S3.p4.6.m6.1.1">superscript</csymbol><ci id="S3.p4.6.m6.1.1.2.cmml" xref="S3.p4.6.m6.1.1.2">𝑢</ci><ci id="S3.p4.6.m6.1.1.3.cmml" xref="S3.p4.6.m6.1.1.3">′</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.6.m6.1c">u^{\prime}</annotation></semantics></math>.
+The agent then <span class="ltx_text ltx_font_bold" id="S3.p4.9.2">plans</span> in symbolic space.
+The system uses reasoning to update its belief state, <math alttext="p(z|u)=\sum_{x}p(z|x)p(x|u)" class="ltx_Math" display="inline" id="S3.p4.7.m7.3"><semantics id="S3.p4.7.m7.3a"><mrow id="S3.p4.7.m7.3.3" xref="S3.p4.7.m7.3.3.cmml"><mrow id="S3.p4.7.m7.1.1.1" xref="S3.p4.7.m7.1.1.1.cmml"><mi id="S3.p4.7.m7.1.1.1.3" xref="S3.p4.7.m7.1.1.1.3.cmml">p</mi><mo id="S3.p4.7.m7.1.1.1.2" lspace="0em" rspace="0em" xref="S3.p4.7.m7.1.1.1.2.cmml">​</mo><mrow id="S3.p4.7.m7.1.1.1.1.1" xref="S3.p4.7.m7.1.1.1.1.1.1.cmml"><mo id="S3.p4.7.m7.1.1.1.1.1.2" stretchy="false" xref="S3.p4.7.m7.1.1.1.1.1.1.cmml">(</mo><mrow id="S3.p4.7.m7.1.1.1.1.1.1" xref="S3.p4.7.m7.1.1.1.1.1.1.cmml"><mi id="S3.p4.7.m7.1.1.1.1.1.1.2" xref="S3.p4.7.m7.1.1.1.1.1.1.2.cmml">z</mi><mo fence="false" id="S3.p4.7.m7.1.1.1.1.1.1.1" xref="S3.p4.7.m7.1.1.1.1.1.1.1.cmml">|</mo><mi id="S3.p4.7.m7.1.1.1.1.1.1.3" xref="S3.p4.7.m7.1.1.1.1.1.1.3.cmml">u</mi></mrow><mo id="S3.p4.7.m7.1.1.1.1.1.3" stretchy="false" xref="S3.p4.7.m7.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.p4.7.m7.3.3.4" rspace="0.111em" xref="S3.p4.7.m7.3.3.4.cmml">=</mo><mrow id="S3.p4.7.m7.3.3.3" xref="S3.p4.7.m7.3.3.3.cmml"><msub id="S3.p4.7.m7.3.3.3.3" xref="S3.p4.7.m7.3.3.3.3.cmml"><mo id="S3.p4.7.m7.3.3.3.3.2" xref="S3.p4.7.m7.3.3.3.3.2.cmml">∑</mo><mi id="S3.p4.7.m7.3.3.3.3.3" xref="S3.p4.7.m7.3.3.3.3.3.cmml">x</mi></msub><mrow id="S3.p4.7.m7.3.3.3.2" xref="S3.p4.7.m7.3.3.3.2.cmml"><mi id="S3.p4.7.m7.3.3.3.2.4" xref="S3.p4.7.m7.3.3.3.2.4.cmml">p</mi><mo id="S3.p4.7.m7.3.3.3.2.3" lspace="0em" rspace="0em" xref="S3.p4.7.m7.3.3.3.2.3.cmml">​</mo><mrow id="S3.p4.7.m7.2.2.2.1.1.1" xref="S3.p4.7.m7.2.2.2.1.1.1.1.cmml"><mo id="S3.p4.7.m7.2.2.2.1.1.1.2" stretchy="false" xref="S3.p4.7.m7.2.2.2.1.1.1.1.cmml">(</mo><mrow id="S3.p4.7.m7.2.2.2.1.1.1.1" xref="S3.p4.7.m7.2.2.2.1.1.1.1.cmml"><mi id="S3.p4.7.m7.2.2.2.1.1.1.1.2" xref="S3.p4.7.m7.2.2.2.1.1.1.1.2.cmml">z</mi><mo fence="false" id="S3.p4.7.m7.2.2.2.1.1.1.1.1" xref="S3.p4.7.m7.2.2.2.1.1.1.1.1.cmml">|</mo><mi id="S3.p4.7.m7.2.2.2.1.1.1.1.3" xref="S3.p4.7.m7.2.2.2.1.1.1.1.3.cmml">x</mi></mrow><mo id="S3.p4.7.m7.2.2.2.1.1.1.3" stretchy="false" xref="S3.p4.7.m7.2.2.2.1.1.1.1.cmml">)</mo></mrow><mo id="S3.p4.7.m7.3.3.3.2.3a" lspace="0em" rspace="0em" xref="S3.p4.7.m7.3.3.3.2.3.cmml">​</mo><mi id="S3.p4.7.m7.3.3.3.2.5" xref="S3.p4.7.m7.3.3.3.2.5.cmml">p</mi><mo id="S3.p4.7.m7.3.3.3.2.3b" lspace="0em" rspace="0em" xref="S3.p4.7.m7.3.3.3.2.3.cmml">​</mo><mrow id="S3.p4.7.m7.3.3.3.2.2.1" xref="S3.p4.7.m7.3.3.3.2.2.1.1.cmml"><mo id="S3.p4.7.m7.3.3.3.2.2.1.2" stretchy="false" xref="S3.p4.7.m7.3.3.3.2.2.1.1.cmml">(</mo><mrow id="S3.p4.7.m7.3.3.3.2.2.1.1" xref="S3.p4.7.m7.3.3.3.2.2.1.1.cmml"><mi id="S3.p4.7.m7.3.3.3.2.2.1.1.2" xref="S3.p4.7.m7.3.3.3.2.2.1.1.2.cmml">x</mi><mo fence="false" id="S3.p4.7.m7.3.3.3.2.2.1.1.1" xref="S3.p4.7.m7.3.3.3.2.2.1.1.1.cmml">|</mo><mi id="S3.p4.7.m7.3.3.3.2.2.1.1.3" xref="S3.p4.7.m7.3.3.3.2.2.1.1.3.cmml">u</mi></mrow><mo id="S3.p4.7.m7.3.3.3.2.2.1.3" stretchy="false" xref="S3.p4.7.m7.3.3.3.2.2.1.1.cmml">)</mo></mrow></mrow></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.p4.7.m7.3b"><apply id="S3.p4.7.m7.3.3.cmml" xref="S3.p4.7.m7.3.3"><eq id="S3.p4.7.m7.3.3.4.cmml" xref="S3.p4.7.m7.3.3.4"></eq><apply id="S3.p4.7.m7.1.1.1.cmml" xref="S3.p4.7.m7.1.1.1"><times id="S3.p4.7.m7.1.1.1.2.cmml" xref="S3.p4.7.m7.1.1.1.2"></times><ci id="S3.p4.7.m7.1.1.1.3.cmml" xref="S3.p4.7.m7.1.1.1.3">𝑝</ci><apply id="S3.p4.7.m7.1.1.1.1.1.1.cmml" xref="S3.p4.7.m7.1.1.1.1.1"><csymbol cd="latexml" id="S3.p4.7.m7.1.1.1.1.1.1.1.cmml" xref="S3.p4.7.m7.1.1.1.1.1.1.1">conditional</csymbol><ci id="S3.p4.7.m7.1.1.1.1.1.1.2.cmml" xref="S3.p4.7.m7.1.1.1.1.1.1.2">𝑧</ci><ci id="S3.p4.7.m7.1.1.1.1.1.1.3.cmml" xref="S3.p4.7.m7.1.1.1.1.1.1.3">𝑢</ci></apply></apply><apply id="S3.p4.7.m7.3.3.3.cmml" xref="S3.p4.7.m7.3.3.3"><apply id="S3.p4.7.m7.3.3.3.3.cmml" xref="S3.p4.7.m7.3.3.3.3"><csymbol cd="ambiguous" id="S3.p4.7.m7.3.3.3.3.1.cmml" xref="S3.p4.7.m7.3.3.3.3">subscript</csymbol><sum id="S3.p4.7.m7.3.3.3.3.2.cmml" xref="S3.p4.7.m7.3.3.3.3.2"></sum><ci id="S3.p4.7.m7.3.3.3.3.3.cmml" xref="S3.p4.7.m7.3.3.3.3.3">𝑥</ci></apply><apply id="S3.p4.7.m7.3.3.3.2.cmml" xref="S3.p4.7.m7.3.3.3.2"><times id="S3.p4.7.m7.3.3.3.2.3.cmml" xref="S3.p4.7.m7.3.3.3.2.3"></times><ci id="S3.p4.7.m7.3.3.3.2.4.cmml" xref="S3.p4.7.m7.3.3.3.2.4">𝑝</ci><apply id="S3.p4.7.m7.2.2.2.1.1.1.1.cmml" xref="S3.p4.7.m7.2.2.2.1.1.1"><csymbol cd="latexml" id="S3.p4.7.m7.2.2.2.1.1.1.1.1.cmml" xref="S3.p4.7.m7.2.2.2.1.1.1.1.1">conditional</csymbol><ci id="S3.p4.7.m7.2.2.2.1.1.1.1.2.cmml" xref="S3.p4.7.m7.2.2.2.1.1.1.1.2">𝑧</ci><ci id="S3.p4.7.m7.2.2.2.1.1.1.1.3.cmml" xref="S3.p4.7.m7.2.2.2.1.1.1.1.3">𝑥</ci></apply><ci id="S3.p4.7.m7.3.3.3.2.5.cmml" xref="S3.p4.7.m7.3.3.3.2.5">𝑝</ci><apply id="S3.p4.7.m7.3.3.3.2.2.1.1.cmml" xref="S3.p4.7.m7.3.3.3.2.2.1"><csymbol cd="latexml" id="S3.p4.7.m7.3.3.3.2.2.1.1.1.cmml" xref="S3.p4.7.m7.3.3.3.2.2.1.1.1">conditional</csymbol><ci id="S3.p4.7.m7.3.3.3.2.2.1.1.2.cmml" xref="S3.p4.7.m7.3.3.3.2.2.1.1.2">𝑥</ci><ci id="S3.p4.7.m7.3.3.3.2.2.1.1.3.cmml" xref="S3.p4.7.m7.3.3.3.2.2.1.1.3">𝑢</ci></apply></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.7.m7.3c">p(z|u)=\sum_{x}p(z|x)p(x|u)</annotation></semantics></math>,
+then produces a response <math alttext="y^{*}" class="ltx_Math" display="inline" id="S3.p4.8.m8.1"><semantics id="S3.p4.8.m8.1a"><msup id="S3.p4.8.m8.1.1" xref="S3.p4.8.m8.1.1.cmml"><mi id="S3.p4.8.m8.1.1.2" xref="S3.p4.8.m8.1.1.2.cmml">y</mi><mo id="S3.p4.8.m8.1.1.3" xref="S3.p4.8.m8.1.1.3.cmml">∗</mo></msup><annotation-xml encoding="MathML-Content" id="S3.p4.8.m8.1b"><apply id="S3.p4.8.m8.1.1.cmml" xref="S3.p4.8.m8.1.1"><csymbol cd="ambiguous" id="S3.p4.8.m8.1.1.1.cmml" xref="S3.p4.8.m8.1.1">superscript</csymbol><ci id="S3.p4.8.m8.1.1.2.cmml" xref="S3.p4.8.m8.1.1.2">𝑦</ci><times id="S3.p4.8.m8.1.1.3.cmml" xref="S3.p4.8.m8.1.1.3"></times></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.8.m8.1c">y^{*}</annotation></semantics></math> of what to say next, which it describes in language to the partner. There is additionally a templated write module for generating a response from <math alttext="y^{*}" class="ltx_Math" display="inline" id="S3.p4.9.m9.1"><semantics id="S3.p4.9.m9.1a"><msup id="S3.p4.9.m9.1.1" xref="S3.p4.9.m9.1.1.cmml"><mi id="S3.p4.9.m9.1.1.2" xref="S3.p4.9.m9.1.1.2.cmml">y</mi><mo id="S3.p4.9.m9.1.1.3" xref="S3.p4.9.m9.1.1.3.cmml">∗</mo></msup><annotation-xml encoding="MathML-Content" id="S3.p4.9.m9.1b"><apply id="S3.p4.9.m9.1.1.cmml" xref="S3.p4.9.m9.1.1"><csymbol cd="ambiguous" id="S3.p4.9.m9.1.1.1.cmml" xref="S3.p4.9.m9.1.1">superscript</csymbol><ci id="S3.p4.9.m9.1.1.2.cmml" xref="S3.p4.9.m9.1.1.2">𝑦</ci><times id="S3.p4.9.m9.1.1.3.cmml" xref="S3.p4.9.m9.1.1.3"></times></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p4.9.m9.1c">y^{*}</annotation></semantics></math> described in Appendix <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:sec:templates</span>.</p>
+</div>
+<div class="ltx_para" id="S3.p5">
+<p class="ltx_p" id="S3.p5.6">In <span class="ltx_text ltx_font_smallcaps" id="S3.p5.6.1">OneCommon</span>, given a set of dots <math alttext="\mathcal{D}" class="ltx_Math" display="inline" id="S3.p5.1.m1.1"><semantics id="S3.p5.1.m1.1a"><mi class="ltx_font_mathcaligraphic" id="S3.p5.1.m1.1.1" xref="S3.p5.1.m1.1.1.cmml">𝒟</mi><annotation-xml encoding="MathML-Content" id="S3.p5.1.m1.1b"><ci id="S3.p5.1.m1.1.1.cmml" xref="S3.p5.1.m1.1.1">𝒟</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.p5.1.m1.1c">\mathcal{D}</annotation></semantics></math>, the state <math alttext="z\in\{0,1\}^{|\mathcal{D}|}" class="ltx_Math" display="inline" id="S3.p5.2.m2.3"><semantics id="S3.p5.2.m2.3a"><mrow id="S3.p5.2.m2.3.4" xref="S3.p5.2.m2.3.4.cmml"><mi id="S3.p5.2.m2.3.4.2" xref="S3.p5.2.m2.3.4.2.cmml">z</mi><mo id="S3.p5.2.m2.3.4.1" xref="S3.p5.2.m2.3.4.1.cmml">∈</mo><msup id="S3.p5.2.m2.3.4.3" xref="S3.p5.2.m2.3.4.3.cmml"><mrow id="S3.p5.2.m2.3.4.3.2.2" xref="S3.p5.2.m2.3.4.3.2.1.cmml"><mo id="S3.p5.2.m2.3.4.3.2.2.1" stretchy="false" xref="S3.p5.2.m2.3.4.3.2.1.cmml">{</mo><mn id="S3.p5.2.m2.2.2" xref="S3.p5.2.m2.2.2.cmml">0</mn><mo id="S3.p5.2.m2.3.4.3.2.2.2" xref="S3.p5.2.m2.3.4.3.2.1.cmml">,</mo><mn id="S3.p5.2.m2.3.3" xref="S3.p5.2.m2.3.3.cmml">1</mn><mo id="S3.p5.2.m2.3.4.3.2.2.3" stretchy="false" xref="S3.p5.2.m2.3.4.3.2.1.cmml">}</mo></mrow><mrow id="S3.p5.2.m2.1.1.1.3" xref="S3.p5.2.m2.1.1.1.2.cmml"><mo id="S3.p5.2.m2.1.1.1.3.1" stretchy="false" xref="S3.p5.2.m2.1.1.1.2.1.cmml">|</mo><mi class="ltx_font_mathcaligraphic" id="S3.p5.2.m2.1.1.1.1" xref="S3.p5.2.m2.1.1.1.1.cmml">𝒟</mi><mo id="S3.p5.2.m2.1.1.1.3.2" stretchy="false" xref="S3.p5.2.m2.1.1.1.2.1.cmml">|</mo></mrow></msup></mrow><annotation-xml encoding="MathML-Content" id="S3.p5.2.m2.3b"><apply id="S3.p5.2.m2.3.4.cmml" xref="S3.p5.2.m2.3.4"><in id="S3.p5.2.m2.3.4.1.cmml" xref="S3.p5.2.m2.3.4.1"></in><ci id="S3.p5.2.m2.3.4.2.cmml" xref="S3.p5.2.m2.3.4.2">𝑧</ci><apply id="S3.p5.2.m2.3.4.3.cmml" xref="S3.p5.2.m2.3.4.3"><csymbol cd="ambiguous" id="S3.p5.2.m2.3.4.3.1.cmml" xref="S3.p5.2.m2.3.4.3">superscript</csymbol><set id="S3.p5.2.m2.3.4.3.2.1.cmml" xref="S3.p5.2.m2.3.4.3.2.2"><cn id="S3.p5.2.m2.2.2.cmml" type="integer" xref="S3.p5.2.m2.2.2">0</cn><cn id="S3.p5.2.m2.3.3.cmml" type="integer" xref="S3.p5.2.m2.3.3">1</cn></set><apply id="S3.p5.2.m2.1.1.1.2.cmml" xref="S3.p5.2.m2.1.1.1.3"><abs id="S3.p5.2.m2.1.1.1.2.1.cmml" xref="S3.p5.2.m2.1.1.1.3.1"></abs><ci id="S3.p5.2.m2.1.1.1.1.cmml" xref="S3.p5.2.m2.1.1.1.1">𝒟</ci></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p5.2.m2.3c">z\in\{0,1\}^{|\mathcal{D}|}</annotation></semantics></math> represents which dots the agent believes are contained (1) and not contained (0) in the partner’s view, illustrated in Figure <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:fig:system</span>. We call a set of dots a <span class="ltx_text ltx_font_italic" id="S3.p5.6.2">configuration</span>.
+The action representation of partner, <math alttext="x" class="ltx_Math" display="inline" id="S3.p5.3.m3.1"><semantics id="S3.p5.3.m3.1a"><mi id="S3.p5.3.m3.1.1" xref="S3.p5.3.m3.1.1.cmml">x</mi><annotation-xml encoding="MathML-Content" id="S3.p5.3.m3.1b"><ci id="S3.p5.3.m3.1.1.cmml" xref="S3.p5.3.m3.1.1">𝑥</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.p5.3.m3.1c">x</annotation></semantics></math> and <math alttext="x^{\prime}" class="ltx_Math" display="inline" id="S3.p5.4.m4.1"><semantics id="S3.p5.4.m4.1a"><msup id="S3.p5.4.m4.1.1" xref="S3.p5.4.m4.1.1.cmml"><mi id="S3.p5.4.m4.1.1.2" xref="S3.p5.4.m4.1.1.2.cmml">x</mi><mo id="S3.p5.4.m4.1.1.3" xref="S3.p5.4.m4.1.1.3.cmml">′</mo></msup><annotation-xml encoding="MathML-Content" id="S3.p5.4.m4.1b"><apply id="S3.p5.4.m4.1.1.cmml" xref="S3.p5.4.m4.1.1"><csymbol cd="ambiguous" id="S3.p5.4.m4.1.1.1.cmml" xref="S3.p5.4.m4.1.1">superscript</csymbol><ci id="S3.p5.4.m4.1.1.2.cmml" xref="S3.p5.4.m4.1.1.2">𝑥</ci><ci id="S3.p5.4.m4.1.1.3.cmml" xref="S3.p5.4.m4.1.1.3">′</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p5.4.m4.1c">x^{\prime}</annotation></semantics></math>, and agent utterances, <math alttext="y^{*}" class="ltx_Math" display="inline" id="S3.p5.5.m5.1"><semantics id="S3.p5.5.m5.1a"><msup id="S3.p5.5.m5.1.1" xref="S3.p5.5.m5.1.1.cmml"><mi id="S3.p5.5.m5.1.1.2" xref="S3.p5.5.m5.1.1.2.cmml">y</mi><mo id="S3.p5.5.m5.1.1.3" xref="S3.p5.5.m5.1.1.3.cmml">∗</mo></msup><annotation-xml encoding="MathML-Content" id="S3.p5.5.m5.1b"><apply id="S3.p5.5.m5.1.1.cmml" xref="S3.p5.5.m5.1.1"><csymbol cd="ambiguous" id="S3.p5.5.m5.1.1.1.cmml" xref="S3.p5.5.m5.1.1">superscript</csymbol><ci id="S3.p5.5.m5.1.1.2.cmml" xref="S3.p5.5.m5.1.1.2">𝑦</ci><times id="S3.p5.5.m5.1.1.3.cmml" xref="S3.p5.5.m5.1.1.3"></times></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p5.5.m5.1c">y^{*}</annotation></semantics></math>, alike is also a configuration in <math alttext="\{0,1\}^{|\mathcal{D}|}" class="ltx_Math" display="inline" id="S3.p5.6.m6.3"><semantics id="S3.p5.6.m6.3a"><msup id="S3.p5.6.m6.3.4" xref="S3.p5.6.m6.3.4.cmml"><mrow id="S3.p5.6.m6.3.4.2.2" xref="S3.p5.6.m6.3.4.2.1.cmml"><mo id="S3.p5.6.m6.3.4.2.2.1" stretchy="false" xref="S3.p5.6.m6.3.4.2.1.cmml">{</mo><mn id="S3.p5.6.m6.2.2" xref="S3.p5.6.m6.2.2.cmml">0</mn><mo id="S3.p5.6.m6.3.4.2.2.2" xref="S3.p5.6.m6.3.4.2.1.cmml">,</mo><mn id="S3.p5.6.m6.3.3" xref="S3.p5.6.m6.3.3.cmml">1</mn><mo id="S3.p5.6.m6.3.4.2.2.3" stretchy="false" xref="S3.p5.6.m6.3.4.2.1.cmml">}</mo></mrow><mrow id="S3.p5.6.m6.1.1.1.3" xref="S3.p5.6.m6.1.1.1.2.cmml"><mo id="S3.p5.6.m6.1.1.1.3.1" stretchy="false" xref="S3.p5.6.m6.1.1.1.2.1.cmml">|</mo><mi class="ltx_font_mathcaligraphic" id="S3.p5.6.m6.1.1.1.1" xref="S3.p5.6.m6.1.1.1.1.cmml">𝒟</mi><mo id="S3.p5.6.m6.1.1.1.3.2" stretchy="false" xref="S3.p5.6.m6.1.1.1.2.1.cmml">|</mo></mrow></msup><annotation-xml encoding="MathML-Content" id="S3.p5.6.m6.3b"><apply id="S3.p5.6.m6.3.4.cmml" xref="S3.p5.6.m6.3.4"><csymbol cd="ambiguous" id="S3.p5.6.m6.3.4.1.cmml" xref="S3.p5.6.m6.3.4">superscript</csymbol><set id="S3.p5.6.m6.3.4.2.1.cmml" xref="S3.p5.6.m6.3.4.2.2"><cn id="S3.p5.6.m6.2.2.cmml" type="integer" xref="S3.p5.6.m6.2.2">0</cn><cn id="S3.p5.6.m6.3.3.cmml" type="integer" xref="S3.p5.6.m6.3.3">1</cn></set><apply id="S3.p5.6.m6.1.1.1.2.cmml" xref="S3.p5.6.m6.1.1.1.3"><abs id="S3.p5.6.m6.1.1.1.2.1.cmml" xref="S3.p5.6.m6.1.1.1.3.1"></abs><ci id="S3.p5.6.m6.1.1.1.1.cmml" xref="S3.p5.6.m6.1.1.1.1">𝒟</ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.p5.6.m6.3c">\{0,1\}^{|\mathcal{D}|}</annotation></semantics></math>, as well as any answers or confirmations to previous questions.</p>
+</div>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Reading: From Language to Symbols</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">Reading in SPC requires interpreting utterances to a grounded symbolic action, which in turn facilitates the planning stage. Consider the following exchange:</p>
+</div>
+</section>
+</article>
+</div>
+<div class="ltx_document"><div class="ltx_para"><div class="ltx_p"><span class="ltx_ERROR">
+Conversion to HTML had a Fatal error and exited abruptly. This document may be truncated or damaged.
+</span></div></div></div>
+
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2310.17139">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-fatal" href="/log/2310.17140">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2310.17140" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2310.17140">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2310.17141">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Tue Feb 27 21:51:35 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

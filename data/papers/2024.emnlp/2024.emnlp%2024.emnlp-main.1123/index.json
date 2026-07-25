@@ -1,0 +1,1025 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            117
+        ],
+        "2 Related Work": [
+            118,
+            129
+        ],
+        "3 X-Topic, a Multilingual Tweet Topic Classification Benchmark": [
+            130,
+            223
+        ],
+        "4 Experimental Setting": [
+            224,
+            748
+        ],
+        "5 Analysis of Results": [
+            749,
+            923
+        ],
+        "6 Conclusions": [
+            924,
+            929
+        ],
+        "7 Limitations": [
+            930,
+            935
+        ],
+        "8 Ethics Statement": [
+            936,
+            943
+        ],
+        "References": [
+            944,
+            996
+        ],
+        "Appendix A Annotation Guidelines": [
+            997,
+            1196
+        ],
+        "Appendix B Models & Dataset": [
+            1197,
+            1361
+        ],
+        "Appendix C Extended Results": [
+            1362,
+            2047
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Unsupervised Approaches.": [
+                122,
+                125
+            ],
+            "Multilingual resources in social media.": [
+                126,
+                129
+            ]
+        },
+        "3 X-Topic, a Multilingual Tweet Topic Classification Benchmark": {
+            "3.1 Language Selection and Tweet Collection": [
+                138,
+                143
+            ],
+            "3.2 Preprocessing": [
+                144,
+                147
+            ],
+            "3.3 Annotation": [
+                148,
+                211
+            ],
+            "3.4 Descriptive Analysis": [
+                212,
+                215
+            ],
+            "Topic overlap.": [
+                216,
+                219
+            ],
+            "Topic distribution.": [
+                220,
+                223
+            ]
+        },
+        "4 Experimental Setting": {
+            "4.1 Data & Settings": [
+                228,
+                243
+            ],
+            "4.2 Comparison Models": [
+                244,
+                247
+            ],
+            "4.2.1 Fine-tuning": [
+                248,
+                257
+            ],
+            "4.2.2 Zero and Few-shot": [
+                258,
+                744
+            ],
+            "4.3 Evaluation Metrics": [
+                745,
+                748
+            ]
+        },
+        "5 Analysis of Results": {
+            "5.1 Setting Comparison": [
+                753,
+                760
+            ],
+            "5.2 Model Comparison": [
+                761,
+                845
+            ],
+            "5.3 Error Analysis": [
+                846,
+                923
+            ]
+        },
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "8 Ethics Statement": {},
+        "References": {},
+        "Appendix A Annotation Guidelines": {
+            "A.0.1 English": [
+                1001,
+                1048
+            ],
+            "A.0.2 Spanish": [
+                1049,
+                1098
+            ],
+            "A.0.3 Japanese": [
+                1099,
+                1148
+            ],
+            "A.0.4 Greek": [
+                1149,
+                1196
+            ]
+        },
+        "Appendix B Models & Dataset": {
+            "B.1 Dataset": [
+                1199,
+                1267
+            ],
+            "B.2 Models": [
+                1268,
+                1311
+            ],
+            "B.3 Prompts": [
+                1312,
+                1319
+            ],
+            "B.4 Topics Abbreviation": [
+                1320,
+                1361
+            ]
+        },
+        "Appendix C Extended Results": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ]
+        ],
+        "2 Related Work": [
+            [
+                120,
+                120
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                128,
+                128
+            ]
+        ],
+        "3 X-Topic, a Multilingual Tweet Topic Classification Benchmark": [
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                134
+            ],
+            [
+                136,
+                136
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                142
+            ],
+            [
+                146,
+                146
+            ],
+            [
+                150,
+                150
+            ],
+            [
+                152,
+                152
+            ],
+            [
+                160,
+                160
+            ],
+            [
+                214,
+                214
+            ],
+            [
+                218,
+                218
+            ],
+            [
+                222,
+                222
+            ]
+        ],
+        "4 Experimental Setting": [
+            [
+                226,
+                226
+            ],
+            [
+                230,
+                230
+            ],
+            [
+                232,
+                232
+            ],
+            [
+                234,
+                234
+            ],
+            [
+                236,
+                236
+            ],
+            [
+                238,
+                238
+            ],
+            [
+                240,
+                240
+            ],
+            [
+                242,
+                242
+            ],
+            [
+                246,
+                246
+            ],
+            [
+                250,
+                250
+            ],
+            [
+                252,
+                252
+            ],
+            [
+                254,
+                254
+            ],
+            [
+                256,
+                256
+            ],
+            [
+                260,
+                260
+            ],
+            [
+                262,
+                262
+            ],
+            [
+                264,
+                264
+            ],
+            [
+                266,
+                266
+            ],
+            [
+                268,
+                268
+            ],
+            [
+                747,
+                747
+            ]
+        ],
+        "5 Analysis of Results": [
+            [
+                751,
+                751
+            ],
+            [
+                755,
+                755
+            ],
+            [
+                757,
+                757
+            ],
+            [
+                759,
+                759
+            ],
+            [
+                763,
+                763
+            ],
+            [
+                844,
+                844
+            ],
+            [
+                848,
+                848
+            ],
+            [
+                850,
+                850
+            ],
+            [
+                852,
+                852
+            ]
+        ],
+        "6 Conclusions": [
+            [
+                926,
+                926
+            ],
+            [
+                928,
+                928
+            ]
+        ],
+        "7 Limitations": [
+            [
+                932,
+                932
+            ],
+            [
+                934,
+                934
+            ]
+        ],
+        "8 Ethics Statement": [
+            [
+                938,
+                938
+            ],
+            [
+                940,
+                940
+            ],
+            [
+                942,
+                942
+            ]
+        ],
+        "References": [
+            [
+                946,
+                995
+            ]
+        ],
+        "Appendix A Annotation Guidelines": [
+            [
+                999,
+                999
+            ],
+            [
+                1003,
+                1003
+            ],
+            [
+                1005,
+                1005
+            ],
+            [
+                1007,
+                1007
+            ],
+            [
+                1009,
+                1009
+            ],
+            [
+                1011,
+                1011
+            ],
+            [
+                1013,
+                1013
+            ],
+            [
+                1015,
+                1015
+            ],
+            [
+                1017,
+                1017
+            ],
+            [
+                1019,
+                1019
+            ],
+            [
+                1021,
+                1021
+            ],
+            [
+                1023,
+                1023
+            ],
+            [
+                1025,
+                1025
+            ],
+            [
+                1027,
+                1027
+            ],
+            [
+                1029,
+                1029
+            ],
+            [
+                1031,
+                1031
+            ],
+            [
+                1033,
+                1033
+            ],
+            [
+                1035,
+                1035
+            ],
+            [
+                1037,
+                1037
+            ],
+            [
+                1039,
+                1039
+            ],
+            [
+                1041,
+                1041
+            ],
+            [
+                1043,
+                1043
+            ],
+            [
+                1045,
+                1045
+            ],
+            [
+                1047,
+                1047
+            ],
+            [
+                1051,
+                1051
+            ],
+            [
+                1053,
+                1053
+            ],
+            [
+                1055,
+                1055
+            ],
+            [
+                1057,
+                1057
+            ],
+            [
+                1059,
+                1059
+            ],
+            [
+                1061,
+                1061
+            ],
+            [
+                1063,
+                1063
+            ],
+            [
+                1065,
+                1065
+            ],
+            [
+                1067,
+                1067
+            ],
+            [
+                1069,
+                1069
+            ],
+            [
+                1071,
+                1071
+            ],
+            [
+                1073,
+                1073
+            ],
+            [
+                1075,
+                1075
+            ],
+            [
+                1077,
+                1077
+            ],
+            [
+                1079,
+                1079
+            ],
+            [
+                1081,
+                1081
+            ],
+            [
+                1083,
+                1083
+            ],
+            [
+                1085,
+                1085
+            ],
+            [
+                1087,
+                1087
+            ],
+            [
+                1089,
+                1089
+            ],
+            [
+                1091,
+                1091
+            ],
+            [
+                1093,
+                1093
+            ],
+            [
+                1095,
+                1095
+            ],
+            [
+                1097,
+                1097
+            ],
+            [
+                1101,
+                1101
+            ],
+            [
+                1103,
+                1103
+            ],
+            [
+                1105,
+                1105
+            ],
+            [
+                1107,
+                1107
+            ],
+            [
+                1109,
+                1109
+            ],
+            [
+                1111,
+                1111
+            ],
+            [
+                1113,
+                1113
+            ],
+            [
+                1115,
+                1115
+            ],
+            [
+                1117,
+                1117
+            ],
+            [
+                1119,
+                1119
+            ],
+            [
+                1121,
+                1121
+            ],
+            [
+                1123,
+                1123
+            ],
+            [
+                1125,
+                1125
+            ],
+            [
+                1127,
+                1127
+            ],
+            [
+                1129,
+                1129
+            ],
+            [
+                1131,
+                1131
+            ],
+            [
+                1133,
+                1133
+            ],
+            [
+                1135,
+                1135
+            ],
+            [
+                1137,
+                1137
+            ],
+            [
+                1139,
+                1139
+            ],
+            [
+                1141,
+                1141
+            ],
+            [
+                1143,
+                1143
+            ],
+            [
+                1145,
+                1145
+            ],
+            [
+                1147,
+                1147
+            ],
+            [
+                1151,
+                1151
+            ],
+            [
+                1153,
+                1153
+            ],
+            [
+                1155,
+                1155
+            ],
+            [
+                1157,
+                1157
+            ],
+            [
+                1159,
+                1159
+            ],
+            [
+                1161,
+                1161
+            ],
+            [
+                1163,
+                1163
+            ],
+            [
+                1165,
+                1165
+            ],
+            [
+                1167,
+                1167
+            ],
+            [
+                1169,
+                1169
+            ],
+            [
+                1171,
+                1171
+            ],
+            [
+                1173,
+                1173
+            ],
+            [
+                1175,
+                1175
+            ],
+            [
+                1177,
+                1177
+            ],
+            [
+                1179,
+                1179
+            ],
+            [
+                1181,
+                1181
+            ],
+            [
+                1183,
+                1183
+            ],
+            [
+                1185,
+                1185
+            ],
+            [
+                1187,
+                1187
+            ],
+            [
+                1189,
+                1189
+            ],
+            [
+                1191,
+                1191
+            ],
+            [
+                1193,
+                1193
+            ],
+            [
+                1195,
+                1195
+            ]
+        ],
+        "Appendix B Models & Dataset": [
+            [
+                1201,
+                1201
+            ],
+            [
+                1260,
+                1260
+            ],
+            [
+                1270,
+                1270
+            ],
+            [
+                1314,
+                1314
+            ],
+            [
+                1316,
+                1316
+            ],
+            [
+                1318,
+                1318
+            ],
+            [
+                1322,
+                1322
+            ],
+            [
+                1324,
+                1324
+            ],
+            [
+                1326,
+                1326
+            ],
+            [
+                1328,
+                1328
+            ],
+            [
+                1330,
+                1330
+            ],
+            [
+                1332,
+                1332
+            ],
+            [
+                1334,
+                1334
+            ],
+            [
+                1336,
+                1336
+            ],
+            [
+                1338,
+                1338
+            ],
+            [
+                1340,
+                1340
+            ],
+            [
+                1342,
+                1342
+            ],
+            [
+                1344,
+                1344
+            ],
+            [
+                1346,
+                1346
+            ],
+            [
+                1348,
+                1348
+            ],
+            [
+                1350,
+                1350
+            ],
+            [
+                1352,
+                1352
+            ],
+            [
+                1354,
+                1354
+            ],
+            [
+                1356,
+                1356
+            ],
+            [
+                1358,
+                1358
+            ],
+            [
+                1360,
+                1360
+            ]
+        ],
+        "Appendix C Extended Results": [
+            [
+                1364,
+                1364
+            ],
+            [
+                1366,
+                1366
+            ],
+            [
+                2045,
+                2045
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 X-Topic, a Multilingual Tweet Topic Classification Benchmark": {
+            "[FIGURE S3.F1.g1]": [
+                154,
+                158
+            ]
+        },
+        "4 Experimental Setting": {},
+        "5 Analysis of Results": {},
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "8 Ethics Statement": {},
+        "References": {},
+        "Appendix A Annotation Guidelines": {},
+        "Appendix B Models & Dataset": {
+            "[FIGURE A2.F2.g1]": [
+                1262,
+                1266
+            ]
+        },
+        "Appendix C Extended Results": {
+            "[FIGURE A3.F3.1.g1]": [
+                1401,
+                1405
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {
+            "[TABLE S1.T1]": [
+                27,
+                116
+            ]
+        },
+        "2 Related Work": {},
+        "3 X-Topic, a Multilingual Tweet Topic Classification Benchmark": {
+            "[TABLE S3.T2]": [
+                162,
+                210
+            ]
+        },
+        "4 Experimental Setting": {
+            "[TABLE S4.T3]": [
+                270,
+                743
+            ]
+        },
+        "5 Analysis of Results": {
+            "[TABLE S5.T4]": [
+                765,
+                842
+            ],
+            "[TABLE S5.T5]": [
+                854,
+                922
+            ]
+        },
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "8 Ethics Statement": {},
+        "References": {},
+        "Appendix A Annotation Guidelines": {},
+        "Appendix B Models & Dataset": {
+            "[TABLE A2.T6]": [
+                1203,
+                1258
+            ],
+            "[TABLE A2.T7]": [
+                1272,
+                1310
+            ]
+        },
+        "Appendix C Extended Results": {
+            "[TABLE A3.T8]": [
+                1368,
+                1399
+            ],
+            "[TABLE A3.T9]": [
+                1407,
+                1724
+            ],
+            "[TABLE A3.T10]": [
+                1726,
+                2043
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 X-Topic, a Multilingual Tweet Topic Classification Benchmark": {},
+        "4 Experimental Setting": {},
+        "5 Analysis of Results": {},
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "8 Ethics Statement": {},
+        "References": {},
+        "Appendix A Annotation Guidelines": {},
+        "Appendix B Models & Dataset": {},
+        "Appendix C Extended Results": {}
+    }
+}

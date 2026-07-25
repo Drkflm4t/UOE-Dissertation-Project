@@ -1,0 +1,955 @@
+{
+    "o_paper": "2024.emnlp%2024.emnlp-main.1062",
+    "cf_paper": {
+        "id": "2024.emnlp%2024.emnlp-main.1062",
+        "meta": {
+            "venue": "2024.emnlp",
+            "authors": [
+                "Youngtaek Oh",
+                "Jae Won Cho",
+                "Dong-Jin Kim",
+                "In So Kweon",
+                "Junmo Kim"
+            ],
+            "categories": [
+                "cs.CV",
+                "cs.AI",
+                "cs.CL"
+            ],
+            "entry_id": "http://arxiv.org/abs/2410.05210v1",
+            "links": [
+                "http://arxiv.org/abs/2410.05210v1",
+                "http://arxiv.org/pdf/2410.05210v1"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2410.05210v1",
+            "published": "2024-10-07T17:16:20+00:00",
+            "updated": "2024-10-07T17:16:20+00:00",
+            "primary_category": "cs.CV",
+            "title": "Preserving Multi-Modal Capabilities of Pre-trained VLMs for Improving Vision-Linguistic Compositionality",
+            "summary": "In this paper, we propose a new method to enhance compositional understanding\nin pre-trained vision and language models (VLMs) without sacrificing\nperformance in zero-shot multi-modal tasks. Traditional fine-tuning approaches\noften improve compositional reasoning at the cost of degrading multi-modal\ncapabilities, primarily due to the use of global hard negative (HN) loss, which\ncontrasts global representations of images and texts. This global HN loss\npushes HN texts that are highly similar to the original ones, damaging the\nmodel's multi-modal representations. To overcome this limitation, we propose\nFine-grained Selective Calibrated CLIP (FSC-CLIP), which integrates local hard\nnegative loss and selective calibrated regularization. These innovations\nprovide fine-grained negative supervision while preserving the model's\nrepresentational integrity. Our extensive evaluations across diverse benchmarks\nfor both compositionality and multi-modal tasks show that FSC-CLIP not only\nachieves compositionality on par with state-of-the-art models but also retains\nstrong multi-modal capabilities. Code is available at:\nhttps://github.com/ytaek-oh/fsc-clip.",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "venue_config": {
+                "id": "2024.emnlp",
+                "name": "Empirical Methods in Natural Language Processing (EMNLP) of 2024",
+                "type": "Empirical Methods in Natural Language Processing (EMNLP)",
+                "description": "The Empirical Methods in Natural Language Processing (EMNLP) conference is a premier annual event organized by the Association for Computational Linguistics (ACL). It focuses on advances in natural language processing (NLP), emphasizing empirical approaches that use data-driven methods, such as machine learning, deep learning, and large-scale language models covering areas such as syntax, semantics, discourse, and phonology. It emphasizes machine learning techniques, including deep learning and large language models, and explores multilingual NLP, conversational AI, and information extraction. The conference also addresses ethical concerns like bias and fairness while showcasing applications in domains such as healthcare, social media, and computational social science..",
+                "guidelines": "## Review Guidelines:\n\n1. Be Specific:\n\tFlag issues with clear, detailed examples (e.g., \"X misses factor Y\" instead of \"X is wrong\").\n\tEnsure your points are understandable without requiring additional context.\n\n2. Avoid Common Review Pitfalls:\n\t* Avoid overused heuristics like \"Results are not surprising\" or \"The paper lacks novelty\" without clear justification.\n\t* Be open-minded about unexpected results, simpler methods, and niche topics.\n\n3. Watch for Common Issues in NLP Papers:\n\t* Methodology: Ensure valid evaluation, reproducibility, and clear assumptions.\n\t* Artifacts: Check for ethics issues and clear licensing.\n\t* Experimental Results: Avoid misleading framing, unsubstantiated claims, or statistical flaws.\n\t* General: Ensure clear research questions, proper citations, and accurate terminology.\n\n4. Ensure Consistency in Scores:\n\t* Justify low soundness scores with detailed explanations.\n\t* Use excitement scores for personal preferences and overall assessment for the paper\u2019s recommendation.\n\n5. Maintain a Professional, Neutral Tone:\n\t* Write reviews that help authors improve, avoiding sarcasm or dismissiveness.\n\t* Treat authors with respect, considering they may be early-career researchers or under stress.",
+                "guidelines_detailed": "## Write a strong review\n\n### 1. Be specific\n\nIf you would like to flag any issues, it should be specific and ideally understandable to the chairs without reading the full paper. Let us consider a few examples.\n\n* Instead of \"The paper is missing relevant references\" use \"The paper is missing references XYZ\"\n* Instead of \"X is not clear\" use \"Y and Z are missing from the description of X\"\n* Instead of \"The formulation of X is wrong\" use \"The formulation of X misses the factor Y\"\n* Instead of \"The contribution is not novel\" use \"Highly similar work X and Y has been published 3+ months prior to submission deadline\"\n* Instead of \"The paper is missing recent baselines\" use \"The proposed method should be compared against recent methods X, Y and Z\"\n* Instead of \"X was done in the way Y\" use \"X was done in the way Y which has the disadvantage Z\"\n* Instead of \"The algorithm's interaction with dataset is problematic\" use \"It's possible that when using the decoding (line 723) on the dataset 3 (line 512), there might not be enough training data to rely on the n-best list.\"\n\nThe advantage of the last version is that it can be understood by an area chair (who has expertise in the subarea) without looking for line numbers.\n\n### 2. Check for common review issues\n\nJudging whether a research paper is \u201cgood\u201d is an objectively hard task, and over the past conferences, we collected a list of common problems, which is presented below. Such comments may point at legitimate problems with the paper, but they are not always \u201cweaknesses\u201d. This can happen even to experienced reviewers, and it\u2019s worth checking your review for these problems before submitting.\n| Heuristic  | Why this is problematic |\n|------------|------------------------|\n| **H1. The results are not surprising** | Just because findings seem obvious doesn\u2019t mean they are known or useless. Empirical validation is still valuable. |\n| **H2. The results contradict what I would expect** | Avoid confirmation bias\u2014unexpected results can challenge assumptions and contribute to progress. |\n| **H3. The results are not novel** | If claiming lack of novelty, provide references. Contributions like analysis or reproduction are valid under CFP. |\n| **H4. This has no precedent in the existing literature** | Novel ideas can be harder to publish, but that doesn\u2019t make them invalid. Avoid excessive conservatism. |\n| **H5. The results do not surpass the latest SOTA** | SOTA is not required for a contribution. Improvements in efficiency, interpretability, or fairness also matter. |\n| **H6. The results are negative** | Negative results prevent hype and overclaiming. Knowing what doesn\u2019t work is as important as knowing what does. |\n| **H7. This method is too simple** | Simpler methods are often preferable\u2014effective, robust, and easier to deploy. Complexity isn\u2019t inherently better. |\n| **H8. The paper doesn't use [my preferred methodology]** | NLP includes diverse contributions beyond specific methodologies. Methodological diversity is essential. |\n| **H9. The topic is too niche** | Specialized research can have a significant impact within its subfield and contribute to broader understanding. |\n| **H10. The approach is tested only on [not English]** | Research on any language is valuable, both practically and theoretically, just as English-only studies are. |\n| **H11. The paper has language errors** | Clarity is more important than perfect language. Scientific content matters more than writing style. |\n| **H12. The paper is missing the [reference X]** | Missing key references is a concern only if the work was published 3+ months before the deadline. Otherwise, suggest rather than criticize. |\n| **H13. The authors could also do [extra experiment X]** | Extra experiments are always possible but not always necessary. If critical, justify why. Otherwise, suggest rather than reject. |\n| **H14. The authors should compare to a 'closed' model X** | Closed-model comparisons are useful only if relevant to the claim. Lack of transparency can make them unreliable. |\n| **H15. The authors should have done [X] instead** | Different approaches exist. Only critique if the chosen method prevents answering the research question or is misleading. |\n| **H16. Limitations != weaknesses** | Acknowledging limitations is required; listing them as weaknesses without justification is unfair. Argue why they invalidate the work if relevant. |\n\nIf you have something like the above listed as a \u201cweakness\u201d of the paper, do try to revisit the paper with an open mind. Both the authors and the ACs will be aware of these guidelines and can refer to them in discussion/meta-review.\n\n### 3. Check for common problems in NLP papers\n\nAs a counter to common problems with reviews, there are also common problems with NLP papers. We do ask you to watch out for these and point them out when you see them. Above all else, published research should at least be technically sound and appropriately scoped. As with the above reviewer issues, it\u2019s a case-by-case evaluation: some things in the list below may be appropriate in a given context, given that they are sufficiently motivated. We provide codes for different types of issues (e.g. M1, G2\u2026) that can be referenced in discussions.\n\n#### Issues with methodology (M)\n\n- **M1. LLM-only evaluation without validation**: If LLMs are used as evaluators, their reliability must be validated in this context.  \n\n- **M2. Reproducibility issues**: Are there enough details to reproduce the experiments, including hyperparameters? Is code or data provided for reviewer evaluation? Reproducibility refers to rerunning experiments with similar results, not reimplementing them.  \n\n- **M3. Undisclosed data quality issues**: If the paper provides datasets or samples, any quality issues should be disclosed. If undisclosed issues exist, it's a serious concern.  \n\n- **M4. Unmotivated selection**: The paper should justify its choice of models and benchmarks in relation to its claims. Even if you would have chosen differently, their selection must be reasonable.  \n\n- **M5. Incomplete assumptions or proofs**: Assumptions should be clearly stated, and formal statements (theorems, lemmas, etc.) must be backed by complete, correct proofs, even if placed in an appendix.  \n\n#### Issues with artifact sourcing or release (T)\n\n- **T1. Ethics issues with data collection**: If human data collection is involved, ethical considerations (e.g., approval, compensation) should be addressed. Major concerns can be flagged for ethics review.\n\n- **T2. Unclear license/release terms**: If a dataset or model is released, the terms should be explicitly stated. Reviewers should check clarity, not make legal judgments.  \n\n#### Issues with experimental results (R)\n\n- **R1. Analysis issues**: Issues include misleading statistics, cherry-picked results, or poorly tuned baselines that affect fairness in comparisons.  \n\n- **R2. Inappropriate scope of claims**: Claims should be based on representative samples. Evaluating a few benchmarks does not justify broad statements about reasoning, understanding, or LLM capabilities.  \n\n- **R3. Hypotheses/speculations as conclusions**: Claims must be supported by evidence or marked as speculation, not presented as established facts.  \n\n- **R4. Misleading framing or overclaiming**: Overgeneralized conclusions, such as stating that LLMs \"understand\" language based only on benchmark results, should be avoided.  \n\n- **R5. Missing statistical significance assessment**: Key results should include error bars, confidence intervals, and statistical significance tests, with details on variability and assumptions.  \n\n#### General issues (G)\n\n- **G1. Unclear research question or contribution**: The paper should clearly state the problem it addresses, its contributions, and its limitations in the abstract and introduction.  \n\n- **G2. Reliance on a bad precedent**: Justifying methods by citing flawed or outdated work is problematic. If precedent is questionable, reviewers should clarify their stance.  \n\n- **G3. Missing/misrepresented related work**: Authors should fairly represent previous research, ensuring novelty claims are justified and related work is accurately cited.  \n\n- **G4. Key terms too vague and undefined**: If an important term is unclear or undefined, the paper should specify or reference its meaning.  \n\n- **G5. Misleading/incorrect citations**: Citations must accurately reflect the referenced work. Increasing reliance on LLM-generated summaries makes this issue more prevalent.  \n\n\n### 4. Check that your scores reflect the review\n\nARR reviewers are asked to provide three scores: soundness, excitement, and overall recommendation.\n\nThe soundness scores must be justified by the text of the review . If you give a low Soundness score without finding any major faults, this means that your review is not a faithful explanation of your recommendation, and you need to revise it. One possible reason for low soundness scores without sufficient justification could be reliance on some unconscious bias or heuristic, like the ones listed in the previous section. Likewise, low reproducibility scores should be justified.\n\nSometimes you may find the work sound, but not something that is interesting for you personally. Such preferences are more subjective and should be reflected in a separate excitement score, which is orthogonal to the assessment of the soundness of the paper. Excitement scores reflect our personal taste, and so do not necessarily come with explicit reasons.\n\nThe Overall assessment score is an explicit recommendation for the outcome of this paper, if it were committed to an *ACL venue. This is a composite score reflecting your assessment of soundness, excitement, and also other factors like novelty and impact. All papers recommended for Findings and main conferences are expected to be sufficiently sound and reproducible, but you may consider a paper worthy of the main conference even if you personally are not excited about it. For example, improvements in efficiency of some algorithm, or creating a high-quality resource for a language/domain that does not yet have resources of that type may not sound very novel or exciting, but you may still consider it a significant contribution due to its potential impact (for its target community).\n\n\n### 5. Check that the tone is professional and neutral\n\nAbove all, a good review should be professional and neutral, if not kind. A key goal of peer review is to help the authors improve their papers. As an anonymous reviewer, you are in a position of power, and the written medium makes it easier to be more dismissive and sarcastic than if you were communicating with the authors face-to-face. Unfortunately such reviews are not uncommon.\n\nConsider that you may well be addressing someone who is only starting on the research path. And/or someone struggling with stress and other mental health issues. And/or someone who has been less lucky with their school and advisors. Academic lives are already stressful enough, and we do not need to inflict extra damage on the mental health of our colleagues with sarcastic or insulting reviews. Write the review you would like to get yourself.\n\nThe fact is, authors and reviewers are actually the same people: the conference crowd lining up for coffee, happily chatting with each other about the grand problems even if they do not always agree. Why can\u2019t we do peer review in the same spirit of fun intellectual interaction with colleagues?\n\nJust like the conference coffee break chats, reviewing is in fact, mutually beneficial: in exchange for feedback, the reviewers get to have the first look at cutting-edge research. Just like the coffee breaks, where you do not necessarily meet only the people working in your subsubfield, peer review may expose you to new techniques. Since there is careful written communication in the authors\u2019 response, you may even find that you were wrong about something, which is a much faster way to learn than making the same mistake in your own research.\n\nNot to mention, someone out there is reviewing your papers too. The more rude or dismissive reviews there are, the more of a norm they become, and the higher the chances you will get one yourself in the future.",
+                "template_field_semantics": {
+                    "summary": "Paper Summary",
+                    "strengths": "Summary of Strengths",
+                    "weaknesses": "Summary of Weaknesses",
+                    "suggestions": "Comments/Suggestions/Typos"
+                },
+                "review_template": {
+                    "Paper Summary": "Describe what this paper is about. This should help action editors and area chairs to understand the topic of the work and highlight any possible misunderstandings.",
+                    "Summary of Strengths": "What are the major reasons to publish this paper at a selective *ACL venue? These could include novel and useful methodology, insightful empirical results or theoretical analysis, clear organization of related literature, or any other reason why interested readers of *ACL papers may find the paper useful.",
+                    "Summary of Weaknesses": "What are the concerns that you have about the paper that would cause you to favor prioritizing other high-quality papers that are also under consideration for publication? These could include concerns about correctness of the results or argumentation, limited perceived impact of the methods or findings (note that impact can be significant both in broad or in narrow sub-fields), lack of clarity in exposition, or any other reason why interested readers of *ACL papers may gain less from this paper than they would from other papers under consideration. Where possible, please number your concerns so authors may respond to them individually.",
+                    "Comments/Suggestions/Typos": "If you have any comments to the authors about how they may improve their paper, other than addressing the concerns above, please list them here."
+                },
+                "overall_score_name": "Overall Assessment",
+                "review_scores": {
+                    "Reviewer Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "Positive that my evaluation is correct. I read the paper very carefully and am familiar with related work.",
+                            "4": "Quite sure. I tried to check the important points carefully. It\u2019s unlikely, though conceivable, that I missed something that should affect my ratings.",
+                            "3": "Pretty sure, but there\u2019s a chance I missed something. Although I have a good feel for this area in general, I did not carefully check the paper\u2019s details, e.g., the math or experimental design.",
+                            "2": "Willing to defend my evaluation, but it is fairly likely that I missed some details, didn\u2019t understand some central points, or can\u2019t be sure about the novelty of the work.",
+                            "1": "Not my area, or paper is very hard to understand. My evaluation is just an educated guess."
+                        }
+                    },
+                    "Soundness": {
+                        "meaning": "Given that this is a short/long paper, is it sufficiently sound and thorough? Does it clearly state scientific claims and provide adequate support for them? For experimental papers: consider the depth and/or breadth of the research questions investigated, technical soundness of experiments, methodological validity of evaluation. For position papers, surveys: consider whether the current state of the field is adequately represented and main counter-arguments acknowledged. For resource papers: consider the data collection methodology, resulting data & the difference from existing resources are described in sufficient detail.",
+                        "scores": {
+                            "5": "Excellent: This study is one of the most thorough I have seen, given its type.",
+                            "4": "Strong: This study provides sufficient support for all of its claims. Some extra experiments could be nice, but not essential.",
+                            "3": "Acceptable: This study provides sufficient support for its main claims. Some minor points may need extra support or details.",
+                            "2": "Poor: Some of the main claims are not sufficiently supported. There are major technical/methodological problems.",
+                            "1": "Major Issues: This study is not yet sufficiently thorough to warrant publication or is not relevant to ACL."
+                        }
+                    },
+                    "Excitement": {
+                        "meaning": "How exciting is this paper for you? Excitement is subjective, and does not necessarily follow what is popular in the field. We may perceive papers as transformational/innovative/surprising, e.g. because they present conceptual breakthroughs or evidence challenging common assumptions/methods/datasets/metrics. We may be excited about the possible impact of the paper on some community (not necessarily large or our own), e.g. lowering barriers, reducing costs, enabling new applications. We may be excited for papers that are relevant, inspiring, or useful for our own research. These factors may combine in different ways for different reviewers.",
+                        "scores": {
+                            "5": "Highly Exciting: I would recommend this paper to others and/or attend its presentation in a conference.",
+                            "4": "Exciting: I would mention this paper to others and/or make an effort to attend its presentation in a conference.",
+                            "3": "Interesting: I might mention some points of this paper to others and/or attend its presentation in a conference if there\u2019s time.",
+                            "2": "Potentially Interesting: this paper does not resonate with me, but it might with others in the *ACL community.",
+                            "1": "Not Exciting: this paper does not resonate with me, and I don\u2019t think it would with others in the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    },
+                    "Overall Assessment": {
+                        "meaning": "If this paper was committed to an *ACL conference, do you believe it should be accepted? If you recommend conference, Findings and or even award consideration, you can still suggest minor revisions (e.g. typos, non-core missing refs, etc.). Outstanding papers should be either fascinating, controversial, surprising, impressive, or potentially field-changing. Awards will be decided based on the camera-ready version of the paper. Main vs Findings papers: the main criteria for Findings are soundness and reproducibility. Conference recommendations may also consider novelty, impact and other factors.",
+                        "scores": {
+                            "5": "Consider for Award: I think this paper could be considered for an outstanding paper award at an *ACL conference (up to top 2.5% papers).",
+                            "4.5": "Borderline Award",
+                            "4": "Conference: I think this paper could be accepted to an *ACL conference.",
+                            "3.5": "Borderline Conference",
+                            "3": "Findings: I think this paper could be accepted to the Findings of the ACL.",
+                            "2.5": "Borderline Findings",
+                            "2": "Resubmit next cycle: I think this paper needs substantial revisions that can be completed by the next ARR cycle.",
+                            "1.5": "Resubmit after next cycle: I think this paper needs substantial revisions that cannot be completed by the next ARR cycle.",
+                            "1": "Do not resubmit: This paper has to be fully redone, or it is not relevant to the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    }
+                }
+            },
+            "oid": "2024.emnlp%2024.emnlp-main.1062",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/2024.emnlp/2024.emnlp%2024.emnlp-main.1062/media"
+        },
+        "md": "\n\n# Preserving Multi-Modal Capabilities of Pre-trained VLMs\n\nfor Improving Vision-Linguistic Compositionality\n\n\n\n###### Abstract\n\n\n\nIn this paper, we propose a new method to enhance compositional understanding in pre-trained vision and language models (VLMs) without sacrificing performance in zero-shot multi-modal tasks. Traditional fine-tuning approaches often improve compositional reasoning at the cost of degrading multi-modal capabilities, primarily due to the use of global hard negative (HN) loss, which contrasts global representations of images and texts. This global HN loss pushes HN texts that are highly similar to the original ones, damaging the model\u2019s multi-modal representations. To overcome this limitation, we propose Fine-grained Selective Calibrated CLIP (FSC-CLIP), which integrates local hard negative loss and selective calibrated regularization. These innovations provide fine-grained negative supervision while preserving the model\u2019s representational integrity. Our extensive evaluations across diverse benchmarks for both compositionality and multi-modal tasks show that FSC-CLIP not only achieves compositionality on par with state-of-the-art models but also retains strong multi-modal capabilities. Code is available at: <https://github.com/ytaek-oh/fsc-clip>.  \n\n\n\n\\AtEndPreamble\\Crefname@preamble\n\nequationEquationEquations\\Crefname@preamblefigureFigureFigures\\Crefname@preambletableTableTables\\Crefname@preamblepagePagePages\\Crefname@preamblepartPartParts\\Crefname@preamblechapterChapterChapters\\Crefname@preamblesectionSectionSections\\Crefname@preambleappendixAppendixAppendices\\Crefname@preambleenumiItemItems\\Crefname@preamblefootnoteFootnoteFootnotes\\Crefname@preambletheoremTheoremTheorems\\Crefname@preamblelemmaLemmaLemmas\\Crefname@preamblecorollaryCorollaryCorollaries\\Crefname@preamblepropositionPropositionPropositions\\Crefname@preambledefinitionDefinitionDefinitions\\Crefname@preambleresultResultResults\\Crefname@preambleexampleExampleExamples\\Crefname@preambleremarkRemarkRemarks\\Crefname@preamblenoteNoteNotes\\Crefname@preamblealgorithmAlgorithmAlgorithms\\Crefname@preamblelistingListingListings\\Crefname@preamblelineLineLines\\crefname@preambleequationEquationEquations\\crefname@preamblefigureFigureFigures\\crefname@preamblepagePagePages\\crefname@preambletableTableTables\\crefname@preamblepartPartParts\\crefname@preamblechapterChapterChapters\\crefname@preamblesectionSectionSections\\crefname@preambleappendixAppendixAppendices\\crefname@preambleenumiItemItems\\crefname@preamblefootnoteFootnoteFootnotes\\crefname@preambletheoremTheoremTheorems\\crefname@preamblelemmaLemmaLemmas\\crefname@preamblecorollaryCorollaryCorollaries\\crefname@preamblepropositionPropositionPropositions\\crefname@preambledefinitionDefinitionDefinitions\\crefname@preambleresultResultResults\\crefname@preambleexampleExampleExamples\\crefname@preambleremarkRemarkRemarks\\crefname@preamblenoteNoteNotes\\crefname@preamblealgorithmAlgorithmAlgorithms\\crefname@preamblelistingListingListings\\crefname@preamblelineLineLines\\crefname@preambleequationequationequations\\crefname@preamblefigurefigurefigures\\crefname@preamblepagepagepages\\crefname@preambletabletabletables\\crefname@preamblepartpartparts\\crefname@preamblechapterchapterchapters\\crefname@preamblesectionsectionsections\\crefname@preambleappendixappendixappendices\\crefname@preambleenumiitemitems\\crefname@preamblefootnotefootnotefootnotes\\crefname@preambletheoremtheoremtheorems\\crefname@preamblelemmalemmalemmas\\crefname@preamblecorollarycorollarycorollaries\\crefname@preamblepropositionpropositionpropositions\\crefname@preambledefinitiondefinitiondefinitions\\crefname@preambleresultresultresults\\crefname@preambleexampleexampleexamples\\crefname@preambleremarkremarkremarks\\crefname@preamblenotenotenotes\\crefname@preamblealgorithmalgorithmalgorithms\\crefname@preamblelistinglistinglistings\\crefname@preamblelinelinelines\\cref@isstackfull\\@tempstack\\@crefcopyformatssectionsubsection\\@crefcopyformatssubsectionsubsubsection\\@crefcopyformatsappendixsubappendix\\@crefcopyformatssubappendixsubsubappendix\\@crefcopyformatsfiguresubfigure\\@crefcopyformatstablesubtable\\@crefcopyformatsequationsubequation\\@crefcopyformatsenumienumii\\@crefcopyformatsenumiienumiii\\@crefcopyformatsenumiiienumiv\\@crefcopyformatsenumivenumv\\@labelcrefdefinedefaultformatsCODE(0x556f3ed5fbd8)  \n\n\n\nPreserving Multi-Modal Capabilities of Pre-trained VLMs  \n\n\n\nfor Improving Vision-Linguistic Compositionality  \n\n\n\n  \n\n\n\n    Youngtaek Oh1\u2003\u00a0 Jae Won Cho2\u2003\u00a0 Dong-Jin Kim3\u2003\u00a0 In So Kweon1\u2020\u2020thanks: Corresponding authors\u2003\u00a0 Junmo Kim100footnotemark: 0  1KAIST \u2003\u2003\u20032Sejong University \u2003\u2003\u20033Hanyang University  1{[youngtaek.oh](mailto:youngtaek.oh@kaist.ac.kr), [iskweon77](mailto:iskweon77@kaist.ac.kr), [junmo.kim](mailto:junmo.kim@kaist.ac.kr)}@kaist.ac.kr  2[chojw@sejong.ac.kr](mailto:chojw@sejong.ac.kr)\u2003\u20033[djdkim@hanyang.ac.kr](mailto:djdkim@hanyang.ac.kr)    \n\n\n\n  \n\n\n\n## 1 Introduction\n\n\n\n\\cref@constructprefix\n\npage\\cref@result  \n\n\n\n\n\n\n\nHumans naturally excel at multi-modal understanding, effortlessly perceiving and interpreting different modalities, such as images and text, and forming associations between them. This capability is evident in recognizing novel concepts\u00a0Fu et\u00a0al. ([2018](#bib.bib15)), cross-modal retrieval\u00a0Kaur et\u00a0al. ([2021](#bib.bib30)), and compositional reasoning\u00a0Levesque et\u00a0al. ([2012](#bib.bib40)). To achieve this ability in artificial intelligence, foundational vision and language models (VLMs) have been trained on large-scale image-text datasets\u00a0Schuhmann et\u00a0al. ([2022b](#bib.bib60)), significantly bridging the gap between human and machine capabilities in tasks like zero-shot recognition and image-text retrieval\u00a0Radford et\u00a0al. ([2021](#bib.bib56)).  \n\n\n\nDespite these advances, VLMs still face challenges in compositional reasoning\u00a0Yuksekgonul et\u00a0al. ([2023](#bib.bib73)). Humans intuitively understand complex compositional language in combination with images, engaging in spatial reasoning\u00a0Kamath et\u00a0al. ([2023b](#bib.bib29)), recognizing attributes and relationships in objects\u00a0Hsieh et\u00a0al. ([2023](#bib.bib22)), and perceiving equivariance between image and text\u00a0Wang et\u00a0al. ([2023](#bib.bib69)). In contrast, VLMs often fail to understand these nuanced relationships\u00a0Liu et\u00a0al. ([2023a](#bib.bib46)); Ray et\u00a0al. ([2023](#bib.bib57)). This shortfall is attributed to their reliance on global, single vector representations\u00a0Kamath et\u00a0al. ([2023a](#bib.bib28)) and limited ability to match compositional knowledge\u00a0Wang et\u00a0al. ([2024](#bib.bib68)).  \n\n\n\nTo improve compositionality in VLMs, both pre-training\u00a0Singh et\u00a0al. ([2023](#bib.bib63)); Zheng et\u00a0al. ([2024](#bib.bib77)) and fine-tuning\u00a0Zhang et\u00a0al. ([2024](#bib.bib75)); Singh et\u00a0al. ([2024](#bib.bib64)) methods have been proposed. In particular, fine-tuning, which leverages pre-trained knowledge and is cost-effective, is widely adopted in academia. Typically, this involves incorporating hard negative texts\u00a0Doveh et\u00a0al. ([2022](#bib.bib12), [2023](#bib.bib11)); Herzig et\u00a0al. ([2023](#bib.bib20)) into training. However, as shown in\u00a0\\creffig:teaser, this approach can result in a trade-off, where gains in compositionality come at the expense of performance in the multi-modal tasks: zero-shot classification (ZS) and image to text retrieval (I2T Ret). Previously, hard negative (HN) losses are applied to global image and text representations. Since HN texts are encoded too similarly to the original ones\u00a0Kamath et\u00a0al. ([2023a](#bib.bib28)), pushing them away with the HN loss can disrupt the multi-modal representations.  \n\n\n\nTo address this, we propose a new fine-tuning framework for VLMs that enhances compositional reasoning while preserving performance in multi-modal tasks. Our approach mitigates the degradation caused by global hard negative loss on single vector representations, which struggles to capture subtle informational differences between hard negative texts and the original text.  \n\n\n\nOur framework introduces two key innovations: (1) Local Hard Negative (LHN) Loss. We utilize dense alignments between image patches and text tokens to calculate the hard negative loss. This approach, inspired by the dense alignment for vision-language representation\u00a0Huang et\u00a0al. ([2021](#bib.bib24)); Bica et\u00a0al. ([2024](#bib.bib2)), aggregates local similarity scores to enhance compositional understanding without undermining multi-modal representations.  \n\n\n\n(2) Selective Calibrated Regularization (SCR). To address the adverse effects of hard negative (HN) losses caused by similarly encoded HN and original texts, SCR is designed to better regulate HN supervision. It selectively focuses on challenging HN texts and applies a slight positive margin, reducing confusion and improving calibration.  \n\n\n\nThe whole framework, dubbed Fine-grained Selective Calibrated CLIP, offers fine-grained supervision of hard negatives while preserving the integrity of multi-modal representations. As shown in\u00a0\\creffig:teaser, FSC-CLIP not only improves compositionality but also maintains high performance in multi-modal tasks. It outperforms DAC-LLM in ZS and I2T Ret scores, while achieving similar compositionality (Comp) across a wide range of tasks. We summarize our contributions as follows:  \n\n\n\n* We propose a novel fine-tuning methodology, FSC-CLIP, that aims to enhance vision-language compositionality in pre-trained VLMs while maintaining their multi-modal task capabilities. \n\n* We design a local hard negative (LHN) loss and a selective calibrated regularization (SCR) mechanism, effectively capturing subtle differences in hard negative texts and preserving the integrity of multi-modal representations. \n\n* We validate FSC-CLIP through an extensive range of experiments, covering 11 compositionality, 21 zero-shot recognition, and 3 image-text retrieval tasks, establishing a comprehensive evaluation of VLMs\u2019 multifaceted capabilities. \n\n\n\n## 2 Related Work\n\n\n\n\\cref@constructprefix\n\npage\\cref@result Contrastive Vision-Language Models. CLIP Radford et\u00a0al. ([2021](#bib.bib56)) has revolutionized multi-modal domains through large-scale image-text pre-training, demonstrating remarkable zero-shot capabilities. Its dual encoder architecture has introduced versatility and driven advancements across a wide range of existing vision\u00a0Zhou et\u00a0al. ([2022](#bib.bib78)); Oh et\u00a0al. ([2022](#bib.bib51)); Cho et\u00a0al. ([2022](#bib.bib6)) and vision-language downstream tasks\u00a0Jang et\u00a0al. ([2022](#bib.bib26), [2023](#bib.bib27)); Cho et\u00a0al. ([2023a](#bib.bib5), [c](#bib.bib8), [b](#bib.bib7)); Kim et\u00a0al. ([2019](#bib.bib32), [2021a](#bib.bib31), [2021b](#bib.bib33)). CLIP also serves as the foundation for recognition\u00a0Liang et\u00a0al. ([2023](#bib.bib44)), image captioning\u00a0Mokady et\u00a0al. ([2021](#bib.bib49)); Lee et\u00a0al. ([2024](#bib.bib39)); Kim et\u00a0al. ([2024a](#bib.bib34), [b](#bib.bib35)), large multi-modal models\u00a0Li et\u00a0al. ([2023](#bib.bib42)); Liu et\u00a0al. ([2023b](#bib.bib47)), and generative models\u00a0Podell et\u00a0al. ([2024](#bib.bib55)). In addition, CLIP extends its utility to connecting 3D\u00a0Sun et\u00a0al. ([2024](#bib.bib65)) or audio\u00a0Elizalde et\u00a0al. ([2023](#bib.bib13)); Senocak et\u00a0al. ([2023](#bib.bib61)) to language, highlighting its essential role in multi-modal and compositional tasks in practical applications. We aim to enhance CLIP\u2019s compositional understanding while preserving its multi-modal capabilities.  \n\n\n\n\n\n\n\nVision-Language Compositionality. Although vision and language models exhibit promising capabilities such as zero-shot classification and retrieval\u00a0Radford et\u00a0al. ([2021](#bib.bib56)); Zeng et\u00a0al. ([2022](#bib.bib74)), they still struggle with compositional reasoning, which requires fine-grained understanding between image and text\u00a0Peng et\u00a0al. ([2024](#bib.bib54)). Numerous benchmarks have been proposed, testing various aspects like attributes, relationships and objects\u00a0Zhao et\u00a0al. ([2022](#bib.bib76)); Yuksekgonul et\u00a0al. ([2023](#bib.bib73)), spatial reasoning\u00a0Kamath et\u00a0al. ([2023b](#bib.bib29)); Liu et\u00a0al. ([2023a](#bib.bib46)) and linguistic phenomena\u00a0Parcalabescu et\u00a0al. ([2022](#bib.bib53)). To enhance compositionality, incorporating hard negative captions during fine-tuning has become a common approach\u00a0Zhang et\u00a0al. ([2024](#bib.bib75)), with these captions being generated through rule-based methods\u00a0Doveh et\u00a0al. ([2022](#bib.bib12)); Yuksekgonul et\u00a0al. ([2023](#bib.bib73)), large language model prompting\u00a0Doveh et\u00a0al. ([2023](#bib.bib11)), or scene graphs\u00a0Singh et\u00a0al. ([2023](#bib.bib63)); Herzig et\u00a0al. ([2023](#bib.bib20)). We comprehensively evaluate the capabilities of VLMs across a broad range of compositionality and multi-modal tasks.  \n\n\n\n## 3 Methodology\n\n\n\n\\cref@constructprefix\n\npage\\cref@result We first outline the fine-tuning setup for CLIP in\u00a0\\crefsec:2\\_1\\_clip. Next, we introduce FSC-CLIP, which incorporates Local Hard Negative (LHN) Loss and Selective Calibrated Regularization (SCR) in \\crefsec:2\\_2\\_lhn,sec:2\\_3\\_scr. The training objective for FSC-CLIP is described in \\crefsec:2\\_3\\_overall\\_obj. The complete FSC-CLIP framework, integrating both global and local HN losses with SCR, is illustrated in\u00a0\\creffig:overview.  \n\n\n\n### 3.1 CLIP with Global Contrastive Loss\n\n\n\n\\cref@constructprefix\n\npage\\cref@result CLIP objective. Consider a mini-batch $\\mathcal{B}=\\{(I_{i},T_{i})\\}_{i=1}^{B}$ of size $B$, consisting of image and text pairs $(I_{i},T_{i})$. Using CLIP\u2019s visual and language encoders, $f_{v}(\\cdot)$ (*e.g*., ViT\u00a0Dosovitskiy et\u00a0al. ([2021](#bib.bib10))) and $f_{t}(\\cdot)$ (*e.g*., Transformers\u00a0Vaswani et\u00a0al. ([2017](#bib.bib67))), each image $I_{i}$ is encoded into a sequence of visual tokens $\\mathrm{\\textbf{V}}_{i}=f_{v}(I_{i})$, and each text $T_{i}$ into a sequence of textual tokens $\\mathrm{\\textbf{T}}_{i}=f_{t}(T_{i})$. These sequences are represented in a shared multi-modal space, with $\\mathrm{\\textbf{V}}_{i}=\\{\\mathrm{v}_{p,i}\\}^{P}_{p=1}$ comprising $P$ patch embeddings and $\\mathrm{\\textbf{T}}_{i}=\\{\\mathrm{t}_{w,i}\\}_{w=1}^{W}$ consisting of $W$ token embeddings. The global representations of image and text $v_{i}$ and $t_{i}\\in\\mathbb{R}^{d}$ can be obtained by pooling the local representations: $v_{i}=\\text{Pool}\\left(\\mathrm{\\textbf{V}}_{i}\\right)$ and $t_{i}=\\text{Pool}\\left(\\mathrm{\\textbf{T}}_{i}\\right)$, respectively. For example, $\\text{Pool}(\\cdot)$ corresponds to avgpool and argmax for images and texts in\u00a0Radford et\u00a0al. ([2021](#bib.bib56)).  \n\n\n\nCLIP aligns the corresponding images and texts by measuring the global-level similarity:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}\\mathrm{S}_{g}\\left(I_{i},T_{i}\\right)=\\exp\\left(\\text{cos}\\left(v_{i},t_{i}\\right)/\\tau\\right),$$ |  | (1) |\n\n| --- | --- | --- | --- |\n\n\n\nwhere $\\text{cos}\\left(v,t\\right)=\\frac{v^{T}t}{\\lVert v\\rVert\\cdot\\lVert t\\rVert}$. The image to text loss $\\mathcal{L}_{i2t}$ of CLIP maximizes $\\mathrm{S}_{g}\\left(I_{i},T_{i}\\right)$, while minimizing $\\mathrm{S}_{g}\\left(I_{i},T_{j}\\right)$ for all non-matching texts $j\\neq i$:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}\\mathcal{L}_{i2t}=-\\frac{1}{B}\\sum_{i=1}^{B}\\log\\frac{\\mathrm{S}_{g}\\left(I_{i},T_{i}\\right)}{\\sum_{j=1}^{B}\\mathrm{S}_{g}\\left(I_{i},T_{j}\\right)},$$ |  | (2) |\n\n| --- | --- | --- | --- |\n\n\n\nand the text to image loss $\\mathcal{L}_{t2i}$ is the reciprocal of $\\mathcal{L}_{i2t}$ which aligns the matching image per text. The final CLIP loss is $\\mathcal{L}_{\\text{clip}}=\\frac{1}{2}\\left(\\mathcal{L}_{i2t}+\\mathcal{L}_{t2i}\\right)$.  \n\n\n\nIncorporating hard negative texts. To enhance the compositional reasoning of CLIP, hard negative (HN) texts are commonly incorporated into training, whether they are rule-based\u00a0Yuksekgonul et\u00a0al. ([2023](#bib.bib73)) or generated by language models\u00a0Doveh et\u00a0al. ([2023](#bib.bib11)). Consider a set of $K$ different HN texts $\\mathrm{\\tilde{T}}_{i}=\\{\\tilde{T}_{i}^{k}\\}^{K}_{k=1}$ originated from $T_{i}$. We introduce a separate hard negative loss added to $\\mathcal{L}_{\\text{clip}}$, similar to\u00a0Doveh et\u00a0al. ([2022](#bib.bib12)). First, we compute a similarity prediction probability $p^{g}_{i}$, assigned to the original caption $T_{i}$ as follows:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}p^{g}_{i}=\\frac{\\mathrm{S}_{g}\\left(I_{i},T_{i}\\right)}{\\mathrm{S}_{g}\\left(I_{i},T_{i}\\right)+\\sum_{k=1}^{K}\\mathrm{S}_{g}\\left(I_{{i}},\\tilde{T}^{k}_{{i}}\\right)}.$$ |  | (3) |\n\n| --- | --- | --- | --- |\n\n\n\nHere, $g$ represents the global representation, and the hard negative (HN) loss applied to this similarity assignment is formulated as cross entropy:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}\\mathcal{L}^{{g}}_{neg}=-\\frac{1}{B}\\sum^{B}_{i=1}\\log p^{g}_{i}.$$ |  | (4) |\n\n| --- | --- | --- | --- |\n\n\n\nHowever, incorporating such global HN loss can inadvertently harm the multi-modal representations due to the similarly encoded global text representations between original and HN texts.  \n\n\n\n### 3.2 Local Hard Negative (LHN) Loss\n\n\n\n\\cref@constructprefix\n\npage\\cref@result To address this, we propose a novel Local Hard Negative (LHN) loss that utilizes a local similarity score $\\mathrm{S}_{l}(I,T)$. Replacing the global similarity $\\mathrm{S}_{g}$ with $\\mathrm{S}_{l}$, the LHN loss is formulated as follows:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}\\mathcal{L}^{{l}}_{neg}=\\frac{-1}{B}\\sum^{B}_{i=1}\\log\\frac{\\mathrm{S}_{l}\\left(I_{i},T_{i}\\right)}{\\underbrace{\\mathrm{S}_{l}\\left(I_{i},T_{i}\\right)+\\displaystyle\\sum^{K}_{k=1}\\mathrm{S}_{l}\\left(I_{i},\\tilde{T}^{k}_{i}\\right)}_{p^{l}_{i}}},$$ |  | (5) |\n\n| --- | --- | --- | --- |\n\n\n\nwhere $p^{l}_{i}$ represents the local similarity prediction.  \n\n\n\nUnlike Bica et\u00a0al. ([2024](#bib.bib2)), which uses token-level contrast for image-text pairs, we introduce a new HN loss based on local similarity $S_{l}$ from token-patch representations, enabling the capture of subtle differences between the original and HN texts.  \n\n\n\nTextual-aligned Visual Patches. $\\mathrm{S}_{l}(I,T)$ is designed to measure the similarity between token and patch embeddings for each token in the given text $T$. From the patch representations $\\mathrm{\\textbf{V}}=\\{\\mathrm{v}_{p}\\}^{P}_{p=1}$, we first derive the textual-aligned patch embeddings $\\mathrm{\\hat{\\textbf{V}}}=\\{\\hat{\\mathrm{v}}_{w}\\}_{w=1}^{W}$, corresponding to each textual token feature $\\mathrm{t}_{w}$ in $\\mathrm{\\textbf{T}}\\in\\mathbb{R}^{W\\times d}$. This is achieved by performing a weighted average of patches V using attention weights $\\mathrm{a}\\in\\mathbb{R}^{W\\times P}$ derived from normalizing the similarity map $\\mathrm{s}$ between token and patch embeddings. We denote the similarity map as $\\mathrm{s}=\\mathrm{\\textbf{T}}^{T}\\mathrm{\\textbf{V}}\\in\\mathbb{R}^{W\\times P}$, where $\\mathrm{s}_{w,p}=\\mathrm{t}^{T}_{w}\\mathrm{v}_{p}$.  \n\n\n\nTo relate multiple similar patches for each token, we min-max normalize $\\mathrm{s}$ to obtain $\\mathrm{a}$:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}\\mathrm{a}_{w,p}=\\frac{\\mathrm{s}_{w,p}-\\min_{k}{\\mathrm{s}_{w,k}}}{\\max_{k}{\\mathrm{s}_{w,k}}-\\min_{k}{\\mathrm{s}_{w,k}}},$$ |  | (6) |\n\n| --- | --- | --- | --- |\n\n\n\nand use the attention weights $\\mathrm{a}$ to aggregate V, obtaining the textual-aligned patches $\\mathrm{\\hat{\\textbf{V}}}=\\{\\hat{\\mathrm{v}}_{w}\\}^{W}_{w=1}$:  \n\n\n\n|  | $$\\hat{\\mathrm{v}}_{w}=\\frac{1}{\\sum^{P}_{p=1}\\mathrm{a}_{w,p}}\\cdot\\sum^{P}_{p=1}\\mathrm{a}_{w,p}\\cdot\\mathrm{v}_{p}.$$ |  | (7) |\n\n| --- | --- | --- | --- |\n\n\n\nIn \\crefsec:sup\\_additional\\_analysis, we explore different normalization choices for the attention weights in\u00a0\\crefeqn:attn\\_norm.  \n\n\n\nToken-level Similarity. After obtaining the textual-aligned visual tokens $\\hat{\\mathrm{\\textbf{V}}}$, we aggregate the per-token similarities between $\\hat{\\mathrm{\\textbf{V}}}$ and T as follows:  \n\n\n\n|  | $$\\mathrm{S}_{l}\\left(I,T\\right)=\\sum^{W}_{w=1}\\exp\\left(\\cos\\left(\\mathrm{\\hat{v}}_{w},\\mathrm{t}_{w}\\right)/\\tau\\right),$$ |  | (8) |\n\n| --- | --- | --- | --- |\n\n\n\nwhere $\\hat{\\mathrm{v}}_{w}\\in\\mathbb{\\hat{\\mathrm{\\textbf{V}}}}$ and $\\mathrm{t}_{w}\\in\\mathrm{\\textbf{T}}$. Unlike $\\mathrm{S}_{g}(I,T)$ which is based on global representations, $\\mathrm{S}_{l}(I,T)$ focuses on the local alignment between image and text, better distinguishing features between correct and HN texts, thereby reducing the negative impact by the hard negative loss, as illustrated in\u00a0\\creffig:overview.  \n\n\n\nWe observe that $\\mathcal{L}^{{l}}_{neg}$ maintains multi-modal task performance close to the pre-trained representations while significantly enhancing compositionality. Notably, the order of aggregation, whether pooling first and then computing similarity (*e.g*., $S_{g}$), or computing token-level similarity before aggregation (*e.g*., $S_{l}$), proves to be important.  \n\n\n\n\n\n\n\n### 3.3 Selective Calibrated Regularization (SCR)\n\n\n\n\\cref@constructprefix\n\npage\\cref@result Since hard negative (HN) texts are often encoded similarly to the original texts, HN losses can disrupt multi-modal representations. To counter this, we propose Selective Calibrated Regularization (SCR) to better regulate HN supervision, seamlessly applicable to both global and local HN losses.  \n\n\n\nSCR has two components: one modulates the supervision signal based on image-text similarity, while the other adjusts label assignments to calibrate the positiveness of HN texts. As shown in\u00a0\\creftab:compo\\_analysis, we confirm that both components are crucial for preserving the representation integrity.  \n\n\n\nFocal Loss to Target Challenging HN Texts. To mitigate the negative impact of supervising HN texts, we reduce the supervision signal for confident similarity predictions to the original text. Instead, we focus more on challenging HN texts that exhibit higher similarity to the image and may be confused with the original texts. This confidence-based weighting aligns with the concept of focal loss\u00a0Lin et\u00a0al. ([2017](#bib.bib45)), as shown in\u00a0\\creffig:focal\\_mechanism.  \n\n\n\nFormally, let the similarity prediction for the $i$-th batch item, including $K$ generated HN texts, be represented as a vector $\\mathrm{p}_{i}\\in\\mathbb{R}^{1+K}$, where the first element corresponds to the original text. The HN loss can be re-formulated in a vector representation with $\\mathrm{p}_{i}$ as $\\text{CE}(\\mathrm{p}_{i},\\mathrm{y}_{i})=\\sum^{K}_{k=0}l_{i,k}$, where $l_{i,k}=-\\mathrm{y}_{i,k}\\log\\mathrm{p}_{i,k}$ and $\\mathrm{y}_{i}=\\mathbbm{1}_{\\left[k=0\\right]}\\in\\mathbb{R}^{1+K}$ indicates the assignment label between an image and all texts. To reduce the negative impact of the confident image-text similarity predictions, we apply confidence-based weighting to CE loss as follows:  \n\n\n\n|  | $$\\cref@constructprefix{page}{\\cref@result}\\text{Focal}\\left(\\textrm{p}_{i},\\textrm{y}_{i}\\right)=\\sum^{K}_{k=0}\\left(1-\\mathrm{p}_{i,k}\\right)^{\\gamma}l_{i,k},$$ |  | (9) |\n\n| --- | --- | --- | --- |\n\n\n\nwhere $\\gamma$ is the modulation parameter. This strategy prioritizes challenging image-text associations, essential for learning compositionality, while effectively preventing degradation from the HN loss.  \n\n\n\nLabel Smoothing to Calibrate the Positiveness of HN Texts. Although hard negative (HN) texts share similar representations with the original text, previous methods have overlooked their potential positiveness in the HN loss design, assigning a strict value of 0 to all HN texts in the label vector $\\mathrm{y}_{i}$. Similar to the motivation in\u00a0Zhang et\u00a0al. ([2024](#bib.bib75)), but differing from their ranking loss approach, we acknowledge the potential correctness of HN texts by assigning a slight positive margin rather than categorizing them as entirely negative.  \n\n\n\nTo this end, we apply label smoothing\u00a0Guo et\u00a0al. ([2017](#bib.bib18)) to the label vector $\\mathrm{y}_{i}$ using a smoothing parameter $\\beta$ to ensure a positive margin for HN texts:  \n\n\n\n|  | $$\\tilde{\\mathrm{y}}_{i,k}=(1-\\beta)\\cdot\\mathrm{y}_{i,k}+\\frac{\\beta}{1+K},$$ |  | (10) |\n\n| --- | --- | --- | --- |\n\n\n\nwhere $\\tilde{\\mathrm{y}}_{i}$ provides a non-binary label for the HN losses. It helps preserve the model\u2019s representations during training with HN losses.  \n\n\n\n### 3.4 Overall Training Objective\n\n\n\n\\cref@constructprefix\n\npage\\cref@result Our FSC-CLIP incorporates two hard negative (HN) losses, $\\mathcal{L}^{{g}}_{neg}$ and $\\mathcal{L}^{{l}}_{neg}$, representing global and local HN losses respectively, into CLIP loss\u00a0$\\mathcal{L}_{\\text{clip}}$:  \n\n\n\n|  | $$\\mathcal{L}_{\\text{total}}=\\mathcal{L}_{\\text{clip}}+\\lambda_{g}\\mathcal{L}^{{g}}_{neg}+\\lambda_{l}\\mathcal{L}^{{l}}_{neg},$$ |  | (11) |\n\n| --- | --- | --- | --- |\n\n\n\nwhere $\\lambda_{g}$ and $\\lambda_{l}$ are the weighting factors for the respective losses. Selective Calibrated Regularization (SCR) is applied to both losses, incorporating label smoothing and focal loss. The global HN loss, $\\mathcal{L}^{{g}}_{neg}$ is computed as $\\text{Focal}\\left(\\mathrm{p}^{g},\\tilde{\\mathrm{y}}\\right)$, while the LHN loss, $\\mathcal{L}^{{l}}_{neg}$ is derived similarly, by replacing $\\mathrm{p}^{g}$ with $\\mathrm{p}^{l}$ for the local representations.  \n\n\n\n\n\n\n\n## 4 Experiments\n\n\n\n\\cref@constructprefix\n\npage\\cref@result Training Datasets. We consider three image-text datasets for fine-tuning: COCO captions\u00a0Chen et\u00a0al. ([2015](#bib.bib4)), CC-3M\u00a0Sharma et\u00a0al. ([2018](#bib.bib62)), and LAION-COCO\u00a0Schuhmann et\u00a0al. ([2022a](#bib.bib59)). For COCO captions, we utilize 100K examples pre-processed by\u00a0Yuksekgonul et\u00a0al. ([2023](#bib.bib73)). As pointed out by\u00a0Singh et\u00a0al. ([2023](#bib.bib63)), COCO shares data with several evaluation benchmarks (*e.g*., SugarCrepe and retrieval tasks), which may inadvertently affect the results. To ensure a broader evaluation and avoid such overlap, we additionally consider CC-3M and LAION-COCO for fine-tuning. For each dataset, we randomly sample 100K examples and, instead of using raw captions, we utilize synthetic captions paired with images. Specifically, for CC-3M, we generate captions using CoCa\u00a0Yu et\u00a0al. ([2022](#bib.bib72)) with ViT-L/14, while for LAION-COCO, we use captions generated by BLIP\u00a0Li et\u00a0al. ([2022b](#bib.bib43)) with ViT-L/14, applied to the LAION-2B dataset\u00a0Schuhmann et\u00a0al. ([2022b](#bib.bib60)).  \n\n\n\nHard Negative (HN) Texts. We employ simple rule-based methods for generating hard negative (HN) texts, avoiding the need for external language models like\u00a0Le\u00a0Scao et\u00a0al. ([2023](#bib.bib38)) used in\u00a0Doveh et\u00a0al. ([2023](#bib.bib11)). For each original caption, we apply three distinct operations: negclip, replace, and bi-gram shuffle. These operations are applied at every training step, ensuring variation in HN texts across iterations. As a result, each batch item is paired with an image and four captions, as illustrated in\u00a0\\creffig:overview. Further details and examples on these operations are provided in\u00a0\\crefsec:sup\\_neg\\_texts.  \n\n\n\nTraining Setup. Consistent with previous methods\u00a0Yuksekgonul et\u00a0al. ([2023](#bib.bib73)); Singh et\u00a0al. ([2023](#bib.bib63)); Zhang et\u00a0al. ([2024](#bib.bib75)), we trained our models during 5 epochs with batch size 256, using OpenCLIP repository\u00a0Ilharco et\u00a0al. ([2021](#bib.bib25)). The learning rate is set to 5e-6 and decayed by a cosine schedule, with a warmup of 50 steps. Models are optimized using AdamW with a weight decay of 0.1. We use a single Quadro RTX 8000 GPU with 48GB memory for training. Images are re-scaled to 224, and the context length is 77 for texts. We set the weighting factors $\\lambda_{g}=0.5$ and $\\lambda_{l}=0.2$. For SCR, we set $\\gamma=2.0$ and $\\beta=0.02$ for focal loss and label smoothing, respectively. We also experiment with LoRA\u00a0Hu et\u00a0al. ([2022](#bib.bib23)), which preserves the original model parameters. Consistent with\u00a0Doveh et\u00a0al. ([2022](#bib.bib12), [2023](#bib.bib11)), we set the rank to 4. Training our model takes less than one hour for 100K samples.  \n\n\n\nEvaluation Setup. We utilize an extensive range of benchmarks for a comprehensive evaluation, exceeding the scope of previous works. Full details including references are provided in\u00a0\\crefsec:sup\\_details\\_eval.  \n\n\n\nFor compositionality, we employ 11 benchmarks in total: ARO, CREPE-Productivity, EqBen, ImageCoDe, SPEC, SugarCrepe, SVO Probes, VALSE, VL-Checklist, WhatsUp, and Winoground, testing different facets of compositional reasoning. For multi-modal tasks, we evaluate 21 zero-shot classification tasks using ELEVATER toolkit. In addition, we conduct image-text retrieval evaluations on COCO, Flickr30k, and COCO-Counterfactuals. All those evaluations are performed using the vl-compo package\u00a0Oh et\u00a0al. ([2024](#bib.bib50)).  \n\n\n\nWe report a single aggregated number, which is the average of sub-tasks for each compositionality benchmark. We also provide the meta-average across all compositionality benchmarks (Comp), the average performance over 21 zero-shot classification tasks (ZS), and the average Recall@1 for three image to text (I2T Ret) and text to image (T2I Ret) retrieval tasks, as shown in\u00a0\\creftab:method\\_comparison. For a fair comparison, we consistently run evaluations for all the previous models across all the benchmarks.  \n\n\n\n### 4.1 Main Results\n\n\n\nWe compare our FSC-CLIP to previous fine-tuning methods for compositionality. We report both compositionality and multi-modal task performance as shown in\u00a0\\creftab:method\\_comparison. In\u00a0\\creffig:wiseft, we visualize the trade-off trajectory between Comp and ZS through the robust fine-tuning method\u00a0Wortsman et\u00a0al. ([2022](#bib.bib70)).  \n\n\n\n\n\n\n\nCompositionality while Sacrificing Multi-Modal Tasks. We introduce our baseline, NegCLIP\u2021, serving as a direct comparison to our FSC-CLIP. Unlike the original implementation of NegCLIP\u00a0Yuksekgonul et\u00a0al. ([2023](#bib.bib73)), we utilize an online version of hard negatives generation (*e.g*., negclip) and omit the use of additional similar image batches. This baseline will be further used in our ablation study, with the symbol \u2021 omitted for convenience.  \n\n\n\nAs shown in\u00a0\\creftab:method\\_comparison, we first compare our FSC-CLIP with previous models fine-tuned on COCO, aligning our results with those in the literature. CE-CLIP2 shows a significant drop in ZS score to 49.9. Meanwhile, GNM-CLIP3 maintains a ZS score close to that of the pre-trained model, but shows only a modest increase in Comp. In contrast, our model achieves superior Comp scores while maintaining competitive ZS and retrieval performance. As note, we have grayed out the retrieval scores of models fine-tuned on COCO to account for the influence of overlapping data.  \n\n\n\nWhen fine-tuned on datasets other than COCO, such as CC-3M and LAION-COCO, all baseline models show improvements in the Comp score, but this comes at the expense of their ZS and I2T Ret scores compared to the pre-trained CLIP. For example, NegCLIP\u2021 demonstrates promising Comp scores compared to methods like TSVLC5 and CLoVe7, but still shows weaker ZS and I2T Ret scores relative to the pre-trained model. Similarly, DAC-LLM6, despite having the strongest Comp score supported by LLM-augmented captions, suffers notable declines in both ZS and I2T Ret, decreasing by 6.0 and 23.1 points, respectively. Although TSVLC5 preserves these scores better than other models, its Comp score improvements are relatively smaller. These methods apply hard negative (HN) loss to global-level representations, potentially causing the observed performance drops.  \n\n\n\n\n\n\n\nPreserving Multi-Modal Tasks. FSC-CLIP stands out by achieving higher Comp scores than previous models, comparable to DAC-LLM, while maintaining strong performance in multi-modal tasks. As shown in\u00a0\\creffig:teaser, when fine-tuned on a 100K subset of LAION-COCO, our model achieves a Comp score of 53.5, significantly surpassing its pre-trained counterpart, and a ZS score of 55.9, nearly matching the pre-trained CLIP. Additionally, it attains an I2T Ret score of 58.2, the highest among models not fine-tuned on COCO. Further improvements are observed with using LoRA\u00a0Hu et\u00a0al. ([2022](#bib.bib23)) for fine-tuning, which boosts the Comp score to 54.2 while maintaining the ZS score. Similar trends are evident when we fine-tune FSC-CLIP on a 100K subset of CC3M. Remarkably, these results are achieved by our innovative Local HN loss and Selective Calibrated Regularization (SCR) design. We further analyze these contributions in\u00a0\\crefsec:analysis.  \n\n\n\n\n\n\n\n\n\n\n\nRobust Fine-tuning on Compositionality and Zero-shot Tasks. As depicted in\u00a0\\creffig:wiseft, we utilize the weight-space ensembling technique, WiSE-FT\u00a0Wortsman et\u00a0al. ([2022](#bib.bib70)), to compare different fine-tuning methods and their trajectories, specifically in terms of Comp and ZS scores using LAION-COCO for fine-tuning our model. We create intermediate models by interpolating between each fine-tuned model and the pre-trained one. The blending ratio increases from 0.0 (*e.g*., pre-trained) to 1.0 (*e.g*., fully fine-tuned), in increments of 0.1.  \n\n\n\nFSC-CLIP with LoRA attains a ZS score of 58 at the intermediate, surpassing the scores of other models, while improving Comp to 50. When fully fine-tuned, it attains superior Comp score and offers better trade-offs than CLoVe and CE-CLIP, without significant loss in ZS. In contrast, DAC-LLM sees a significant drop in ZS, gaining only 0.5 point in Comp, as highlighted by the red marker. Meanwhile, FSC-CLIP not only matches but exceeds the ZS score by 4.9 in the fully fine-tuned model.  \n\n\n\n### 4.2 Analysis\n\n\n\n\\cref@constructprefix\n\npage\\cref@result We further present an in-depth analysis on our FSC-CLIP, fine-tuned on LAION-COCO:  \n\n\n\nImpact of Individual Components. From\u00a0\\creftab:compo\\_analysis, we observe that applying the local HN loss alone (row 2) surprisingly preserves the multi-modal scores. However, when both global and local HN losses are activated (row 3), Comp is further boosted but at the cost of ZS and I2T Ret scores, likely due to the complicated adverse effects of the losses. The proposed SCR effectively addresses this degradation. Both focal loss (row 4) and label smoothing (row 5) are effective and, when combined, complementarily boost all the ZS, I2T Ret, and T2I Ret scores. Notably, I2T Ret increases by 11.3 (rows 3 to 6) with only a relatively mild drop in Comp. We also note that comparing rows 7 and 8 with rows 1 and 2, SCR significantly boosts multi-modal task scores. Furthermore, as shown in row 6, applying both global and local HN losses is essential for achieving better Comp and I2T Ret scores.  \n\n\n\nSensitivity Analysis. We explore the impact of individually varying each component\u2019s parameters in the final model, as detailed in\u00a0\\creftab:sensitivity. From\u00a0\\creftab:local\\_hn, we find that increasing the local HN loss parameter $\\lambda_{l}$ improves Comp score while preserving multi-modal task scores. \\creftab:focal\\_loss shows that increasing the modulation parameter $\\gamma$ boosts multi-modal tasks; however, beyond a certain point, we find that compositionality declines, as weakening the learning signal from HN texts. Similarly, \\creftab:label\\_smoothing indicates that label smoothing benefits multi-modal tasks, particularly I2T Ret. Yet, assigning too much positive margin with $\\beta$ to negative samples can impede the learning of compositionality.  \n\n\n\nFine-tuning CLIP with ViT-B/16. We also fine-tuned CLIP with a ViT-B/16 encoder from OpenAI for comparison, as detailed in\u00a0\\creftab:vitb16. This model uses more image patches in training, showing better multi-modal capabilities. However, no gains are observed in Comp compared to the ViT-B/32 model from\u00a0\\creftab:method\\_comparison. After fine-tuning, NegCLIP decreases ZS and I2T Ret scores. In contrast, FSC-CLIP maintains its Comp score and significantly enhances multi-modal task performances. We also find that fine-tuning with LoRA yields improved ZS and I2T Ret scores, along with a higher Comp score.  \n\n\n\n\n\n\n\nScaling Pre-training Data for Fine-tuning. We explore the effect of large-scale pre-training data when fine-tuned. From\u00a0\\creftab:datacomp, we fine-tuned a CLIP model with a ViT-B/32 encoder, pre-trained on 12.8B DataComp-XL dataset\u00a0Gadre et\u00a0al. ([2023](#bib.bib16)), far exceeding the 400M samples from OpenAI\u00a0Radford et\u00a0al. ([2021](#bib.bib56)). Despite the larger scale pre-training yielding a promising ZS score of 63.0, we find no improvement in compositionality compared to OpenAI\u2019s CLIP. For fine-tuning, NegCLIP results in a notable drop in multi-modal task performance. In contrast, FSC-CLIP with LoRA not only counters this degradation but also achieves a higher Comp score than NegCLIP.  \n\n\n\nQualitative Counterfactual Image to Text Retrieval Results. In\u00a0\\creffig:retrieval, we compare image to text retrieval results on the COCO-Counterfactuals (COCO-CF)\u00a0Le et\u00a0al. ([2023](#bib.bib37)) dataset for three models: pre-trained CLIP\u00a0Radford et\u00a0al. ([2021](#bib.bib56)), DAC-LLM\u00a0Doveh et\u00a0al. ([2023](#bib.bib11)), and our proposed FSC-CLIP. The figure displays the top-3 retrieved captions for each image, with correct captions indicated by green checkmarks and incorrect ones by red crossmarks. We observe that CLIP and DAC-LLM often fail to retrieve the correct caption associated with the image, ranking a negative caption as top-1. In contrast, our FSC-CLIP consistently retrieves the correct caption as top-1, demonstrating superior retrieval capabilities along with a stronger fine-grained compositional understanding, even in the presence of hard negative captions.  \n\n\n\n## 5 Conclusion\n\n\n\nIn this paper, we introduce Fine-grained Selective Calibrated CLIP (FSC-CLIP), a new fine-tuning framework for vision-language compositionality. It aims to preserve multi-modal capabilities and address the limitations of existing methods relying on global representations. We achieve this by employing dense representations between images and texts and regularizing the hard negative losses to prevent degradation, thereby facilitating the introduction of Local Hard Negative Loss and Selective Calibrated Regularization. Our extensive validation shows improved compositional reasoning and promising performance in standard multi-modal tasks.  \n\n\n\nLimitations. Our methodology, including all the prior approaches, relies on short captions for both training and evaluation benchmarks. This practice constrains the models\u2019 exposure to and understanding of longer contexts, which are essential for achieving a genuine vision-language compositional understanding. Longer and detailed captions involve more complex associations and contextual nuances\u00a0Onoe et\u00a0al. ([2024](#bib.bib52)); Garg et\u00a0al. ([2024](#bib.bib17)) that are essential for advanced compositionality in vision and language models. Moving forward, there is a compelling need within the community to develop training and evaluation protocols that incorporate longer captions, better addressing the challenges of compositionality.  \n\n\n\nAcknowledgements. This research was partially supported by Samsung Electronics Co., Ltd (G01200447), by the KAIST Cross-Generation Collaborative Lab Project, by the MSIT(Ministry of Science, ICT), Korea, under the Global Research Support Program in the Digital Field program(RS-2024-00436680) supervised by the IITP(Institute for Information & Communications Technology Planning & Evaluation), and by the Institute of Information and Communications Technology Planning and Evaluation (IITP) grant funded by the Korea Government (MSIT) (Artificial Intelligence Innovation Hub) under Grant 2021-0-02068. Additionally, this project was supported in part by Microsoft Research Asia. Dong-Jin Kim was supported by the National Research Foundation of Korea(NRF) grant funded by the Korea government(MSIT) (No. RS-2023-00245661).  \n\n\n\n## References\n\n\n\n* Beaumont (2021)  Romain Beaumont. 2021.   img2dataset: Easily turn large sets of image urls to an image dataset.   <https://github.com/rom1504/img2dataset>. \n\n* Bica et\u00a0al. (2024)  Ioana Bica, Anastasija Ili\u0107, Matthias Bauer, Goker Erdogan, Matko Bo\u0161njak, Christos Kaplanis, Alexey\u00a0A Gritsenko, Matthias Minderer, Charles Blundell, Razvan Pascanu, et\u00a0al. 2024.   Improving fine-grained understanding in image-text pre-training.   *arXiv preprint arXiv:2401.09865*. \n\n* Castro et\u00a0al. (2024)  Santiago Castro, Amir Ziai, Avneesh Saluja, Zhuoning Yuan, and Rada Mihalcea. 2024.   Clove: Encoding compositional language in contrastive vision-language models.   *arXiv preprint arXiv:2402.15021*. \n\n* Chen et\u00a0al. (2015)  Xinlei Chen, Hao Fang, Tsung-Yi Lin, Ramakrishna Vedantam, Saurabh Gupta, Piotr Doll\u00e1r, and C\u00a0Lawrence Zitnick. 2015.   Microsoft coco captions: Data collection and evaluation server.   *arXiv preprint arXiv:1504.00325*. \n\n* Cho et\u00a0al. (2023a)  Jae\u00a0Won Cho, Dawit\u00a0Mureja Argaw, Youngtaek Oh, Dong-Jin Kim, and In\u00a0So Kweon. 2023a.   Empirical study on using adapters for debiased visual question answering.   *Computer Vision and Image Understanding*, 237:103842. \n\n* Cho et\u00a0al. (2022)  Jae\u00a0Won Cho, Dong-Jin Kim, Yunjae Jung, and In\u00a0So Kweon. 2022.   Mcdal: Maximum classifier discrepancy for active learning.   *IEEE transactions on neural networks and learning systems*, 34(11):8753\u20138763. \n\n* Cho et\u00a0al. (2023b)  Jae\u00a0Won Cho, Dong-Jin Kim, Yunjae Jung, and In\u00a0So Kweon. 2023b.   Counterfactual mix-up for visual question answering.   *IEEE Access*, 11. \n\n* Cho et\u00a0al. (2023c)  Jae\u00a0Won Cho, Dong-Jin Kim, Hyeonggon Ryu, and In\u00a0So Kweon. 2023c.   Generative bias for robust visual question answering.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 11681\u201311690. \n\n* Deng et\u00a0al. (2009)  Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li\u00a0Fei-Fei. 2009.   Imagenet: A large-scale hierarchical image database.   In *2009 IEEE conference on computer vision and pattern recognition*, pages 248\u2013255. Ieee. \n\n* Dosovitskiy et\u00a0al. (2021)  Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, and Neil Houlsby. 2021.   [An image is worth 16x16 words: Transformers for image recognition at scale](https://openreview.net/forum?id=YicbFdNTTy).   In *International Conference on Learning Representations*. \n\n* Doveh et\u00a0al. (2023)  Sivan Doveh, Assaf Arbelle, Sivan Harary, Roei Herzig, Donghyun Kim, Paola Cascante-Bonilla, Amit Alfassy, Rameswar Panda, Raja Giryes, Rogerio Feris, et\u00a0al. 2023.   Dense and aligned captions (dac) promote compositional reasoning in vl models.   *Advances in Neural Information Processing Systems*, 36. \n\n* Doveh et\u00a0al. (2022)  Sivan Doveh, Assaf Arbelle, Sivan Harary, Rameswar Panda, Roei Herzig, Eli Schwartz, Donghyun Kim, Raja Giryes, Rog\u00e9rio\u00a0Schmidt Feris, Shimon Ullman, et\u00a0al. 2022.   Teaching structured vision & language concepts to vision & language models. 2023 ieee.   In *CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pages 2657\u20132668. \n\n* Elizalde et\u00a0al. (2023)  Benjamin Elizalde, Soham Deshmukh, Mahmoud Al\u00a0Ismail, and Huaming Wang. 2023.   Clap learning audio concepts from natural language supervision.   In *ICASSP 2023-2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, pages 1\u20135. IEEE. \n\n* Fellbaum (2010)  Christiane Fellbaum. 2010.   Wordnet.   In *Theory and applications of ontology: computer applications*, pages 231\u2013243. Springer. \n\n* Fu et\u00a0al. (2018)  Yanwei Fu, Tao Xiang, Yu-Gang Jiang, Xiangyang Xue, Leonid Sigal, and Shaogang Gong. 2018.   Recent advances in zero-shot recognition: Toward data-efficient understanding of visual content.   *IEEE Signal Processing Magazine*, 35(1):112\u2013125. \n\n* Gadre et\u00a0al. (2023)  Samir\u00a0Yitzhak Gadre, Gabriel Ilharco, Alex Fang, Jonathan Hayase, Georgios Smyrnis, Thao Nguyen, Ryan Marten, Mitchell Wortsman, Dhruba Ghosh, Jieyu Zhang, et\u00a0al. 2023.   Datacomp: In search of the next generation of multimodal datasets.   *Advances in Neural Information Processing Systems*, 36. \n\n* Garg et\u00a0al. (2024)  Roopal Garg, Andrea Burns, Burcu\u00a0Karagol Ayan, Yonatan Bitton, Ceslee Montgomery, Yasumasa Onoe, Andrew Bunner, Ranjay Krishna, Jason Baldridge, and Radu Soricut. 2024.   Imageinwords: Unlocking hyper-detailed image descriptions.   *arXiv preprint arXiv:2405.02793*. \n\n* Guo et\u00a0al. (2017)  Chuan Guo, Geoff Pleiss, Yu\u00a0Sun, and Kilian\u00a0Q Weinberger. 2017.   On calibration of modern neural networks.   In *International conference on machine learning*, pages 1321\u20131330. PMLR. \n\n* Hendricks and Nematzadeh (2021)  Lisa\u00a0Anne Hendricks and Aida Nematzadeh. 2021.   [Probing image-language transformers for verb understanding](https://doi.org/10.18653/v1/2021.findings-acl.318).   In *Findings of the Association for Computational Linguistics: ACL-IJCNLP 2021*, pages 3635\u20133644, Online. Association for Computational Linguistics. \n\n* Herzig et\u00a0al. (2023)  Roei Herzig, Alon Mendelson, Leonid Karlinsky, Assaf Arbelle, Rogerio Feris, Trevor Darrell, and Amir Globerson. 2023.   [Incorporating structured representations into pretrained vision & language models using scene graphs](https://doi.org/10.18653/v1/2023.emnlp-main.870).   In *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing*, pages 14077\u201314098, Singapore. Association for Computational Linguistics. \n\n* Honnibal and Montani (2017)  Matthew Honnibal and Ines Montani. 2017.   spaCy 2: Natural language understanding with Bloom embeddings, convolutional neural networks and incremental parsing.   To appear. \n\n* Hsieh et\u00a0al. (2023)  Cheng-Yu Hsieh, Jieyu Zhang, Zixian Ma, Aniruddha Kembhavi, and Ranjay Krishna. 2023.   Sugarcrepe: Fixing hackable benchmarks for vision-language compositionality.   *Advances in Neural Information Processing Systems*, 36. \n\n* Hu et\u00a0al. (2022)  Edward\u00a0J Hu, yelong shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu\u00a0Wang, and Weizhu Chen. 2022.   [LoRA: Low-rank adaptation of large language models](https://openreview.net/forum?id=nZeVKeeFYf9).   In *International Conference on Learning Representations*. \n\n* Huang et\u00a0al. (2021)  Shih-Cheng Huang, Liyue Shen, Matthew\u00a0P Lungren, and Serena Yeung. 2021.   Gloria: A multimodal global-local representation learning framework for label-efficient medical image recognition.   In *Proceedings of the IEEE/CVF International Conference on Computer Vision*, pages 3942\u20133951. \n\n* Ilharco et\u00a0al. (2021)  Gabriel Ilharco, Mitchell Wortsman, Ross Wightman, Cade Gordon, Nicholas Carlini, Rohan Taori, Achal Dave, Vaishaal Shankar, Hongseok Namkoong, John Miller, Hannaneh Hajishirzi, Ali Farhadi, and Ludwig Schmidt. 2021.   [Openclip](https://doi.org/10.5281/zenodo.5143773).   If you use this software, please cite it as below. \n\n* Jang et\u00a0al. (2022)  Youngjoon Jang, Youngtaek Oh, Jae\u00a0Won Cho, Dong-Jin Kim, Joon\u00a0Son Chung, and In\u00a0So Kweon. 2022.   Signing outside the studio: Benchmarking background robustness for continuous sign language recognition.   In *British Machine Vision Conference*. \n\n* Jang et\u00a0al. (2023)  Youngjoon Jang, Youngtaek Oh, Jae\u00a0Won Cho, Myungchul Kim, Dong-Jin Kim, In\u00a0So Kweon, and Joon\u00a0Son Chung. 2023.   Self-sufficient framework for continuous sign language recognition.   In *ICASSP 2023-2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, pages 1\u20135. IEEE. \n\n* Kamath et\u00a0al. (2023a)  Amita Kamath, Jack Hessel, and Kai-Wei Chang. 2023a.   [Text encoders bottleneck compositionality in contrastive vision-language models](https://doi.org/10.18653/v1/2023.emnlp-main.301).   In *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing*, pages 4933\u20134944, Singapore. Association for Computational Linguistics. \n\n* Kamath et\u00a0al. (2023b)  Amita Kamath, Jack Hessel, and Kai-Wei Chang. 2023b.   [What\u2019s \u201cup\u201d with vision-language models? investigating their struggle with spatial reasoning](https://doi.org/10.18653/v1/2023.emnlp-main.568).   In *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing*, pages 9161\u20139175, Singapore. Association for Computational Linguistics. \n\n* Kaur et\u00a0al. (2021)  Parminder Kaur, Husanbir\u00a0Singh Pannu, and Avleen\u00a0Kaur Malhi. 2021.   Comparative analysis on cross-modal information retrieval: A review.   *Computer Science Review*, 39:100336. \n\n* Kim et\u00a0al. (2021a)  Dong-Jin Kim, Jae\u00a0Won Cho, Jinsoo Choi, Yunjae Jung, and In\u00a0So Kweon. 2021a.   Single-modal entropy based active learning for visual question answering.   In *British Machine Vision Conference*. \n\n* Kim et\u00a0al. (2019)  Dong-Jin Kim, Jinsoo Choi, Tae-Hyun Oh, and In\u00a0So Kweon. 2019.   [Image captioning with very scarce supervised data: Adversarial semi-supervised learning approach](https://doi.org/10.18653/v1/D19-1208).   In *Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)*, pages 2012\u20132023, Hong Kong, China. Association for Computational Linguistics. \n\n* Kim et\u00a0al. (2021b)  Dong-Jin Kim, Tae-Hyun Oh, Jinsoo Choi, and In\u00a0So Kweon. 2021b.   Dense relational image captioning via multi-task triple-stream networks.   *IEEE Transactions on pattern analysis and machine intelligence*, 44(11):7348\u20137362. \n\n* Kim et\u00a0al. (2024a)  Dong-Jin Kim, Tae-Hyun Oh, Jinsoo Choi, and In\u00a0So Kweon. 2024a.   Semi-supervised image captioning by adversarially propagating labeled data.   *IEEE Access*. \n\n* Kim et\u00a0al. (2024b)  Taehoon Kim, Pyunghwan Ahn, Sangyun Kim, Sihaeng Lee, Mark Marsden, Alessandra Sala, Seung\u00a0Hwan Kim, Honglak Lee, Kyounghoon Bae, Bohyung Han, Kyoung\u00a0Mu Lee, Xiangyu Wu, Yi\u00a0Gao, Hailiang Zhang, Yang Yang, Weili Guo, Jianfeng Lu, Youngtaek Oh, Jae\u00a0Won Cho, Dong-Jin Kim, In\u00a0So Kweon, Junmo Kim, Wooyoung Kang, Won\u00a0Young Jhoo, Byungseok Roh, Jonghwan Mun, Solgil Oh, Kenan\u00a0Emir Ak, Gwang-Gook Lee, Yan Xu, Mingwei Shen, Kyomin Hwang, Wonsik Shin, Kamin Lee, Wonhark Park, Dongkwan Lee, Nojun Kwak, Yujin Wang, Yimu Wang, Tiancheng Gu, Xingchang Lv, and Mingmao Sun. 2024b.   Nice: Cvpr 2023 challenge on zero-shot image captioning.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 7356\u20137365. \n\n* Krojer et\u00a0al. (2022)  Benno Krojer, Vaibhav Adlakha, Vibhav Vineet, Yash Goyal, Edoardo Ponti, and Siva Reddy. 2022.   [Image retrieval from contextual descriptions](https://doi.org/10.18653/v1/2022.acl-long.241).   In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pages 3426\u20133440, Dublin, Ireland. Association for Computational Linguistics. \n\n* Le et\u00a0al. (2023)  Tiep Le, Vasudev Lal, and Phillip Howard. 2023.   Coco-counterfactuals: Automatically constructed counterfactual examples for image-text pairs.   *Advances in Neural Information Processing Systems*, 36. \n\n* Le\u00a0Scao et\u00a0al. (2023)  Teven Le\u00a0Scao, Angela Fan, Christopher Akiki, Ellie Pavlick, Suzana Ili\u0107, Daniel Hesslow, Roman Castagn\u00e9, Alexandra\u00a0Sasha Luccioni, Fran\u00e7ois Yvon, Matthias Gall\u00e9, et\u00a0al. 2023.   Bloom: A 176b-parameter open-access multilingual language model.   *arxiv preprint arXiv:2211.05100*. \n\n* Lee et\u00a0al. (2024)  Soeun Lee, Si-Woo Kim, Taewhan Kim, and Dong-Jin Kim. 2024.   Ifcap: Image-like retrieval and frequency-based entity filtering for zero-shot captioning.   *arXiv preprint arXiv:2409.18046*. \n\n* Levesque et\u00a0al. (2012)  Hector Levesque, Ernest Davis, and Leora Morgenstern. 2012.   The winograd schema challenge.   In *Thirteenth international conference on the principles of knowledge representation and reasoning*. \n\n* Li et\u00a0al. (2022a)  Chunyuan Li, Haotian Liu, Liunian Li, Pengchuan Zhang, Jyoti Aneja, Jianwei Yang, Ping Jin, Houdong Hu, Zicheng Liu, Yong\u00a0Jae Lee, et\u00a0al. 2022a.   Elevater: A benchmark and toolkit for evaluating language-augmented visual models.   *Advances in Neural Information Processing Systems*, 35:9287\u20139301. \n\n* Li et\u00a0al. (2023)  Junnan Li, Dongxu Li, Silvio Savarese, and Steven Hoi. 2023.   Blip-2: Bootstrapping language-image pre-training with frozen image encoders and large language models.   In *International conference on machine learning*, pages 19730\u201319742. PMLR. \n\n* Li et\u00a0al. (2022b)  Junnan Li, Dongxu Li, Caiming Xiong, and Steven Hoi. 2022b.   Blip: Bootstrapping language-image pre-training for unified vision-language understanding and generation.   In *International conference on machine learning*, pages 12888\u201312900. PMLR. \n\n* Liang et\u00a0al. (2023)  Feng Liang, Bichen Wu, Xiaoliang Dai, Kunpeng Li, Yinan Zhao, Hang Zhang, Peizhao Zhang, Peter Vajda, and Diana Marculescu. 2023.   Open-vocabulary semantic segmentation with mask-adapted clip.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 7061\u20137070. \n\n* Lin et\u00a0al. (2017)  Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piotr Doll\u00e1r. 2017.   Focal loss for dense object detection.   In *Proceedings of the IEEE international conference on computer vision*, pages 2980\u20132988. \n\n* Liu et\u00a0al. (2023a)  Fangyu Liu, Guy Emerson, and Nigel Collier. 2023a.   Visual spatial reasoning.   *Transactions of the Association for Computational Linguistics*, 11:635\u2013651. \n\n* Liu et\u00a0al. (2023b)  Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong\u00a0Jae Lee. 2023b.   Visual instruction tuning.   *Advances in neural information processing systems*, 36. \n\n* Ma et\u00a0al. (2023)  Zixian Ma, Jerry Hong, Mustafa\u00a0Omer Gul, Mona Gandhi, Irena Gao, and Ranjay Krishna. 2023.   Crepe: Can vision-language foundation models reason compositionally?   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 10910\u201310921. \n\n* Mokady et\u00a0al. (2021)  Ron Mokady, Amir Hertz, and Amit\u00a0H Bermano. 2021.   Clipcap: Clip prefix for image captioning.   *arXiv preprint arXiv:2111.09734*. \n\n* Oh et\u00a0al. (2024)  Youngtaek Oh, Pyunghwan Ahn, Jinhyung Kim, Gwangmo Song, Soonyoung Lee, In\u00a0So Kweon, and Junmo Kim. 2024.   Exploring the spectrum of visio-linguistic compositionality and recognition.   *arXiv preprint arXiv:2406.09388*. \n\n* Oh et\u00a0al. (2022)  Youngtaek Oh, Dong-Jin Kim, and In\u00a0So Kweon. 2022.   Daso: Distribution-aware semantics-oriented pseudo-label for imbalanced semi-supervised learning.   In *Proceedings of the IEEE/CVF conference on computer vision and pattern recognition*, pages 9786\u20139796. \n\n* Onoe et\u00a0al. (2024)  Yasumasa Onoe, Sunayana Rane, Zachary Berger, Yonatan Bitton, Jaemin Cho, Roopal Garg, Alexander Ku, Zarana Parekh, Jordi Pont-Tuset, Garrett Tanzer, et\u00a0al. 2024.   Docci: Descriptions of connected and contrasting images.   *arXiv preprint arXiv:2404.19753*. \n\n* Parcalabescu et\u00a0al. (2022)  Letitia Parcalabescu, Michele Cafagna, Lilitta Muradjan, Anette Frank, Iacer Calixto, and Albert Gatt. 2022.   [VALSE: A task-independent benchmark for vision and language models centered on linguistic phenomena](https://doi.org/10.18653/v1/2022.acl-long.567).   In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pages 8253\u20138280, Dublin, Ireland. Association for Computational Linguistics. \n\n* Peng et\u00a0al. (2024)  Wujian Peng, Sicheng Xie, Zuyao You, Shiyi Lan, and Zuxuan Wu. 2024.   Synthesize diagnose and optimize: Towards fine-grained vision-language understanding.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pages 13279\u201313288. \n\n* Podell et\u00a0al. (2024)  Dustin Podell, Zion English, Kyle Lacey, Andreas Blattmann, Tim Dockhorn, Jonas M\u00fcller, Joe Penna, and Robin Rombach. 2024.   [SDXL: Improving latent diffusion models for high-resolution image synthesis](https://openreview.net/forum?id=di52zR8xgf).   In *The Twelfth International Conference on Learning Representations*. \n\n* Radford et\u00a0al. (2021)  Alec Radford, Jong\u00a0Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et\u00a0al. 2021.   Learning transferable visual models from natural language supervision.   In *International conference on machine learning*, pages 8748\u20138763. PMLR. \n\n* Ray et\u00a0al. (2023)  Arijit Ray, Filip Radenovic, Abhimanyu Dubey, Bryan Plummer, Ranjay Krishna, and Kate Saenko. 2023.   cola: A benchmark for compositional text-to-image retrieval.   *Advances in Neural Information Processing Systems*, 36. \n\n* Sahin et\u00a0al. (2024)  Ugur Sahin, Hang Li, Qadeer Khan, Daniel Cremers, and Volker Tresp. 2024.   Enhancing multimodal compositional reasoning of visual language models with generative negative mining.   In *Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision*, pages 5563\u20135573. \n\n* Schuhmann et\u00a0al. (2022a)  Christoph Schuhmann, Andreas \u00a0, K\u00f6pf, Richard Vencu, Theo Coombes, and Romain Beaumont. 2022a.   Laion coco: 600m synthetic captions from laion2b-en.   <https://laion.ai/blog/laion-coco/>. \n\n* Schuhmann et\u00a0al. (2022b)  Christoph Schuhmann, Romain Beaumont, Richard Vencu, Cade Gordon, Ross Wightman, Mehdi Cherti, Theo Coombes, Aarush Katta, Clayton Mullis, Mitchell Wortsman, et\u00a0al. 2022b.   Laion-5b: An open large-scale dataset for training next generation image-text models.   *Advances in Neural Information Processing Systems*, 35:25278\u201325294. \n\n* Senocak et\u00a0al. (2023)  Arda Senocak, Hyeonggon Ryu, Junsik Kim, Tae-Hyun Oh, Hanspeter Pfister, and Joon\u00a0Son Chung. 2023.   Sound source localization is all about cross-modal alignment.   In *Proceedings of the IEEE/CVF International Conference on Computer Vision*, pages 7777\u20137787. \n\n* Sharma et\u00a0al. (2018)  Piyush Sharma, Nan Ding, Sebastian Goodman, and Radu Soricut. 2018.   [Conceptual captions: A cleaned, hypernymed, image alt-text dataset for automatic image captioning](https://doi.org/10.18653/v1/P18-1238).   In *Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pages 2556\u20132565, Melbourne, Australia. Association for Computational Linguistics. \n\n* Singh et\u00a0al. (2023)  Harman Singh, Pengchuan Zhang, Qifan Wang, Mengjiao Wang, Wenhan Xiong, Jingfei Du, and Yu\u00a0Chen. 2023.   [Coarse-to-fine contrastive learning in image-text-graph space for improved vision-language compositionality](https://doi.org/10.18653/v1/2023.emnlp-main.56).   In *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing*, pages 869\u2013893, Singapore. Association for Computational Linguistics. \n\n* Singh et\u00a0al. (2024)  Jaisidh Singh, Ishaan Shrivastava, Mayank Vatsa, Richa Singh, and Aparna Bharati. 2024.   Learn\" no\" to say\" yes\" better: Improving vision-language models via negations.   *arXiv preprint arXiv:2403.20312*. \n\n* Sun et\u00a0al. (2024)  Zeyi Sun, Ye\u00a0Fang, Tong Wu, Pan Zhang, Yuhang Zang, Shu Kong, Yuanjun Xiong, Dahua Lin, and Jiaqi Wang. 2024.   Alpha-clip: A clip model focusing on wherever you want.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pages 13019\u201313029. \n\n* Thrush et\u00a0al. (2022)  Tristan Thrush, Ryan Jiang, Max Bartolo, Amanpreet Singh, Adina Williams, Douwe Kiela, and Candace Ross. 2022.   Winoground: Probing vision and language models for visio-linguistic compositionality.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 5238\u20135248. \n\n* Vaswani et\u00a0al. (2017)  Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan\u00a0N Gomez, \u0141ukasz Kaiser, and Illia Polosukhin. 2017.   Attention is all you need.   *Advances in neural information processing systems*, 30. \n\n* Wang et\u00a0al. (2024)  Jin Wang, Shichao Dong, Yapeng Zhu, Kelu Yao, Weidong Zhao, Chao Li, and Ping Luo. 2024.   [Diagnosing the compositional knowledge of vision language models from a game-theoretic view](https://proceedings.mlr.press/v235/wang24n.html).   In *Proceedings of the 41st International Conference on Machine Learning*, volume 235 of *Proceedings of Machine Learning Research*, pages 50332\u201350352. PMLR. \n\n* Wang et\u00a0al. (2023)  Tan Wang, Kevin Lin, Linjie Li, Chung-Ching Lin, Zhengyuan Yang, Hanwang Zhang, Zicheng Liu, and Lijuan Wang. 2023.   Equivariant similarity for vision-language foundation models.   In *Proceedings of the IEEE/CVF International Conference on Computer Vision*, pages 11998\u201312008. \n\n* Wortsman et\u00a0al. (2022)  Mitchell Wortsman, Gabriel Ilharco, Jong\u00a0Wook Kim, Mike Li, Simon Kornblith, Rebecca Roelofs, Raphael\u00a0Gontijo Lopes, Hannaneh Hajishirzi, Ali Farhadi, Hongseok Namkoong, et\u00a0al. 2022.   Robust fine-tuning of zero-shot models.   In *Proceedings of the IEEE/CVF conference on computer vision and pattern recognition*, pages 7959\u20137971. \n\n* Young et\u00a0al. (2014)  Peter Young, Alice Lai, Micah Hodosh, and Julia Hockenmaier. 2014.   From image descriptions to visual denotations: New similarity metrics for semantic inference over event descriptions.   *Transactions of the Association for Computational Linguistics*, 2:67\u201378. \n\n* Yu et\u00a0al. (2022)  Jiahui Yu, Zirui Wang, Vijay Vasudevan, Legg Yeung, Mojtaba Seyedhosseini, and Yonghui Wu. 2022.   Coca: Contrastive captioners are image-text foundation models.   *arXiv preprint arXiv:2205.01917*. \n\n* Yuksekgonul et\u00a0al. (2023)  Mert Yuksekgonul, Federico Bianchi, Pratyusha Kalluri, Dan Jurafsky, and James Zou. 2023.   [When and why vision-language models behave like bags-of-words, and what to do about it?](https://openreview.net/forum?id=KRLUvxh8uaX)  In *The Eleventh International Conference on Learning Representations*. \n\n* Zeng et\u00a0al. (2022)  Yan Zeng, Xinsong Zhang, and Hang Li. 2022.   [Multi-grained vision language pre-training: Aligning texts with visual concepts](https://proceedings.mlr.press/v162/zeng22c.html).   In *Proceedings of the 39th International Conference on Machine Learning*, volume 162 of *Proceedings of Machine Learning Research*, pages 25994\u201326009. PMLR. \n\n* Zhang et\u00a0al. (2024)  Le\u00a0Zhang, Rabiul Awal, and Aishwarya Agrawal. 2024.   Contrasting intra-modal and ranking cross-modal hard negatives to enhance visio-linguistic compositional understanding.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pages 13774\u201313784. \n\n* Zhao et\u00a0al. (2022)  Tiancheng Zhao, Tianqi Zhang, Mingwei Zhu, Haozhan Shen, Kyusong Lee, Xiaopeng Lu, and Jianwei Yin. 2022.   [An explainable toolbox for evaluating pre-trained vision-language models](https://doi.org/10.18653/v1/2022.emnlp-demos.4).   In *Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing: System Demonstrations*, pages 30\u201337, Abu Dhabi, UAE. Association for Computational Linguistics. \n\n* Zheng et\u00a0al. (2024)  Chenhao Zheng, Jieyu Zhang, Aniruddha Kembhavi, and Ranjay Krishna. 2024.   Iterated learning improves compositionality in large vision-language models.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pages 13785\u201313795. \n\n* Zhou et\u00a0al. (2022)  Kaiyang Zhou, Jingkang Yang, Chen\u00a0Change Loy, and Ziwei Liu. 2022.   Learning to prompt for vision-language models.   *International Journal of Computer Vision*, 130(9):2337\u20132348. \n\n\n\n\n\n\n\n\n\n## Figures and Tables\n\n\n\n[FIGURE S1.F1.g1]\n\n![Figure S1.F1.g1](NOT_FOUND)\n\n\n\nFigure 1: A holistic comparison of fine-tuning methods for vision-language compositionality. Enhancing compositionality often compromises multi-modal task performance in previous approaches. Our FSC-CLIP bridges this gap, minimizing these trade-offs. Full experimental results are provided in\u00a0\\creftab:method\\_comparison.\n\n\\cref@constructprefixpage\\cref@result\n\n[/FIGURE]\n\n\n\n[FIGURE S2.F2.g1]\n\n![Figure S2.F2.g1](./media/x2.png)\n\n\n\nFigure 2: A complete FSC-CLIP framework that incorporates Local Hard Negative (LHN) Loss with Selective Calibrated Regularization (SCR), alongside a global HN loss. The LHN loss measures similarity between an image and a text at the patch and token levels to more accurately identify subtle differences between original and HN texts. SCR combines focal loss with label smoothing to mitigate the adverse effects of using hard negative losses.\n\n\\cref@constructprefixpage\\cref@result\n\n[/FIGURE]\n\n\n\n[FIGURE S3.F3.g1]\n\n![Figure S3.F3.g1](./media/x3.png)\n\n\n\nFigure 3: A conceptual illustration of the confidence-based weighting mechanism in HN loss. It reduces the adverse impact of HN supervision by lowering the signal from confident predictions while selectively focusing on challenging ones, crucial for learning compositionality.\n\n\\cref@constructprefixpage\\cref@result\n\n[/FIGURE]\n\n\n\n[FIGURE S4.F4.g1]\n\n![Figure S4.F4.g1](./media/x4.png)\n\n\n\nFigure 4: Fine-tuning trajectories between compositionality (Comp) and zero-shot classification (ZS) via robust fine-tuning method\u00a0Wortsman et\u00a0al. ([2022](#bib.bib70)).\n\nEach point represents the interpolated model between the pre-trained and each fine-tuned version, at varying ratios.\n\nFSC-CLIP offers better trade-offs between Comp and ZS, maintaining ZS scores in the fully fine-tuned model.\n\n\\cref@constructprefixpage\\cref@result\n\n[/FIGURE]\n\n\n\n[FIGURE S4.F5.g1]\n\n![Figure S4.F5.g1](./media/x5.png)\n\n\n\nFigure 5: \n\nImage to text retrieval examples on COCO-CF dataset. CLIP and DAC-LLM often rank negative captions (marked with red crossmarks) as top-1, while FSC-CLIP consistently retrieves the correct caption (marked with green checkmarks), demonstrating superior fine-grained understanding and retrieval accuracy in challenging conditions.\n\n\\cref@constructprefixpage\\cref@result\n\n[/FIGURE]\n\n\n\n[FIGURE A0.F6.g1]\n\n![Figure A0.F6.g1](./media/x6.png)\n\n\n\nFigure 6: Example results of rule-based hard negative texts used for training our model. Image-text pairs were randomly sampled from LAION-COCO\u00a0Schuhmann et\u00a0al. ([2022a](#bib.bib59)). For negclip\u00a0Yuksekgonul et\u00a0al. ([2023](#bib.bib73)) and replace\u00a0Hsieh et\u00a0al. ([2023](#bib.bib22)), differences from the original captions are highlighted in red.\n\n[/FIGURE]\n\n\n\n[TABLE S3.T1]\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">Method</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">LoRA</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">ARO</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">CREPE</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">EqBen</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">ImageCoDe</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">SugarCrepe</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">SVO Probes</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">VALSE</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">VL-Checklist</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">WhatsUp</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">Winoground</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\">SPEC</p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></p>\n\n</span></div>\n\n</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<p class=\"ltx_p\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></p>\n\n</span></div>\n\n</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">CLIP (ViT-B/32)</th>\n\n<td class=\"ltx_td ltx_border_t\"></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">57.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">23.8</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">26.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">21.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">73.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">84.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">67.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">70.8</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">41.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">8.8</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">31.9</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">46.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">57.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">60.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">45.8</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_italic\">Fine-tuned: MS-COCO, 100K Samples</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">NegCLIP<sup class=\"ltx_sup\">1</sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">80.9</td>\n\n<td class=\"ltx_td ltx_align_center\">30.3</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">30.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">26.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\">83.7</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">90.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\">73.7</td>\n\n<td class=\"ltx_td ltx_align_center\">74.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">42.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\">8.0</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">34.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">52.4</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">55.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">66.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">58.4</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">CE-CLIP<sup class=\"ltx_sup\">2</sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">76.3</td>\n\n<td class=\"ltx_td ltx_align_center\">34.7</td>\n\n<td class=\"ltx_td ltx_align_center\">26.8</td>\n\n<td class=\"ltx_td ltx_align_center\">24.5</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">85.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\">90.1</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">76.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">76.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\">41.7</td>\n\n<td class=\"ltx_td ltx_align_center\">5.2</td>\n\n<td class=\"ltx_td ltx_align_center\">33.0</td>\n\n<td class=\"ltx_td ltx_align_center\">52.0</td>\n\n<td class=\"ltx_td ltx_align_center\">49.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">59.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">57.4</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">GNM-CLIP<sup class=\"ltx_sup\">3</sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">57.1</td>\n\n<td class=\"ltx_td ltx_align_center\">17.4</td>\n\n<td class=\"ltx_td ltx_align_center\">28.3</td>\n\n<td class=\"ltx_td ltx_align_center\">25.0</td>\n\n<td class=\"ltx_td ltx_align_center\">78.7</td>\n\n<td class=\"ltx_td ltx_align_center\">89.2</td>\n\n<td class=\"ltx_td ltx_align_center\">71.1</td>\n\n<td class=\"ltx_td ltx_align_center\">70.6</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">42.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">10.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\">33.1</td>\n\n<td class=\"ltx_td ltx_align_center\">47.5</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">56.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">66.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">55.5</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">MosaiCLIP<sup class=\"ltx_sup\"><span class=\"ltx_text ltx_font_italic\">\u2020,4</span></sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">82.6</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">90.7</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">76.8</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">NegCLIP<sup class=\"ltx_sup\">\u2021</sup>\n\n</th>\n\n<td class=\"ltx_td ltx_border_t\"></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">85.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">34.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">29.8</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">26.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">84.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">90.6</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">74.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">75.4</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">41.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">8.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">34.2</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">66.1</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">57.9</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP<span class=\"ltx_text ltx_font_serif\"> (Ours)</span></span></th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">85.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">42.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">29.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\">26.3</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">85.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">90.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">75.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\">76.7</td>\n\n<td class=\"ltx_td ltx_align_center\">40.6</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">9.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">34.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">54.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\">55.7</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">66.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">58.3</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP<span class=\"ltx_text ltx_font_serif\"> (Ours)</span></span></th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">85.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">42.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\">29.7</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">26.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\">82.1</td>\n\n<td class=\"ltx_td ltx_align_center\">90.4</td>\n\n<td class=\"ltx_td ltx_align_center\">75.0</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">77.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\">41.7</td>\n\n<td class=\"ltx_td ltx_align_center\">6.0</td>\n\n<td class=\"ltx_td ltx_align_center\">33.2</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">53.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">55.6</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">65.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">57.2</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_italic\">Fine-tuned: Conceptual Captions - 3M (CC-3M), <span class=\"ltx_text ltx_font_bold\">3M</span> Samples</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">TSVLC<sup class=\"ltx_sup\">5</sup> (RB)</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">83.5</td>\n\n<td class=\"ltx_td ltx_align_center\">36.1</td>\n\n<td class=\"ltx_td ltx_align_center\">27.4</td>\n\n<td class=\"ltx_td ltx_align_center\">24.0</td>\n\n<td class=\"ltx_td ltx_align_center\">76.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">89.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\">69.3</td>\n\n<td class=\"ltx_td ltx_align_center\">77.5</td>\n\n<td class=\"ltx_td ltx_align_center\">40.9</td>\n\n<td class=\"ltx_td ltx_align_center\">6.8</td>\n\n<td class=\"ltx_td ltx_align_center\">31.6</td>\n\n<td class=\"ltx_td ltx_align_center\">51.2</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">54.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\">54.9</td>\n\n<td class=\"ltx_td ltx_align_center\">52.1</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">TSVLC<sup class=\"ltx_sup\">5</sup> (RB+LLM)</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">82.7</td>\n\n<td class=\"ltx_td ltx_align_center\">33.1</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">27.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">24.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">73.2</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">89.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\">72.2</td>\n\n<td class=\"ltx_td ltx_align_center\">79.2</td>\n\n<td class=\"ltx_td ltx_align_center\">39.9</td>\n\n<td class=\"ltx_td ltx_align_center\">5.8</td>\n\n<td class=\"ltx_td ltx_align_center\">31.4</td>\n\n<td class=\"ltx_td ltx_align_center\">50.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">55.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\">55.1</td>\n\n<td class=\"ltx_td ltx_align_center\">52.3</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DAC-LLM<sup class=\"ltx_sup\">6</sup>\n\n</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">86.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">60.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">25.6</td>\n\n<td class=\"ltx_td ltx_align_center\">22.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">85.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\">88.9</td>\n\n<td class=\"ltx_td ltx_align_center\">70.5</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">83.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">42.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">4.8</td>\n\n<td class=\"ltx_td ltx_align_center\">30.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">54.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\">51.1</td>\n\n<td class=\"ltx_td ltx_align_center\">36.9</td>\n\n<td class=\"ltx_td ltx_align_center\">52.4</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DAC-SAM<sup class=\"ltx_sup\">6</sup>\n\n</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">83.3</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">63.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\">25.3</td>\n\n<td class=\"ltx_td ltx_align_center\">24.3</td>\n\n<td class=\"ltx_td ltx_align_center\">83.8</td>\n\n<td class=\"ltx_td ltx_align_center\">88.5</td>\n\n<td class=\"ltx_td ltx_align_center\">70.2</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">84.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\">42.4</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">8.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\">29.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">55.0</span></td>\n\n<td class=\"ltx_td ltx_align_center\">51.9</td>\n\n<td class=\"ltx_td ltx_align_center\">41.1</td>\n\n<td class=\"ltx_td ltx_align_center\">49.0</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">MosaiCLIP<sup class=\"ltx_sup\"><span class=\"ltx_text ltx_font_italic\">\u2020,4</span></sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">80.4</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">77.3</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">53.5</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_italic\">Fine-tuned: Conceptual Captions \u2013 3M (CC-3M), <span class=\"ltx_text ltx_font_bold\">100K</span> Samples</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">NegCLIP<sup class=\"ltx_sup\">\u2021</sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">86.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\">50.5</td>\n\n<td class=\"ltx_td ltx_align_center\">25.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">24.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">83.4</td>\n\n<td class=\"ltx_td ltx_align_center\">88.6</td>\n\n<td class=\"ltx_td ltx_align_center\">72.4</td>\n\n<td class=\"ltx_td ltx_align_center\">79.0</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">43.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">7.0</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">32.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\">54.0</td>\n\n<td class=\"ltx_td ltx_align_center\">52.6</td>\n\n<td class=\"ltx_td ltx_align_center\">51.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">54.1</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP<span class=\"ltx_text ltx_font_serif\"> (Ours)</span></span></th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">78.8</td>\n\n<td class=\"ltx_td ltx_align_center\">44.0</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">28.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">25.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">84.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\">88.2</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">74.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\">77.4</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">42.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">6.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">34.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\">53.2</td>\n\n<td class=\"ltx_td ltx_align_center\">53.5</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">55.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">54.6</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP<span class=\"ltx_text ltx_font_serif\"> (Ours)</span></span></th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">84.4</td>\n\n<td class=\"ltx_td ltx_align_center\">50.6</td>\n\n<td class=\"ltx_td ltx_align_center\">27.7</td>\n\n<td class=\"ltx_td ltx_align_center\">24.5</td>\n\n<td class=\"ltx_td ltx_align_center\">82.3</td>\n\n<td class=\"ltx_td ltx_align_center\">88.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">74.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\">80.3</td>\n\n<td class=\"ltx_td ltx_align_center\">42.1</td>\n\n<td class=\"ltx_td ltx_align_center\">5.0</td>\n\n<td class=\"ltx_td ltx_align_center\">32.2</td>\n\n<td class=\"ltx_td ltx_align_center\">53.9</td>\n\n<td class=\"ltx_td ltx_align_center\">53.6</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">56.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\">54.0</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_italic\">Fine-tuned: LAION-COCO, <span class=\"ltx_text ltx_font_bold\">600M</span> Samples</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">CLoVe<sup class=\"ltx_sup\">7</sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">83.0</td>\n\n<td class=\"ltx_td ltx_align_center\">41.7</td>\n\n<td class=\"ltx_td ltx_align_center\">26.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">25.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">84.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">87.9</td>\n\n<td class=\"ltx_td ltx_align_center\">71.8</td>\n\n<td class=\"ltx_td ltx_align_center\">66.6</td>\n\n<td class=\"ltx_td ltx_align_center\">41.8</td>\n\n<td class=\"ltx_td ltx_align_center\">6.5</td>\n\n<td class=\"ltx_td ltx_align_center\">31.7</td>\n\n<td class=\"ltx_td ltx_align_center\">51.6</td>\n\n<td class=\"ltx_td ltx_align_center\">51.0</td>\n\n<td class=\"ltx_td ltx_align_center\">53.1</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">56.0</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_italic\">Fine-tuned: LAION-COCO, <span class=\"ltx_text ltx_font_bold\">100K</span> Samples</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">NegCLIP<sup class=\"ltx_sup\">\u2021</sup>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">86.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">48.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">27.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">25.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\">80.9</td>\n\n<td class=\"ltx_td ltx_align_center\">89.6</td>\n\n<td class=\"ltx_td ltx_align_center\">70.9</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">76.0</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">43.0</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">7.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\">32.3</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">53.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\">54.1</td>\n\n<td class=\"ltx_td ltx_align_center\">52.3</td>\n\n<td class=\"ltx_td ltx_align_center\">54.1</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP<span class=\"ltx_text ltx_font_serif\"> (Ours)</span></span></th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">82.8</td>\n\n<td class=\"ltx_td ltx_align_center\">46.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">29.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\">24.7</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">82.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">90.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">73.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\">75.7</td>\n\n<td class=\"ltx_td ltx_align_center\">42.4</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">6.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">33.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">53.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">55.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">58.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">55.5</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\"><span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP<span class=\"ltx_text ltx_font_serif\"> (Ours)</span></span></th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">85.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">54.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">29.1</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">24.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\">80.6</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">89.7</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">72.6</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">78.4</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">42.8</span></td>\n\n<td class=\"ltx_td ltx_align_center\">5.8</td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">32.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">54.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">55.9</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">57.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\">54.3</td>\n\n</tr>\n\n</tbody>\n\n<tfoot class=\"ltx_tfoot\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">\n\n<sup class=\"ltx_sup\">\u2020</sup>Numbers taken from the original paper. \u00a0<sup class=\"ltx_sup\">\u2021</sup>Our implementation, without additional image batch.</th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">References: <sup class=\"ltx_sup\">1</sup><cite class=\"ltx_cite ltx_citemacro_cite\">Yuksekgonul et\u00a0al. (<a class=\"ltx_ref\">2023</a>)</cite> <sup class=\"ltx_sup\">2</sup><cite class=\"ltx_cite ltx_citemacro_cite\">Zhang et\u00a0al. (<a class=\"ltx_ref\">2024</a>)</cite> <sup class=\"ltx_sup\">3</sup><cite class=\"ltx_cite ltx_citemacro_cite\">Sahin et\u00a0al. (<a class=\"ltx_ref\">2024</a>)</cite> <sup class=\"ltx_sup\">4</sup><cite class=\"ltx_cite ltx_citemacro_cite\">Singh et\u00a0al. (<a class=\"ltx_ref\">2023</a>)</cite> <sup class=\"ltx_sup\"><span class=\"ltx_text ltx_font_italic\">5,6</span></sup><cite class=\"ltx_cite ltx_citemacro_cite\">Doveh et\u00a0al. (<a class=\"ltx_ref\">2022</a>, <a class=\"ltx_ref\">2023</a>)</cite> <sup class=\"ltx_sup\">7</sup><cite class=\"ltx_cite ltx_citemacro_cite\">Castro et\u00a0al. (<a class=\"ltx_ref\">2024</a>)</cite>\n\n</th>\n\n</tr>\n\n</tfoot>\n\n</table>\n\n</span></div>\n\n\n\nTable 1: A holistic comparison of fine-tuning methods applied to the pre-trained CLIP ViT-B/32 model across 11 compositionality, 21 zero-shot classification, and 3 retrieval tasks, including their meta averages: Comp, ZS, and I2T/T2I Ret. FSC-CLIP achieves superior compositionality scores while maintaining strong multi-modal task performances. For each fine-tuning dataset, the best numbers are bold, and the second-best numbers are underlined.\\cref@constructprefixpage\\cref@result\n\n[/TABLE]\n\n\n\n[TABLE S4.T2]\n\n\n\n<div class=\"ltx_flex_figure ltx_flex_table\">\n\n<div class=\"ltx_flex_cell ltx_flex_size_2\">\n\n<div class=\"ltx_inline-block ltx_figure_panel ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<thead class=\"ltx_thead\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_tt\">id</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><math class=\"ltx_Math\"><semantics><msubsup><mi class=\"ltx_font_mathcaligraphic\">\u2112</mi><mrow><mi>n</mi><mo>\u200b</mo><mi>e</mi><mo>\u200b</mo><mi>g</mi></mrow><mi>g</mi></msubsup><annotation-xml><apply><csymbol>subscript</csymbol><apply><csymbol>superscript</csymbol><ci>\u2112</ci><ci>\ud835\udc54</ci></apply><apply><times></times><ci>\ud835\udc5b</ci><ci>\ud835\udc52</ci><ci>\ud835\udc54</ci></apply></apply></annotation-xml><annotation>\\mathcal{L}^{{g}}_{neg}</annotation></semantics></math></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><math class=\"ltx_Math\"><semantics><msubsup><mi class=\"ltx_font_mathcaligraphic\">\u2112</mi><mrow><mi>n</mi><mo>\u200b</mo><mi>e</mi><mo>\u200b</mo><mi>g</mi></mrow><mi>l</mi></msubsup><annotation-xml><apply><csymbol>subscript</csymbol><apply><csymbol>superscript</csymbol><ci>\u2112</ci><ci>\ud835\udc59</ci></apply><apply><times></times><ci>\ud835\udc5b</ci><ci>\ud835\udc52</ci><ci>\ud835\udc54</ci></apply></apply></annotation-xml><annotation>\\mathcal{L}^{{l}}_{neg}</annotation></semantics></math></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Focal</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">LS</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></th>\n\n</tr>\n\n</thead>\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">1</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">-</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">-</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">-</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.6</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">47.4</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.7</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">2</th>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">51.7</td>\n\n<td class=\"ltx_td ltx_align_center\">55.7</td>\n\n<td class=\"ltx_td ltx_align_center\">61.6</td>\n\n<td class=\"ltx_td ltx_align_center\">54.5</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">3</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">54.4</td>\n\n<td class=\"ltx_td ltx_align_center\">52.6</td>\n\n<td class=\"ltx_td ltx_align_center\">46.9</td>\n\n<td class=\"ltx_td ltx_align_center\">53.8</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">4</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">-</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.8</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">5</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">53.9</td>\n\n<td class=\"ltx_td ltx_align_center\">53.8</td>\n\n<td class=\"ltx_td ltx_align_center\">51.7</td>\n\n<td class=\"ltx_td ltx_align_center\">54.9</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">6</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">53.5</td>\n\n<td class=\"ltx_td ltx_align_center\">55.3</td>\n\n<td class=\"ltx_td ltx_align_center\">58.2</td>\n\n<td class=\"ltx_td ltx_align_center\">55.5</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">7</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">-</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">52.8</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.3</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">57.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.6</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb\">8</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">-</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">50.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.9</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">63.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.1</td>\n\n</tr>\n\n</tbody>\n\n</table>\n\n</span></div>\n\n</div>\n\n</div>\n\n\n\n<div class=\"ltx_flex_figure\">\n\n<div class=\"ltx_flex_cell ltx_flex_size_1\"><span class=\"ltx_ERROR ltx_centering ltx_figure_panel undefined\">\\cref@constructprefix</span></div>\n\n<div class=\"ltx_flex_break\"></div>\n\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n\n<p class=\"ltx_p ltx_figure_panel ltx_align_center\">page<span class=\"ltx_ERROR undefined\">\\cref@result</span></p>\n\n</div>\n\n</div>\n\n\n\nTable 2: Impact by individual component. The local HN loss preserves multi-modal task performance. In addition, focal loss and label smoothing (LS) in SCR complement each other, improving the decreased multi-modal task performance caused by the HN losses.\n\n[/TABLE]\n\n\n\n[TABLE S4.T3]\n\n\n\n<div class=\"ltx_flex_figure ltx_flex_table\">\n\n<div class=\"ltx_flex_cell ltx_flex_size_3\">\n\n<figure class=\"ltx_table ltx_figure_panel ltx_align_center\">\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<thead class=\"ltx_thead\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_tt\">id</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><math class=\"ltx_Math\"><semantics><msub><mi>\u03bb</mi><mi>l</mi></msub><annotation-xml><apply><csymbol>subscript</csymbol><ci>\ud835\udf06</ci><ci>\ud835\udc59</ci></apply></annotation-xml><annotation>\\lambda_{l}</annotation></semantics></math></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_t\">1</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">-</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">52.9</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">55.8</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">57.5</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">55.5</th>\n\n</tr>\n\n</thead>\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">2</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">57.4</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.4</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">3</span></th>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">0.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">53.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">55.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">58.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">55.5</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb\">4</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">53.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">57.3</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.4</td>\n\n</tr>\n\n</tbody>\n\n</table>\n\n</span></div>\n\n<figcaption class=\"ltx_caption ltx_centering\"><span class=\"ltx_tag ltx_tag_table\">(a) </span>Sensitivity to the weighting factor <math class=\"ltx_Math\"><semantics><msub><mi>\u03bb</mi><mi>l</mi></msub><annotation-xml><apply><csymbol>subscript</csymbol><ci>\ud835\udf06</ci><ci>\ud835\udc59</ci></apply></annotation-xml><annotation>\\lambda_{l}</annotation></semantics></math> of the local HN loss.<span class=\"ltx_ERROR undefined\">\\cref@constructprefix</span>page<span class=\"ltx_ERROR undefined\">\\cref@result</span></figcaption>\n\n</figure>\n\n</div>\n\n<div class=\"ltx_flex_cell ltx_flex_size_3\">\n\n<figure class=\"ltx_table ltx_figure_panel ltx_align_center\">\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<thead class=\"ltx_thead\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_tt\">id</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><math class=\"ltx_Math\"><semantics><mi>\u03b3</mi><annotation-xml><ci>\ud835\udefe</ci></annotation-xml><annotation>\\gamma</annotation></semantics></math></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_t\">1</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">-</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">53.9</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">53.8</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">51.7</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">54.9</th>\n\n</tr>\n\n</thead>\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\">2</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">1.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.4</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.9</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.1</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\"><span class=\"ltx_text\">3</span></th>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">2.0</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">53.5</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">55.3</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">58.2</span></td>\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">55.5</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb\">4</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">5.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">52.3</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.6</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">60.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.5</td>\n\n</tr>\n\n</tbody>\n\n</table>\n\n</span></div>\n\n<figcaption class=\"ltx_caption ltx_centering\"><span class=\"ltx_tag ltx_tag_table\">(b) </span>Sensitivity to the modulation factor <math class=\"ltx_Math\"><semantics><mi>\u03b3</mi><annotation-xml><ci>\ud835\udefe</ci></annotation-xml><annotation>\\gamma</annotation></semantics></math> of focal loss.<span class=\"ltx_ERROR undefined\">\\cref@constructprefix</span>page<span class=\"ltx_ERROR undefined\">\\cref@result</span></figcaption>\n\n</figure>\n\n</div>\n\n<div class=\"ltx_flex_cell ltx_flex_size_3\">\n\n<figure class=\"ltx_table ltx_figure_panel ltx_align_center\">\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<thead class=\"ltx_thead\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_tt\">id</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><math class=\"ltx_Math\"><semantics><mi>\u03b2</mi><annotation-xml><ci>\ud835\udefd</ci></annotation-xml><annotation>\\beta</annotation></semantics></math></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></th>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_t\">1</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">-</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">54.2</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">54.2</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">53.1</th>\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">54.8</th>\n\n</tr>\n\n</thead>\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">2</span></th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">0.02</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">53.5</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">55.3</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">58.2</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">55.5</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row\">3</th>\n\n<td class=\"ltx_td ltx_align_center\">0.05</td>\n\n<td class=\"ltx_td ltx_align_center\">53.1</td>\n\n<td class=\"ltx_td ltx_align_center\">55.2</td>\n\n<td class=\"ltx_td ltx_align_center\">59.0</td>\n\n<td class=\"ltx_td ltx_align_center\">55.1</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb\">4</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.10</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">52.3</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">58.7</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">55.3</td>\n\n</tr>\n\n</tbody>\n\n</table>\n\n</span></div>\n\n<figcaption class=\"ltx_caption ltx_centering\"><span class=\"ltx_tag ltx_tag_table\">(c) </span>Sensitivity to the label smoothing factor <math class=\"ltx_Math\"><semantics><mi>\u03b2</mi><annotation-xml><ci>\ud835\udefd</ci></annotation-xml><annotation>\\beta</annotation></semantics></math>.<span class=\"ltx_ERROR undefined\">\\cref@constructprefix</span>page<span class=\"ltx_ERROR undefined\">\\cref@result</span></figcaption>\n\n</figure>\n\n</div>\n\n</div>\n\n\n\n(a) Sensitivity to the weighting factor $\\lambda_{l}$ of the local HN loss.\\cref@constructprefixpage\\cref@result\n\n[/TABLE]\n\n\n\n[TABLE S4.T5]\n\n\n\n<div class=\"ltx_flex_figure ltx_flex_table\">\n\n<div class=\"ltx_flex_cell ltx_flex_size_2\">\n\n<figure class=\"ltx_figure ltx_figure_panel ltx_minipage ltx_align_center ltx_align_top\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">CLIP<sup class=\"ltx_sup\">1</sup>\n\n</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">LoRA</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">ViT-B/16</th>\n\n<td class=\"ltx_td ltx_border_t\"></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">46.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">60.3</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">62.9</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">49.0</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">+ NegCLIP</th>\n\n<td class=\"ltx_td ltx_border_t\"></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">54.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">55.9</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.8</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">58.1</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">+ <span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP</span>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">54.1</td>\n\n<td class=\"ltx_td ltx_align_center\">57.0</td>\n\n<td class=\"ltx_td ltx_align_center\">59.7</td>\n\n<td class=\"ltx_td ltx_align_center\">59.3</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">+ <span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP</span>\n\n</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">54.6</td>\n\n<td class=\"ltx_td ltx_align_center\">57.4</td>\n\n<td class=\"ltx_td ltx_align_center\">59.9</td>\n\n<td class=\"ltx_td ltx_align_center\">58.8</td>\n\n</tr>\n\n</tbody>\n\n<tfoot class=\"ltx_tfoot\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">\n\n<sup class=\"ltx_sup\">1</sup>Pre-trained: 400M OpenAI, Fine-tuned: LAION-COCO 100K subset.</th>\n\n</tr>\n\n</tfoot>\n\n</table>\n\n</span></div>\n\n<figcaption class=\"ltx_caption ltx_centering\"><span class=\"ltx_tag ltx_tag_figure\">Table 4: </span>Fine-tuning results of CLIP with a ViT-B/16 encoder, pre-trained on 400M samples of OpenAI data. <span class=\"ltx_ERROR undefined\">\\cref@constructprefix</span>page<span class=\"ltx_ERROR undefined\">\\cref@result</span></figcaption>\n\n</figure>\n\n</div>\n\n<div class=\"ltx_flex_cell ltx_flex_size_2\">\n\n<figure class=\"ltx_figure ltx_figure_panel ltx_minipage ltx_align_center ltx_align_top\">\n\n<div class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n<tbody class=\"ltx_tbody\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">CLIP<sup class=\"ltx_sup\">2</sup>\n\n</th>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">LoRA</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">Comp</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">ZS</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">I2T Ret</span></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_typewriter\">T2I Ret</span></td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">ViT-B/32</th>\n\n<td class=\"ltx_td ltx_border_t\"></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">44.3</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">63.0</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">63.8</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">51.2</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">+ NegCLIP</th>\n\n<td class=\"ltx_td ltx_border_t\"></td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.5</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">59.2</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">52.1</td>\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">52.3</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">+ <span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP</span>\n\n</th>\n\n<td class=\"ltx_td\"></td>\n\n<td class=\"ltx_td ltx_align_center\">52.9</td>\n\n<td class=\"ltx_td ltx_align_center\">61.1</td>\n\n<td class=\"ltx_td ltx_align_center\">56.8</td>\n\n<td class=\"ltx_td ltx_align_center\">53.8</td>\n\n</tr>\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">+ <span class=\"ltx_text ltx_font_typewriter ltx_font_bold\">FSC-CLIP</span>\n\n</th>\n\n<td class=\"ltx_td ltx_align_center\">\u2713</td>\n\n<td class=\"ltx_td ltx_align_center\">54.0</td>\n\n<td class=\"ltx_td ltx_align_center\">60.7</td>\n\n<td class=\"ltx_td ltx_align_center\">56.8</td>\n\n<td class=\"ltx_td ltx_align_center\">53.1</td>\n\n</tr>\n\n</tbody>\n\n<tfoot class=\"ltx_tfoot\">\n\n<tr class=\"ltx_tr\">\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">\n\n<sup class=\"ltx_sup\">2</sup>Pre-trained: DataComp-XL, Fine-tuned: LAION-COCO 100K subset.</th>\n\n</tr>\n\n</tfoot>\n\n</table>\n\n</span></div>\n\n<figcaption class=\"ltx_caption ltx_centering\"><span class=\"ltx_tag ltx_tag_figure\">Table 5: </span>Fine-tuning results of CLIP with a ViT-B/32 encoder, pre-trained on 12.8B DataComp-XL.<span class=\"ltx_ERROR undefined\">\\cref@constructprefix</span>page<span class=\"ltx_ERROR undefined\">\\cref@result</span></figcaption>\n\n</figure>\n\n</div>\n\n</div>\n\n\n\nTable 4: Fine-tuning results of CLIP with a ViT-B/16 encoder, pre-trained on 400M samples of OpenAI data. \\cref@constructprefixpage\\cref@result\n\n[/TABLE]\n\n",
+        "structured_md": {
+            "title": [
+                2,
+                2
+            ],
+            "abstract": [
+                8,
+                41
+            ],
+            "sections": {
+                "1 Introduction": [
+                    42,
+                    91
+                ],
+                "2 Related Work": [
+                    92,
+                    109
+                ],
+                "3 Methodology": [
+                    110,
+                    325
+                ],
+                "4 Experiments": [
+                    326,
+                    437
+                ],
+                "5 Conclusion": [
+                    438,
+                    453
+                ],
+                "References": [
+                    454,
+                    621
+                ],
+                "Figures and Tables": [
+                    622,
+                    2566
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 Methodology": {
+                    "3.1 CLIP with Global Contrastive Loss": [
+                        120,
+                        177
+                    ],
+                    "3.2 Local Hard Negative (LHN) Loss": [
+                        178,
+                        251
+                    ],
+                    "3.3 Selective Calibrated Regularization (SCR)": [
+                        252,
+                        301
+                    ],
+                    "3.4 Overall Training Objective": [
+                        302,
+                        325
+                    ]
+                },
+                "4 Experiments": {
+                    "4.1 Main Results": [
+                        356,
+                        403
+                    ],
+                    "4.2 Analysis": [
+                        404,
+                        437
+                    ]
+                },
+                "5 Conclusion": {},
+                "References": {},
+                "Figures and Tables": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        46,
+                        46
+                    ],
+                    [
+                        48,
+                        48
+                    ],
+                    [
+                        56,
+                        56
+                    ],
+                    [
+                        60,
+                        60
+                    ],
+                    [
+                        64,
+                        64
+                    ],
+                    [
+                        68,
+                        68
+                    ],
+                    [
+                        72,
+                        72
+                    ],
+                    [
+                        76,
+                        76
+                    ],
+                    [
+                        80,
+                        80
+                    ],
+                    [
+                        84,
+                        84
+                    ],
+                    [
+                        86,
+                        86
+                    ],
+                    [
+                        88,
+                        88
+                    ]
+                ],
+                "2 Related Work": [
+                    [
+                        96,
+                        96
+                    ],
+                    [
+                        98,
+                        98
+                    ],
+                    [
+                        106,
+                        106
+                    ]
+                ],
+                "3 Methodology": [
+                    [
+                        114,
+                        114
+                    ],
+                    [
+                        116,
+                        116
+                    ],
+                    [
+                        124,
+                        124
+                    ],
+                    [
+                        126,
+                        126
+                    ],
+                    [
+                        130,
+                        130
+                    ],
+                    [
+                        134,
+                        134
+                    ],
+                    [
+                        136,
+                        136
+                    ],
+                    [
+                        140,
+                        140
+                    ],
+                    [
+                        144,
+                        144
+                    ],
+                    [
+                        146,
+                        146
+                    ],
+                    [
+                        150,
+                        150
+                    ],
+                    [
+                        154,
+                        154
+                    ],
+                    [
+                        158,
+                        158
+                    ],
+                    [
+                        160,
+                        160
+                    ],
+                    [
+                        164,
+                        164
+                    ],
+                    [
+                        168,
+                        168
+                    ],
+                    [
+                        170,
+                        170
+                    ],
+                    [
+                        174,
+                        174
+                    ],
+                    [
+                        182,
+                        182
+                    ],
+                    [
+                        184,
+                        184
+                    ],
+                    [
+                        188,
+                        188
+                    ],
+                    [
+                        190,
+                        190
+                    ],
+                    [
+                        194,
+                        194
+                    ],
+                    [
+                        198,
+                        198
+                    ],
+                    [
+                        202,
+                        202
+                    ],
+                    [
+                        206,
+                        206
+                    ],
+                    [
+                        210,
+                        210
+                    ],
+                    [
+                        212,
+                        212
+                    ],
+                    [
+                        216,
+                        216
+                    ],
+                    [
+                        220,
+                        220
+                    ],
+                    [
+                        222,
+                        222
+                    ],
+                    [
+                        226,
+                        226
+                    ],
+                    [
+                        230,
+                        230
+                    ],
+                    [
+                        234,
+                        234
+                    ],
+                    [
+                        236,
+                        236
+                    ],
+                    [
+                        240,
+                        240
+                    ],
+                    [
+                        244,
+                        244
+                    ],
+                    [
+                        256,
+                        256
+                    ],
+                    [
+                        258,
+                        258
+                    ],
+                    [
+                        262,
+                        262
+                    ],
+                    [
+                        266,
+                        266
+                    ],
+                    [
+                        270,
+                        270
+                    ],
+                    [
+                        274,
+                        274
+                    ],
+                    [
+                        276,
+                        276
+                    ],
+                    [
+                        280,
+                        280
+                    ],
+                    [
+                        284,
+                        284
+                    ],
+                    [
+                        288,
+                        288
+                    ],
+                    [
+                        292,
+                        292
+                    ],
+                    [
+                        294,
+                        294
+                    ],
+                    [
+                        298,
+                        298
+                    ],
+                    [
+                        306,
+                        306
+                    ],
+                    [
+                        308,
+                        308
+                    ],
+                    [
+                        312,
+                        312
+                    ],
+                    [
+                        314,
+                        314
+                    ],
+                    [
+                        318,
+                        318
+                    ]
+                ],
+                "4 Experiments": [
+                    [
+                        330,
+                        330
+                    ],
+                    [
+                        332,
+                        332
+                    ],
+                    [
+                        336,
+                        336
+                    ],
+                    [
+                        340,
+                        340
+                    ],
+                    [
+                        344,
+                        344
+                    ],
+                    [
+                        348,
+                        348
+                    ],
+                    [
+                        352,
+                        352
+                    ],
+                    [
+                        360,
+                        360
+                    ],
+                    [
+                        368,
+                        368
+                    ],
+                    [
+                        372,
+                        372
+                    ],
+                    [
+                        376,
+                        376
+                    ],
+                    [
+                        384,
+                        384
+                    ],
+                    [
+                        396,
+                        396
+                    ],
+                    [
+                        400,
+                        400
+                    ],
+                    [
+                        408,
+                        408
+                    ],
+                    [
+                        410,
+                        410
+                    ],
+                    [
+                        414,
+                        414
+                    ],
+                    [
+                        418,
+                        418
+                    ],
+                    [
+                        422,
+                        422
+                    ],
+                    [
+                        430,
+                        430
+                    ],
+                    [
+                        434,
+                        434
+                    ]
+                ],
+                "5 Conclusion": [
+                    [
+                        442,
+                        442
+                    ],
+                    [
+                        446,
+                        446
+                    ],
+                    [
+                        450,
+                        450
+                    ]
+                ],
+                "References": [
+                    [
+                        458,
+                        458
+                    ],
+                    [
+                        460,
+                        460
+                    ],
+                    [
+                        462,
+                        462
+                    ],
+                    [
+                        464,
+                        464
+                    ],
+                    [
+                        466,
+                        466
+                    ],
+                    [
+                        468,
+                        468
+                    ],
+                    [
+                        470,
+                        470
+                    ],
+                    [
+                        472,
+                        472
+                    ],
+                    [
+                        474,
+                        474
+                    ],
+                    [
+                        476,
+                        476
+                    ],
+                    [
+                        478,
+                        478
+                    ],
+                    [
+                        480,
+                        480
+                    ],
+                    [
+                        482,
+                        482
+                    ],
+                    [
+                        484,
+                        484
+                    ],
+                    [
+                        486,
+                        486
+                    ],
+                    [
+                        488,
+                        488
+                    ],
+                    [
+                        490,
+                        490
+                    ],
+                    [
+                        492,
+                        492
+                    ],
+                    [
+                        494,
+                        494
+                    ],
+                    [
+                        496,
+                        496
+                    ],
+                    [
+                        498,
+                        498
+                    ],
+                    [
+                        500,
+                        500
+                    ],
+                    [
+                        502,
+                        502
+                    ],
+                    [
+                        504,
+                        504
+                    ],
+                    [
+                        506,
+                        506
+                    ],
+                    [
+                        508,
+                        508
+                    ],
+                    [
+                        510,
+                        510
+                    ],
+                    [
+                        512,
+                        512
+                    ],
+                    [
+                        514,
+                        514
+                    ],
+                    [
+                        516,
+                        516
+                    ],
+                    [
+                        518,
+                        518
+                    ],
+                    [
+                        520,
+                        520
+                    ],
+                    [
+                        522,
+                        522
+                    ],
+                    [
+                        524,
+                        524
+                    ],
+                    [
+                        526,
+                        526
+                    ],
+                    [
+                        528,
+                        528
+                    ],
+                    [
+                        530,
+                        530
+                    ],
+                    [
+                        532,
+                        532
+                    ],
+                    [
+                        534,
+                        534
+                    ],
+                    [
+                        536,
+                        536
+                    ],
+                    [
+                        538,
+                        538
+                    ],
+                    [
+                        540,
+                        540
+                    ],
+                    [
+                        542,
+                        542
+                    ],
+                    [
+                        544,
+                        544
+                    ],
+                    [
+                        546,
+                        546
+                    ],
+                    [
+                        548,
+                        548
+                    ],
+                    [
+                        550,
+                        550
+                    ],
+                    [
+                        552,
+                        552
+                    ],
+                    [
+                        554,
+                        554
+                    ],
+                    [
+                        556,
+                        556
+                    ],
+                    [
+                        558,
+                        558
+                    ],
+                    [
+                        560,
+                        560
+                    ],
+                    [
+                        562,
+                        562
+                    ],
+                    [
+                        564,
+                        564
+                    ],
+                    [
+                        566,
+                        566
+                    ],
+                    [
+                        568,
+                        568
+                    ],
+                    [
+                        570,
+                        570
+                    ],
+                    [
+                        572,
+                        572
+                    ],
+                    [
+                        574,
+                        574
+                    ],
+                    [
+                        576,
+                        576
+                    ],
+                    [
+                        578,
+                        578
+                    ],
+                    [
+                        580,
+                        580
+                    ],
+                    [
+                        582,
+                        582
+                    ],
+                    [
+                        584,
+                        584
+                    ],
+                    [
+                        586,
+                        586
+                    ],
+                    [
+                        588,
+                        588
+                    ],
+                    [
+                        590,
+                        590
+                    ],
+                    [
+                        592,
+                        592
+                    ],
+                    [
+                        594,
+                        594
+                    ],
+                    [
+                        596,
+                        596
+                    ],
+                    [
+                        598,
+                        598
+                    ],
+                    [
+                        600,
+                        600
+                    ],
+                    [
+                        602,
+                        602
+                    ],
+                    [
+                        604,
+                        604
+                    ],
+                    [
+                        606,
+                        606
+                    ],
+                    [
+                        608,
+                        608
+                    ],
+                    [
+                        610,
+                        610
+                    ],
+                    [
+                        612,
+                        612
+                    ]
+                ],
+                "Figures and Tables": []
+            },
+            "figures": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 Methodology": {},
+                "4 Experiments": {},
+                "5 Conclusion": {},
+                "References": {},
+                "Figures and Tables": {
+                    "[FIGURE S1.F1.g1]": [
+                        626,
+                        636
+                    ],
+                    "[FIGURE S2.F2.g1]": [
+                        640,
+                        650
+                    ],
+                    "[FIGURE S3.F3.g1]": [
+                        654,
+                        664
+                    ],
+                    "[FIGURE S4.F4.g1]": [
+                        668,
+                        682
+                    ],
+                    "[FIGURE S4.F5.g1]": [
+                        686,
+                        698
+                    ],
+                    "[FIGURE A0.F6.g1]": [
+                        702,
+                        710
+                    ]
+                }
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 Methodology": {},
+                "4 Experiments": {},
+                "5 Conclusion": {},
+                "References": {},
+                "Figures and Tables": {
+                    "[TABLE S3.T1]": [
+                        714,
+                        1724
+                    ],
+                    "[TABLE S4.T2]": [
+                        1728,
+                        1974
+                    ],
+                    "[TABLE S4.T3]": [
+                        1978,
+                        2308
+                    ],
+                    "[TABLE S4.T5]": [
+                        2312,
+                        2564
+                    ]
+                }
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Related Work": {},
+                "3 Methodology": {},
+                "4 Experiments": {},
+                "5 Conclusion": {},
+                "References": {},
+                "Figures and Tables": {}
+            }
+        }
+    },
+    "changes": [
+        "replaced \\n by random number of \\n",
+        "moved all figures and tables to the very back of the paper"
+    ],
+    "counterfactual_type": "paper_layout"
+}

@@ -1,0 +1,683 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            43
+        ],
+        "2 Terminologies and Problem Definition": [
+            44,
+            59
+        ],
+        "3 Datasets and Human Annotations": [
+            60,
+            145
+        ],
+        "4 Training With Weak Supervision": [
+            146,
+            233
+        ],
+        "5 Models": [
+            234,
+            251
+        ],
+        "6 Experiments and Analysis": [
+            252,
+            650
+        ],
+        "7 Related Works": [
+            651,
+            658
+        ],
+        "8 Conclusions": [
+            659,
+            664
+        ],
+        "9 Limitations": [
+            665,
+            668
+        ],
+        "10 Ethics and Broader Impacts": [
+            669,
+            678
+        ],
+        "References": [
+            679,
+            723
+        ],
+        "Appendix A Details of The Datasets": [
+            724,
+            735
+        ],
+        "Appendix B Details of Human Annotations": [
+            736,
+            952
+        ],
+        "Appendix C Modelling Details": [
+            953,
+            1665
+        ],
+        "Appendix D Releases & Codes": [
+            1666,
+            1676
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Terminologies and Problem Definition": {},
+        "3 Datasets and Human Annotations": {
+            "3.1 Annotations and Task Specifications": [
+                136,
+                145
+            ]
+        },
+        "4 Training With Weak Supervision": {
+            "4.1 Linking Heuristics": [
+                150,
+                155
+            ],
+            "4.1.1 Keywords": [
+                156,
+                159
+            ],
+            "4.1.2 Key Entity Tracing": [
+                160,
+                165
+            ],
+            "4.2 Linking Algorithm": [
+                166,
+                169
+            ],
+            "4.2.1 Incorporating Temporal Relations": [
+                170,
+                229
+            ],
+            "4.2.2 Labelling The Linkages": [
+                230,
+                233
+            ]
+        },
+        "5 Models": {
+            "5.1 Non-Contextualized Pairwise Model": [
+                238,
+                241
+            ],
+            "5.2 Contextualized Model": [
+                242,
+                245
+            ],
+            "5.3 Learning": [
+                246,
+                251
+            ]
+        },
+        "6 Experiments and Analysis": {
+            "6.1 Training and Implementation Details": [
+                627,
+                630
+            ],
+            "6.2 Experimental Setups": [
+                631,
+                636
+            ],
+            "6.3 Experimental Results": [
+                637,
+                638
+            ],
+            "6.3.1 Main Results": [
+                639,
+                646
+            ],
+            "6.3.2 The Effect of Training Set Size": [
+                647,
+                650
+            ]
+        },
+        "7 Related Works": {},
+        "8 Conclusions": {},
+        "9 Limitations": {},
+        "10 Ethics and Broader Impacts": {},
+        "References": {},
+        "Appendix A Details of The Datasets": {
+            "A.1 Dataset Splits": [
+                732,
+                735
+            ]
+        },
+        "Appendix B Details of Human Annotations": {
+            "B.1 Inter-Annotator Agreements (IAAs)": [
+                887,
+                896
+            ],
+            "B.2 Annotation Process": [
+                897,
+                952
+            ]
+        },
+        "Appendix C Modelling Details": {
+            "C.1 More on Heuristics": [
+                955,
+                956
+            ],
+            "C.1.1 Linking Algorithm": [
+                957,
+                960
+            ],
+            "C.1.2 Keywords": [
+                961,
+                964
+            ],
+            "C.1.3 Key Entity Tracing": [
+                965,
+                972
+            ],
+            "C.1.4 Temporal Relations": [
+                973,
+                976
+            ],
+            "C.2 Development Set Performance": [
+                977,
+                1571
+            ],
+            "C.3 More Results on Train-Set Size Varying": [
+                1572,
+                1579
+            ],
+            "C.4 Training & Implementation Details": [
+                1580,
+                1661
+            ],
+            "C.5 Hyperparameters": [
+                1662,
+                1665
+            ]
+        },
+        "Appendix D Releases & Codes": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                32,
+                32
+            ],
+            [
+                34,
+                34
+            ],
+            [
+                36,
+                36
+            ],
+            [
+                38,
+                38
+            ],
+            [
+                40,
+                40
+            ],
+            [
+                42,
+                42
+            ]
+        ],
+        "2 Terminologies and Problem Definition": [
+            [
+                46,
+                46
+            ],
+            [
+                48,
+                48
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                52
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                58
+            ]
+        ],
+        "3 Datasets and Human Annotations": [
+            [
+                62,
+                62
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                138,
+                138
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                142
+            ],
+            [
+                144,
+                144
+            ]
+        ],
+        "4 Training With Weak Supervision": [
+            [
+                148,
+                148
+            ],
+            [
+                152,
+                152
+            ],
+            [
+                154,
+                154
+            ],
+            [
+                158,
+                158
+            ],
+            [
+                162,
+                162
+            ],
+            [
+                164,
+                164
+            ],
+            [
+                168,
+                168
+            ],
+            [
+                172,
+                172
+            ],
+            [
+                232,
+                232
+            ]
+        ],
+        "5 Models": [
+            [
+                236,
+                236
+            ],
+            [
+                240,
+                240
+            ],
+            [
+                244,
+                244
+            ],
+            [
+                248,
+                248
+            ],
+            [
+                250,
+                250
+            ]
+        ],
+        "6 Experiments and Analysis": [
+            [
+                254,
+                254
+            ],
+            [
+                629,
+                629
+            ],
+            [
+                633,
+                633
+            ],
+            [
+                635,
+                635
+            ],
+            [
+                641,
+                641
+            ],
+            [
+                643,
+                643
+            ],
+            [
+                645,
+                645
+            ],
+            [
+                649,
+                649
+            ]
+        ],
+        "7 Related Works": [
+            [
+                653,
+                653
+            ],
+            [
+                655,
+                655
+            ],
+            [
+                657,
+                657
+            ]
+        ],
+        "8 Conclusions": [
+            [
+                661,
+                661
+            ],
+            [
+                663,
+                663
+            ]
+        ],
+        "9 Limitations": [
+            [
+                667,
+                667
+            ]
+        ],
+        "10 Ethics and Broader Impacts": [
+            [
+                671,
+                671
+            ],
+            [
+                673,
+                673
+            ],
+            [
+                675,
+                675
+            ],
+            [
+                677,
+                677
+            ]
+        ],
+        "References": [
+            [
+                681,
+                722
+            ]
+        ],
+        "Appendix A Details of The Datasets": [
+            [
+                726,
+                726
+            ],
+            [
+                728,
+                728
+            ],
+            [
+                730,
+                730
+            ],
+            [
+                734,
+                734
+            ]
+        ],
+        "Appendix B Details of Human Annotations": [
+            [
+                889,
+                889
+            ],
+            [
+                891,
+                891
+            ],
+            [
+                893,
+                893
+            ],
+            [
+                895,
+                895
+            ],
+            [
+                899,
+                899
+            ],
+            [
+                901,
+                901
+            ],
+            [
+                903,
+                903
+            ],
+            [
+                949,
+                949
+            ],
+            [
+                951,
+                951
+            ]
+        ],
+        "Appendix C Modelling Details": [
+            [
+                959,
+                959
+            ],
+            [
+                963,
+                963
+            ],
+            [
+                967,
+                967
+            ],
+            [
+                969,
+                969
+            ],
+            [
+                971,
+                971
+            ],
+            [
+                975,
+                975
+            ],
+            [
+                979,
+                979
+            ],
+            [
+                1574,
+                1574
+            ],
+            [
+                1576,
+                1576
+            ],
+            [
+                1578,
+                1578
+            ],
+            [
+                1658,
+                1658
+            ],
+            [
+                1660,
+                1660
+            ],
+            [
+                1664,
+                1664
+            ]
+        ],
+        "Appendix D Releases & Codes": [
+            [
+                1668,
+                1668
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                12,
+                19
+            ],
+            "[FIGURE S1.F2.g1]": [
+                21,
+                30
+            ]
+        },
+        "2 Terminologies and Problem Definition": {},
+        "3 Datasets and Human Annotations": {},
+        "4 Training With Weak Supervision": {
+            "[FIGURE S4.F3.sf1.g1]": [
+                224,
+                228
+            ]
+        },
+        "5 Models": {},
+        "6 Experiments and Analysis": {},
+        "7 Related Works": {},
+        "8 Conclusions": {},
+        "9 Limitations": {},
+        "10 Ethics and Broader Impacts": {},
+        "References": {},
+        "Appendix A Details of The Datasets": {},
+        "Appendix B Details of Human Annotations": {},
+        "Appendix C Modelling Details": {},
+        "Appendix D Releases & Codes": {
+            "[FIGURE A4.T14.st1.g1]": [
+                1670,
+                1674
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Terminologies and Problem Definition": {},
+        "3 Datasets and Human Annotations": {
+            "[TABLE S3.T1]": [
+                66,
+                134
+            ]
+        },
+        "4 Training With Weak Supervision": {
+            "[TABLE S4.T2]": [
+                174,
+                222
+            ]
+        },
+        "5 Models": {},
+        "6 Experiments and Analysis": {
+            "[TABLE S6.T3]": [
+                256,
+                542
+            ],
+            "[TABLE S6.T4]": [
+                544,
+                625
+            ]
+        },
+        "7 Related Works": {},
+        "8 Conclusions": {},
+        "9 Limitations": {},
+        "10 Ethics and Broader Impacts": {},
+        "References": {},
+        "Appendix A Details of The Datasets": {},
+        "Appendix B Details of Human Annotations": {
+            "[TABLE A2.T5]": [
+                738,
+                885
+            ],
+            "[TABLE A2.T6]": [
+                905,
+                947
+            ]
+        },
+        "Appendix C Modelling Details": {
+            "[TABLE A3.T7]": [
+                981,
+                1111
+            ],
+            "[TABLE A3.T8]": [
+                1113,
+                1194
+            ],
+            "[TABLE A3.T9]": [
+                1196,
+                1314
+            ],
+            "[TABLE A3.T10]": [
+                1316,
+                1451
+            ],
+            "[TABLE A3.T11]": [
+                1453,
+                1570
+            ],
+            "[TABLE A3.T12]": [
+                1582,
+                1621
+            ],
+            "[TABLE A3.T13]": [
+                1623,
+                1656
+            ]
+        },
+        "Appendix D Releases & Codes": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Terminologies and Problem Definition": {},
+        "3 Datasets and Human Annotations": {},
+        "4 Training With Weak Supervision": {},
+        "5 Models": {},
+        "6 Experiments and Analysis": {},
+        "7 Related Works": {},
+        "8 Conclusions": {},
+        "9 Limitations": {},
+        "10 Ethics and Broader Impacts": {},
+        "References": {},
+        "Appendix A Details of The Datasets": {},
+        "Appendix B Details of Human Annotations": {},
+        "Appendix C Modelling Details": {},
+        "Appendix D Releases & Codes": {}
+    }
+}

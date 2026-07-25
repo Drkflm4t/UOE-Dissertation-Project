@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2306.15732] A Weakly Supervised Classifier and Dataset of White Supremacist Language</title><meta content="We present a dataset and classifier for detecting the language of white supremacist extremism, a growing issue in online hate speech.
+Our weakly supervised classifier is trained on large datasets of text from explicitl…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="A Weakly Supervised Classifier and Dataset of White Supremacist Language" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="A Weakly Supervised Classifier and Dataset of White Supremacist Language" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2306.15732" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2306.15732" rel="canonical" target="_blank"/>
+<!--Generated on Wed Feb 28 21:57:06 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">A Weakly Supervised Classifier and Dataset of 
+<br class="ltx_break"/>White Supremacist Language</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id12.id1">We present a dataset and classifier for detecting the language of white supremacist extremism, a growing issue in online hate speech.
+Our weakly supervised classifier is trained on large datasets of text from explicitly white supremacist domains paired with neutral and anti-racist data from similar domains.
+We demonstrate that this approach improves generalization performance to new domains.
+Incorporating anti-racist texts as counterexamples to white supremacist language mitigates bias.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">The spread of white supremacist extremism online has motivated offline violence, including recent mass shootings in Christchurch, El Paso, Pittsburgh, and Buffalo.
+Though some research in natural language processing has focused on types of hate speech, such as anti-Black racism <cite class="ltx_cite ltx_citemacro_citep">(Kwok and Wang, <a class="ltx_ref" href="#bib.bib31" title="">2013</a>)</cite> and misogyny <cite class="ltx_cite ltx_citemacro_citep">(Fersini et al., <a class="ltx_ref" href="#bib.bib22" title="">2018</a>)</cite>, little work has focused on detecting specific hateful ideologies.
+Practitioners have called for such systems, particularly for white supremacism <cite class="ltx_cite ltx_citemacro_citep">(ADL, <a class="ltx_ref" href="#bib.bib1" title="">2022</a>; Yoder and Habib, <a class="ltx_ref" href="#bib.bib56" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">To detect white supremacist language, we build text classifiers trained on data from a large, diverse set of explicitly white supremacist online spaces, filtered to ideological topics.<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span>See <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://osf.io/274z3/" target="_blank" title="">https://osf.io/274z3/</a> to access public parts of this dataset and others used in this paper.</span></span></span>
+In a weakly supervised set-up, we train discriminative classifiers to distinguish texts in white supremacist domains from texts in similar online spaces that are not known for white supremacism.
+These classifiers outperform prior work in white supremacist classification on three annotated datasets, and we find that the best-performing models use a combination of weakly and manually annotated data.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">Hate speech classifiers often have difficulty generalizing beyond data they were trained on <cite class="ltx_cite ltx_citemacro_citep">(Swamy et al., <a class="ltx_ref" href="#bib.bib51" title="">2019</a>; Yoder et al., <a class="ltx_ref" href="#bib.bib57" title="">2022</a>)</cite>.
+We evaluate our classifiers on unseen datasets annotated for white supremacism from a variety of domains and find strong generalization performance for models that incorporate weakly annotated data.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">Hate speech classifiers often learn to associate any mention of marginalized identities with hate, regardless of context <cite class="ltx_cite ltx_citemacro_citep">(Dixon et al., <a class="ltx_ref" href="#bib.bib16" title="">2017</a>)</cite>.
+To address this potential issue with white supremacist classification, we incorporate anti-racist texts, which often mention marginalized identities in positive contexts, as counter-examples to white supremacist texts.
+Evaluating on a synthetic test set with mentions of marginalized identities in a variety of contexts <cite class="ltx_cite ltx_citemacro_citep">(Röttger et al., <a class="ltx_ref" href="#bib.bib43" title="">2021</a>)</cite>, we find that including anti-racist texts helps mitigate this bias.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>The Language of White Supremacist Extremism</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">This work focuses on white supremacist extremism, social movements advocating for the superiority of white people and domination or separation from other races <cite class="ltx_cite ltx_citemacro_citep">(Daniels, <a class="ltx_ref" href="#bib.bib12" title="">2009</a>)</cite>.
+This fringe movement both exploits the bigotries widely held in societies with structural white supremacism and makes them explicit <cite class="ltx_cite ltx_citemacro_citep">(Ferber, <a class="ltx_ref" href="#bib.bib20" title="">2004</a>; Berlet and Vysotsky, <a class="ltx_ref" href="#bib.bib4" title="">2006</a>; Pruden et al., <a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite>.
+Key beliefs of white supremacist extremism are that race and gender hierarchies are fixed, that white people’s “natural” power is threatened, and that action is needed to protect the white race <cite class="ltx_cite ltx_citemacro_citep">(Ferber and Kimmel, <a class="ltx_ref" href="#bib.bib21" title="">2000</a>; Brown, <a class="ltx_ref" href="#bib.bib9" title="">2009</a>; Perry and Scrivens, <a class="ltx_ref" href="#bib.bib35" title="">2016</a>; Ansah, <a class="ltx_ref" href="#bib.bib3" title="">2021</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.p2">
+<p class="ltx_p" id="S2.p2.1">Many qualitative studies have examined the language of white supremacism <cite class="ltx_cite ltx_citemacro_citep">(Thompson, <a class="ltx_ref" href="#bib.bib52" title="">2001</a>; Duffy, <a class="ltx_ref" href="#bib.bib17" title="">2003</a>; Perry and Scrivens, <a class="ltx_ref" href="#bib.bib35" title="">2016</a>; Bhat and Klein, <a class="ltx_ref" href="#bib.bib5" title="">2020</a>)</cite>.
+Computational models have been developed to identify affect <cite class="ltx_cite ltx_citemacro_citep">(Figea et al., <a class="ltx_ref" href="#bib.bib23" title="">2016</a>)</cite>, hate speech <cite class="ltx_cite ltx_citemacro_citep">(de Gibert et al., <a class="ltx_ref" href="#bib.bib14" title="">2019</a>)</cite>, and violent intent <cite class="ltx_cite ltx_citemacro_citep">(Simons and Skillicorn, <a class="ltx_ref" href="#bib.bib50" title="">2020</a>)</cite> within white supremacist forums.</p>
+</div>
+<div class="ltx_para" id="S2.p3">
+<p class="ltx_p" id="S2.p3.1">Two other studies have built models to detect white supremacist ideology in text.
+<cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite> test Word2vec/BiLSTM models, pre-trained on a corpus of unlabeled white supremacist forum data, as well as BERT models.
+To estimate the prevalence of white supremacism on Twitter after the 2016 US election, <cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite> build a dictionary-based classifier and validate their findings with unlabeled alt-right Reddit data.
+In contrast, we use a large, domain-general white supremacist corpus with carefully selected negative training examples to build a weakly supervised discriminative classifier for white supremacism.</p>
+</div>
+<section class="ltx_subsection" id="S2.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.1 </span>Hate speech and white supremacism</h3>
+<div class="ltx_para" id="S2.SS1.p1">
+<p class="ltx_p" id="S2.SS1.p1.1">The relationship between hate speech and white supremacism has been theorized and annotated in different ways.
+Some have annotated the glorification of ideologies and groups such as Nazism and the Ku Klux Klan separately from hate speech <cite class="ltx_cite ltx_citemacro_citep">(Siegel et al., <a class="ltx_ref" href="#bib.bib49" title="">2021</a>; Rieger et al., <a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite>, which is often defined as verbal attacks on groups based on their identity <cite class="ltx_cite ltx_citemacro_citep">(Sanguinetti et al., <a class="ltx_ref" href="#bib.bib45" title="">2018</a>; Poletto et al., <a class="ltx_ref" href="#bib.bib36" title="">2021</a>; de Gibert et al., <a class="ltx_ref" href="#bib.bib14" title="">2019</a>)</cite>.
+A user of Stormfront, a white supremacist forum, notes this distinction to evade moderation on other platforms: “Nationalist means defending the white race; racist means degrading non-white races. You should be fine posting about preserving the white race as long as you don’t degrade other races.”<span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span>Quotes in this paper are paraphrased for privacy <cite class="ltx_cite ltx_citemacro_citep">(Williams et al., <a class="ltx_ref" href="#bib.bib54" title="">2017</a>)</cite></span></span></span></p>
+</div>
+<div class="ltx_para" id="S2.SS1.p2">
+<p class="ltx_p" id="S2.SS1.p2.1">We aim to capture the expression of white supremacist ideology beyond just hate speech against marginalized identities (see Figure <a class="ltx_ref" href="#S2.F1" title="Figure 1 ‣ 2.1 Hate speech and white supremacism ‣ 2 The Language of White Supremacist Extremism ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">1</span></a>).
+In contrast, <cite class="ltx_cite ltx_citemacro_citet">de Gibert et al. (<a class="ltx_ref" href="#bib.bib14" title="">2019</a>)</cite> ask annotators to identify hate speech within a white supremacist forum.
+They note that some content that did not fit strict definitions of hate speech still exhibited white supremacist ideology.
+Examples of this from data used in the current paper include “diversity means chasing down whites” (white people being threatened) and “god will punish as he did w/ hitler” (action needed to protect white people).</p>
+</div>
+<figure class="ltx_figure" id="S2.F1"><svg class="ltx_picture ltx_centering" height="150.71" id="S2.F1.pic1" overflow="visible" version="1.1" width="225.52"><g fill="#000000" stroke="#000000" transform="translate(0,150.71) matrix(1 0 0 -1 0 0) translate(75.36,0) translate(0,75.36)"><g stroke-width="0.4pt"><clippath id="pgfcp1"><path d="M 0 0 M 74.8 0 C 74.8 41.31 41.31 74.8 0 74.8 C -41.31 74.8 -74.8 41.31 -74.8 0 C -74.8 -41.31 -41.31 -74.8 0 -74.8 C 41.31 -74.8 74.8 -41.31 74.8 0 Z M 0 0"></path></clippath><g clip-path="url(#pgfcp1)"><g fill="#000000" stroke="#000000" stroke-width="0.8pt"><path d="M 74.8 0 M 149.61 0 C 149.61 41.31 116.12 74.8 74.8 74.8 C 33.49 74.8 0 41.31 0 0 C 0 -41.31 33.49 -74.8 74.8 -74.8 C 116.12 -74.8 149.61 -41.31 149.61 0 Z M 74.8 0"></path></g><g></g></g></g><g fill="#F2F2F2" fill-rule="evenodd" stroke="#000000" stroke-width="0.8pt"><path d="M 0 0 M 74.8 0 C 74.8 41.31 41.31 74.8 0 74.8 C -41.31 74.8 -74.8 41.31 -74.8 0 C -74.8 -41.31 -41.31 -74.8 0 -74.8 C 41.31 -74.8 74.8 -41.31 74.8 0 Z M 0 0 M 74.8 0 M 149.61 0 C 149.61 41.31 116.12 74.8 74.8 74.8 C 33.49 74.8 0 41.31 0 0 C 0 -41.31 33.49 -74.8 74.8 -74.8 C 116.12 -74.8 149.61 -41.31 149.61 0 Z M 74.8 0"></path></g><g stroke="#000000" stroke-width="0.8pt"><path d="M 0 0 M 74.8 0 C 74.8 41.31 41.31 74.8 0 74.8 C -41.31 74.8 -74.8 41.31 -74.8 0 C -74.8 -41.31 -41.31 -74.8 0 -74.8 C 41.31 -74.8 74.8 -41.31 74.8 0 Z M 0 0" style="fill:none"></path><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 -67.5 -9.13)"><g class="ltx_tikzmatrix" color="#000000" transform="matrix(1 0 0 -1 0 13.935)"><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 9.61)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 15.62 0)"><g class="ltx_tikzmatrix" transform="matrix(1 0 0 -1 0 4.805)"><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 9.61)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 0 0)"><text transform="matrix(1 0 0 -1 0 0)">white</text></g></g></g></g></g><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 15.57)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 0 0)"><text transform="matrix(1 0 0 -1 0 0)">supremacy</text></g></g></g></g></g><g stroke="#000000" stroke-width="0.8pt"><path d="M 74.8 0 M 149.61 0 C 149.61 41.31 116.12 74.8 74.8 74.8 C 33.49 74.8 0 41.31 0 0 C 0 -41.31 33.49 -74.8 74.8 -74.8 C 116.12 -74.8 149.61 -41.31 149.61 0 Z M 74.8 0" style="fill:none"></path><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 87.84 -48.36)"><g class="ltx_tikzmatrix" color="#000000" transform="matrix(1 0 0 -1 0 90.56)"><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 84.41)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 6.57 0)"><g class="ltx_tikzmatrix" transform="matrix(1 0 0 -1 0 79.605)"><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 84.41)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 0 0)"><text transform="matrix(1 0 0 -1 0 0)">hate</text></g></g></g></g></g><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 94.02)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 0 0)"><text transform="matrix(1 0 0 -1 0 0)">speech</text></g></g></g></g></g></g></svg>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>Conceptualization of the relationship between hate speech and white supremacism used in this paper. Much of white supremacist language includes text that would be considered hate speech, i.e. attacks against those with marginalized identities. However, we also aim to capture text that expresses white supremacist ideology without direct hate speech, such as the glorification of Nazism. Finally, some hate speech would not fit as expressing a white supremacist ideology, such as antisemitism within a Black Nationalist context.</figcaption>
+</figure>
+<figure class="ltx_table" id="S2.T1">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S2.T1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S2.T1.1.1.1">
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_l ltx_border_r ltx_border_t" id="S2.T1.1.1.1.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.1.1.1.1">
+<span class="ltx_p" id="S2.T1.1.1.1.1.1.1" style="width:98.0pt;">Data source</span>
+</span>
+</th>
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_r ltx_border_t" id="S2.T1.1.1.1.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.1.1.2.1">
+<span class="ltx_p" id="S2.T1.1.1.1.2.1.1" style="width:88.0pt;">Platform</span>
+</span>
+</th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_r ltx_border_t" id="S2.T1.1.1.1.3"># Posts</th>
+<th class="ltx_td ltx_align_justify ltx_th ltx_th_column ltx_border_r ltx_border_t" id="S2.T1.1.1.1.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.1.1.4.1">
+<span class="ltx_p" id="S2.T1.1.1.1.4.1.1">Excerpt from example post</span>
+</span>
+</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S2.T1.1.2.1">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r ltx_border_t" id="S2.T1.1.2.1.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.2.1.1.1">
+<span class="ltx_p" id="S2.T1.1.2.1.1.1.1" style="width:98.0pt;"><cite class="ltx_cite ltx_citemacro_citet">Papasavva et al. (<a class="ltx_ref" href="#bib.bib34" title="">2020</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r ltx_border_t" id="S2.T1.1.2.1.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.2.1.2.1">
+<span class="ltx_p" id="S2.T1.1.2.1.2.1.1" style="width:88.0pt;">4chan</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_t" id="S2.T1.1.2.1.3">2,686,267</td>
+<td class="ltx_td ltx_align_justify ltx_border_r ltx_border_t" id="S2.T1.1.2.1.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.2.1.4.1">
+<span class="ltx_p" id="S2.T1.1.2.1.4.1.1">africans are inferior animals</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.3.2">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.3.2.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.3.2.1.1">
+<span class="ltx_p" id="S2.T1.1.3.2.1.1.1" style="width:98.0pt;">Stormfront archive</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.3.2.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.3.2.2.1">
+<span class="ltx_p" id="S2.T1.1.3.2.2.1.1" style="width:88.0pt;">Stormfront</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.3.2.3">751,980</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.3.2.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.3.2.4.1">
+<span class="ltx_p" id="S2.T1.1.3.2.4.1.1">help the white race</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.4.3">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.4.3.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.4.3.1.1">
+<span class="ltx_p" id="S2.T1.1.4.3.1.1.1" style="width:98.0pt;"><cite class="ltx_cite ltx_citemacro_citet">Jokubauskaitė and Peeters (<a class="ltx_ref" href="#bib.bib28" title="">2020</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.4.3.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.4.3.2.1">
+<span class="ltx_p" id="S2.T1.1.4.3.2.1.1" style="width:88.0pt;">4chan</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.4.3.3">578,650</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.4.3.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.4.3.4.1">
+<span class="ltx_p" id="S2.T1.1.4.3.4.1.1">we need to drop the nazism no , we need to do the opposite</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.5.4">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.5.4.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.5.4.1.1">
+<span class="ltx_p" id="S2.T1.1.5.4.1.1.1" style="width:98.0pt;">Iron March archive</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.5.4.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.5.4.2.1">
+<span class="ltx_p" id="S2.T1.1.5.4.2.1.1" style="width:88.0pt;">Iron March</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.5.4.3">179,468</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.5.4.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.5.4.4.1">
+<span class="ltx_p" id="S2.T1.1.5.4.4.1.1">disgusting looking fat ch*nk cuckold</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.6.5">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.6.5.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.6.5.1.1">
+<span class="ltx_p" id="S2.T1.1.6.5.1.1.1" style="width:98.0pt;"><cite class="ltx_cite ltx_citemacro_citet">Qian et al. (<a class="ltx_ref" href="#bib.bib39" title="">2018</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.6.5.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.6.5.2.1">
+<span class="ltx_p" id="S2.T1.1.6.5.2.1.1" style="width:88.0pt;">Twitter</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.6.5.3">84,695</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.6.5.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.6.5.4.1">
+<span class="ltx_p" id="S2.T1.1.6.5.4.1.1">keep illegal immigrants out</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.7.6">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.7.6.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.7.6.1.1">
+<span class="ltx_p" id="S2.T1.1.7.6.1.1.1" style="width:98.0pt;">Patriot Front archive</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.7.6.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.7.6.2.1">
+<span class="ltx_p" id="S2.T1.1.7.6.2.1.1" style="width:88.0pt;">Discord</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.7.6.3">39,577</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.7.6.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.7.6.4.1">
+<span class="ltx_p" id="S2.T1.1.7.6.4.1.1">interracial dating i find that appalling</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.8.7">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.8.7.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.8.7.1.1">
+<span class="ltx_p" id="S2.T1.1.8.7.1.1.1" style="width:98.0pt;"><cite class="ltx_cite ltx_citemacro_citet">Calderón et al. (<a class="ltx_ref" href="#bib.bib10" title="">2021</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.8.7.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.8.7.2.1">
+<span class="ltx_p" id="S2.T1.1.8.7.2.1.1" style="width:88.0pt;">
+<span class="ltx_tabular ltx_align_top" id="S2.T1.1.8.7.2.1.1.1">
+<span class="ltx_tr" id="S2.T1.1.8.7.2.1.1.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S2.T1.1.8.7.2.1.1.1.1.1">Daily Stormer,</span></span>
+<span class="ltx_tr" id="S2.T1.1.8.7.2.1.1.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S2.T1.1.8.7.2.1.1.1.2.1">Amer. Renaissance</span></span>
+</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.8.7.3">26,099</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.8.7.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.8.7.4.1">
+<span class="ltx_p" id="S2.T1.1.8.7.4.1.1">black - on - white murders it never ends</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.9.8">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_l ltx_border_r" id="S2.T1.1.9.8.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.9.8.1.1">
+<span class="ltx_p" id="S2.T1.1.9.8.1.1.1" style="width:98.0pt;"><cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_r" id="S2.T1.1.9.8.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.9.8.2.1">
+<span class="ltx_p" id="S2.T1.1.9.8.2.1.1" style="width:88.0pt;">books, manifestos</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S2.T1.1.9.8.3">17,007</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="S2.T1.1.9.8.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.9.8.4.1">
+<span class="ltx_p" id="S2.T1.1.9.8.4.1.1">preventing the ongoing islamisation</span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S2.T1.1.10.9">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_b ltx_border_l ltx_border_r" id="S2.T1.1.10.9.1">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.10.9.1.1">
+<span class="ltx_p" id="S2.T1.1.10.9.1.1.1" style="width:98.0pt;"><cite class="ltx_cite ltx_citemacro_citet">ElSherief et al. (<a class="ltx_ref" href="#bib.bib18" title="">2021</a>)</cite></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_b ltx_border_r" id="S2.T1.1.10.9.2">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.10.9.2.1">
+<span class="ltx_p" id="S2.T1.1.10.9.2.1.1" style="width:88.0pt;">Twitter</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_b ltx_border_r" id="S2.T1.1.10.9.3">3,480</td>
+<td class="ltx_td ltx_align_justify ltx_border_b ltx_border_r" id="S2.T1.1.10.9.4">
+<span class="ltx_inline-block ltx_align_top" id="S2.T1.1.10.9.4.1">
+<span class="ltx_p" id="S2.T1.1.10.9.4.1.1">desert barbarians will destroy the west</span>
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 1: </span>Information on white supremacist corpus before filtering and sampling. <span class="ltx_text ltx_font_bold ltx_font_italic" id="S2.T1.3.1">Warning: offensive examples.</span></figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Weakly Annotated Data</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">It is difficult for annotators to determine whether the short texts commonly used in NLP and computational social science, such as tweets, express white supremacism or other far-right ideologies.
+<cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite> struggle to reach adequate inter-annotator agreement on white supremacism in tweets.
+<cite class="ltx_cite ltx_citemacro_citet">Hartung et al. (<a class="ltx_ref" href="#bib.bib25" title="">2017</a>)</cite> note that individual tweets are difficult to link to extreme right-wing ideologies and instead choose to annotate user tweet histories.</p>
+</div>
+<div class="ltx_para" id="S3.p2">
+<p class="ltx_p" id="S3.p2.1">Instead of focusing on individual posts, we turn to <span class="ltx_text ltx_font_italic" id="S3.p2.1.1">weak supervision</span>, approaches to quickly and cheaply label large amounts of training data based on rules, knowledge bases or other domain knowledge <cite class="ltx_cite ltx_citemacro_citep">(Ratner et al., <a class="ltx_ref" href="#bib.bib41" title="">2017</a>)</cite>.
+Weakly supervised learning has been used in NLP for tasks such as cyberbullying detection <cite class="ltx_cite ltx_citemacro_citep">(Raisi and Huang, <a class="ltx_ref" href="#bib.bib40" title="">2017</a>)</cite>, sentiment analysis <cite class="ltx_cite ltx_citemacro_citep">(Kamila et al., <a class="ltx_ref" href="#bib.bib29" title="">2022</a>)</cite>, dialogue systems <cite class="ltx_cite ltx_citemacro_citep">(Hudeček et al., <a class="ltx_ref" href="#bib.bib26" title="">2021</a>)</cite> and others <cite class="ltx_cite ltx_citemacro_citep">(Karamanolakis et al., <a class="ltx_ref" href="#bib.bib30" title="">2021</a>)</cite>.
+For training the discriminative white supremacist classifier, we draw on three sources of text data with “natural” (weak) labels: white supremacist domains and organizations, neutral data with similar topics, and anti-racist blogs and organizations.</p>
+</div>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>White supremacist data</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">We sample existing text datasets and data archives from white supremacist domains and organizations to build a dataset of texts that likely express white supremacist extremism.
+<a class="ltx_ref ltx_refmacro_autoref" href="#S2.T1" title="Table 1 ‣ 2.1 Hate speech and white supremacism ‣ 2 The Language of White Supremacist Extremism ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">Table 1</span></a> details information on source datasets.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p2">
+<p class="ltx_p" id="S3.SS1.p2.1">Sources include sites dedicated to white supremacism, such as Stormfront, Iron March, and the Daily Stormer.
+When possible, we filter out non-ideological content on these forums using existing topic structures, for example, excluding “Computer Talk” and “Opposing Views” forums on Stormfront.
+We also include tweets from organizations that the Southern Poverty Law Center labels as white supremacist hate groups <cite class="ltx_cite ltx_citemacro_citep">(Qian et al., <a class="ltx_ref" href="#bib.bib39" title="">2018</a>; ElSherief et al., <a class="ltx_ref" href="#bib.bib18" title="">2021</a>)</cite>.
+In <cite class="ltx_cite ltx_citemacro_citeauthor"><a class="ltx_ref" href="#bib.bib34" title="">Papasavva et al.</a></cite>’s (<cite class="ltx_cite ltx_citemacro_citeyear"><a class="ltx_ref" href="#bib.bib34" title="">2020</a></cite>) dataset from the 4chan /pol/ “politically incorrect” imageboard, we select posts from users choosing Nazi, Confederate, fascist, and white supremacist flags.
+We also include 4chan /pol/ posts in “general” threads with fascist and white supremacist topics <cite class="ltx_cite ltx_citemacro_citep">(Jokubauskaitė and Peeters, <a class="ltx_ref" href="#bib.bib28" title="">2020</a>)</cite>.
+From <cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite>, we include white supremacist books and manifestos.
+We also include leaked chats from Patriot Front, a white supremacist group.
+Details on these datasets can be found in Appendix <a class="ltx_ref" href="#A1" title="Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">A</span></a>.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p3">
+<p class="ltx_p" id="S3.SS1.p3.1">With over 230 million words in 4.3 million posts across many domains, this is the largest collection of white supremacist text we are aware of.
+Contents are from 1968 through 2019, though 76% of posts are from 2017-2019 (see distributions of posts over time in Appendix <a class="ltx_ref" href="#A1" title="Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">A</span></a>).</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Outlier filtering and sampling</h4>
+<div class="ltx_para" id="S3.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px1.p1.1">This large dataset from white supremacist domains inevitably contains many posts that are off-topic and non-ideological.
+To build a weakly supervised classifier, we wish to further filter to highly ideological posts from a variety of domains.
+</p>
+</div>
+<div class="ltx_para" id="S3.SS1.SSS0.Px1.p2">
+<p class="ltx_p" id="S3.SS1.SSS0.Px1.p2.1">We first remove posts with 10 or fewer words, as these are often non-ideological or require context to be understood (such as “reddit and twitter are cracking down today” or “poor alex, i feel bad”).</p>
+</div>
+<div class="ltx_para" id="S3.SS1.SSS0.Px1.p3">
+<p class="ltx_p" id="S3.SS1.SSS0.Px1.p3.1">We then select posts whose highest probability topic from an LDA model <cite class="ltx_cite ltx_citemacro_citep">(Blei et al., <a class="ltx_ref" href="#bib.bib7" title="">2003</a>)</cite> are ones that are more likely to express white supremacist ideology.
+LDA with 30 topics separated themes well based on manual inspection.
+One of the authors annotated 20 posts from each topic for expressing a tenet of white supremacism, described in Section <a class="ltx_ref" href="#S2" title="2 The Language of White Supremacist Extremism ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">2</span></a>.
+We selected 6 topics with the highest annotation score for white supremacy, as this gave the best performance on evaluation datasets.
+These topics related to antisemitism, anti-Black racism, and discussions of European politics and Nazism (details in Appendix <a class="ltx_ref" href="#A2" title="Appendix B Outlier topic removal ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">B</span></a>).
+To balance forum posts with other domains and approximate domain distributions in neutral and anti-racist datasets, we randomly sample 100,000 forum posts.
+This white supremacist corpus used in experiments contains 118,842 posts and 10.7 million words.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Neutral data</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1">We also construct a corpus of “neutral” (not white supremacist) data that matches the topics and domains of the white supremacist corpus.
+To match forum posts, we sample r/politics and r/Europe subreddits.
+To match tweets, we query the Twitter API by sampling the word distribution in white supremacist tweets after removing derogatory language.
+For articles, we sample random US news from the News on the Web (NOW) Corpus<span class="ltx_note ltx_role_footnote" id="footnote3"><sup class="ltx_note_mark">3</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">3</sup><span class="ltx_tag ltx_tag_note">3</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://www.corpusdata.org/now_corpus.asp" target="_blank" title="">https://www.corpusdata.org/now_corpus.asp</a></span></span></span>, and use a random Discord dataset to match chat <cite class="ltx_cite ltx_citemacro_citep">(Fan, <a class="ltx_ref" href="#bib.bib19" title="">2021</a>)</cite>.
+For each of these domains, we sample the same number of posts per year as is present in the white supremacist corpus.
+If there is not significant time overlap, we sample enough posts to reach a similar word count.
+This corpus contains 159,019 posts and 8.6 million words.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.3 </span>Anti-racist data</h3>
+<div class="ltx_para" id="S3.SS3.p1">
+<p class="ltx_p" id="S3.SS3.p1.1">Hate speech classifiers often overpredict mentions of marginalized identities as hate <cite class="ltx_cite ltx_citemacro_citep">(Dixon et al., <a class="ltx_ref" href="#bib.bib16" title="">2017</a>)</cite>.
+Assuming our data is biased until proven innocent <cite class="ltx_cite ltx_citemacro_citep">(Hutchinson et al., <a class="ltx_ref" href="#bib.bib27" title="">2021</a>)</cite>, we design for this issue.
+We hypothesize that texts from anti-racist perspectives may help.
+Oxford Languages defines anti-racism as movements “opposing racism and promoting racial equality”.
+Anti-racist communications often mention marginalized identities (as do white supremacist texts), but cast them in positive contexts, such as a tweet in our anti-racist dataset that reads, “stand up for #immigrants”.</p>
+</div>
+<div class="ltx_para" id="S3.SS3.p2">
+<p class="ltx_p" id="S3.SS3.p2.1">We construct a corpus of anti-racist texts to match the domain and year distribution of the white supremacist corpus.
+For forum data, we sample comments in subreddits known for anti-racism: r/racism, r/BlackLivesMatter, and r/StopAntiAsianRacism.
+We include tweets from anti-racist organizations listed by the University of North Carolina Diversity and Inclusion office<span class="ltx_note ltx_role_footnote" id="footnote4"><sup class="ltx_note_mark">4</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">4</sup><span class="ltx_tag ltx_tag_note">4</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://diversity.unc.edu/anti-racism-resources/" target="_blank" title="">https://diversity.unc.edu/anti-racism-resources/</a></span></span></span>.
+To match articles, we scrape Medium blog posts tagged with “anti-racism”, “white supremacy”, “racism”, and “BlackLivesMatter”.
+As with other corpora, data from each of these sources was inspected for its perspective.
+This anti-racist corpus contains 87,807 posts and 5.6 million words.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Classification</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">Due to the success of BERT-based hate speech models <cite class="ltx_cite ltx_citemacro_citep">(Mozafari et al., <a class="ltx_ref" href="#bib.bib33" title="">2019</a>; Samghabadi et al., <a class="ltx_ref" href="#bib.bib44" title="">2020</a>)</cite>, we select the parameter-efficient DistilBERT model <cite class="ltx_cite ltx_citemacro_citep">(Sanh et al., <a class="ltx_ref" href="#bib.bib46" title="">2019</a>)</cite> to compare data configurations<span class="ltx_note ltx_role_footnote" id="footnote5"><sup class="ltx_note_mark">5</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">5</sup><span class="ltx_tag ltx_tag_note">5</span>Code for experiments and dataset processing is available at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/michaelmilleryoder/white_supremacist_lang" target="_blank" title="">https://github.com/michaelmilleryoder/white_supremacist_lang</a>.</span></span></span>.
+We use a learning rate of <math alttext="2\times 10^{-5}" class="ltx_Math" display="inline" id="S4.p1.1.m1.1"><semantics id="S4.p1.1.m1.1a"><mrow id="S4.p1.1.m1.1.1" xref="S4.p1.1.m1.1.1.cmml"><mn id="S4.p1.1.m1.1.1.2" xref="S4.p1.1.m1.1.1.2.cmml">2</mn><mo id="S4.p1.1.m1.1.1.1" lspace="0.222em" rspace="0.222em" xref="S4.p1.1.m1.1.1.1.cmml">×</mo><msup id="S4.p1.1.m1.1.1.3" xref="S4.p1.1.m1.1.1.3.cmml"><mn id="S4.p1.1.m1.1.1.3.2" xref="S4.p1.1.m1.1.1.3.2.cmml">10</mn><mrow id="S4.p1.1.m1.1.1.3.3" xref="S4.p1.1.m1.1.1.3.3.cmml"><mo id="S4.p1.1.m1.1.1.3.3a" xref="S4.p1.1.m1.1.1.3.3.cmml">−</mo><mn id="S4.p1.1.m1.1.1.3.3.2" xref="S4.p1.1.m1.1.1.3.3.2.cmml">5</mn></mrow></msup></mrow><annotation-xml encoding="MathML-Content" id="S4.p1.1.m1.1b"><apply id="S4.p1.1.m1.1.1.cmml" xref="S4.p1.1.m1.1.1"><times id="S4.p1.1.m1.1.1.1.cmml" xref="S4.p1.1.m1.1.1.1"></times><cn id="S4.p1.1.m1.1.1.2.cmml" type="integer" xref="S4.p1.1.m1.1.1.2">2</cn><apply id="S4.p1.1.m1.1.1.3.cmml" xref="S4.p1.1.m1.1.1.3"><csymbol cd="ambiguous" id="S4.p1.1.m1.1.1.3.1.cmml" xref="S4.p1.1.m1.1.1.3">superscript</csymbol><cn id="S4.p1.1.m1.1.1.3.2.cmml" type="integer" xref="S4.p1.1.m1.1.1.3.2">10</cn><apply id="S4.p1.1.m1.1.1.3.3.cmml" xref="S4.p1.1.m1.1.1.3.3"><minus id="S4.p1.1.m1.1.1.3.3.1.cmml" xref="S4.p1.1.m1.1.1.3.3"></minus><cn id="S4.p1.1.m1.1.1.3.3.2.cmml" type="integer" xref="S4.p1.1.m1.1.1.3.3.2">5</cn></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.1.m1.1c">2\times 10^{-5}</annotation></semantics></math>, batch size of 16, and select the epoch with the highest ROC AUC on a 10% development set, up to 5 epochs.
+Training each model took approximately 8 hours on an NVIDIA RTX A6000 GPU.</p>
+</div>
+<div class="ltx_para" id="S4.p2">
+<p class="ltx_p" id="S4.p2.1">We train models on binary white supremacist classification.
+All posts in the white supremacist corpus, after sampling and filtering, are labeled ‘white supremacist’.
+Posts in neutral and anti-racist corpora are labeled ‘not white supremacist’.
+We also test combining weakly labeled data with manually annotated data from existing datasets (see below) and our own annotation of white supremacist posts in LDA topics.
+Since there is relatively little manually annotated data, we duplicate it 5 times in these cases, to a size of 57,645 posts.</p>
+</div>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Evaluation</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">Evaluating weakly supervised classifiers on a held-out weakly supervised set may overestimate performance.
+Classifiers may learn the idiosyncrasies of domains known for white supremacy in contrast to neutral domains (4chan vs. Reddit, e.g.) instead of learning distinctive features of white supremacy.
+We thus evaluate classifiers on their ability to distinguish posts manually annotated for white supremacy within the same domains, in the following 3 datasets:</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p2">
+<p class="ltx_p" id="S4.SS1.p2.1"><cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. <span class="ltx_text ltx_font_bold" id="S4.SS1.p2.1.1.1.1.1">(</span><a class="ltx_ref" href="#bib.bib2" title="">2021</a><span class="ltx_text ltx_font_bold" id="S4.SS1.p2.1.2.2.2.1">)</span></cite>: 1100 out of 1999 tweets (55.0%) annotated as white supremacist.
+Like our work, they conceptualize white supremacy as including hate speech against marginalized groups.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p3">
+<p class="ltx_p" id="S4.SS1.p3.1"><cite class="ltx_cite ltx_citemacro_citet">Rieger et al. <span class="ltx_text ltx_font_bold" id="S4.SS1.p3.1.1.1.1.1">(</span><a class="ltx_ref" href="#bib.bib42" title="">2021</a><span class="ltx_text ltx_font_bold" id="S4.SS1.p3.1.2.2.2.1">)</span></cite>: 366 out of 5141 posts (7.1%) from 4chan, 8chan, and r/the_Donald annotated as white supremacist.
+This work uses a more restricted definition of white supremacy largely distinct from hate speech.
+We sample examples labeled as white supremacist or neither white supremacist nor hate speech.
+Examples only annotated as hate speech are excluded since they may or may not fit our broader conception of white supremacism.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p4">
+<p class="ltx_p" id="S4.SS1.p4.1"><cite class="ltx_cite ltx_citemacro_citet">Siegel et al. <span class="ltx_text ltx_font_bold" id="S4.SS1.p4.1.1.1.1.1">(</span><a class="ltx_ref" href="#bib.bib49" title="">2021</a><span class="ltx_text ltx_font_bold" id="S4.SS1.p4.1.2.2.2.1">)</span></cite>: 171 out of 9743 tweets (1.8%) annotated as white supremacist.
+Since they use a more restrictive definition of white supremacy, we sample posts annotated as white supremacist or neither white supremacist nor hate speech.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p5">
+<p class="ltx_p" id="S4.SS1.p5.1">The proportions of white supremacist posts in these annotated evaluation datasets vary widely, so we report ROC AUC instead of precision, recall, or F1-score, which assume similar class proportions between training and test data <cite class="ltx_cite ltx_citemacro_citep">(Ma and He, <a class="ltx_ref" href="#bib.bib32" title="">2013</a>)</cite>.
+Precision and recall curves are also available in Figure <a class="ltx_ref" href="#A3.F5" title="Figure 5 ‣ Appendix C Evaluation datasets ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">5</span></a> in Appendix <a class="ltx_ref" href="#A3" title="Appendix C Evaluation datasets ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">C</span></a>.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Generalization evaluation</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px1.p1.1">To test the ability of classifiers to generalize, we perform a leave-one-out test among annotated datasets.
+During three runs for each model that uses manually annotated data, we train on two of the annotated datasets and test performance on the third.
+To test generalization to a completely unseen domain, we use a dataset of quotes from offline white supremacist propaganda, extracted from data collected by the Anti-Defamation League (ADL)<span class="ltx_note ltx_role_footnote" id="footnote6"><sup class="ltx_note_mark">6</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">6</sup><span class="ltx_tag ltx_tag_note">6</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://www.adl.org/resources/tools-to-track-hate/heat-map" target="_blank" title="">https://www.adl.org/resources/tools-to-track-hate/heat-map</a></span></span></span>.
+1655 out of 1798 quotes (92.0%) were annotated by two of the authors as exhibiting white supremacist ideology.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Baselines</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px2.p1.1">We evaluate our approaches against the best-performing model from <cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite>, BERT trained on their annotated Twitter dataset for 3 epochs with a learning rate of <math alttext="2\times 10^{-5}" class="ltx_Math" display="inline" id="S4.SS1.SSS0.Px2.p1.1.m1.1"><semantics id="S4.SS1.SSS0.Px2.p1.1.m1.1a"><mrow id="S4.SS1.SSS0.Px2.p1.1.m1.1.1" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.cmml"><mn id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.2" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.2.cmml">2</mn><mo id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.1" lspace="0.222em" rspace="0.222em" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.1.cmml">×</mo><msup id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.cmml"><mn id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.2" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.2.cmml">10</mn><mrow id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.cmml"><mo id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3a" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.cmml">−</mo><mn id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.2" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.2.cmml">5</mn></mrow></msup></mrow><annotation-xml encoding="MathML-Content" id="S4.SS1.SSS0.Px2.p1.1.m1.1b"><apply id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1"><times id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.1.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.1"></times><cn id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.2.cmml" type="integer" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.2">2</cn><apply id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3"><csymbol cd="ambiguous" id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.1.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3">superscript</csymbol><cn id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.2.cmml" type="integer" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.2">10</cn><apply id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3"><minus id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.1.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3"></minus><cn id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.2.cmml" type="integer" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.3.3.2">5</cn></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS1.SSS0.Px2.p1.1.m1.1c">2\times 10^{-5}</annotation></semantics></math> and batch size of 16.
+We also compare against <cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite>, who first match posts with a dictionary and then filter out false positives with a Naive Bayes classifier.
+Though <cite class="ltx_cite ltx_citemacro_citet">Rieger et al. (<a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite> also present data annotated for white supremacy, they focus on analysis and do not propose a classifier.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">HateCheck evaluation for lexical bias</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px3.p1.1">To evaluate bias against mentions of marginalized identities, we use the synthetic HateCheck dataset <cite class="ltx_cite ltx_citemacro_citep">(Röttger et al., <a class="ltx_ref" href="#bib.bib43" title="">2021</a>)</cite>.
+We filter to marginalized racial, ethnic, gender and sexual identities, since white supremacy is a white male perspective interlinked with misogyny and homophobia <cite class="ltx_cite ltx_citemacro_citep">(Ferber, <a class="ltx_ref" href="#bib.bib20" title="">2004</a>; Brindle, <a class="ltx_ref" href="#bib.bib8" title="">2016</a>)</cite>.
+We select sentences that include these identity terms in non-hateful contexts: neutral and positive uses; homonyms and reclaimed slurs; and counterspeech of quoted, referenced, and negated hate speech.
+This sample totals 762 sentences.</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Results</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1"><a class="ltx_ref ltx_refmacro_autoref" href="#S5.T2" title="Table 2 ‣ 5 Results ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">Table 2</span></a> presents performance of single runs on randomly sampled 30% test sets from <cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite>, <cite class="ltx_cite ltx_citemacro_citet">Rieger et al. (<a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite>, and <cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite>.
+Classifiers trained with both weakly annotated data and a combination of all manually annotated data average the best performance across evaluation datasets.
+On the <cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite> dataset, their own classifier performs the best.
+All models have lower scores on this challenging dataset, which human annotators also struggled to agree on (0.11 Cohen’s <math alttext="\kappa" class="ltx_Math" display="inline" id="S5.p1.1.m1.1"><semantics id="S5.p1.1.m1.1a"><mi id="S5.p1.1.m1.1.1" xref="S5.p1.1.m1.1.1.cmml">κ</mi><annotation-xml encoding="MathML-Content" id="S5.p1.1.m1.1b"><ci id="S5.p1.1.m1.1.1.cmml" xref="S5.p1.1.m1.1.1">𝜅</ci></annotation-xml><annotation encoding="application/x-tex" id="S5.p1.1.m1.1c">\kappa</annotation></semantics></math>).
+In generalization performance (<a class="ltx_ref ltx_refmacro_autoref" href="#S5.T3" title="Table 3 ‣ 5 Results ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">Table 3</span></a>), we find that using weakly annotated data outperforms using only manually annotated data in almost all cases, and that combining weakly and manually annotated data enables classifiers to generalize most effectively.</p>
+</div>
+<figure class="ltx_table" id="S5.T2">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S5.T2.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S5.T2.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="S5.T2.1.1.1.1">Model</th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T2.1.1.1.2"><span class="ltx_text ltx_font_sansserif" id="S5.T2.1.1.1.2.1">A</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T2.1.1.1.3"><span class="ltx_text ltx_font_sansserif" id="S5.T2.1.1.1.3.1">R</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T2.1.1.1.4"><span class="ltx_text ltx_font_sansserif" id="S5.T2.1.1.1.4.1">S</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T2.1.1.1.5">Mean</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S5.T2.1.2.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S5.T2.1.2.1.1"><span class="ltx_text ltx_font_sansserif" id="S5.T2.1.2.1.1.1">S</span></th>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T2.1.2.1.2">60.3</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T2.1.2.1.3">61.8</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T2.1.2.1.4">61.3</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T2.1.2.1.5">61.2</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.3.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.3.2.1"><span class="ltx_text ltx_font_sansserif" id="S5.T2.1.3.2.1.1">A</span></th>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.3.2.2"><span class="ltx_text ltx_font_bold" id="S5.T2.1.3.2.2.1">74.0</span></td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.3.2.3">81.2</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.3.2.4">89.7</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.3.2.5">81.6</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.4.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.4.3.1">Annotated</th>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.4.3.2">65.3</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.4.3.3">86.1</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.4.3.4">92.9</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.4.3.5">81.4</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.5.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.5.4.1">Weak</th>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.5.4.2">71.6</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.5.4.3">87.8</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.5.4.4">90.3</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.5.4.5">83.2</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.6.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S5.T2.1.6.5.1">Weak + Ann</th>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T2.1.6.5.2">70.9</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T2.1.6.5.3"><span class="ltx_text ltx_font_bold" id="S5.T2.1.6.5.3.1">90.3</span></td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T2.1.6.5.4"><span class="ltx_text ltx_font_bold" id="S5.T2.1.6.5.4.1">96.8</span></td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T2.1.6.5.5"><span class="ltx_text ltx_font_bold" id="S5.T2.1.6.5.5.1">86.0</span></td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 2: </span>ROC AUC scores of models (rows) on test splits of evaluation datasets (columns).
+<span class="ltx_text ltx_font_sansserif" id="S5.T2.5.1">A</span> = <cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite>, <span class="ltx_text ltx_font_sansserif" id="S5.T2.6.2">R</span> = <cite class="ltx_cite ltx_citemacro_citet">Rieger et al. (<a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite>, <span class="ltx_text ltx_font_sansserif" id="S5.T2.7.3">S</span> = <cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite>.
+</figcaption>
+</figure>
+<figure class="ltx_table" id="S5.T3">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S5.T3.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S5.T3.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="S5.T3.1.1.1.1">Model</th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.2"><span class="ltx_text ltx_font_sansserif" id="S5.T3.1.1.1.2.1">A</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.3"><span class="ltx_text ltx_font_sansserif" id="S5.T3.1.1.1.3.1">R</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_r ltx_border_tt" id="S5.T3.1.1.1.4"><span class="ltx_text ltx_font_sansserif" id="S5.T3.1.1.1.4.1">S</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.5">ADL</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S5.T3.1.2.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S5.T3.1.2.1.1"><span class="ltx_text ltx_font_sansserif" id="S5.T3.1.2.1.1.1">S</span></th>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T3.1.2.1.2">56.3</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T3.1.2.1.3">61.9</td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_t" id="S5.T3.1.2.1.4">-</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T3.1.2.1.5">57.2</td>
+</tr>
+<tr class="ltx_tr" id="S5.T3.1.3.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T3.1.3.2.1"><span class="ltx_text ltx_font_sansserif" id="S5.T3.1.3.2.1.1">A</span></th>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.3.2.2">-</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.3.2.3">81.9</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T3.1.3.2.4">83.9</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.3.2.5">89.1</td>
+</tr>
+<tr class="ltx_tr" id="S5.T3.1.4.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T3.1.4.3.1">Annotated</th>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.4.3.2">55.2</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.4.3.3">82.0</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T3.1.4.3.4">84.7</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.4.3.5">68.5</td>
+</tr>
+<tr class="ltx_tr" id="S5.T3.1.5.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T3.1.5.4.1">Weak</th>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.5.4.2"><span class="ltx_text ltx_font_bold" id="S5.T3.1.5.4.2.1">71.0</span></td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.5.4.3">87.8</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T3.1.5.4.4">87.3</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.5.4.5">85.1</td>
+</tr>
+<tr class="ltx_tr" id="S5.T3.1.6.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S5.T3.1.6.5.1">Weak + Ann</th>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T3.1.6.5.2">70.0</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T3.1.6.5.3"><span class="ltx_text ltx_font_bold" id="S5.T3.1.6.5.3.1">89.8</span></td>
+<td class="ltx_td ltx_align_right ltx_border_bb ltx_border_r" id="S5.T3.1.6.5.4"><span class="ltx_text ltx_font_bold" id="S5.T3.1.6.5.4.1">88.9</span></td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T3.1.6.5.5"><span class="ltx_text ltx_font_bold" id="S5.T3.1.6.5.5.1">89.2</span></td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 3: </span>Generalization performance (ROC AUC).
+For Annotated and Weak + Annotated models, the first 3 columns report scores on evaluation datasets when trained on data from the other two datasets.
+The final column reports on the unseen ADL dataset.
+Scores on datasets used by baseline models for training are not reported since this table focuses on generalization.
+</figcaption>
+</figure>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Anti-racist corpus</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<p class="ltx_p" id="S5.SS1.p1.1">Training with both neutral and anti-racist negative examples improves accuracy on the HateCheck dataset to 69.2 from 60.5 when using a similar number of only neutral negative examples.
+This supports our hypothesis that incorporating anti-racist texts can mitigate bias against marginalized identity mentions.
+Adding anti-racist texts slightly decreases performance on the other 4 evaluation datasets, to 82.8 from 84.3 mean ROC AUC.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Conclusion</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">Ideologies such as white supremacy are difficult to annotate and detect from short texts.
+We use weakly supervised data from domains known for white supremacist ideology to develop classifiers that outperform and generalize more effectively than prior work.
+Incorporating texts from an anti-racist perspective mitigates lexical bias.</p>
+</div>
+<div class="ltx_para" id="S6.p2">
+<p class="ltx_p" id="S6.p2.1">To apply a white supremacist language classifier to varied domains, our results show the benefit of using such weakly supervised data, especially in combination with a small amount of annotated data.
+Other methods for combining these data could be explored in future work, such as approaches that use reinforcement learning to select unlabeled data for training <cite class="ltx_cite ltx_citemacro_citep">(Ye et al., <a class="ltx_ref" href="#bib.bib55" title="">2020</a>; Pujari et al., <a class="ltx_ref" href="#bib.bib38" title="">2022</a>)</cite>.
+Incorporating social science insights and looking for specific tenets of white supremacist extremism could also lead to better classification.
+This classifier could be applied to measure the prevalence or spread of white supremacist ideology through online social networks.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitations</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1">The presented classifier and dataset are only from English-speaking sources, a major disadvantage in detecting white supremacist content globally.
+The dataset also is predominantly sourced from data between 2015-2019 and reflects white supremacist extremist responses to current events from that period, including the Black Lives Matter movement.
+This limits its effectiveness in detecting white supremacist content from other time periods.</p>
+</div>
+<div class="ltx_para" id="Sx1.p2">
+<p class="ltx_p" id="Sx1.p2.1">Though including anti-racist data helps mitigate bias tested by our sample of the HateCheck dataset, an accuracy of 69.2% shows room for improvement.
+There is still a risk of overclassifying posts with marginalized identity mentions as white supremacist.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Ethics Statement</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">There are significant ethical issues to consider in developing text classifiers for ideologies.
+Since this research has clear social implications, we wish to be explicit about values and author positionality beyond a sense of “objectivity” in selecting research questions <cite class="ltx_cite ltx_citemacro_cite">Schlesinger et al. (<a class="ltx_ref" href="#bib.bib48" title="">2017</a>); D’Ignazio and Klein (<a class="ltx_ref" href="#bib.bib15" title="">2020</a>); Waseem et al. (<a class="ltx_ref" href="#bib.bib53" title="">2021</a>)</cite>.
+The authors come from European- and American-dominated university contexts and consider working against racism and white supremacy a priority.
+Most identify as white and some identify as people of color.
+This research proceeded with values of racial justice and places those values at the center of assessing knowledge claims <cite class="ltx_cite ltx_citemacro_citep">(Collins, <a class="ltx_ref" href="#bib.bib11" title="">1990</a>; Daniels, <a class="ltx_ref" href="#bib.bib12" title="">2009</a>)</cite>.
+Our choice of focusing on white supremacy among other ideologies stems from those values.
+White supremacist extremism, as well as structural white supremacism, is responsible for substantial harms against those with marginalized identities.
+This research responds to a need from practitioners for more nuanced classifiers than for broad categories of hate speech or abusive language.
+We thus choose to pursue this research, though caution that developing classifiers for other ideologies should be done with careful consideration and a clear statement of motivating values.</p>
+</div>
+<div class="ltx_para" id="Sx2.p2">
+<p class="ltx_p" id="Sx2.p2.1">There are significant risks which we consider, and attempt to mitigate, in such a dataset and classifier.
+First, there is the risk of misuse of a large corpus of white supremacist data, as has been seen in building and releasing a hate speech “troll bot” from 4chan data<span class="ltx_note ltx_role_footnote" id="footnote7"><sup class="ltx_note_mark">7</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">7</sup><span class="ltx_tag ltx_tag_note">7</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://www.vice.com/en/article/7k8zwx/ai-trained-on-4chan-becomes-hate-speech-machine" target="_blank" title="">https://www.vice.com/en/article/7k8zwx/ai-trained-on-4chan-becomes-hate-speech-machine</a></span></span></span>.
+For this reason we build a discriminative, not generative, classifier, and only plan on releasing our dataset through a vetting process instead of publicly.</p>
+</div>
+<div class="ltx_para" id="Sx2.p3">
+<p class="ltx_p" id="Sx2.p3.1">There are also privacy risks in how such a classifier could be used.
+Our classifier only identifies language that is likely similar to white supremacist content.
+The intended use of this classifier is to measure the prevalence of such an ideology on particular platforms or within networks for research purposes, not to label individuals as holding or not holding white supremacist ideologies.
+Using the classifier for this purpose poses significant risks of misclassification and could increase harmful surveillance tactics.
+We strongly discourage such a use.
+Our hope is that our proposed classifier and dataset can increase knowledge about the nature and extent of white supremacist extremist movement online and can inform structural interventions, such as platform policies, not interventions against individuals.</p>
+</div>
+<div class="ltx_para" id="Sx2.p4">
+<p class="ltx_p" id="Sx2.p4.1">Hate speech classifiers, developed by researchers with similar equity-based values, have been found to contain biases against marginalized groups <cite class="ltx_cite ltx_citemacro_citep">(Sap et al., <a class="ltx_ref" href="#bib.bib47" title="">2019</a>; Davidson et al., <a class="ltx_ref" href="#bib.bib13" title="">2019</a>)</cite>.
+We measure and mitigate this bias from the start by incorporating anti-racist data, though caution that this risk still exists.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx3">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx3.p1">
+<p class="ltx_p" id="Sx3.p1.1">This work was supported in part by the Collaboratory Against Hate: Research and Action Center at Carnegie Mellon University and the University of Pittsburgh.
+The Center for Informed Democracy and Social Cybersecurity at Carnegie Mellon University also provided support.
+We thank the researchers who provided source datasets, including Diana Rieger, Alexandra Siegel and others at the Center for Social Media and Politics at New York University, Jherez Taylor, Jing Qian, and Meredith Pruden.
+We also thank the Internet Archive and investigations teams at Bellingcat and Unicorn Riot for archiving source datasets online, and Maarten Sap for feedback.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">ADL (2022)</span>
+<span class="ltx_bibblock">
+Anti-Defamation League: ADL. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.adl.org/resources/blog/deplatform-tucker-carlson-and-great-replacement-theory" target="_blank" title="">Deplatform Tucker Carlson and the "Great Replacement" Theory</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Alatawi et al. (2021)</span>
+<span class="ltx_bibblock">
+Hind S. Alatawi, Areej M. Alhothali, and Kawthar M. Moria. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1109/ACCESS.2021.3100435" target="_blank" title="">Detecting
+White Supremacist Hate Speech Using Domain Specific Word
+Embedding with Deep Learning and BERT</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib2.1.1">IEEE Access</em>, 9:106363–106374.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ansah (2021)</span>
+<span class="ltx_bibblock">
+Tawia Ansah. 2021.
+
+</span>
+<span class="ltx_bibblock">Violent words: strategies and legal impacts of white supremacist
+language.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib3.1.1">Virginia Journal of Social Policy &amp; the Law</em>, 28(3):305–340.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Berlet and Vysotsky (2006)</span>
+<span class="ltx_bibblock">
+Chip Berlet and Stanislav Vysotsky. 2006.
+
+</span>
+<span class="ltx_bibblock">Overview of U.S. White Supremacist Groups.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">Journal of Political and Military Sociology</em>, 34(1):11–48.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bhat and Klein (2020)</span>
+<span class="ltx_bibblock">
+Prashanth Bhat and Ofra Klein. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1007/978-3-030-41421-4_7" target="_blank" title="">Covert Hate
+Speech: White Nationalists and Dog Whistle Communication on
+Twitter</a>.
+
+</span>
+<span class="ltx_bibblock">In Gwen Bouvier and Judith E. Rosenbaum, editors, <em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">Twitter, the
+Public Sphere, and the Chaos of Online Deliberation</em>, pages
+151–172. Springer International Publishing, Cham.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bird et al. (2009)</span>
+<span class="ltx_bibblock">
+Steven Bird, Ewan Klein, and Edward Loper. 2009.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Natural language processing with Python: analyzing text with
+the Natural Language Toolkit</em>.
+
+</span>
+<span class="ltx_bibblock">O’Reilly Media, Inc.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Blei et al. (2003)</span>
+<span class="ltx_bibblock">
+David M. Blei, Andrew Y. Ng, and Michael I. Jordan. 2003.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf" target="_blank" title="">Latent Dirichlet Allocation</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">Journal of Machine Learning Research</em>, 3:993–1022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Brindle (2016)</span>
+<span class="ltx_bibblock">
+Andrew Brindle. 2016.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">The language of hate: A corpus linguistic analysis of white
+supremacist language</em>.
+
+</span>
+<span class="ltx_bibblock">Routledge.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Brown (2009)</span>
+<span class="ltx_bibblock">
+Christopher Brown. 2009.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1080/10646170902869544" target="_blank" title="">WWW.HATE.COM: White supremacist discourse on the internet and the
+construction of whiteness ideology</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">Howard Journal of Communications</em>, 20(2):189–208.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Calderón et al. (2021)</span>
+<span class="ltx_bibblock">
+Fernando H. Calderón, Namrita Balani, Jherez Taylor, Melvyn Peignon, Yen-Hao
+Huang, and Yi-Shin Chen. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.3390/s21237859" target="_blank" title="">Linguistic Patterns for
+Code Word Resilient Hate Speech Identification</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">Sensors</em>, 21(23):7859.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Collins (1990)</span>
+<span class="ltx_bibblock">
+Patricia Hill Collins. 1990.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">Black feminist thought: Knowledge, consciousness, and the
+politics of empowerment</em>.
+
+</span>
+<span class="ltx_bibblock">Routledge.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Daniels (2009)</span>
+<span class="ltx_bibblock">
+Jessie Daniels. 2009.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">Cyber racism: White supremacy online and the new attack on
+civil rights</em>.
+
+</span>
+<span class="ltx_bibblock">Rowman &amp; Littlefield Publishers.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Davidson et al. (2019)</span>
+<span class="ltx_bibblock">
+Thomas Davidson, Debasmita Bhattacharya, and Ingmar Weber. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/w19-3504" target="_blank" title="">Racial bias in hate
+speech and abusive language detection datasets</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">Proceedings of the Third Workshop on Abusive
+Language Online</em>, pages 25–35. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">de Gibert et al. (2019)</span>
+<span class="ltx_bibblock">
+Ona de Gibert, Naiara Perez, Aitor García-Pablos, and Montse Cuadros. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/w18-5102" target="_blank" title="">Hate Speech Dataset
+from a White Supremacy Forum</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">Proceedings of the Second Workshop on Abusive
+Language Online (ALW2)</em>, pages 11–20.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">D’Ignazio and Klein (2020)</span>
+<span class="ltx_bibblock">
+Catherine D’Ignazio and Lauren F. Klein. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://books.google.com/books?id=x5nSDwAAQBAJ" target="_blank" title=""><em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1.1">Data
+Feminism</em></a>.
+
+</span>
+<span class="ltx_bibblock">Strong Ideas. MIT Press.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dixon et al. (2017)</span>
+<span class="ltx_bibblock">
+Lucas Dixon, John Li, Jeffrey Sorensen, Nithum Thain, and Lucy Vasserman. 2017.
+
+</span>
+<span class="ltx_bibblock">Measuring and Mitigating Unintended Bias in Text
+Classification.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">AAAI/ACM Conference on Artificial Intelligence,
+Ethics, and Society (AIES)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Duffy (2003)</span>
+<span class="ltx_bibblock">
+Margaret E. Duffy. 2003.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1177/0196859903252850" target="_blank" title="">Web of hate: A
+fantasy theme analysis of the rhetorical vision of hate groups online</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">Journal of Communication Inquiry</em>, 27(3):291–312.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">ElSherief et al. (2021)</span>
+<span class="ltx_bibblock">
+Mai ElSherief, Caleb Ziems, David Muchlinski, Vaishnavi Anupindi, Jordyn
+Seybolt, Munmun De Choudhury, and Diyi Yang. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.emnlp-main.29" target="_blank" title="">Latent
+hatred: A benchmark for understanding implicit hate speech</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">Proceedings of the 2021 Conference on Empirical Methods in
+Natural Language Processing</em>, pages 345–363, Online and Punta Cana,
+Dominican Republic. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Fan (2021)</span>
+<span class="ltx_bibblock">
+Jess Fan. 2021.
+
+</span>
+<span class="ltx_bibblock">Discord dataset.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://www.kaggle.com/jef1056/discord-data" target="_blank" title="">https://www.kaggle.com/jef1056/discord-data</a>.
+
+</span>
+<span class="ltx_bibblock">V5.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ferber (2004)</span>
+<span class="ltx_bibblock">
+Abby L. Ferber, editor. 2004.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">Home-grown hate: Gender and organized racism</em>.
+
+</span>
+<span class="ltx_bibblock">Psychology Press.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ferber and Kimmel (2000)</span>
+<span class="ltx_bibblock">
+Abby L. Ferber and Michael Kimmel. 2000.
+
+</span>
+<span class="ltx_bibblock">Reading right: the Western tradition in white supremacist
+discourse.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">Sociological Focus</em>, 33(2):193–213.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Fersini et al. (2018)</span>
+<span class="ltx_bibblock">
+Elisabetta Fersini, Debora Nozza, and Paolo Rosso. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://ceur-ws.org/Vol-2263/paper009.pdf" target="_blank" title="">Overview of the
+Evalita 2018 Task on Automatic Misogyny Identification (AMI)</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">Proceedings of the Sixth Evaluation Campaign of
+Natural Language Processing and Speech Tools for Italian
+(EVALITA 2018)</em>, Turin, Italy.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Figea et al. (2016)</span>
+<span class="ltx_bibblock">
+Leo Figea, Lisa Kaati, and Ryan Scrivens. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1109/ISI.2016.7745448" target="_blank" title="">Measuring online
+affects in a white supremacy forum</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">IEEE International Conference on Intelligence and
+Security Informatics: Cybersecurity and Big Data, ISI 2016</em>,
+pages 85–90. Institute of Electrical and Electronics Engineers Inc.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Grootendorst (2022)</span>
+<span class="ltx_bibblock">
+Maarten Grootendorst. 2022.
+
+</span>
+<span class="ltx_bibblock">BERTopic: Neural topic modeling with a class-based TF-IDF
+procedure.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">arXiv preprint arXiv:2203.05794</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hartung et al. (2017)</span>
+<span class="ltx_bibblock">
+Matthias Hartung, Roman Klinger, Franziska Schmidtke, and Lars Vogel. 2017.
+
+</span>
+<span class="ltx_bibblock">Identifying Right-Wing Extremism in German Twitter
+Profiles: a Classification Approach.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib25.1.1">Proceedings of the 22nd International Conference on
+Applications of Natural Language Processing to Information
+Systems (NLDB 2017)</em>. Springer International Publishing.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hudeček et al. (2021)</span>
+<span class="ltx_bibblock">
+Vojtěch Hudeček, Ondřej Dušek, and Zhou Yu. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.acl-long.189" target="_blank" title="">Discovering
+Dialogue Slots with Weak Supervision</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">Proceedings of the 59th Annual Meeting of the
+Association for Computational Linguistics and the 11th International
+Joint Conference on Natural Language Processing (Volume 1: Long
+Papers)</em>, pages 2430–2442, Online. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hutchinson et al. (2021)</span>
+<span class="ltx_bibblock">
+Ben Hutchinson, Andrew Smart, Alex Hanna, Emily Denton, Christina Greer, Oddur
+Kjartansson, Parker Barnes, and Margaret Mitchell. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/3442188.3445918" target="_blank" title="">Towards
+Accountability for Machine Learning Datasets: Practices from
+Software Engineering and Infrastructure</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">Proceedings of the 2021 ACM Conference on Fairness,
+Accountability, and Transparency</em>, FAccT ’21, pages 560–575, New York,
+NY, USA. Association for Computing Machinery.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Jokubauskaitė and Peeters (2020)</span>
+<span class="ltx_bibblock">
+Emilija Jokubauskaitė and Stijn Peeters. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://ojs.aaai.org/index.php/ICWSM/article/view/7351" target="_blank" title="">Generally Curious: Thematically Distinct Datasets of General
+Threads on 4chan/pol/</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib28.1.1">Proceedings of the International AAAI Conference on
+Web and Social Media</em>, volume 14, pages 863–867.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kamila et al. (2022)</span>
+<span class="ltx_bibblock">
+Sabyasachi Kamila, Walid Magdy, Sourav Dutta, and MingXue Wang. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://aclanthology.org/2022.emnlp-main.412" target="_blank" title="">AX-MABSA:
+A Framework for Extremely Weakly Supervised Multi-label Aspect
+Based Sentiment Analysis</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">Proceedings of the 2022 Conference on Empirical
+Methods in Natural Language Processing</em>, pages 6136–6147, Abu Dhabi,
+United Arab Emirates. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Karamanolakis et al. (2021)</span>
+<span class="ltx_bibblock">
+Giannis Karamanolakis, Subhabrata Mukherjee, Guoqing Zheng, and Ahmed Hassan
+Awadallah. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.naacl-main.66" target="_blank" title="">Self-training
+with weak supervision</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">Proceedings of the 2021 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies</em>, pages 845–863, Online. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kwok and Wang (2013)</span>
+<span class="ltx_bibblock">
+Irene Kwok and Yuzhou Wang. 2013.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://www.google.com/url?sa=t&amp;amp;rct=j&amp;amp;q=&amp;amp;esrc=s&amp;amp;source=web&amp;amp;cd=1&amp;amp;ved=0CC0QFjAA&amp;amp;url=http://www.aaai.org/ocs/index.php/AAAI/AAAI13/paper/download/6419/6821&amp;amp;ei=e7hJUq2EAtKq4AOB04HoDg&amp;amp;usg=AFQjCNEi9mX0w71lUCo8tdxTnQJkR74MLg&amp;am" target="_blank" title="">Locate the Hate: Detecting Tweets against Blacks</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib31.1.1">Twenty-Seventh AAAI Conference on Artificial
+Intelligence</em>, pages 1621–1622.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma and He (2013)</span>
+<span class="ltx_bibblock">
+Yunqian Ma and Haibo He. 2013.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">Imbalanced learning: foundations, algorithms, and
+applications</em>.
+
+</span>
+<span class="ltx_bibblock">John Wiley &amp; Sons.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mozafari et al. (2019)</span>
+<span class="ltx_bibblock">
+Marzieh Mozafari, Reza Farahbakhsh, and Noël Crespi. 2019.
+
+</span>
+<span class="ltx_bibblock">A BERT-Based Transfer Learning Approach for Hate Speech
+Detection in Online Social Media.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib33.1.1">International Conference on Complex Networks and
+Their Applications.</em>, pages 928–940.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Papasavva et al. (2020)</span>
+<span class="ltx_bibblock">
+Antonis Papasavva, Savvas Zannettou, Emiliano De Cristofaro, Gianluca
+Stringhini, and Jeremy Blackburn. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://ojs.aaai.org/index.php/ICWSM/article/view/7354" target="_blank" title="">Raiders of the Lost Kek: 3.5 Years of Augmented 4chan Posts from
+the Politically Incorrect Board</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib34.1.1">Proceedings of the International AAAI Conference on
+Web and Social Media</em>, volume 14, pages 885–894.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Perry and Scrivens (2016)</span>
+<span class="ltx_bibblock">
+Barbara Perry and Ryan Scrivens. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.google.com/books/edition/The_Globalization_of_Hate/mpcUDAAAQBAJ?hl=en&amp;gbpv=1&amp;dq=B.+Perry+and+R.+Scrivens,+%E2%80%9CWhite+pride+worldwide:+Constructing+global+identities+online,%E2%80%9DJ.+Schweppe+and+M+Walters+(eds.),+The+Globalisationof++Hate:++Internationalising++Hate++Crime%3F++New++York:++Oxford++UniversityPress,+pp.65%E2%80%9378,+2016.&amp;pg=PA65&amp;printsec=frontcover" target="_blank" title="">White pride worldwide: Constructing global identities online</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib35.1.1">The Globalization of Hate: Internationalizing Hate
+Crime?</em> Oxford University Press.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Poletto et al. (2021)</span>
+<span class="ltx_bibblock">
+Fabio Poletto, Valerio Basile, Manuela Sanguinetti, Cristina Bosco, and Viviana
+Patti. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1007/s10579-020-09502-8" target="_blank" title="">Resources and
+benchmark corpora for hate speech detection: a systematic review</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">Language Resources and Evaluation</em>, volume 55, pages
+477–523. Springer Science and Business Media.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pruden et al. (2022)</span>
+<span class="ltx_bibblock">
+Meredith L. Pruden, Ayse D. Lokmanoglu, Anne Peterscheck, and Yannick
+Veilleux-Lepage. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1007/978-3-030-99804-2_9" target="_blank" title="">Birds of a
+Feather: A Comparative Analysis of White Supremacist and
+Violent Male Supremacist Discourses</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">Right-Wing Extremism in Canada and the United
+States</em>, Palgrave Hate Studies, pages 215–254. Palgrave Macmillan.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pujari et al. (2022)</span>
+<span class="ltx_bibblock">
+Rajkumar Pujari, Erik Oveson, Priyanka Kulkarni, and Elnaz Nouri. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2022.acl-long.462" target="_blank" title="">Reinforcement
+guided multi-task learning framework for low-resource stereotype detection</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">Proceedings of the 60th Annual Meeting of the Association
+for Computational Linguistics (Volume 1: Long Papers)</em>, pages 6703–6712,
+Dublin, Ireland. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Qian et al. (2018)</span>
+<span class="ltx_bibblock">
+Jing Qian, Mai Elsherief, Elizabeth Belding, and William Yang Wang. 2018.
+
+</span>
+<span class="ltx_bibblock">Hierarchical CVAE for Fine-Grained Hate Speech
+Classification.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib39.1.1">Proceedings of the 2018 Conference on Empirical
+Methods in Natural Language Processing</em>, pages 3550–3559.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Raisi and Huang (2017)</span>
+<span class="ltx_bibblock">
+Elaheh Raisi and Bert Huang. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/3110025.3110049" target="_blank" title="">Cyberbullying
+detection with weakly supervised machine learning</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib40.1.1">Proceedings of the 2017 IEEE/ACM International
+Conference on Advances in Social Networks Analysis and Mining,
+ASONAM 2017</em>, pages 409–416. Association for Computing Machinery, Inc.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ratner et al. (2017)</span>
+<span class="ltx_bibblock">
+Alexander Ratner, Stephen H. Bach, Henry Ehrenberg, Jason Fries, Sen Wu, and
+Christopher Ré. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.14778/3157794.3157797" target="_blank" title="">Snorkel: Rapid
+Training Data Creation with Weak Supervision</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">Proceedings of the VLDB Endowment. International
+Conference on Very Large Data Bases</em>, volume 11, pages 269–282.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rieger et al. (2021)</span>
+<span class="ltx_bibblock">
+Diana Rieger, Anna Sophie Kümpel, Maximilian Wich, Toni Kiening, and Georg
+Groh. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1177/20563051211052906" target="_blank" title="">Assessing the
+Extent and Types of Hate Speech in Fringe Communities: A Case
+Study of Alt-Right Communities on 8chan, 4chan, and Reddit</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib42.1.1">Social Media and Society</em>, 7(4).
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Röttger et al. (2021)</span>
+<span class="ltx_bibblock">
+Paul Röttger, Bertram Vidgen, Dong Nguyen, Zeerak Waseem, Helen Margetts, and
+Janet B Pierrehumbert. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://github.com/paul-rottger/hatecheck-data." target="_blank" title="">HATECHECK:
+Functional Tests for Hate Speech Detection Models</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib43.1.1">Proceedings of the 59th Annual Meeting of the
+Association for Computational Linguistics and the 11th International
+Joint Conference on Natural Language Processing</em>, pages 41–58.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Samghabadi et al. (2020)</span>
+<span class="ltx_bibblock">
+Niloofar Safi Samghabadi, Parth Patwa, Srinivas Pykl, Prerana Mukherjee,
+Amitava Das, and Thamar Solorio. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.theverge.com/interface/2019/" target="_blank" title="">Aggression and
+Misogyny Detection using BERT: A Multi-Task Approach</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib44.1.1">Proceedings of the Second Workshop on Trolling,
+Aggression and Cyberbullying</em>, pages 11–16.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib45">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sanguinetti et al. (2018)</span>
+<span class="ltx_bibblock">
+Manuela Sanguinetti, Fabio Poletto, Cristina Bosco, Viviana Patti, and Marco
+Stranisci. 2018.
+
+</span>
+<span class="ltx_bibblock">An Italian Twitter Corpus of Hate Speech against
+Immigrants.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib45.1.1">Proceedings of the Eleventh International Conference
+on Language Resources and Evaluation (LREC’18)</em>, pages 2798–2895.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib46">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sanh et al. (2019)</span>
+<span class="ltx_bibblock">
+Victor Sanh, Lysandre Debut, Julien Chaumond, and Thomas Wolf. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://github.com/huggingface/transformers" target="_blank" title="">DistilBERT, a
+distilled version of BERT: smaller, faster, cheaper and lighter</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib46.1.1">5th Workshop on Energy Efficient Machine Learning
+and Cognitive Computing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib47">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sap et al. (2019)</span>
+<span class="ltx_bibblock">
+Maarten Sap, Dallas Card, Saadia Gabriel, Yejin Choi, and Noah A Smith. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.aclweb.org/anthology/P19-1163" target="_blank" title="">The Risk of
+Racial Bias in Hate Speech Detection</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib47.1.1">Proceedings of the 57th Conference of the Association for
+Computational Linguistics</em>, pages 1668–1678.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib48">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Schlesinger et al. (2017)</span>
+<span class="ltx_bibblock">
+Ari Schlesinger, W. Keith Edwards, and Rebecca E. Grinter. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/3025453.3025766" target="_blank" title="">Intersectional
+HCI: Engaging Identity through Gender, Race, and Class</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib48.1.1">CHI ’17: Proceedings of the 2017 CHI Conference on
+Human Factors in Computing Systems</em>, pages 5412–5427.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib49">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Siegel et al. (2021)</span>
+<span class="ltx_bibblock">
+Alexandra A. Siegel, Evgenii Nikitin, Pablo Barberá, Joanna Sterling, Bethany
+Pullen, Richard Bonneau, Jonathan Nagler, and Joshua A. Tucker. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.nowpublishers.com/article/Details/QJPS-19045" target="_blank" title="">Trumping Hate on Twitter? Online Hate Speech in the 2016 U.S.
+Election Campaign and its Aftermath</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib49.1.1">Quarterly Journal of Political Science</em>, 16:71–104.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib50">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Simons and Skillicorn (2020)</span>
+<span class="ltx_bibblock">
+B. Simons and D. B. Skillicorn. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1109/ISI49825.2020.9280551" target="_blank" title="">A
+Bootstrapped Model to Detect Abuse and Intent in White
+Supremacist Corpora</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib50.1.1">Proceedings - 2020 IEEE International Conference on
+Intelligence and Security Informatics, ISI 2020</em>. Institute of
+Electrical and Electronics Engineers Inc.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib51">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Swamy et al. (2019)</span>
+<span class="ltx_bibblock">
+Steve Durairaj Swamy, Anupam Jamatia, and Björn Gambäck. 2019.
+
+</span>
+<span class="ltx_bibblock">Studying Generalisability Across Abusive Language Detection
+Datasets.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib51.1.1">Proceedings of the 23rd Conference on Computational
+Natural Language Learning</em>, pages 940–950, Hong Kong, China.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib52">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Thompson (2001)</span>
+<span class="ltx_bibblock">
+Kevin C. Thompson. 2001.
+
+</span>
+<span class="ltx_bibblock">Watching the Stormfront: White Nationalists and the Building
+of Community in Cyberspace.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib52.1.1">Social Analysis: The International Journal of Anthropology</em>,
+45(1):32–52.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib53">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Waseem et al. (2021)</span>
+<span class="ltx_bibblock">
+Zeerak Waseem, Smarika Lulz, Joachim Bingel, and Isabelle Augenstein. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2101.11974" target="_blank" title="">Disembodied Machine
+Learning: On the Illusion of Objectivity in NLP</a>.
+
+</span>
+<span class="ltx_bibblock">pages 1–8.
+
+</span>
+<span class="ltx_bibblock">ArXiv: 2101.11974.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib54">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Williams et al. (2017)</span>
+<span class="ltx_bibblock">
+Matthew L. Williams, Pete Burnap, and Luke Sloan. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1177/0038038517708140" target="_blank" title="">Towards an
+Ethical Framework for Publishing Twitter Data in Social
+Research: Taking into Account Users’ Views, Online Context
+and Algorithmic Estimation</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib54.1.1">Sociology</em>, 51(6):1149–1168.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib55">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ye et al. (2020)</span>
+<span class="ltx_bibblock">
+Zhiquan Ye, Yuxia Geng, Jiaoyan Chen, Jingmin Chen, Xiaoxiao Xu, SuHang Zheng,
+Feng Wang, Jun Zhang, and Huajun Chen. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.acl-main.272" target="_blank" title="">Zero-shot
+Text Classification via Reinforced Self-training</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib55.1.1">Proceedings of the 58th Annual Meeting of the
+Association for Computational Linguistics</em>, pages 3014–3024, Online.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib56">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yoder and Habib (2022)</span>
+<span class="ltx_bibblock">
+Michael Miller Yoder and Hana Habib. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.collabagainsthate.org/papers-presentations/research-needs" target="_blank" title="">Research Needs for Countering Extremist Hate</a>.
+
+</span>
+<span class="ltx_bibblock">Technical report, Collaboratory Against Hate.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib57">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yoder et al. (2022)</span>
+<span class="ltx_bibblock">
+Michael Miller Yoder, Lynnette Ng, David West Brown, and Kathleen Carley. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://aclanthology.org/2022.conll-1.3" target="_blank" title="">How Hate Speech
+Varies by Target Identity: A Computational Analysis</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib57.1.1">Proceedings of the 26th Conference on Computational
+Natural Language Learning (CoNLL)</em>, pages 27–39, Abu Dhabi, United
+Arab Emirates (Hybrid). Association for Computational Linguistics.
+
+</span>
+</li>
+</ul>
+</section>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix A </span>White supremacist corpus details</h2>
+<div class="ltx_para" id="A1.p1">
+<p class="ltx_p" id="A1.p1.1">We sample 9 datasets and data dumps to construct our white supremacist corpus (see Section <a class="ltx_ref" href="#S3.SS1" title="3.1 White supremacist data ‣ 3 Weakly Annotated Data ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">3.1</span></a>).
+Here we provide details on how each of these data sources was processed and sampled, as well as other details of the corpus.</p>
+</div>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Papasavva et al. (<a class="ltx_ref" href="#bib.bib34" title="">2020</a>)</cite>:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px1.p1.1">4chan /pol/ allows users to select “troll” flags to use instead of the default country flag detected from their IP address.
+We filter this dataset<span class="ltx_note ltx_role_footnote" id="footnote8"><sup class="ltx_note_mark">8</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">8</sup><span class="ltx_tag ltx_tag_note">8</span>Available at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://zenodo.org/record/3606810#.Y8lkkBXMKF6" target="_blank" title="">https://zenodo.org/record/3606810#.Y8lkkBXMKF6</a>, accessed 19 January 2023. This dataset is under a Creative Commons Attribution 4.0 International license.</span></span></span>
+to posts from users that chose to post with Nazi, White Supremacist, Confederate, or Fascist troll flags.
+From a qualitative check, samples of posts from users with these flags often expressed white supremacist ideology.
+We remove posts with duplicate texts, as well as posts that are also found in the 4chan /pol/ dump from <cite class="ltx_cite ltx_citemacro_citet">Jokubauskaitė and Peeters (<a class="ltx_ref" href="#bib.bib28" title="">2020</a>)</cite>.
+Our sample of this dataset contains posts from 2017 through 2019.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Stormfront data archive:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px2.p1.1">Stormfront, a popular white supremacist forum, is no longer active.
+We sample from an Internet Archive dump of its content taken in 2017<span class="ltx_note ltx_role_footnote" id="footnote9"><sup class="ltx_note_mark">9</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">9</sup><span class="ltx_tag ltx_tag_note">9</span>Available at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://archive.org/details/stormfront.org_201708" target="_blank" title="">https://archive.org/details/stormfront.org_201708</a>, accessed 11 January 2023</span></span></span>.
+We extract forum text from the HTML files and exclude threads that are not in English and are non-ideological.
+Specifically, we exclude the following threads: Nederland &amp; Vlaanderen, Srbija, Español y Portugués, Italia, Croatia, South Africa, en Français, Russia, Baltic / Scandinavia, Hungary, Opposing Views Forum, Computer Talk.
+Our sample of this dataset contains posts from 2001 through 2017.
+</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Jokubauskaitė and Peeters (<a class="ltx_ref" href="#bib.bib28" title="">2020</a>)</cite>:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px3.p1.1">We select posts in this dataset of “general” 4chan /pol/ threads<span class="ltx_note ltx_role_footnote" id="footnote10"><sup class="ltx_note_mark">10</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">10</sup><span class="ltx_tag ltx_tag_note">10</span>Available at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://zenodo.org/record/3603292#.Y8lmTxXMKF5" target="_blank" title="">https://zenodo.org/record/3603292#.Y8lmTxXMKF5</a>, accessed 19 January 2023. This dataset is under a Creative Commons Attribution 4.0 International license.</span></span></span> that we find to be related to white supremacy and fascism: kraut/pol/, afd, national socialism, fascism, dixie, kraut/pol/, ethnostate, white, chimpout, feminist apocalypse, (((krautgate))).
+This dataset contains posts from 2001 through 2017.
+</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px4">
+<h4 class="ltx_title ltx_title_paragraph">Iron March data archive:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px4.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px4.p1.1">Data from Iron March, a now defunct neo-Nazi and white supremacist message board, was obtained through an Internet Archive data dump<span class="ltx_note ltx_role_footnote" id="footnote11"><sup class="ltx_note_mark">11</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">11</sup><span class="ltx_tag ltx_tag_note">11</span>Available through links at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://www.bellingcat.com/resources/how-tos/2019/11/06/massive-white-supremacist-message-board-leak-how-to-access-and-interpret-the-data/" target="_blank" title="">https://www.bellingcat.com/resources/how-tos/2019/11/06/massive-white-supremacist-message-board-leak-how-to-access-and-interpret-the-data/</a>, accessed 11 January 2023</span></span></span> referenced in <cite class="ltx_cite ltx_citemacro_citet">Simons and Skillicorn (<a class="ltx_ref" href="#bib.bib50" title="">2020</a>)</cite>.
+This dataset contains posts from 2011 through 2017.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px5">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Qian et al. (<a class="ltx_ref" href="#bib.bib39" title="">2018</a>)</cite>:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px5.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px5.p1.1">We rehydrate tweet IDs from this dataset, graciously provided by the authors, by the ideology of the tweet author according to the Southern Poverty Law Center.
+After qualitatively checking sample tweets from each ideology to see how closely they match tenets of white supremacism, we select tweets from the following ideologies: neo-Confederate, neo-Nazi, Ku Klux Klan, racist skinhead, anti-immigration, white nationalist, anti-Semitism, hate music, holocaust identity, Christian Identity.
+44.9% of tweets were able to be rehydrated from the original set in September 2022.
+Our rehydrated tweets ran from 2009 through 2017.
+</p>
+</div>
+<figure class="ltx_figure" id="A1.F2"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="144" id="A1.F2.g1" src="./media/white_supremacist_fulltext_lda30_annotations.png" width="420"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>Mean white supremacism annotations by LDA topic in the white supremacist corpus.</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px6">
+<h4 class="ltx_title ltx_title_paragraph">Patriot Front data archive:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px6.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px6.p1.1">We select Discord chat posts from servers operated by the white supremacist group, Patriot Front.
+These chats were leaked by Unicorn Riot<span class="ltx_note ltx_role_footnote" id="footnote12"><sup class="ltx_note_mark">12</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">12</sup><span class="ltx_tag ltx_tag_note">12</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://unicornriot.ninja/2022/patriot-front-fascist-leak-exposes-nationwide-racist-campaigns/" target="_blank" title="">https://unicornriot.ninja/2022/patriot-front-fascist-leak-exposes-nationwide-racist-campaigns/</a>, accessed 11 January 2023</span></span></span>.
+After manual inspection for which threads are most ideological, we select the ‘general’ channels from 3 servers: Vanguard America-Patriot Front (2017), Front and Center (2018), MI Goy Scouts Official (2018).</p>
+</div>
+<div class="ltx_para" id="A1.SS0.SSS0.Px6.p2">
+<p class="ltx_p" id="A1.SS0.SSS0.Px6.p2.1">Since chat data may contain names, we remove the top 300 US first names from a 1990 list<span class="ltx_note ltx_role_footnote" id="footnote13"><sup class="ltx_note_mark">13</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">13</sup><span class="ltx_tag ltx_tag_note">13</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://namecensus.com/first-names/" target="_blank" title="">https://namecensus.com/first-names/</a>, accessed 11 January 2023</span></span></span>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px7">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Calderón et al. (<a class="ltx_ref" href="#bib.bib10" title="">2021</a>)</cite>:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px7.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px7.p1.1">We include articles from two white supremacist news websites, the Daily Stormer and American Renaissance, graciously provided by <cite class="ltx_cite ltx_citemacro_citet">Calderón et al. (<a class="ltx_ref" href="#bib.bib10" title="">2021</a>)</cite>.
+This data contains posts from 2005 through 2017.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px8">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite>:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px8.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px8.p1.1">We include white supremacist books and manifestos collected and provided by <cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite>.
+These are: Enoch Powell’s “Rivers of Blood” speech (1968), Jean Raspail’s <span class="ltx_text ltx_font_italic" id="A1.SS0.SSS0.Px8.p1.1.1">Camp of the Saints</span> (1973, English translation), William Pierce’s <span class="ltx_text ltx_font_italic" id="A1.SS0.SSS0.Px8.p1.1.2">The Turner Diaries</span> (1978), David Lane’s “White Genocide” manifesto (2012), Anders Breivik manifesto (2011), Renaud Camus’ <span class="ltx_text ltx_font_italic" id="A1.SS0.SSS0.Px8.p1.1.3">The Great Replacement</span> (2012, English translation).
+These books and manifestos are split into paragraphs (split at newlines) for experiments.
+</p>
+</div>
+<figure class="ltx_figure" id="A1.F3">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="A1.F3.1" style="width:433.6pt;height:231.7pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(106.6pt,-57.0pt) scale(1.96721316014746,1.96721316014746) ;"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="138" id="A1.F3.1.g1" src="./media/x1.png" width="250"/>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>Time spans of data included in full white supremacist corpus, separated by source. Historical data from <cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite> is excluded.</figcaption>
+</figure>
+<figure class="ltx_figure" id="A1.F4">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="A1.F4.1" style="width:433.6pt;height:231.7pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(106.6pt,-57.0pt) scale(1.96721316014746,1.96721316014746) ;"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="138" id="A1.F4.1.g1" src="./media/x2.png" width="250"/>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span>Histogram of post counts in full white supremacist corpus over time, binned monthly. Historical data from <cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite> is excluded.</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="A1.SS0.SSS0.Px9">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">ElSherief et al. (<a class="ltx_ref" href="#bib.bib18" title="">2021</a>)</cite>:</h4>
+<div class="ltx_para" id="A1.SS0.SSS0.Px9.p1">
+<p class="ltx_p" id="A1.SS0.SSS0.Px9.p1.1">From this dataset of implicit hate speech tweets<span class="ltx_note ltx_role_footnote" id="footnote14"><sup class="ltx_note_mark">14</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">14</sup><span class="ltx_tag ltx_tag_note">14</span>Available at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/SALT-NLP/implicit-hate" target="_blank" title="">https://github.com/SALT-NLP/implicit-hate</a>, accessed 19 January 2023</span></span></span>, we select two portions: 1) tweets labeled for “white grievance” by annotators, and 2) when rehydrated, tweets by users identified as holding selected white supremacist ideologies by <cite class="ltx_cite ltx_citemacro_citet">Qian et al. (<a class="ltx_ref" href="#bib.bib39" title="">2018</a>)</cite> (these papers draw on similar datasets).
+When we rehydrated these tweets in August 2022, we were only able to access 36.8%.
+Rehydrated tweets spanned from 2009 through 2017.
+</p>
+</div>
+<div class="ltx_para" id="A1.SS0.SSS0.Px9.p2">
+<p class="ltx_p" id="A1.SS0.SSS0.Px9.p2.1">We lowercase and tokenize all data sources with spaCy 3.1.1 for forum posts and articles, and NLTK’s TweetTokenizer <cite class="ltx_cite ltx_citemacro_citep">(Bird et al., <a class="ltx_ref" href="#bib.bib6" title="">2009</a>)</cite> for tweets and chat data.</p>
+</div>
+<div class="ltx_para" id="A1.SS0.SSS0.Px9.p3">
+<p class="ltx_p" id="A1.SS0.SSS0.Px9.p3.1">Figure <a class="ltx_ref" href="#A1.F3" title="Figure 3 ‣ Pruden et al. (2022): ‣ Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">3</span></a> shows the time spans of data from different sources in the full corpus, and Figure <a class="ltx_ref" href="#A1.F4" title="Figure 4 ‣ Pruden et al. (2022): ‣ Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">4</span></a> shows the distribution of posts over time in the dataset.
+These figures exclude historical data from <cite class="ltx_cite ltx_citemacro_citet">Pruden et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite> for readability.</p>
+</div>
+<figure class="ltx_table" id="A1.T4">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="A1.T4.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="A1.T4.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_l ltx_border_r ltx_border_t" id="A1.T4.1.1.1.1">Topic</th>
+<th class="ltx_td ltx_align_justify ltx_th ltx_th_column ltx_border_r ltx_border_t" id="A1.T4.1.1.1.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.1.1.2.1">
+<span class="ltx_p" id="A1.T4.1.1.1.2.1.1">Top words</span>
+</span>
+</th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_r ltx_border_t" id="A1.T4.1.1.1.3">Mean ann.</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A1.T4.1.2.1">
+<td class="ltx_td ltx_align_left ltx_border_l ltx_border_r ltx_border_t" id="A1.T4.1.2.1.1">13</td>
+<td class="ltx_td ltx_align_justify ltx_border_r ltx_border_t" id="A1.T4.1.2.1.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.2.1.2.1">
+<span class="ltx_p" id="A1.T4.1.2.1.2.1.1">jews jewish jew israel kike anti holocaust kikes zionist goyim</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_t" id="A1.T4.1.2.1.3">0.55</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.3.2">
+<td class="ltx_td ltx_align_left ltx_border_l ltx_border_r" id="A1.T4.1.3.2.1">28</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="A1.T4.1.3.2.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.3.2.2.1">
+<span class="ltx_p" id="A1.T4.1.3.2.2.1.1">white people whites race non black blacks racist hate want</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T4.1.3.2.3">0.52</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.4.3">
+<td class="ltx_td ltx_align_left ltx_border_l ltx_border_r" id="A1.T4.1.4.3.1">25</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="A1.T4.1.4.3.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.4.3.2.1">
+<span class="ltx_p" id="A1.T4.1.4.3.2.1.1">eu russia russian europe france french european turks country sweden</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T4.1.4.3.3">0.20</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.5.4">
+<td class="ltx_td ltx_align_left ltx_border_l ltx_border_r" id="A1.T4.1.5.4.1">6</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="A1.T4.1.5.4.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.5.4.2.1">
+<span class="ltx_p" id="A1.T4.1.5.4.2.1.1">national state people government power nation political socialism society right</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T4.1.5.4.3">0.20</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.6.5">
+<td class="ltx_td ltx_align_left ltx_border_l ltx_border_r" id="A1.T4.1.6.5.1">15</td>
+<td class="ltx_td ltx_align_justify ltx_border_r" id="A1.T4.1.6.5.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.6.5.2.1">
+<span class="ltx_p" id="A1.T4.1.6.5.2.1.1">war hitler germany german did germans nazi world army nazis</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T4.1.6.5.3">0.17</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.7.6">
+<td class="ltx_td ltx_align_left ltx_border_b ltx_border_l ltx_border_r" id="A1.T4.1.7.6.1">9</td>
+<td class="ltx_td ltx_align_justify ltx_border_b ltx_border_r" id="A1.T4.1.7.6.2">
+<span class="ltx_inline-block ltx_align_top" id="A1.T4.1.7.6.2.1">
+<span class="ltx_p" id="A1.T4.1.7.6.2.1.1">black crime gun kill blacks killed africa rape guns people</span>
+</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_b ltx_border_r" id="A1.T4.1.7.6.3">0.15</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 4: </span>LDA topics selected for the white supremacist corpus used in experiments. These are the 6 topics with the highest mean annotation values for white supremacy. <span class="ltx_text ltx_font_bold ltx_font_italic" id="A1.T4.3.1">Warning: offensive and hateful terms.</span></figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_appendix" id="A2">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix B </span>Outlier topic removal</h2>
+<div class="ltx_para" id="A2.p1">
+<p class="ltx_p" id="A2.p1.1">This appendix describes details of removing non-ideological content from our white supremacist corpus.
+We run LDA over the full white supremacist corpus and decide on 30 topics after manually inspecting topics for coherence.
+We also tried BERTopic <cite class="ltx_cite ltx_citemacro_citep">(Grootendorst, <a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite>, but LDA gave a less skewed distribution of documents per topic.</p>
+</div>
+<div class="ltx_para" id="A2.p2">
+<p class="ltx_p" id="A2.p2.1">After a brief initial annotation period, one of the authors annotated 20 instances per topic as white supremacist (coded 1), neutral/undecided (0), or not white supremacist (-1).
+The criteria was the presence of at least one tenet of white supremacism, described in Section <a class="ltx_ref" href="#S2" title="2 The Language of White Supremacist Extremism ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">2</span></a>.
+Mean distribution of these annotations over topics are presented in <a class="ltx_ref ltx_refmacro_autoref" href="#A1.F2" title="Figure 2 ‣ Qian et al. (2018): ‣ Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">Figure 2</span></a>.</p>
+</div>
+<div class="ltx_para" id="A2.p3">
+<p class="ltx_p" id="A2.p3.1">As can be seen, most topics have mean scores less than 0, i.e., that they contain more posts annotated as neutral or not white supremacist than white supremacist.
+This matches results from <cite class="ltx_cite ltx_citemacro_citet">Rieger et al. (<a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite>, who find 24% of posts in a sample from fringe far-right platforms to be hate speech, high compared to other online spaces but certainly not the majority of posts.
+This motivates outlier removal, and we found that removing outlier topics provided an advantage in classification on the evaluation datasets.
+Assigning posts to the highest-likelihood topic, we find that filtering to posts within the 6 topics with the highest mean annotations for white supremacy provides the best performance.
+As seen in <a class="ltx_ref ltx_refmacro_autoref" href="#A1.F2" title="Figure 2 ‣ Qian et al. (2018): ‣ Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">Figure 2</span></a>, beyond 6 topics the mean drops to close to a 0 (neutral) rating.
+These topics related to antisemitism, anti-Black racism, and discussions of European politics and Nazism.
+Top words for these 6 topics are listed in <a class="ltx_ref ltx_refmacro_autoref" href="#A1.T4" title="Table 4 ‣ ElSherief et al. (2021): ‣ Appendix A White supremacist corpus details ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">Table 4</span></a>.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A3">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix C </span>Evaluation datasets</h2>
+<div class="ltx_para" id="A3.p1">
+<p class="ltx_p" id="A3.p1.1">This appendix describes the details of sampling and processing datasets manually annotated for white supremacy used to evaluate classifiers.</p>
+</div>
+<figure class="ltx_figure" id="A3.F5">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_1">
+<div class="ltx_inline-block ltx_figure_panel ltx_align_center ltx_transformed_outer" id="A3.F5.1" style="width:433.6pt;height:331pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(102.3pt,-78.1pt) scale(1.89274444587792,1.89274444587792) ;"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="198" id="A3.F5.1.g1" src="./media/x3.png" width="257"/>
+</span></div>
+</div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1">
+<div class="ltx_inline-block ltx_figure_panel ltx_align_center ltx_transformed_outer" id="A3.F5.2" style="width:433.6pt;height:331pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(102.3pt,-78.1pt) scale(1.89274444587792,1.89274444587792) ;"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="198" id="A3.F5.2.g1" src="./media/x4.png" width="257"/>
+</span></div>
+</div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1">
+<div class="ltx_inline-block ltx_figure_panel ltx_align_center ltx_transformed_outer" id="A3.F5.3" style="width:433.6pt;height:331pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(102.3pt,-78.1pt) scale(1.89274444587792,1.89274444587792) ;"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="198" id="A3.F5.3.g1" src="./media/x5.png" width="257"/>
+</span></div>
+</div>
+</div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 5: </span>Precision and recall curves on test splits of evaluation datasets for the best-performing Weak + Annotated model. </figcaption>
+</figure>
+<div class="ltx_para" id="A3.p2">
+<p class="ltx_p" id="A3.p2.1">We also present precision and recall curves for our best-performing Weak + Annotated model on evaluation datasets in Figure <a class="ltx_ref" href="#A3.F5" title="Figure 5 ‣ Appendix C Evaluation datasets ‣ A Weakly Supervised Classifier and Dataset of White Supremacist Language"><span class="ltx_text ltx_ref_tag">5</span></a> for decision thresholds every 0.01 between [0, 1).
+Class probabilities were calculated from a softmax over the output class logits.
+There is particular room for improvement on precision for <cite class="ltx_cite ltx_citemacro_citet">Rieger et al. (<a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite> and <cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite> datasets.</p>
+</div>
+<section class="ltx_paragraph" id="A3.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite>:</h4>
+<div class="ltx_para" id="A3.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="A3.SS0.SSS0.Px1.p1.1">From the full annotated dataset of tweets from <cite class="ltx_cite ltx_citemacro_citet">Alatawi et al. (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite><span class="ltx_note ltx_role_footnote" id="footnote15"><sup class="ltx_note_mark">15</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">15</sup><span class="ltx_tag ltx_tag_note">15</span>Accessed from <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/Hind-Saleh-Alatawi/WhiteSupremacistDataset" target="_blank" title="">https://github.com/Hind-Saleh-Alatawi/WhiteSupremacistDataset</a> on 11 January 2023.</span></span></span>, we choose the combined annotator labels for white supremacy as the label of white supremacy or not.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A3.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Rieger et al. (<a class="ltx_ref" href="#bib.bib42" title="">2021</a>)</cite>:</h4>
+<div class="ltx_para" id="A3.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="A3.SS0.SSS0.Px2.p1.1">This dataset, provided by the authors, contains posts on fringe platforms (4chan /pol/, 8chan /pol/, and r/the_Donald) annotated for many aspects of hate speech, including white supremacist ideology.
+We sample examples labeled for ‘white supremacy/white ethnostate’ or ‘National Socialist’ ideology as examples of white supremacy.
+For negative examples, we sample posts that are not labeled as white supremacist or as hate speech for negative examples, since their definition of white supremacy is more restrictive
+Specifically, we sample posts not labeled for ‘white supremacy/white ethnostate’, ‘National Socialist’, ‘general insult’, ‘personal insult’ or ‘violence’.
+Direct requests for this dataset to the authors.
+</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="A3.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">
+<cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite>:</h4>
+<div class="ltx_para" id="A3.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="A3.SS0.SSS0.Px3.p1.1">We use training data from <cite class="ltx_cite ltx_citemacro_citet">Siegel et al. (<a class="ltx_ref" href="#bib.bib49" title="">2021</a>)</cite>, provided by the authors.
+From lists of tweets annotated for white nationalism and hate speech, we select those marked as positive for white nationalism and as negative examples, those annotated as neither white nationalism nor hate speech.
+Requests for this dataset should be directed to the authors.</p>
+</div>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</section>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2306.15731">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-error" href="/log/2306.15732">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2306.15732" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2306.15732">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2306.15733">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Wed Feb 28 21:57:06 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

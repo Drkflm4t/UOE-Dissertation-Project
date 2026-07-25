@@ -1,0 +1,489 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            28
+        ],
+        "2 Related work": [
+            29,
+            48
+        ],
+        "3 Proposed approach": [
+            49,
+            112
+        ],
+        "4 Evaluation": [
+            113,
+            370
+        ],
+        "5 Experimental results": [
+            371,
+            413
+        ],
+        "6 Conclusion": [
+            414,
+            417
+        ],
+        "Limitation": [
+            418,
+            421
+        ],
+        "Ethical Statement": [
+            422,
+            425
+        ],
+        "References": [
+            426,
+            473
+        ],
+        "Appendix A Example analysis": [
+            474,
+            676
+        ],
+        "Appendix B Specific results": [
+            677,
+            1143
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related work": {
+            "2.1 Hallucination and omission in machine translation": [
+                31,
+                34
+            ],
+            "2.2 Preference tuning for LLMs": [
+                35,
+                38
+            ],
+            "2.3 Word alignment": [
+                39,
+                48
+            ]
+        },
+        "3 Proposed approach": {
+            "3.1 Gathering translation candidates": [
+                51,
+                54
+            ],
+            "Details of gathered translations": [
+                55,
+                64
+            ],
+            "3.2 Selecting chosen and rejected translation": [
+                65,
+                73
+            ],
+            "3.3 Filtering": [
+                74,
+                81
+            ],
+            "3.4 Details of dataset": [
+                82,
+                91
+            ],
+            "3.5 Optimization LLM-based MT model": [
+                92,
+                112
+            ]
+        },
+        "4 Evaluation": {
+            "4.1 Experimental setup": [
+                115,
+                118
+            ],
+            "4.2 Baselines and evaluation datasets": [
+                119,
+                124
+            ],
+            "HalOmi": [
+                125,
+                128
+            ],
+            "4.3 The design of evaluation": [
+                129,
+                132
+            ],
+            "Select hard instances.": [
+                133,
+                184
+            ],
+            "Utilize LLM as the evaluator for hallucination and omission.": [
+                185,
+                188
+            ],
+            "Is LLM really capable of evaluating hallucination and omission in MT?": [
+                189,
+                370
+            ]
+        },
+        "5 Experimental results": {
+            "5.1 Evaluation on hard instances": [
+                373,
+                382
+            ],
+            "5.2 Direct evaluation of hallucination and omission by GPT-4": [
+                383,
+                386
+            ],
+            "5.3 Human evaluation": [
+                387,
+                390
+            ],
+            "5.4 Ablation study": [
+                391,
+                405
+            ],
+            "Does the preferred data really better contribute to the training?": [
+                406,
+                409
+            ],
+            "Is the DPO preference tuning necessary?": [
+                410,
+                413
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitation": {},
+        "Ethical Statement": {},
+        "References": {},
+        "Appendix A Example analysis": {
+            "A.1 Examples of the preference dataset": [
+                476,
+                572
+            ],
+            "A.2 Translation examples": [
+                573,
+                676
+            ]
+        },
+        "Appendix B Specific results": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                27
+            ]
+        ],
+        "2 Related work": [
+            [
+                33,
+                33
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                41,
+                41
+            ]
+        ],
+        "3 Proposed approach": [
+            [
+                53,
+                53
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                67,
+                67
+            ],
+            [
+                69,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                76,
+                76
+            ],
+            [
+                78,
+                80
+            ],
+            [
+                84,
+                84
+            ],
+            [
+                94,
+                94
+            ],
+            [
+                96,
+                97
+            ],
+            [
+                99,
+                99
+            ]
+        ],
+        "4 Evaluation": [
+            [
+                117,
+                117
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                127,
+                127
+            ],
+            [
+                131,
+                131
+            ],
+            [
+                135,
+                135
+            ],
+            [
+                187,
+                187
+            ],
+            [
+                191,
+                191
+            ],
+            [
+                193,
+                193
+            ]
+        ],
+        "5 Experimental results": [
+            [
+                375,
+                375
+            ],
+            [
+                377,
+                379
+            ],
+            [
+                381,
+                381
+            ],
+            [
+                385,
+                385
+            ],
+            [
+                389,
+                389
+            ],
+            [
+                399,
+                399
+            ],
+            [
+                401,
+                402
+            ],
+            [
+                404,
+                404
+            ],
+            [
+                408,
+                408
+            ],
+            [
+                412,
+                412
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                416,
+                416
+            ]
+        ],
+        "Limitation": [
+            [
+                420,
+                420
+            ]
+        ],
+        "Ethical Statement": [
+            [
+                424,
+                424
+            ]
+        ],
+        "References": [
+            [
+                428,
+                472
+            ]
+        ],
+        "Appendix A Example analysis": [
+            [
+                571,
+                571
+            ],
+            [
+                669,
+                669
+            ]
+        ],
+        "Appendix B Specific results": [
+            [
+                1137,
+                1137
+            ],
+            [
+                1139,
+                1139
+            ],
+            [
+                1141,
+                1141
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.sf1.g1]": [
+                11,
+                15
+            ]
+        },
+        "2 Related work": {
+            "[FIGURE S2.F2.g1]": [
+                43,
+                47
+            ]
+        },
+        "3 Proposed approach": {
+            "[FIGURE S3.F3.g1]": [
+                59,
+                63
+            ],
+            "[FIGURE S3.F4.g1]": [
+                86,
+                90
+            ],
+            "[FIGURE S3.F5.g1]": [
+                101,
+                105
+            ],
+            "[FIGURE S3.F6.1.1.1.1.1.g1]": [
+                107,
+                111
+            ]
+        },
+        "4 Evaluation": {},
+        "5 Experimental results": {
+            "[FIGURE S5.F7.sf1.g1]": [
+                393,
+                397
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitation": {},
+        "Ethical Statement": {},
+        "References": {},
+        "Appendix A Example analysis": {
+            "[FIGURE A1.F8.sf1.g1]": [
+                671,
+                675
+            ]
+        },
+        "Appendix B Specific results": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Proposed approach": {},
+        "4 Evaluation": {
+            "[TABLE S4.T1]": [
+                137,
+                183
+            ],
+            "[TABLE S4.T2]": [
+                195,
+                314
+            ],
+            "[TABLE S4.T3]": [
+                316,
+                369
+            ]
+        },
+        "5 Experimental results": {},
+        "6 Conclusion": {},
+        "Limitation": {},
+        "Ethical Statement": {},
+        "References": {},
+        "Appendix A Example analysis": {
+            "[TABLE A1.T4]": [
+                478,
+                569
+            ],
+            "[TABLE A1.T5]": [
+                575,
+                667
+            ]
+        },
+        "Appendix B Specific results": {
+            "[TABLE A2.T6]": [
+                679,
+                1135
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Proposed approach": {},
+        "4 Evaluation": {},
+        "5 Experimental results": {},
+        "6 Conclusion": {},
+        "Limitation": {},
+        "Ethical Statement": {},
+        "References": {},
+        "Appendix A Example analysis": {},
+        "Appendix B Specific results": {}
+    }
+}

@@ -1,0 +1,825 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        8
+    ],
+    "sections": {
+        "1 Introduction": [
+            9,
+            28
+        ],
+        "2 Related Works": [
+            29,
+            42
+        ],
+        "3 Pilot Study": [
+            43,
+            105
+        ],
+        "4 CoT-Influx Methodology": [
+            106,
+            346
+        ],
+        "5 Evaluation": [
+            347,
+            698
+        ],
+        "6 Conclusion": [
+            699,
+            702
+        ],
+        "Limitations": [
+            703,
+            706
+        ],
+        "References": [
+            707,
+            769
+        ],
+        "Appendix": [
+            770,
+            779
+        ],
+        "Appendix A Additional Analysis and Case Study": [
+            780,
+            1063
+        ],
+        "Appendix B Evolution of MRD3": [
+            1064,
+            1172
+        ],
+        "Appendix C Pruner Training and Evaluation Details": [
+            1173,
+            1403
+        ],
+        "Appendix D Additional Related Works": [
+            1404,
+            1534
+        ],
+        "Appendix E Prompt Settings": [
+            1535,
+            1541
+        ],
+        "Question: {Given question}": [
+            1542,
+            1543
+        ],
+        "Answer: {Given answer}": [
+            1544,
+            1545
+        ],
+        "Evaluation:": [
+            1546,
+            1555
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Pilot Study": {},
+        "4 CoT-Influx Methodology": {
+            "4.1 CoT Dataset Collection": [
+                110,
+                115
+            ],
+            "4.2 Problem Formulation": [
+                116,
+                135
+            ],
+            "4.3 Coarse-to-fine Pruner Design": [
+                136,
+                208
+            ],
+            "4.4 End-to-end RL Optimization": [
+                209,
+                346
+            ]
+        },
+        "5 Evaluation": {
+            "5.1 Main Results": [
+                466,
+                563
+            ],
+            "5.2 Ablation Study and Analysis": [
+                564,
+                698
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Additional Analysis and Case Study": {
+            "A.1 Comparison with context window extension methods": [
+                782,
+                847
+            ],
+            "A.2 CoT-Influx on finetuned LLMs": [
+                848,
+                899
+            ],
+            "A.3 Ablation study on reward design": [
+                900,
+                941
+            ],
+            "A.4 Sensitivity analysis on hyperparameters": [
+                942,
+                999
+            ],
+            "A.5 Case Study on different prompt compression methods": [
+                1000,
+                1063
+            ]
+        },
+        "Appendix B Evolution of MRD3": {
+            "B.1 Prompt template for evolution": [
+                1066,
+                1098
+            ],
+            "B.2 Difficulty and Reasoning Steps Distribution of MRD3": [
+                1099,
+                1108
+            ],
+            "B.3 Additional observation on difficulty distribution": [
+                1109,
+                1146
+            ],
+            "B.4 Evolution example": [
+                1147,
+                1172
+            ]
+        },
+        "Appendix C Pruner Training and Evaluation Details": {
+            "C.1 Detailed algorithm for training data preparation": [
+                1175,
+                1217
+            ],
+            "C.2 Detailed settings and hyperparameters": [
+                1218,
+                1379
+            ],
+            "C.3 Training dynamics": [
+                1380,
+                1389
+            ],
+            "C.4 Detailed introduction of dataset for evaluation": [
+                1390,
+                1399
+            ],
+            "C.5 Rule-based prompt reconstruction": [
+                1400,
+                1403
+            ]
+        },
+        "Appendix D Additional Related Works": {},
+        "Appendix E Prompt Settings": {},
+        "Question: {Given question}": {},
+        "Answer: {Given answer}": {},
+        "Evaluation:": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ]
+        ],
+        "2 Related Works": [
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                41
+            ]
+        ],
+        "3 Pilot Study": [
+            [
+                51,
+                51
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                59,
+                59
+            ],
+            [
+                90,
+                90
+            ],
+            [
+                92,
+                92
+            ]
+        ],
+        "4 CoT-Influx Methodology": [
+            [
+                108,
+                108
+            ],
+            [
+                112,
+                112
+            ],
+            [
+                114,
+                114
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                120,
+                121
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                128
+            ],
+            [
+                130,
+                130
+            ],
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                134
+            ],
+            [
+                138,
+                138
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                142
+            ],
+            [
+                144,
+                144
+            ],
+            [
+                146,
+                147
+            ],
+            [
+                149,
+                150
+            ],
+            [
+                152,
+                152
+            ],
+            [
+                211,
+                211
+            ],
+            [
+                213,
+                213
+            ],
+            [
+                215,
+                216
+            ],
+            [
+                218,
+                218
+            ],
+            [
+                220,
+                220
+            ],
+            [
+                222,
+                222
+            ],
+            [
+                224,
+                225
+            ],
+            [
+                227,
+                227
+            ],
+            [
+                229,
+                229
+            ],
+            [
+                231,
+                231
+            ],
+            [
+                233,
+                233
+            ],
+            [
+                235,
+                235
+            ]
+        ],
+        "5 Evaluation": [
+            [
+                458,
+                458
+            ],
+            [
+                460,
+                460
+            ],
+            [
+                462,
+                464
+            ],
+            [
+                468,
+                468
+            ],
+            [
+                470,
+                470
+            ],
+            [
+                472,
+                472
+            ],
+            [
+                474,
+                474
+            ],
+            [
+                532,
+                532
+            ],
+            [
+                566,
+                566
+            ],
+            [
+                603,
+                603
+            ],
+            [
+                693,
+                693
+            ],
+            [
+                695,
+                695
+            ],
+            [
+                697,
+                697
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                701,
+                701
+            ]
+        ],
+        "Limitations": [
+            [
+                705,
+                705
+            ]
+        ],
+        "References": [
+            [
+                709,
+                768
+            ]
+        ],
+        "Appendix": [
+            [
+                772,
+                772
+            ],
+            [
+                774,
+                778
+            ]
+        ],
+        "Appendix A Additional Analysis and Case Study": [
+            [
+                784,
+                784
+            ],
+            [
+                846,
+                846
+            ],
+            [
+                850,
+                850
+            ],
+            [
+                902,
+                902
+            ],
+            [
+                944,
+                944
+            ],
+            [
+                1002,
+                1002
+            ],
+            [
+                1004,
+                1004
+            ],
+            [
+                1006,
+                1021
+            ],
+            [
+                1023,
+                1023
+            ],
+            [
+                1025,
+                1025
+            ],
+            [
+                1027,
+                1054
+            ],
+            [
+                1056,
+                1062
+            ]
+        ],
+        "Appendix B Evolution of MRD3": [
+            [
+                1068,
+                1068
+            ],
+            [
+                1070,
+                1070
+            ],
+            [
+                1072,
+                1084
+            ],
+            [
+                1086,
+                1095
+            ],
+            [
+                1097,
+                1097
+            ],
+            [
+                1101,
+                1101
+            ],
+            [
+                1111,
+                1111
+            ],
+            [
+                1113,
+                1113
+            ],
+            [
+                1115,
+                1115
+            ],
+            [
+                1145,
+                1145
+            ],
+            [
+                1149,
+                1149
+            ],
+            [
+                1151,
+                1151
+            ],
+            [
+                1153,
+                1155
+            ],
+            [
+                1157,
+                1171
+            ]
+        ],
+        "Appendix C Pruner Training and Evaluation Details": [
+            [
+                1177,
+                1177
+            ],
+            [
+                1220,
+                1220
+            ],
+            [
+                1382,
+                1382
+            ],
+            [
+                1392,
+                1392
+            ],
+            [
+                1394,
+                1398
+            ],
+            [
+                1402,
+                1402
+            ]
+        ],
+        "Appendix D Additional Related Works": [
+            [
+                1406,
+                1406
+            ],
+            [
+                1408,
+                1408
+            ],
+            [
+                1410,
+                1410
+            ]
+        ],
+        "Appendix E Prompt Settings": [
+            [
+                1537,
+                1537
+            ],
+            [
+                1539,
+                1539
+            ]
+        ],
+        "Question: {Given question}": [],
+        "Answer: {Given answer}": [],
+        "Evaluation:": [
+            [
+                1548,
+                1548
+            ],
+            [
+                1550,
+                1550
+            ],
+            [
+                1552,
+                1553
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Pilot Study": {
+            "[FIGURE S3.F1.g1]": [
+                45,
+                49
+            ],
+            "[FIGURE S3.F2.g1]": [
+                94,
+                98
+            ],
+            "[FIGURE S3.F3.g1]": [
+                100,
+                104
+            ]
+        },
+        "4 CoT-Influx Methodology": {
+            "[FIGURE S4.F4.g1]": [
+                237,
+                241
+            ]
+        },
+        "5 Evaluation": {
+            "[FIGURE S5.F5.g1]": [
+                687,
+                691
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Additional Analysis and Case Study": {},
+        "Appendix B Evolution of MRD3": {
+            "[FIGURE A2.F6.1.g1]": [
+                1103,
+                1107
+            ]
+        },
+        "Appendix C Pruner Training and Evaluation Details": {
+            "[FIGURE A3.F7.sf1.g1]": [
+                1384,
+                1388
+            ]
+        },
+        "Appendix D Additional Related Works": {},
+        "Appendix E Prompt Settings": {},
+        "Question: {Given question}": {},
+        "Answer: {Given answer}": {},
+        "Evaluation:": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Pilot Study": {
+            "[TABLE S3.T1]": [
+                61,
+                88
+            ]
+        },
+        "4 CoT-Influx Methodology": {
+            "[TABLE S4.T2]": [
+                243,
+                345
+            ]
+        },
+        "5 Evaluation": {
+            "[TABLE S5.T3]": [
+                349,
+                456
+            ],
+            "[TABLE S5.T4]": [
+                476,
+                530
+            ],
+            "[TABLE S5.T5]": [
+                534,
+                562
+            ],
+            "[TABLE S5.T6]": [
+                568,
+                601
+            ],
+            "[TABLE S5.T7]": [
+                605,
+                640
+            ],
+            "[TABLE S5.T8]": [
+                642,
+                685
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Additional Analysis and Case Study": {
+            "[TABLE A1.T9]": [
+                786,
+                844
+            ],
+            "[TABLE A1.T10]": [
+                852,
+                898
+            ],
+            "[TABLE A1.T11]": [
+                904,
+                940
+            ],
+            "[TABLE A1.T12]": [
+                946,
+                998
+            ]
+        },
+        "Appendix B Evolution of MRD3": {
+            "[TABLE A2.T13]": [
+                1117,
+                1143
+            ]
+        },
+        "Appendix C Pruner Training and Evaluation Details": {
+            "[TABLE A3.T14]": [
+                1222,
+                1378
+            ]
+        },
+        "Appendix D Additional Related Works": {
+            "[TABLE A4.T15]": [
+                1412,
+                1533
+            ]
+        },
+        "Appendix E Prompt Settings": {},
+        "Question: {Given question}": {},
+        "Answer: {Given answer}": {},
+        "Evaluation:": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Pilot Study": {},
+        "4 CoT-Influx Methodology": {
+            "[ALGORITHM alg1]": [
+                154,
+                207
+            ]
+        },
+        "5 Evaluation": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Additional Analysis and Case Study": {},
+        "Appendix B Evolution of MRD3": {},
+        "Appendix C Pruner Training and Evaluation Details": {
+            "[ALGORITHM alg2]": [
+                1179,
+                1216
+            ]
+        },
+        "Appendix D Additional Related Works": {},
+        "Appendix E Prompt Settings": {},
+        "Question: {Given question}": {},
+        "Answer: {Given answer}": {},
+        "Evaluation:": {}
+    }
+}

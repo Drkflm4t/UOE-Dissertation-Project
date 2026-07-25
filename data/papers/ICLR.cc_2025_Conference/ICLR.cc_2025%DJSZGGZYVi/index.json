@@ -1,0 +1,952 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        5,
+        16
+    ],
+    "sections": {
+        "1 Introduction": [
+            17,
+            50
+        ],
+        "2 Preliminaries": [
+            51,
+            95
+        ],
+        "3 REPA: Regularization for Representation Alignment": [
+            96,
+            145
+        ],
+        "4 Experiments": [
+            146,
+            567
+        ],
+        "5 Related Work": [
+            568,
+            575
+        ],
+        "6 Conclusion": [
+            576,
+            579
+        ],
+        "Reproducibility Statement": [
+            580,
+            583
+        ],
+        "References": [
+            584,
+            673
+        ],
+        "Appendix A Descriptions for Diffusion-based Models": [
+            674,
+            759
+        ],
+        "Appendix B Diffusion Transformer Architecture": [
+            760,
+            769
+        ],
+        "Appendix C Analysis Details": [
+            770,
+            818
+        ],
+        "Appendix D Hyperparameter and More Implementation Details": [
+            819,
+            1041
+        ],
+        "Appendix E Evaluation Details": [
+            1042,
+            1052
+        ],
+        "Appendix F Baselines": [
+            1053,
+            1069
+        ],
+        "Appendix G Detailed Quantitative Results": [
+            1070,
+            1535
+        ],
+        "Appendix H More Qualitative Results": [
+            1536,
+            1681
+        ],
+        "Appendix I More Discussion on Related Work": [
+            1682,
+            1690
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 REPA: Regularization for Representation Alignment": {
+            "3.1 Overview": [
+                98,
+                113
+            ],
+            "3.2 Observations": [
+                114,
+                125
+            ],
+            "3.3 Representation alignment with self-supervised representations": [
+                126,
+                145
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Setup": [
+                154,
+                435
+            ],
+            "4.2 Component-wise analysis": [
+                436,
+                530
+            ],
+            "4.3 System-level comparison": [
+                531,
+                536
+            ],
+            "4.4 Ablation studies": [
+                537,
+                567
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Reproducibility Statement": {},
+        "References": {},
+        "Appendix A Descriptions for Diffusion-based Models": {
+            "A.1 Denoising diffusion probabilistic models": [
+                678,
+                700
+            ],
+            "A.2 Stochastic interpolants": [
+                701,
+                759
+            ]
+        },
+        "Appendix B Diffusion Transformer Architecture": {},
+        "Appendix C Analysis Details": {
+            "C.1 Evaluation details": [
+                772,
+                799
+            ],
+            "C.2 DiT Analysis": [
+                800,
+                809
+            ],
+            "C.3 Description of pretrained visual encoders": [
+                810,
+                818
+            ]
+        },
+        "Appendix D Hyperparameter and More Implementation Details": {},
+        "Appendix E Evaluation Details": {},
+        "Appendix F Baselines": {},
+        "Appendix G Detailed Quantitative Results": {},
+        "Appendix H More Qualitative Results": {},
+        "Appendix I More Discussion on Related Work": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                49
+            ]
+        ],
+        "2 Preliminaries": [
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                57,
+                58
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                62,
+                63
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                67,
+                67
+            ],
+            [
+                69,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                80
+            ],
+            [
+                82,
+                82
+            ],
+            [
+                84,
+                85
+            ],
+            [
+                87,
+                87
+            ],
+            [
+                89,
+                90
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                94,
+                94
+            ]
+        ],
+        "3 REPA: Regularization for Representation Alignment": [
+            [
+                100,
+                100
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                104
+            ],
+            [
+                106,
+                106
+            ],
+            [
+                116,
+                116
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                120,
+                120
+            ],
+            [
+                122,
+                122
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                128,
+                128
+            ],
+            [
+                130,
+                130
+            ],
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                135
+            ],
+            [
+                137,
+                137
+            ],
+            [
+                139,
+                139
+            ],
+            [
+                141,
+                142
+            ],
+            [
+                144,
+                144
+            ]
+        ],
+        "4 Experiments": [
+            [
+                148,
+                148
+            ],
+            [
+                150,
+                152
+            ],
+            [
+                174,
+                174
+            ],
+            [
+                430,
+                430
+            ],
+            [
+                432,
+                432
+            ],
+            [
+                434,
+                434
+            ],
+            [
+                438,
+                438
+            ],
+            [
+                440,
+                440
+            ],
+            [
+                454,
+                454
+            ],
+            [
+                456,
+                456
+            ],
+            [
+                458,
+                458
+            ],
+            [
+                460,
+                460
+            ],
+            [
+                528,
+                529
+            ],
+            [
+                533,
+                533
+            ],
+            [
+                535,
+                535
+            ],
+            [
+                539,
+                539
+            ],
+            [
+                541,
+                541
+            ],
+            [
+                560,
+                560
+            ]
+        ],
+        "5 Related Work": [
+            [
+                570,
+                570
+            ],
+            [
+                572,
+                572
+            ],
+            [
+                574,
+                574
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                578,
+                578
+            ]
+        ],
+        "Reproducibility Statement": [
+            [
+                582,
+                582
+            ]
+        ],
+        "References": [
+            [
+                586,
+                672
+            ]
+        ],
+        "Appendix A Descriptions for Diffusion-based Models": [
+            [
+                676,
+                676
+            ],
+            [
+                680,
+                680
+            ],
+            [
+                682,
+                682
+            ],
+            [
+                684,
+                685
+            ],
+            [
+                687,
+                687
+            ],
+            [
+                689,
+                690
+            ],
+            [
+                692,
+                692
+            ],
+            [
+                694,
+                695
+            ],
+            [
+                697,
+                697
+            ],
+            [
+                699,
+                699
+            ],
+            [
+                703,
+                703
+            ],
+            [
+                705,
+                706
+            ],
+            [
+                708,
+                708
+            ],
+            [
+                710,
+                711
+            ],
+            [
+                713,
+                713
+            ],
+            [
+                715,
+                715
+            ],
+            [
+                717,
+                718
+            ],
+            [
+                720,
+                720
+            ],
+            [
+                722,
+                723
+            ],
+            [
+                725,
+                725
+            ],
+            [
+                727,
+                728
+            ],
+            [
+                730,
+                730
+            ],
+            [
+                732,
+                733
+            ],
+            [
+                735,
+                735
+            ],
+            [
+                737,
+                738
+            ],
+            [
+                740,
+                740
+            ],
+            [
+                742,
+                743
+            ],
+            [
+                745,
+                745
+            ],
+            [
+                747,
+                747
+            ],
+            [
+                749,
+                754
+            ],
+            [
+                756,
+                756
+            ],
+            [
+                758,
+                758
+            ]
+        ],
+        "Appendix B Diffusion Transformer Architecture": [
+            [
+                768,
+                768
+            ]
+        ],
+        "Appendix C Analysis Details": [
+            [
+                774,
+                774
+            ],
+            [
+                776,
+                776
+            ],
+            [
+                778,
+                779
+            ],
+            [
+                781,
+                781
+            ],
+            [
+                783,
+                784
+            ],
+            [
+                786,
+                786
+            ],
+            [
+                788,
+                789
+            ],
+            [
+                791,
+                791
+            ],
+            [
+                793,
+                794
+            ],
+            [
+                796,
+                796
+            ],
+            [
+                798,
+                798
+            ],
+            [
+                802,
+                802
+            ],
+            [
+                812,
+                817
+            ]
+        ],
+        "Appendix D Hyperparameter and More Implementation Details": [
+            [
+                1034,
+                1034
+            ],
+            [
+                1036,
+                1036
+            ],
+            [
+                1038,
+                1038
+            ],
+            [
+                1040,
+                1040
+            ]
+        ],
+        "Appendix E Evaluation Details": [
+            [
+                1044,
+                1044
+            ],
+            [
+                1046,
+                1046
+            ],
+            [
+                1048,
+                1051
+            ]
+        ],
+        "Appendix F Baselines": [
+            [
+                1055,
+                1055
+            ],
+            [
+                1057,
+                1068
+            ]
+        ],
+        "Appendix G Detailed Quantitative Results": [
+            [
+                1072,
+                1072
+            ],
+            [
+                1311,
+                1311
+            ],
+            [
+                1407,
+                1407
+            ]
+        ],
+        "Appendix H More Qualitative Results": [],
+        "Appendix I More Discussion on Related Work": [
+            [
+                1684,
+                1684
+            ],
+            [
+                1686,
+                1686
+            ],
+            [
+                1688,
+                1688
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F2.sf1.g1]": [
+                23,
+                27
+            ],
+            "[FIGURE S1.F3.sf1.g1]": [
+                35,
+                39
+            ]
+        },
+        "2 Preliminaries": {},
+        "3 REPA: Regularization for Representation Alignment": {
+            "[FIGURE S3.F4.g1]": [
+                108,
+                112
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.SS1.fig1]": [
+                156,
+                172
+            ],
+            "[FIGURE S4.F5.sf1.g1]": [
+                442,
+                446
+            ],
+            "[FIGURE S4.F6.g1]": [
+                448,
+                452
+            ],
+            "[FIGURE S4.SS2.7]": [
+                462,
+                464
+            ],
+            "[FIGURE S4.SS2.1.1]": [
+                464,
+                492
+            ],
+            "[FIGURE S4.SS2.7.7]": [
+                494,
+                526
+            ],
+            "[FIGURE S4.SS4.3]": [
+                543,
+                558
+            ],
+            "[FIGURE S4.F7.sf1.g1]": [
+                562,
+                566
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Reproducibility Statement": {},
+        "References": {},
+        "Appendix A Descriptions for Diffusion-based Models": {},
+        "Appendix B Diffusion Transformer Architecture": {
+            "[FIGURE A2.F9.g1]": [
+                762,
+                766
+            ]
+        },
+        "Appendix C Analysis Details": {
+            "[FIGURE A3.F10.sf1.g1]": [
+                804,
+                808
+            ]
+        },
+        "Appendix D Hyperparameter and More Implementation Details": {},
+        "Appendix E Evaluation Details": {},
+        "Appendix F Baselines": {},
+        "Appendix G Detailed Quantitative Results": {},
+        "Appendix H More Qualitative Results": {
+            "[FIGURE A8.F11.g1]": [
+                1538,
+                1542
+            ],
+            "[FIGURE A8.F12.g1]": [
+                1544,
+                1548
+            ],
+            "[FIGURE A8.F13.g1]": [
+                1550,
+                1554
+            ],
+            "[FIGURE A8.F14.g1]": [
+                1556,
+                1560
+            ],
+            "[FIGURE A8.F15.g1]": [
+                1562,
+                1566
+            ],
+            "[FIGURE A8.F16.g1]": [
+                1568,
+                1572
+            ],
+            "[FIGURE A8.F17.g1]": [
+                1574,
+                1578
+            ],
+            "[FIGURE A8.F18.g1]": [
+                1580,
+                1584
+            ],
+            "[FIGURE A8.F19.g1]": [
+                1586,
+                1590
+            ],
+            "[FIGURE A8.F20.g1]": [
+                1592,
+                1596
+            ],
+            "[FIGURE A8.F21.g1]": [
+                1598,
+                1602
+            ],
+            "[FIGURE A8.F22.g1]": [
+                1604,
+                1608
+            ],
+            "[FIGURE A8.F23.g1]": [
+                1610,
+                1614
+            ],
+            "[FIGURE A8.F24.g1]": [
+                1616,
+                1620
+            ],
+            "[FIGURE A8.F25.g1]": [
+                1622,
+                1626
+            ],
+            "[FIGURE A8.F26.g1]": [
+                1628,
+                1632
+            ],
+            "[FIGURE A8.F27.g1]": [
+                1634,
+                1638
+            ],
+            "[FIGURE A8.F28.g1]": [
+                1640,
+                1644
+            ],
+            "[FIGURE A8.F29.g1]": [
+                1646,
+                1650
+            ],
+            "[FIGURE A8.F30.g1]": [
+                1652,
+                1656
+            ],
+            "[FIGURE A8.F31.g1]": [
+                1658,
+                1662
+            ],
+            "[FIGURE A8.F32.g1]": [
+                1664,
+                1668
+            ],
+            "[FIGURE A8.F33.g1]": [
+                1670,
+                1674
+            ],
+            "[FIGURE A8.F34.g1]": [
+                1676,
+                1680
+            ]
+        },
+        "Appendix I More Discussion on Related Work": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 REPA: Regularization for Representation Alignment": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                158,
+                162
+            ],
+            "[TABLE S4.T2]": [
+                176,
+                428
+            ],
+            "[TABLE S4.T3]": [
+                466,
+                469
+            ],
+            "[TABLE S4.T4]": [
+                496,
+                500
+            ],
+            "[TABLE S4.T5]": [
+                545,
+                549
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Reproducibility Statement": {},
+        "References": {},
+        "Appendix A Descriptions for Diffusion-based Models": {},
+        "Appendix B Diffusion Transformer Architecture": {},
+        "Appendix C Analysis Details": {},
+        "Appendix D Hyperparameter and More Implementation Details": {
+            "[TABLE A4.T6]": [
+                821,
+                1032
+            ]
+        },
+        "Appendix E Evaluation Details": {},
+        "Appendix F Baselines": {},
+        "Appendix G Detailed Quantitative Results": {
+            "[TABLE A7.T7]": [
+                1074,
+                1309
+            ],
+            "[TABLE A7.T8]": [
+                1313,
+                1405
+            ],
+            "[TABLE A7.T9]": [
+                1409,
+                1534
+            ]
+        },
+        "Appendix H More Qualitative Results": {},
+        "Appendix I More Discussion on Related Work": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 REPA: Regularization for Representation Alignment": {},
+        "4 Experiments": {},
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Reproducibility Statement": {},
+        "References": {},
+        "Appendix A Descriptions for Diffusion-based Models": {},
+        "Appendix B Diffusion Transformer Architecture": {},
+        "Appendix C Analysis Details": {},
+        "Appendix D Hyperparameter and More Implementation Details": {},
+        "Appendix E Evaluation Details": {},
+        "Appendix F Baselines": {},
+        "Appendix G Detailed Quantitative Results": {},
+        "Appendix H More Qualitative Results": {},
+        "Appendix I More Discussion on Related Work": {}
+    }
+}

@@ -1,0 +1,644 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            30
+        ],
+        "2 Decompositional RTE": [
+            31,
+            45
+        ],
+        "3 Data Collection": [
+            46,
+            249
+        ],
+        "4 RDTE Evaluation": [
+            250,
+            383
+        ],
+        "5 TreeWise": [
+            384,
+            399
+        ],
+        "6 TreeWise Experiments": [
+            400,
+            511
+        ],
+        "7 Related Work": [
+            512,
+            523
+        ],
+        "8 Conclusion": [
+            524,
+            531
+        ],
+        "9 Limitations": [
+            532,
+            537
+        ],
+        "References": [
+            538,
+            854
+        ],
+        "Appendix A Contrasting Nellie with TreeWise": [
+            855,
+            903
+        ],
+        "Appendix B RDTE Annotation Instructions": [
+            904,
+            907
+        ],
+        "Appendix C Example TreeWise Outputs": [
+            908,
+            1095
+        ],
+        "Appendix D Retrieval Index": [
+            1096,
+            1101
+        ],
+        "Appendix E Hyperparameters": [
+            1102,
+            1109
+        ],
+        "Appendix F Baselines": [
+            1110,
+            1318
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Decompositional RTE": {
+            "2.1 Background: RAS Criteria": [
+                33,
+                36
+            ],
+            "2.2 Implementing RAS for RTE Annotation": [
+                37,
+                45
+            ]
+        },
+        "3 Data Collection": {
+            "3.1 Generating Decompositions": [
+                48,
+                57
+            ],
+            "Annotation Process": [
+                58,
+                63
+            ],
+            "Comparison to Existing Data": [
+                64,
+                69
+            ],
+            "3.2 RDTE Analysis": [
+                70,
+                249
+            ]
+        },
+        "4 RDTE Evaluation": {
+            "GPT Methods": [
+                254,
+                260
+            ],
+            "Existing Methods": [
+                261,
+                264
+            ],
+            "Knowledge Distillation": [
+                265,
+                368
+            ],
+            "4.1 RDTE Results": [
+                369,
+                383
+            ]
+        },
+        "5 TreeWise": {},
+        "6 TreeWise Experiments": {
+            "6.1 QA Evaluation": [
+                491,
+                494
+            ],
+            "Datasets and Scenarios": [
+                495,
+                507
+            ],
+            "Results": [
+                508,
+                511
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "9 Limitations": {},
+        "References": {},
+        "Appendix A Contrasting Nellie with TreeWise": {
+            "A.1 Search Logic": [
+                861,
+                883
+            ],
+            "A.2 Prompt-based Modules": [
+                884,
+                887
+            ],
+            "A.3 Improved Reasoning Generators": [
+                888,
+                897
+            ],
+            "A.4 Reasoning Filters": [
+                898,
+                903
+            ]
+        },
+        "Appendix B RDTE Annotation Instructions": {},
+        "Appendix C Example TreeWise Outputs": {
+            "Document-conditioned forward generation prompt:": [
+                1004,
+                1024
+            ],
+            "Document-conditioned forward generation prompt (continued):": [
+                995,
+                1003
+            ],
+            "Exemplar-conditioned decomposition generation prompt:": [
+                1025,
+                1033
+            ],
+            "Fact-conditioned decomposition generation prompt:": [
+                1065,
+                1095
+            ]
+        },
+        "Appendix D Retrieval Index": {},
+        "Appendix E Hyperparameters": {},
+        "Appendix F Baselines": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                29
+            ]
+        ],
+        "2 Decompositional RTE": [
+            [
+                35,
+                35
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                42
+            ],
+            [
+                44,
+                44
+            ]
+        ],
+        "3 Data Collection": [
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                78,
+                78
+            ],
+            [
+                80,
+                80
+            ]
+        ],
+        "4 RDTE Evaluation": [
+            [
+                252,
+                252
+            ],
+            [
+                256,
+                256
+            ],
+            [
+                258,
+                259
+            ],
+            [
+                263,
+                263
+            ],
+            [
+                267,
+                267
+            ],
+            [
+                371,
+                371
+            ],
+            [
+                373,
+                373
+            ],
+            [
+                375,
+                375
+            ]
+        ],
+        "5 TreeWise": [
+            [
+                386,
+                386
+            ],
+            [
+                388,
+                394
+            ],
+            [
+                396,
+                396
+            ],
+            [
+                398,
+                398
+            ]
+        ],
+        "6 TreeWise Experiments": [
+            [
+                493,
+                493
+            ],
+            [
+                497,
+                497
+            ],
+            [
+                499,
+                499
+            ],
+            [
+                501,
+                501
+            ],
+            [
+                503,
+                504
+            ],
+            [
+                506,
+                506
+            ],
+            [
+                510,
+                510
+            ]
+        ],
+        "7 Related Work": [
+            [
+                514,
+                514
+            ],
+            [
+                516,
+                516
+            ],
+            [
+                518,
+                518
+            ],
+            [
+                520,
+                520
+            ],
+            [
+                522,
+                522
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                526,
+                526
+            ],
+            [
+                528,
+                528
+            ],
+            [
+                530,
+                530
+            ]
+        ],
+        "9 Limitations": [
+            [
+                534,
+                534
+            ],
+            [
+                536,
+                536
+            ]
+        ],
+        "References": [
+            [
+                540,
+                576
+            ]
+        ],
+        "Appendix A Contrasting Nellie with TreeWise": [
+            [
+                857,
+                857
+            ],
+            [
+                859,
+                859
+            ],
+            [
+                863,
+                863
+            ],
+            [
+                865,
+                867
+            ],
+            [
+                869,
+                869
+            ],
+            [
+                871,
+                874
+            ],
+            [
+                876,
+                876
+            ],
+            [
+                878,
+                880
+            ],
+            [
+                882,
+                882
+            ],
+            [
+                886,
+                886
+            ],
+            [
+                890,
+                890
+            ],
+            [
+                892,
+                894
+            ],
+            [
+                896,
+                896
+            ],
+            [
+                900,
+                900
+            ],
+            [
+                902,
+                902
+            ]
+        ],
+        "Appendix B RDTE Annotation Instructions": [
+            [
+                906,
+                906
+            ]
+        ],
+        "Appendix C Example TreeWise Outputs": [
+            [
+                910,
+                910
+            ]
+        ],
+        "Appendix D Retrieval Index": [
+            [
+                1098,
+                1098
+            ],
+            [
+                1100,
+                1100
+            ]
+        ],
+        "Appendix E Hyperparameters": [
+            [
+                1104,
+                1104
+            ],
+            [
+                1106,
+                1106
+            ],
+            [
+                1108,
+                1108
+            ]
+        ],
+        "Appendix F Baselines": [
+            [
+                1316,
+                1316
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Decompositional RTE": {},
+        "3 Data Collection": {
+            "[FIGURE S3.F2.g1]": [
+                72,
+                76
+            ]
+        },
+        "4 RDTE Evaluation": {
+            "[FIGURE S4.F3.g1]": [
+                377,
+                382
+            ]
+        },
+        "5 TreeWise": {},
+        "6 TreeWise Experiments": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "9 Limitations": {},
+        "References": {},
+        "Appendix A Contrasting Nellie with TreeWise": {},
+        "Appendix B RDTE Annotation Instructions": {},
+        "Appendix C Example TreeWise Outputs": {
+            "[FIGURE A3.F4]": [
+                912,
+                934
+            ],
+            "[FIGURE A3.F5]": [
+                936,
+                973
+            ],
+            "[FIGURE A3.F6]": [
+                975,
+                982
+            ],
+            "[FIGURE A3.F7]": [
+                984,
+                991
+            ],
+            "[FIGURE A3.F8]": [
+                993,
+                1000
+            ],
+            "[FIGURE A3.F9]": [
+                1002,
+                1021
+            ],
+            "[FIGURE A3.F10]": [
+                1023,
+                1030
+            ],
+            "[FIGURE A3.F11]": [
+                1032,
+                1061
+            ],
+            "[FIGURE A3.F12]": [
+                1063,
+                1082
+            ],
+            "[FIGURE A3.F13.1.1.1.1.1.1.g1]": [
+                1084,
+                1088
+            ],
+            "[FIGURE A3.F14.1.1.1.1.g1]": [
+                1090,
+                1094
+            ]
+        },
+        "Appendix D Retrieval Index": {},
+        "Appendix E Hyperparameters": {},
+        "Appendix F Baselines": {
+            "[FIGURE algorithm1]": [
+                1112,
+                1193
+            ],
+            "[FIGURE algorithm2]": [
+                1195,
+                1314
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Decompositional RTE": {},
+        "3 Data Collection": {
+            "[TABLE S3.T1]": [
+                82,
+                248
+            ]
+        },
+        "4 RDTE Evaluation": {
+            "[TABLE S4.T2]": [
+                269,
+                367
+            ]
+        },
+        "5 TreeWise": {},
+        "6 TreeWise Experiments": {
+            "[TABLE S6.T3]": [
+                402,
+                489
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "9 Limitations": {},
+        "References": {
+            "[TABLE A0.T4]": [
+                578,
+                853
+            ]
+        },
+        "Appendix A Contrasting Nellie with TreeWise": {},
+        "Appendix B RDTE Annotation Instructions": {},
+        "Appendix C Example TreeWise Outputs": {},
+        "Appendix D Retrieval Index": {},
+        "Appendix E Hyperparameters": {},
+        "Appendix F Baselines": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Decompositional RTE": {},
+        "3 Data Collection": {},
+        "4 RDTE Evaluation": {},
+        "5 TreeWise": {},
+        "6 TreeWise Experiments": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "9 Limitations": {},
+        "References": {},
+        "Appendix A Contrasting Nellie with TreeWise": {},
+        "Appendix B RDTE Annotation Instructions": {},
+        "Appendix C Example TreeWise Outputs": {},
+        "Appendix D Retrieval Index": {},
+        "Appendix E Hyperparameters": {},
+        "Appendix F Baselines": {}
+    }
+}

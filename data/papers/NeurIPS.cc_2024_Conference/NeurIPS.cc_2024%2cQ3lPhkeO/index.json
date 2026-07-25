@@ -1,0 +1,1465 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        22
+    ],
+    "sections": {
+        "1 Introduction": [
+            23,
+            88
+        ],
+        "2 Preliminaries of RLHF": [
+            89,
+            131
+        ],
+        "3 A Theory-motivated Objective": [
+            132,
+            175
+        ],
+        "4 An Equivalent and Implementation-friendly Objective": [
+            176,
+            267
+        ],
+        "5 Theoretical Analysis": [
+            268,
+            416
+        ],
+        "6 Experiments": [
+            417,
+            562
+        ],
+        "7 Conclusions": [
+            563,
+            566
+        ],
+        "Acknowledgement": [
+            567,
+            570
+        ],
+        "References": [
+            571,
+            636
+        ],
+        "Appendix A Proofs for Sample Complexity Analysis": [
+            637,
+            915
+        ],
+        "Appendix B Proofs for Equivalence between Maximin and Minimax Objectives": [
+            916,
+            1026
+        ],
+        "Appendix C Proofs for Generalization to New Prompt Distributions": [
+            1027,
+            1057
+        ],
+        "Appendix D Additional Details on Experiments": [
+            1058,
+            1264
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {
+            "1.1 Our Contributions": [
+                42,
+                45
+            ],
+            "A theoretical algorithm under general function approximation.": [
+                46,
+                51
+            ],
+            "An easy-to-implement practical objective.": [
+                52,
+                62
+            ],
+            "Empirical evaluations.": [
+                63,
+                66
+            ],
+            "1.2 Related Works": [
+                67,
+                70
+            ],
+            "RLHF: algorithm design.": [
+                71,
+                78
+            ],
+            "RLHF: theoretical investigation.": [
+                79,
+                84
+            ],
+            "Reward hacking and overoptimization in RLHF for LLM.": [
+                85,
+                88
+            ]
+        },
+        "2 Preliminaries of RLHF": {
+            "Preference model.": [
+                93,
+                101
+            ],
+            "Learning protocol.": [
+                102,
+                110
+            ],
+            "Performance metric.": [
+                111,
+                131
+            ]
+        },
+        "3 A Theory-motivated Objective": {
+            "Remark 3.1 (Comparison with Zhan et\u00a0al. ([2023a](#bib.bib53))).": [
+                168,
+                171
+            ],
+            "Remark 3.2 (Comparison with Xiong et\u00a0al. ([2023](#bib.bib50))).": [
+                172,
+                175
+            ]
+        },
+        "4 An Equivalent and Implementation-friendly Objective": {
+            "An equivalent minimax objective.": [
+                180,
+                193
+            ],
+            "Lemma 4.1 (Oracle optimal KL-regularized policy).": [
+                194,
+                202
+            ],
+            "Proof of Lemma\u00a0[4.1](#S4.Thmtheorem1 \"Lemma 4.1 (Oracle optimal KL-regularized policy). \u2023 An equivalent minimax objective. \u2023 4 An Equivalent and Implementation-friendly Objective \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                203,
+                223
+            ],
+            "Theorem 4.2 (Equivalence between *maximin* and *minimax* algorithm (informal)).": [
+                224,
+                232
+            ],
+            "Proof of Proposition\u00a0[4.2](#S4.Thmtheorem2 \"Theorem 4.2 (Equivalence between maximin and minimax algorithm (informal)). \u2023 An equivalent minimax objective. \u2023 4 An Equivalent and Implementation-friendly Objective \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                233,
+                253
+            ],
+            "How does RPO improve DPO?": [
+                254,
+                267
+            ]
+        },
+        "5 Theoretical Analysis": {
+            "5.1 Establishing the Sample Complexity of Maximin Objective (Algorithm\u00a0[1](#alg1 \"Algorithm 1 \u2023 3 A Theory-motivated Objective \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\"))": [
+                277,
+                280
+            ],
+            "Assumption 5.1 (True reward model).": [
+                281,
+                284
+            ],
+            "Assumption 5.2 (Partial coverage coefficient (Zhan et\u00a0al., [2023a](#bib.bib53))).": [
+                285,
+                302
+            ],
+            "Theorem 5.3 (Suboptimality of Algorithm\u00a0[1](#alg1 \"Algorithm 1 \u2023 3 A Theory-motivated Objective \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\")).": [
+                303,
+                316
+            ],
+            "Proof of Theorem\u00a0[5.3](#S5.Thmtheorem3 \"Theorem 5.3 (Suboptimality of Algorithm 1). \u2023 5.1 Establishing the Sample Complexity of Maximin Objective (Algorithm 1) \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                317,
+                320
+            ],
+            "Remark 5.4 (Choice of the baseline policy $\\pi^{\\mathrm{base}}$).": [
+                321,
+                324
+            ],
+            "5.2 Equivalence between Maximin and Minimax Objectives": [
+                325,
+                335
+            ],
+            "Assumption 5.5 (Regularity of reward model class).": [
+                336,
+                351
+            ],
+            "Theorem 5.6 (Formal statement of Theorem\u00a0[4.2](#S4.Thmtheorem2 \"Theorem 4.2 (Equivalence between maximin and minimax algorithm (informal)). \u2023 An equivalent minimax objective. \u2023 4 An Equivalent and Implementation-friendly Objective \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\")).": [
+                352,
+                363
+            ],
+            "Proof of Theorem\u00a0[5.6](#S5.Thmtheorem6 \"Theorem 5.6 (Formal statement of Theorem 4.2). \u2023 5.2 Equivalence between Maximin and Minimax Objectives \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                364,
+                369
+            ],
+            "Corollary 5.7 (Suboptimality of minimax-based algorithm).": [
+                370,
+                378
+            ],
+            "Proof of Corollary\u00a0[5.7](#S5.Thmtheorem7 \"Corollary 5.7 (Suboptimality of minimax-based algorithm). \u2023 5.2 Equivalence between Maximin and Minimax Objectives \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                379,
+                382
+            ],
+            "5.3 Generalization to New Prompt Distributions": [
+                383,
+                388
+            ],
+            "Corollary 5.8 (Generalization to new prompt distributions).": [
+                389,
+                402
+            ],
+            "Proof of Corollary\u00a0[5.8](#S5.Thmtheorem8 \"Corollary 5.8 (Generalization to new prompt distributions). \u2023 5.3 Generalization to New Prompt Distributions \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                403,
+                416
+            ]
+        },
+        "6 Experiments": {
+            "Experiment setup.": [
+                421,
+                424
+            ],
+            "Practical implementation.": [
+                425,
+                428
+            ],
+            "RPO alleviates overoptimization.": [
+                429,
+                432
+            ],
+            "RPO improves the alignment performance in in-data distribution.": [
+                433,
+                492
+            ],
+            "RPO consistently improves the benchmark performance.": [
+                493,
+                562
+            ]
+        },
+        "7 Conclusions": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Proofs for Sample Complexity Analysis": {
+            "A.1 Proof of Theorem\u00a0[5.3](#S5.Thmtheorem3 \"Theorem 5.3 (Suboptimality of Algorithm 1). \u2023 5.1 Establishing the Sample Complexity of Maximin Objective (Algorithm 1) \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\")": [
+                639,
+                640
+            ],
+            "Proof of Theorem\u00a0[5.3](#S5.Thmtheorem3 \"Theorem 5.3 (Suboptimality of Algorithm 1). \u2023 5.1 Establishing the Sample Complexity of Maximin Objective (Algorithm 1) \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                641,
+                682
+            ],
+            "Upper bound Term (A).": [
+                683,
+                701
+            ],
+            "Upper bound Term (B).": [
+                702,
+                720
+            ],
+            "Combining Term (A), Term (B), and Term (C).": [
+                721,
+                799
+            ],
+            "A.2 Technical Lemmas": [
+                800,
+                801
+            ],
+            "Lemma A.1 (Uniform concentration).": [
+                802,
+                810
+            ],
+            "Proof of Lemma\u00a0[A.1](#A1.Thmtheorem1 \"Lemma A.1 (Uniform concentration). \u2023 A.2 Technical Lemmas \u2023 Appendix A Proofs for Sample Complexity Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                811,
+                886
+            ],
+            "Lemma A.2 (Sigmoid function).": [
+                887,
+                895
+            ],
+            "Proof of Lemma\u00a0[A.2](#A1.Thmtheorem2 \"Lemma A.2 (Sigmoid function). \u2023 A.2 Technical Lemmas \u2023 Appendix A Proofs for Sample Complexity Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                896,
+                915
+            ]
+        },
+        "Appendix B Proofs for Equivalence between Maximin and Minimax Objectives": {
+            "B.1 Proof of Theorem\u00a0[5.6](#S5.Thmtheorem6 \"Theorem 5.6 (Formal statement of Theorem 4.2). \u2023 5.2 Equivalence between Maximin and Minimax Objectives \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\")": [
+                918,
+                919
+            ],
+            "Proof of Theorem\u00a0[5.6](#S5.Thmtheorem6 \"Theorem 5.6 (Formal statement of Theorem 4.2). \u2023 5.2 Equivalence between Maximin and Minimax Objectives \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                920,
+                962
+            ],
+            "B.2 Auxiliary Lemmas": [
+                963,
+                964
+            ],
+            "Lemma B.1 (Equivalence of maximin and minimax objectives).": [
+                965,
+                971
+            ],
+            "Proof of Lemma\u00a0[B.1](#A2.Thmtheorem1 \"Lemma B.1 (Equivalence of maximin and minimax objectives). \u2023 B.2 Auxiliary Lemmas \u2023 Appendix B Proofs for Equivalence between Maximin and Minimax Objectives \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                972,
+                975
+            ],
+            "Lemma B.2 (Minimax theorem (Fan, [1953](#bib.bib20))).": [
+                976,
+                992
+            ],
+            "Lemma B.3 (Unique maximizer of $\\phi$).": [
+                993,
+                1003
+            ],
+            "Proof of Lemma\u00a0[B.3](#A2.Thmtheorem3 \"Lemma B.3 (Unique maximizer of \u03d5). \u2023 B.2 Auxiliary Lemmas \u2023 Appendix B Proofs for Equivalence between Maximin and Minimax Objectives \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                1004,
+                1026
+            ]
+        },
+        "Appendix C Proofs for Generalization to New Prompt Distributions": {
+            "Proof of Corollary\u00a0[5.8](#S5.Thmtheorem8 \"Corollary 5.8 (Generalization to new prompt distributions). \u2023 5.3 Generalization to New Prompt Distributions \u2023 5 Theoretical Analysis \u2023 Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer\").": [
+                1029,
+                1057
+            ]
+        },
+        "Appendix D Additional Details on Experiments": {
+            "D.1 Training Details": [
+                1060,
+                1131
+            ],
+            "D.2 Evaluation Details": [
+                1132,
+                1133
+            ],
+            "GPT-4 evaluation on the test split.": [
+                1134,
+                1149
+            ],
+            "Benchmark evaluation.": [
+                1150,
+                1163
+            ],
+            "D.3 Additional Results on Experiments": [
+                1164,
+                1264
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                44,
+                44
+            ],
+            [
+                48,
+                48
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                57
+            ],
+            [
+                59,
+                59
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                87,
+                87
+            ]
+        ],
+        "2 Preliminaries of RLHF": [
+            [
+                91,
+                91
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                97,
+                98
+            ],
+            [
+                100,
+                100
+            ],
+            [
+                104,
+                104
+            ],
+            [
+                106,
+                107
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                116
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                120,
+                121
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                125,
+                126
+            ],
+            [
+                128,
+                128
+            ],
+            [
+                130,
+                130
+            ]
+        ],
+        "3 A Theory-motivated Objective": [
+            [
+                134,
+                134
+            ],
+            [
+                136,
+                137
+            ],
+            [
+                139,
+                139
+            ],
+            [
+                141,
+                142
+            ],
+            [
+                144,
+                144
+            ],
+            [
+                146,
+                146
+            ],
+            [
+                148,
+                148
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                161,
+                162
+            ],
+            [
+                164,
+                164
+            ],
+            [
+                166,
+                166
+            ],
+            [
+                170,
+                170
+            ],
+            [
+                174,
+                174
+            ]
+        ],
+        "4 An Equivalent and Implementation-friendly Objective": [
+            [
+                178,
+                178
+            ],
+            [
+                182,
+                182
+            ],
+            [
+                184,
+                185
+            ],
+            [
+                187,
+                187
+            ],
+            [
+                189,
+                190
+            ],
+            [
+                192,
+                192
+            ],
+            [
+                196,
+                196
+            ],
+            [
+                198,
+                199
+            ],
+            [
+                201,
+                201
+            ],
+            [
+                205,
+                205
+            ],
+            [
+                207,
+                207
+            ],
+            [
+                209,
+                210
+            ],
+            [
+                212,
+                212
+            ],
+            [
+                214,
+                215
+            ],
+            [
+                217,
+                217
+            ],
+            [
+                219,
+                220
+            ],
+            [
+                222,
+                222
+            ],
+            [
+                226,
+                226
+            ],
+            [
+                228,
+                229
+            ],
+            [
+                231,
+                231
+            ],
+            [
+                235,
+                235
+            ],
+            [
+                246,
+                246
+            ],
+            [
+                248,
+                248
+            ],
+            [
+                250,
+                250
+            ],
+            [
+                252,
+                252
+            ],
+            [
+                256,
+                256
+            ],
+            [
+                258,
+                259
+            ],
+            [
+                261,
+                261
+            ],
+            [
+                263,
+                264
+            ],
+            [
+                266,
+                266
+            ]
+        ],
+        "5 Theoretical Analysis": [
+            [
+                270,
+                270
+            ],
+            [
+                272,
+                272
+            ],
+            [
+                274,
+                275
+            ],
+            [
+                279,
+                279
+            ],
+            [
+                283,
+                283
+            ],
+            [
+                287,
+                287
+            ],
+            [
+                289,
+                290
+            ],
+            [
+                292,
+                292
+            ],
+            [
+                294,
+                294
+            ],
+            [
+                296,
+                297
+            ],
+            [
+                299,
+                299
+            ],
+            [
+                301,
+                301
+            ],
+            [
+                305,
+                305
+            ],
+            [
+                307,
+                308
+            ],
+            [
+                310,
+                310
+            ],
+            [
+                312,
+                313
+            ],
+            [
+                315,
+                315
+            ],
+            [
+                319,
+                319
+            ],
+            [
+                323,
+                323
+            ],
+            [
+                327,
+                327
+            ],
+            [
+                329,
+                329
+            ],
+            [
+                331,
+                332
+            ],
+            [
+                334,
+                334
+            ],
+            [
+                338,
+                338
+            ],
+            [
+                340,
+                341
+            ],
+            [
+                343,
+                343
+            ],
+            [
+                345,
+                345
+            ],
+            [
+                347,
+                348
+            ],
+            [
+                350,
+                350
+            ],
+            [
+                354,
+                354
+            ],
+            [
+                356,
+                357
+            ],
+            [
+                359,
+                359
+            ],
+            [
+                361,
+                362
+            ],
+            [
+                366,
+                366
+            ],
+            [
+                368,
+                368
+            ],
+            [
+                372,
+                372
+            ],
+            [
+                374,
+                375
+            ],
+            [
+                377,
+                377
+            ],
+            [
+                381,
+                381
+            ],
+            [
+                385,
+                385
+            ],
+            [
+                387,
+                387
+            ],
+            [
+                391,
+                391
+            ],
+            [
+                393,
+                394
+            ],
+            [
+                396,
+                396
+            ],
+            [
+                398,
+                399
+            ],
+            [
+                401,
+                401
+            ],
+            [
+                405,
+                405
+            ],
+            [
+                407,
+                407
+            ],
+            [
+                409,
+                409
+            ]
+        ],
+        "6 Experiments": [
+            [
+                419,
+                419
+            ],
+            [
+                423,
+                423
+            ],
+            [
+                427,
+                427
+            ],
+            [
+                431,
+                431
+            ],
+            [
+                435,
+                435
+            ],
+            [
+                495,
+                495
+            ]
+        ],
+        "7 Conclusions": [
+            [
+                565,
+                565
+            ]
+        ],
+        "Acknowledgement": [
+            [
+                569,
+                569
+            ]
+        ],
+        "References": [
+            [
+                573,
+                635
+            ]
+        ],
+        "Appendix A Proofs for Sample Complexity Analysis": [
+            [
+                643,
+                643
+            ],
+            [
+                645,
+                660
+            ],
+            [
+                662,
+                662
+            ],
+            [
+                664,
+                667
+            ],
+            [
+                669,
+                669
+            ],
+            [
+                671,
+                674
+            ],
+            [
+                676,
+                676
+            ],
+            [
+                678,
+                679
+            ],
+            [
+                681,
+                681
+            ],
+            [
+                685,
+                685
+            ],
+            [
+                687,
+                698
+            ],
+            [
+                700,
+                700
+            ],
+            [
+                704,
+                704
+            ],
+            [
+                706,
+                717
+            ],
+            [
+                719,
+                719
+            ],
+            [
+                723,
+                723
+            ],
+            [
+                725,
+                730
+            ],
+            [
+                732,
+                732
+            ],
+            [
+                734,
+                737
+            ],
+            [
+                739,
+                739
+            ],
+            [
+                741,
+                742
+            ],
+            [
+                744,
+                744
+            ],
+            [
+                746,
+                753
+            ],
+            [
+                755,
+                755
+            ],
+            [
+                757,
+                758
+            ],
+            [
+                760,
+                760
+            ],
+            [
+                762,
+                765
+            ],
+            [
+                767,
+                767
+            ],
+            [
+                769,
+                772
+            ],
+            [
+                774,
+                774
+            ],
+            [
+                776,
+                777
+            ],
+            [
+                779,
+                779
+            ],
+            [
+                781,
+                786
+            ],
+            [
+                788,
+                788
+            ],
+            [
+                790,
+                791
+            ],
+            [
+                793,
+                793
+            ],
+            [
+                795,
+                796
+            ],
+            [
+                798,
+                798
+            ],
+            [
+                804,
+                804
+            ],
+            [
+                806,
+                809
+            ],
+            [
+                813,
+                813
+            ],
+            [
+                815,
+                818
+            ],
+            [
+                820,
+                820
+            ],
+            [
+                822,
+                833
+            ],
+            [
+                835,
+                835
+            ],
+            [
+                837,
+                840
+            ],
+            [
+                842,
+                842
+            ],
+            [
+                844,
+                847
+            ],
+            [
+                849,
+                849
+            ],
+            [
+                851,
+                856
+            ],
+            [
+                858,
+                858
+            ],
+            [
+                860,
+                869
+            ],
+            [
+                871,
+                871
+            ],
+            [
+                873,
+                876
+            ],
+            [
+                878,
+                878
+            ],
+            [
+                880,
+                883
+            ],
+            [
+                885,
+                885
+            ],
+            [
+                889,
+                889
+            ],
+            [
+                891,
+                892
+            ],
+            [
+                894,
+                894
+            ],
+            [
+                898,
+                898
+            ],
+            [
+                900,
+                901
+            ],
+            [
+                903,
+                903
+            ],
+            [
+                905,
+                912
+            ],
+            [
+                914,
+                914
+            ]
+        ],
+        "Appendix B Proofs for Equivalence between Maximin and Minimax Objectives": [
+            [
+                922,
+                922
+            ],
+            [
+                924,
+                925
+            ],
+            [
+                927,
+                927
+            ],
+            [
+                929,
+                930
+            ],
+            [
+                932,
+                932
+            ],
+            [
+                934,
+                939
+            ],
+            [
+                941,
+                941
+            ],
+            [
+                943,
+                944
+            ],
+            [
+                946,
+                946
+            ],
+            [
+                948,
+                949
+            ],
+            [
+                951,
+                951
+            ],
+            [
+                953,
+                954
+            ],
+            [
+                956,
+                956
+            ],
+            [
+                958,
+                959
+            ],
+            [
+                961,
+                961
+            ],
+            [
+                967,
+                967
+            ],
+            [
+                969,
+                970
+            ],
+            [
+                974,
+                974
+            ],
+            [
+                978,
+                978
+            ],
+            [
+                980,
+                981
+            ],
+            [
+                983,
+                983
+            ],
+            [
+                985,
+                986
+            ],
+            [
+                988,
+                988
+            ],
+            [
+                990,
+                991
+            ],
+            [
+                995,
+                995
+            ],
+            [
+                997,
+                1000
+            ],
+            [
+                1002,
+                1002
+            ],
+            [
+                1006,
+                1006
+            ],
+            [
+                1008,
+                1013
+            ],
+            [
+                1015,
+                1015
+            ],
+            [
+                1017,
+                1018
+            ],
+            [
+                1020,
+                1020
+            ],
+            [
+                1022,
+                1023
+            ],
+            [
+                1025,
+                1025
+            ]
+        ],
+        "Appendix C Proofs for Generalization to New Prompt Distributions": [
+            [
+                1031,
+                1031
+            ],
+            [
+                1033,
+                1040
+            ],
+            [
+                1042,
+                1042
+            ],
+            [
+                1044,
+                1049
+            ],
+            [
+                1051,
+                1051
+            ],
+            [
+                1053,
+                1054
+            ],
+            [
+                1056,
+                1056
+            ]
+        ],
+        "Appendix D Additional Details on Experiments": [
+            [
+                1062,
+                1062
+            ],
+            [
+                1136,
+                1136
+            ],
+            [
+                1138,
+                1146
+            ],
+            [
+                1148,
+                1148
+            ],
+            [
+                1152,
+                1152
+            ],
+            [
+                1154,
+                1157
+            ],
+            [
+                1159,
+                1162
+            ],
+            [
+                1166,
+                1166
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.1.g1]": [
+                35,
+                40
+            ]
+        },
+        "2 Preliminaries of RLHF": {},
+        "3 A Theory-motivated Objective": {},
+        "4 An Equivalent and Implementation-friendly Objective": {},
+        "5 Theoretical Analysis": {
+            "[FIGURE S5.F3.1.g1]": [
+                411,
+                415
+            ]
+        },
+        "6 Experiments": {
+            "[FIGURE S6.F6.1.g1]": [
+                487,
+                491
+            ]
+        },
+        "7 Conclusions": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Proofs for Sample Complexity Analysis": {},
+        "Appendix B Proofs for Equivalence between Maximin and Minimax Objectives": {},
+        "Appendix C Proofs for Generalization to New Prompt Distributions": {},
+        "Appendix D Additional Details on Experiments": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Preliminaries of RLHF": {},
+        "3 A Theory-motivated Objective": {},
+        "4 An Equivalent and Implementation-friendly Objective": {},
+        "5 Theoretical Analysis": {},
+        "6 Experiments": {
+            "[TABLE S6.T1]": [
+                437,
+                485
+            ],
+            "[TABLE S6.T2]": [
+                497,
+                561
+            ]
+        },
+        "7 Conclusions": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Proofs for Sample Complexity Analysis": {},
+        "Appendix B Proofs for Equivalence between Maximin and Minimax Objectives": {},
+        "Appendix C Proofs for Generalization to New Prompt Distributions": {},
+        "Appendix D Additional Details on Experiments": {
+            "[TABLE A4.T3]": [
+                1064,
+                1130
+            ],
+            "[TABLE A4.T4]": [
+                1168,
+                1198
+            ],
+            "[TABLE A4.T5]": [
+                1200,
+                1230
+            ],
+            "[TABLE A4.T6]": [
+                1232,
+                1262
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Preliminaries of RLHF": {},
+        "3 A Theory-motivated Objective": {
+            "[ALGORITHM alg1]": [
+                150,
+                157
+            ]
+        },
+        "4 An Equivalent and Implementation-friendly Objective": {
+            "[ALGORITHM alg2]": [
+                237,
+                244
+            ]
+        },
+        "5 Theoretical Analysis": {},
+        "6 Experiments": {},
+        "7 Conclusions": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Proofs for Sample Complexity Analysis": {},
+        "Appendix B Proofs for Equivalence between Maximin and Minimax Objectives": {},
+        "Appendix C Proofs for Generalization to New Prompt Distributions": {},
+        "Appendix D Additional Details on Experiments": {}
+    }
+}

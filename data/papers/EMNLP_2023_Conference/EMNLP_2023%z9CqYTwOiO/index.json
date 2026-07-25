@@ -1,0 +1,530 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            24
+        ],
+        "2 Related Work": [
+            25,
+            38
+        ],
+        "3 UMLS Vocabulary Insertion": [
+            39,
+            51
+        ],
+        "4 Experimental Setup": [
+            52,
+            294
+        ],
+        "5 Results & Discussion": [
+            295,
+            821
+        ],
+        "6 Conclusion": [
+            822,
+            825
+        ],
+        "7 Limitations": [
+            826,
+            829
+        ],
+        "8 Acknowledgements": [
+            830,
+            833
+        ],
+        "References": [
+            834,
+            858
+        ],
+        "Appendix A Original UVA Dataset": [
+            859,
+            900
+        ],
+        "Appendix B UVI Dataset Details": [
+            901,
+            962
+        ],
+        "Appendix C Implementation Details": [
+            963,
+            1080
+        ],
+        "Appendix D Latency Comparison": [
+            1081,
+            1154
+        ],
+        "Appendix E Detailed Semantic Group Evaluation": [
+            1155,
+            1160
+        ],
+        "Appendix F Model Calibration Details": [
+            1161,
+            1540
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "2.1 UMLS Vocabulary Alignment": [
+                27,
+                32
+            ],
+            "2.2 Biomedical Entity Linking": [
+                33,
+                38
+            ]
+        },
+        "3 UMLS Vocabulary Insertion": {
+            "3.1 Problem Formulation": [
+                43,
+                51
+            ]
+        },
+        "4 Experimental Setup": {
+            "4.1 Datasets": [
+                54,
+                146
+            ],
+            "4.2 Metrics": [
+                147,
+                158
+            ],
+            "4.3 UVA Baselines": [
+                159,
+                168
+            ],
+            "4.4 LM Baselines": [
+                169,
+                176
+            ],
+            "4.5 Augmented RBA": [
+                177,
+                180
+            ],
+            "4.6 Our Approach: Candidate Re-Ranking": [
+                181,
+                184
+            ],
+            "4.6.1 Null Injection": [
+                185,
+                290
+            ],
+            "4.6.2 RBA Enhancement": [
+                291,
+                294
+            ]
+        },
+        "5 Results & Discussion": {
+            "5.1 Main Results": [
+                299,
+                304
+            ],
+            "5.2 Model Generalization": [
+                305,
+                408
+            ],
+            "5.3 Comparative Evaluation": [
+                409,
+                656
+            ],
+            "5.4 Error Analysis": [
+                657,
+                821
+            ]
+        },
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "8 Acknowledgements": {},
+        "References": {},
+        "Appendix A Original UVA Dataset": {},
+        "Appendix B UVI Dataset Details": {},
+        "Appendix C Implementation Details": {},
+        "Appendix D Latency Comparison": {},
+        "Appendix E Detailed Semantic Group Evaluation": {},
+        "Appendix F Model Calibration Details": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ]
+        ],
+        "2 Related Work": [
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ]
+        ],
+        "3 UMLS Vocabulary Insertion": [
+            [
+                41,
+                41
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                49,
+                50
+            ]
+        ],
+        "4 Experimental Setup": [
+            [
+                56,
+                56
+            ],
+            [
+                139,
+                139
+            ],
+            [
+                149,
+                149
+            ],
+            [
+                151,
+                152
+            ],
+            [
+                154,
+                154
+            ],
+            [
+                156,
+                157
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                163,
+                163
+            ],
+            [
+                165,
+                165
+            ],
+            [
+                167,
+                167
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                173,
+                173
+            ],
+            [
+                175,
+                175
+            ],
+            [
+                179,
+                179
+            ],
+            [
+                183,
+                183
+            ],
+            [
+                187,
+                187
+            ],
+            [
+                293,
+                293
+            ]
+        ],
+        "5 Results & Discussion": [
+            [
+                297,
+                297
+            ],
+            [
+                301,
+                301
+            ],
+            [
+                303,
+                303
+            ],
+            [
+                307,
+                307
+            ],
+            [
+                309,
+                309
+            ],
+            [
+                317,
+                317
+            ],
+            [
+                407,
+                407
+            ],
+            [
+                465,
+                465
+            ],
+            [
+                467,
+                467
+            ],
+            [
+                655,
+                655
+            ],
+            [
+                659,
+                659
+            ],
+            [
+                816,
+                816
+            ],
+            [
+                818,
+                818
+            ],
+            [
+                820,
+                820
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                824,
+                824
+            ]
+        ],
+        "7 Limitations": [
+            [
+                828,
+                828
+            ]
+        ],
+        "8 Acknowledgements": [
+            [
+                832,
+                832
+            ]
+        ],
+        "References": [
+            [
+                836,
+                857
+            ]
+        ],
+        "Appendix A Original UVA Dataset": [
+            [
+                861,
+                861
+            ]
+        ],
+        "Appendix B UVI Dataset Details": [
+            [
+                903,
+                903
+            ],
+            [
+                961,
+                961
+            ]
+        ],
+        "Appendix C Implementation Details": [
+            [
+                965,
+                965
+            ]
+        ],
+        "Appendix D Latency Comparison": [
+            [
+                1083,
+                1083
+            ]
+        ],
+        "Appendix E Detailed Semantic Group Evaluation": [
+            [
+                1157,
+                1157
+            ],
+            [
+                1159,
+                1159
+            ]
+        ],
+        "Appendix F Model Calibration Details": [
+            [
+                1163,
+                1163
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 UMLS Vocabulary Insertion": {},
+        "4 Experimental Setup": {
+            "[FIGURE S4.F2.g1]": [
+                141,
+                145
+            ]
+        },
+        "5 Results & Discussion": {
+            "[FIGURE S5.F3.g1]": [
+                311,
+                315
+            ]
+        },
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "8 Acknowledgements": {},
+        "References": {},
+        "Appendix A Original UVA Dataset": {},
+        "Appendix B UVI Dataset Details": {
+            "[FIGURE A2.F4.g1]": [
+                955,
+                959
+            ]
+        },
+        "Appendix C Implementation Details": {},
+        "Appendix D Latency Comparison": {},
+        "Appendix E Detailed Semantic Group Evaluation": {},
+        "Appendix F Model Calibration Details": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 UMLS Vocabulary Insertion": {},
+        "4 Experimental Setup": {
+            "[TABLE S4.T1]": [
+                58,
+                137
+            ],
+            "[TABLE S4.T2]": [
+                189,
+                289
+            ]
+        },
+        "5 Results & Discussion": {
+            "[TABLE S5.T3]": [
+                319,
+                405
+            ],
+            "[TABLE S5.T4]": [
+                411,
+                463
+            ],
+            "[TABLE S5.T5]": [
+                469,
+                653
+            ],
+            "[TABLE S5.T6]": [
+                661,
+                814
+            ]
+        },
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "8 Acknowledgements": {},
+        "References": {},
+        "Appendix A Original UVA Dataset": {
+            "[TABLE A1.T7]": [
+                863,
+                899
+            ]
+        },
+        "Appendix B UVI Dataset Details": {
+            "[TABLE A2.T8]": [
+                905,
+                953
+            ]
+        },
+        "Appendix C Implementation Details": {
+            "[TABLE A3.T9]": [
+                967,
+                1027
+            ],
+            "[TABLE A3.T10]": [
+                1029,
+                1079
+            ]
+        },
+        "Appendix D Latency Comparison": {
+            "[TABLE A4.T11]": [
+                1085,
+                1153
+            ]
+        },
+        "Appendix E Detailed Semantic Group Evaluation": {},
+        "Appendix F Model Calibration Details": {
+            "[TABLE A6.T12]": [
+                1165,
+                1267
+            ],
+            "[TABLE A6.T13]": [
+                1269,
+                1538
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 UMLS Vocabulary Insertion": {},
+        "4 Experimental Setup": {},
+        "5 Results & Discussion": {},
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "8 Acknowledgements": {},
+        "References": {},
+        "Appendix A Original UVA Dataset": {},
+        "Appendix B UVI Dataset Details": {},
+        "Appendix C Implementation Details": {},
+        "Appendix D Latency Comparison": {},
+        "Appendix E Detailed Semantic Group Evaluation": {},
+        "Appendix F Model Calibration Details": {}
+    }
+}

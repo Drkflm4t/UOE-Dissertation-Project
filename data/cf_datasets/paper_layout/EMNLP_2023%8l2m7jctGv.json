@@ -1,0 +1,774 @@
+{
+    "o_paper": "EMNLP_2023%8l2m7jctGv",
+    "cf_paper": {
+        "id": "EMNLP_2023%8l2m7jctGv",
+        "meta": {
+            "venue": "EMNLP_2023",
+            "authors": [
+                "Jungmin Yun",
+                "Mihyeon Kim",
+                "Youngbin Kim"
+            ],
+            "categories": [
+                "cs.CL",
+                "cs.AI"
+            ],
+            "entry_id": "http://arxiv.org/abs/2406.01283v1",
+            "links": [
+                "http://dx.doi.org/10.18653/v1/2023.findings-emnlp.909",
+                "http://arxiv.org/abs/2406.01283v1",
+                "http://arxiv.org/pdf/2406.01283v1"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2406.01283v1",
+            "published": "2024-06-03T12:51:52+00:00",
+            "updated": "2024-06-03T12:51:52+00:00",
+            "primary_category": "cs.CL",
+            "title": "Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification",
+            "summary": "Transformer-based models have achieved dominant performance in numerous NLP\ntasks. Despite their remarkable successes, pre-trained transformers such as\nBERT suffer from a computationally expensive self-attention mechanism that\ninteracts with all tokens, including the ones unfavorable to classification\nperformance. To overcome these challenges, we propose integrating two\nstrategies: token pruning and token combining. Token pruning eliminates less\nimportant tokens in the attention mechanism's key and value as they pass\nthrough the layers. Additionally, we adopt fuzzy logic to handle uncertainty\nand alleviate potential mispruning risks arising from an imbalanced\ndistribution of each token's importance. Token combining, on the other hand,\ncondenses input sequences into smaller sizes in order to further compress the\nmodel. By integrating these two approaches, we not only improve the model's\nperformance but also reduce its computational demands. Experiments with various\ndatasets demonstrate superior performance compared to baseline models,\nespecially with the best improvement over the existing BERT model, achieving\n+5%p in accuracy and +5.6%p in F1 score. Additionally, memory cost is reduced\nto 0.61x, and a speedup of 1.64x is achieved.",
+            "license": null,
+            "venue_config": {
+                "id": "EMNLP_2023_Conference",
+                "name": "Empirical Methods in Natural Language Processing (EMNLP) of 2023",
+                "type": "Empirical Methods in Natural Language Processing (EMNLP)",
+                "description": "The Empirical Methods in Natural Language Processing (EMNLP) conference is a premier annual event organized by the Association for Computational Linguistics (ACL). It focuses on advances in natural language processing (NLP), emphasizing empirical approaches that use data-driven methods, such as machine learning, deep learning, and large-scale language models covering areas such as syntax, semantics, discourse, and phonology. It emphasizes machine learning techniques, including deep learning and large language models, and explores multilingual NLP, conversational AI, and information extraction. The conference also addresses ethical concerns like bias and fairness while showcasing applications in domains such as healthcare, social media, and computational social science..",
+                "guidelines": "## Review Guidelines:\n\n1. Be Specific:\n\tFlag issues with clear, detailed examples (e.g., \"X misses factor Y\" instead of \"X is wrong\").\n\tEnsure your points are understandable without requiring additional context.\n\n2. Avoid Common Review Pitfalls:\n\t* Avoid overused heuristics like \"Results are not surprising\" or \"The paper lacks novelty\" without clear justification.\n\t* Be open-minded about unexpected results, simpler methods, and niche topics.\n\n3. Watch for Common Issues in NLP Papers:\n\t* Methodology: Ensure valid evaluation, reproducibility, and clear assumptions.\n\t* Artifacts: Check for ethics issues and clear licensing.\n\t* Experimental Results: Avoid misleading framing, unsubstantiated claims, or statistical flaws.\n\t* General: Ensure clear research questions, proper citations, and accurate terminology.\n\n4. Ensure Consistency in Scores:\n\t* Justify low soundness scores with detailed explanations.\n\t* Use excitement scores for personal preferences and overall assessment for the paper\u2019s recommendation.\n\n5. Maintain a Professional, Neutral Tone:\n\t* Write reviews that help authors improve, avoiding sarcasm or dismissiveness.\n\t* Treat authors with respect, considering they may be early-career researchers or under stress.",
+                "guidelines_detailed": "## Write a strong review\n\n### 1. Be specific\n\nIf you would like to flag any issues, it should be specific and ideally understandable to the chairs without reading the full paper. Let us consider a few examples.\n\n* Instead of \"The paper is missing relevant references\" use \"The paper is missing references XYZ\"\n* Instead of \"X is not clear\" use \"Y and Z are missing from the description of X\"\n* Instead of \"The formulation of X is wrong\" use \"The formulation of X misses the factor Y\"\n* Instead of \"The contribution is not novel\" use \"Highly similar work X and Y has been published 3+ months prior to submission deadline\"\n* Instead of \"The paper is missing recent baselines\" use \"The proposed method should be compared against recent methods X, Y and Z\"\n* Instead of \"X was done in the way Y\" use \"X was done in the way Y which has the disadvantage Z\"\n* Instead of \"The algorithm's interaction with dataset is problematic\" use \"It's possible that when using the decoding (line 723) on the dataset 3 (line 512), there might not be enough training data to rely on the n-best list.\"\n\nThe advantage of the last version is that it can be understood by an area chair (who has expertise in the subarea) without looking for line numbers.\n\n### 2. Check for common review issues\n\nJudging whether a research paper is \u201cgood\u201d is an objectively hard task, and over the past conferences, we collected a list of common problems, which is presented below. Such comments may point at legitimate problems with the paper, but they are not always \u201cweaknesses\u201d. This can happen even to experienced reviewers, and it\u2019s worth checking your review for these problems before submitting.\n| Heuristic  | Why this is problematic |\n|------------|------------------------|\n| **H1. The results are not surprising** | Just because findings seem obvious doesn\u2019t mean they are known or useless. Empirical validation is still valuable. |\n| **H2. The results contradict what I would expect** | Avoid confirmation bias\u2014unexpected results can challenge assumptions and contribute to progress. |\n| **H3. The results are not novel** | If claiming lack of novelty, provide references. Contributions like analysis or reproduction are valid under CFP. |\n| **H4. This has no precedent in the existing literature** | Novel ideas can be harder to publish, but that doesn\u2019t make them invalid. Avoid excessive conservatism. |\n| **H5. The results do not surpass the latest SOTA** | SOTA is not required for a contribution. Improvements in efficiency, interpretability, or fairness also matter. |\n| **H6. The results are negative** | Negative results prevent hype and overclaiming. Knowing what doesn\u2019t work is as important as knowing what does. |\n| **H7. This method is too simple** | Simpler methods are often preferable\u2014effective, robust, and easier to deploy. Complexity isn\u2019t inherently better. |\n| **H8. The paper doesn't use [my preferred methodology]** | NLP includes diverse contributions beyond specific methodologies. Methodological diversity is essential. |\n| **H9. The topic is too niche** | Specialized research can have a significant impact within its subfield and contribute to broader understanding. |\n| **H10. The approach is tested only on [not English]** | Research on any language is valuable, both practically and theoretically, just as English-only studies are. |\n| **H11. The paper has language errors** | Clarity is more important than perfect language. Scientific content matters more than writing style. |\n| **H12. The paper is missing the [reference X]** | Missing key references is a concern only if the work was published 3+ months before the deadline. Otherwise, suggest rather than criticize. |\n| **H13. The authors could also do [extra experiment X]** | Extra experiments are always possible but not always necessary. If critical, justify why. Otherwise, suggest rather than reject. |\n| **H14. The authors should compare to a 'closed' model X** | Closed-model comparisons are useful only if relevant to the claim. Lack of transparency can make them unreliable. |\n| **H15. The authors should have done [X] instead** | Different approaches exist. Only critique if the chosen method prevents answering the research question or is misleading. |\n| **H16. Limitations != weaknesses** | Acknowledging limitations is required; listing them as weaknesses without justification is unfair. Argue why they invalidate the work if relevant. |\n\nIf you have something like the above listed as a \u201cweakness\u201d of the paper, do try to revisit the paper with an open mind. Both the authors and the ACs will be aware of these guidelines and can refer to them in discussion/meta-review.\n\n### 3. Check for common problems in NLP papers\n\nAs a counter to common problems with reviews, there are also common problems with NLP papers. We do ask you to watch out for these and point them out when you see them. Above all else, published research should at least be technically sound and appropriately scoped. As with the above reviewer issues, it\u2019s a case-by-case evaluation: some things in the list below may be appropriate in a given context, given that they are sufficiently motivated. We provide codes for different types of issues (e.g. M1, G2\u2026) that can be referenced in discussions.\n\n#### Issues with methodology (M)\n\n- **M1. LLM-only evaluation without validation**: If LLMs are used as evaluators, their reliability must be validated in this context.  \n\n- **M2. Reproducibility issues**: Are there enough details to reproduce the experiments, including hyperparameters? Is code or data provided for reviewer evaluation? Reproducibility refers to rerunning experiments with similar results, not reimplementing them.  \n\n- **M3. Undisclosed data quality issues**: If the paper provides datasets or samples, any quality issues should be disclosed. If undisclosed issues exist, it's a serious concern.  \n\n- **M4. Unmotivated selection**: The paper should justify its choice of models and benchmarks in relation to its claims. Even if you would have chosen differently, their selection must be reasonable.  \n\n- **M5. Incomplete assumptions or proofs**: Assumptions should be clearly stated, and formal statements (theorems, lemmas, etc.) must be backed by complete, correct proofs, even if placed in an appendix.  \n\n#### Issues with artifact sourcing or release (T)\n\n- **T1. Ethics issues with data collection**: If human data collection is involved, ethical considerations (e.g., approval, compensation) should be addressed. Major concerns can be flagged for ethics review.\n\n- **T2. Unclear license/release terms**: If a dataset or model is released, the terms should be explicitly stated. Reviewers should check clarity, not make legal judgments.  \n\n#### Issues with experimental results (R)\n\n- **R1. Analysis issues**: Issues include misleading statistics, cherry-picked results, or poorly tuned baselines that affect fairness in comparisons.  \n\n- **R2. Inappropriate scope of claims**: Claims should be based on representative samples. Evaluating a few benchmarks does not justify broad statements about reasoning, understanding, or LLM capabilities.  \n\n- **R3. Hypotheses/speculations as conclusions**: Claims must be supported by evidence or marked as speculation, not presented as established facts.  \n\n- **R4. Misleading framing or overclaiming**: Overgeneralized conclusions, such as stating that LLMs \"understand\" language based only on benchmark results, should be avoided.  \n\n- **R5. Missing statistical significance assessment**: Key results should include error bars, confidence intervals, and statistical significance tests, with details on variability and assumptions.  \n\n#### General issues (G)\n\n- **G1. Unclear research question or contribution**: The paper should clearly state the problem it addresses, its contributions, and its limitations in the abstract and introduction.  \n\n- **G2. Reliance on a bad precedent**: Justifying methods by citing flawed or outdated work is problematic. If precedent is questionable, reviewers should clarify their stance.  \n\n- **G3. Missing/misrepresented related work**: Authors should fairly represent previous research, ensuring novelty claims are justified and related work is accurately cited.  \n\n- **G4. Key terms too vague and undefined**: If an important term is unclear or undefined, the paper should specify or reference its meaning.  \n\n- **G5. Misleading/incorrect citations**: Citations must accurately reflect the referenced work. Increasing reliance on LLM-generated summaries makes this issue more prevalent.  \n\n\n### 4. Check that your scores reflect the review\n\nARR reviewers are asked to provide three scores: soundness, excitement, and overall recommendation.\n\nThe soundness scores must be justified by the text of the review . If you give a low Soundness score without finding any major faults, this means that your review is not a faithful explanation of your recommendation, and you need to revise it. One possible reason for low soundness scores without sufficient justification could be reliance on some unconscious bias or heuristic, like the ones listed in the previous section. Likewise, low reproducibility scores should be justified.\n\nSometimes you may find the work sound, but not something that is interesting for you personally. Such preferences are more subjective and should be reflected in a separate excitement score, which is orthogonal to the assessment of the soundness of the paper. Excitement scores reflect our personal taste, and so do not necessarily come with explicit reasons.\n\nThe Overall assessment score is an explicit recommendation for the outcome of this paper, if it were committed to an *ACL venue. This is a composite score reflecting your assessment of soundness, excitement, and also other factors like novelty and impact. All papers recommended for Findings and main conferences are expected to be sufficiently sound and reproducible, but you may consider a paper worthy of the main conference even if you personally are not excited about it. For example, improvements in efficiency of some algorithm, or creating a high-quality resource for a language/domain that does not yet have resources of that type may not sound very novel or exciting, but you may still consider it a significant contribution due to its potential impact (for its target community).\n\n\n### 5. Check that the tone is professional and neutral\n\nAbove all, a good review should be professional and neutral, if not kind. A key goal of peer review is to help the authors improve their papers. As an anonymous reviewer, you are in a position of power, and the written medium makes it easier to be more dismissive and sarcastic than if you were communicating with the authors face-to-face. Unfortunately such reviews are not uncommon.\n\nConsider that you may well be addressing someone who is only starting on the research path. And/or someone struggling with stress and other mental health issues. And/or someone who has been less lucky with their school and advisors. Academic lives are already stressful enough, and we do not need to inflict extra damage on the mental health of our colleagues with sarcastic or insulting reviews. Write the review you would like to get yourself.\n\nThe fact is, authors and reviewers are actually the same people: the conference crowd lining up for coffee, happily chatting with each other about the grand problems even if they do not always agree. Why can\u2019t we do peer review in the same spirit of fun intellectual interaction with colleagues?\n\nJust like the conference coffee break chats, reviewing is in fact, mutually beneficial: in exchange for feedback, the reviewers get to have the first look at cutting-edge research. Just like the coffee breaks, where you do not necessarily meet only the people working in your subsubfield, peer review may expose you to new techniques. Since there is careful written communication in the authors\u2019 response, you may even find that you were wrong about something, which is a much faster way to learn than making the same mistake in your own research.\n\nNot to mention, someone out there is reviewing your papers too. The more rude or dismissive reviews there are, the more of a norm they become, and the higher the chances you will get one yourself in the future.",
+                "template_field_semantics": {
+                    "summary": "Paper Topic And Main Contributions",
+                    "strengths": "Reasons To Accept",
+                    "weaknesses": "Reasons To Reject",
+                    "suggestions": "Questions For The Authors"
+                },
+                "review_template": {
+                    "Paper Topic And Main Contributions": "Describe what this paper is about. This should help action editors and area chairs to understand the topic of the work and highlight any possible misunderstandings.",
+                    "Reasons To Accept": "What are the major reasons to publish this paper at EMNLP? These could include novel and useful methodology, insightful empirical results or theoretical analysis, clear organization of related literature, or any other reason why interested readers of *ACL papers may find the paper useful.",
+                    "Reasons To Reject": "What are the concerns that you have about the paper that would cause you to favor prioritizing other high-quality papers that are also under consideration for publication? These could include concerns about correctness of the results or argumentation, limited perceived impact of the methods or findings (note that impact can be significant both in broad or in narrow sub-fields), lack of clarity in exposition, or any other reason why interested readers of *ACL papers may gain less from this paper than they would from other papers under consideration. Where possible, please number your concerns so authors may respond to them individually.",
+                    "Questions For The Authors": "If you have any questions to the authors, other than addressing the concerns above, please list them here.",
+                    "Missing References": "List any missing references here",
+                    "Typos Grammar Style and Presentation Improvements": "List any typos, grammar issues, or style and presentation improvements here"
+                },
+                "overall_score_name": "Overall Assessment",
+                "review_scores": {
+                    "Reviewer Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "Positive that my evaluation is correct. I read the paper very carefully and am familiar with related work.",
+                            "4": "Quite sure. I tried to check the important points carefully. It\u2019s unlikely, though conceivable, that I missed something that should affect my ratings.",
+                            "3": "Pretty sure, but there\u2019s a chance I missed something. Although I have a good feel for this area in general, I did not carefully check the paper\u2019s details, e.g., the math or experimental design.",
+                            "2": "Willing to defend my evaluation, but it is fairly likely that I missed some details, didn\u2019t understand some central points, or can\u2019t be sure about the novelty of the work.",
+                            "1": "Not my area, or paper is very hard to understand. My evaluation is just an educated guess."
+                        }
+                    },
+                    "Soundness": {
+                        "meaning": "Given that this is a short/long paper, is it sufficiently sound and thorough? Does it clearly state scientific claims and provide adequate support for them? For experimental papers: consider the depth and/or breadth of the research questions investigated, technical soundness of experiments, methodological validity of evaluation. For position papers, surveys: consider whether the current state of the field is adequately represented and main counter-arguments acknowledged. For resource papers: consider the data collection methodology, resulting data & the difference from existing resources are described in sufficient detail.",
+                        "scores": {
+                            "5": "Excellent: This study is one of the most thorough I have seen, given its type.",
+                            "4": "Strong: This study provides sufficient support for all of its claims. Some extra experiments could be nice, but not essential.",
+                            "3": "Acceptable: This study provides sufficient support for its main claims. Some minor points may need extra support or details.",
+                            "2": "Poor: Some of the main claims are not sufficiently supported. There are major technical/methodological problems.",
+                            "1": "Major Issues: This study is not yet sufficiently thorough to warrant publication or is not relevant to ACL."
+                        }
+                    },
+                    "Excitement": {
+                        "meaning": "How exciting is this paper for you? Excitement is subjective, and does not necessarily follow what is popular in the field. We may perceive papers as transformational/innovative/surprising, e.g. because they present conceptual breakthroughs or evidence challenging common assumptions/methods/datasets/metrics. We may be excited about the possible impact of the paper on some community (not necessarily large or our own), e.g. lowering barriers, reducing costs, enabling new applications. We may be excited for papers that are relevant, inspiring, or useful for our own research. These factors may combine in different ways for different reviewers.",
+                        "scores": {
+                            "5": "Highly Exciting: I would recommend this paper to others and/or attend its presentation in a conference.",
+                            "4": "Exciting: I would mention this paper to others and/or make an effort to attend its presentation in a conference.",
+                            "3": "Interesting: I might mention some points of this paper to others and/or attend its presentation in a conference if there\u2019s time.",
+                            "2": "Potentially Interesting: this paper does not resonate with me, but it might with others in the *ACL community.",
+                            "1": "Not Exciting: this paper does not resonate with me, and I don\u2019t think it would with others in the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    },
+                    "Overall Assessment": {
+                        "meaning": "Do you believe the paper should be accepted? Outstanding papers should be either fascinating, controversial, surprising, impressive, or potentially field-changing.",
+                        "scores": {
+                            "5": "Award quality: technically flawless paper with groundbreaking impact.",
+                            "4.5": "Borderline award",
+                            "4": "Very strong accept: technically flawless paper with excellent impact",
+                            "3.5": "Borderline strong accept",
+                            "3": "Accept: technically strong paper with high impact",
+                            "2.5": "Borderline Reject",
+                            "2": "Reject: technical flaws and low interest to the community",
+                            "1.5": "",
+                            "1": "Strong Reject: trivial results, many technical flaws and low interest to the community"
+                        }
+                    }
+                }
+            },
+            "oid": "EMNLP_2023%8l2m7jctGv",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/EMNLP_2023_Conference/EMNLP_2023%8l2m7jctGv/media"
+        },
+        "md": "\n\n\n# Focus on the Core: Efficient Attention via Pruned Token Compression \n\n\nfor Document Classification\n\n\n\n\n\n###### Abstract\n\n\n\n\n\nTransformer-based models have achieved dominant performance in numerous NLP tasks. Despite their remarkable successes, pre-trained transformers such as BERT suffer from a computationally expensive self-attention mechanism that interacts with all tokens, including the ones unfavorable to classification performance. To overcome these challenges, we propose integrating two strategies: token pruning and token combining. Token pruning eliminates less important tokens in the attention mechanism\u2019s key and value as they pass through the layers. Additionally, we adopt fuzzy logic to handle uncertainty and alleviate potential mispruning risks arising from an imbalanced distribution of each token\u2019s importance. Token combining, on the other hand, condenses input sequences into smaller sizes in order to further compress the model. By integrating these two approaches, we not only improve the model\u2019s performance but also reduce its computational demands. Experiments with various datasets demonstrate superior performance compared to baseline models, especially with the best improvement over the existing BERT model, achieving +5$\\%p$ in accuracy and +5.6$\\%p$ in F1 score. Additionally, memory cost is reduced to 0.61x, and a speedup of 1.64x is achieved.  \n\n\n\n\n\n## 1 Introduction\n\n\n\n\n\nTransformer-based deep learning architectures have achieved dominant performance in numerous areas of natural language processing (NLP) studies\u00a0Devlin et\u00a0al. ([2018](#bib.bib9)); Lewis et\u00a0al. ([2019](#bib.bib27)); Brown et\u00a0al. ([2020](#bib.bib3)); Yang et\u00a0al. ([2019](#bib.bib44)). In particular, pre-trained transformer-based language models like BERT\u00a0Devlin et\u00a0al. ([2018](#bib.bib9)) and its variants\u00a0Yasunaga et\u00a0al. ([2022](#bib.bib45)); He et\u00a0al. ([2020](#bib.bib17)); Guo et\u00a0al. ([2020](#bib.bib15)) have demonstrated state-of-the-art performance on many NLP tasks. The self-attention mechanism, a key element in transformers, allows for interactions between every pair of tokens in a sequence. This effectively captures contextual information across the entire sequence. This mechanism has proven to be particularly beneficial for text classification tasks\u00a0Yang et\u00a0al. ([2020](#bib.bib43)); Karl and Scherp ([2022](#bib.bib19)); Munikar et\u00a0al. ([2019](#bib.bib33)).  \n\n\n\n\n\nDespite their effectiveness, BERT and similar models still face major challenges. BERT can be destructive in that not all tokens contribute to the final classification prediction\u00a0Guan et\u00a0al. ([2022](#bib.bib14)). Not all tokens are attentive in multi-head self-attention, and uninformative or semantically meaningless parts of the input may not have a positive impact on the prediction\u00a0Liang et\u00a0al. ([2022](#bib.bib28)). Further, the self-attention mechanism, which involves interaction among all tokens, suffers from substantial computational costs. Its quadratic complexity relative to the length of the input sequences results in high time and memory costs, making training impractical, especially for document classifications\u00a0Lee et\u00a0al. ([2022](#bib.bib26)); Pan et\u00a0al. ([2022](#bib.bib34)). In response to these challenges, many recent studies have attempted to address the problem of computational inefficiency and improve model ability by focusing on a few core tokens, thereby reducing the number of tokens that need to be processed. Their intuition is similar to human reading comprehension achieved by paying closer attention to important and interesting words\u00a0Guan et\u00a0al. ([2022](#bib.bib14)).  \n\n\n\n\n\nOne approach is a pruning method that removes a redundant token. Studies have shown an acceptable trade-off between performance and cost by simply removing tokens from the entire sequence to reduce computational demands\u00a0Ma et\u00a0al. ([2022](#bib.bib30)); Goyal et\u00a0al. ([2020](#bib.bib12)); Kim and Cho ([2020](#bib.bib20)). However, this method causes information loss, which degrades the performance of the model\u00a0Wei et\u00a0al. ([2023](#bib.bib41)). Unlike previous studies, we apply pruning to remove tokens from the keys and values of the attention mechanism to prevent the information loss and reduce the cost. In our method, less important tokens are removed, and the number of tokens gradually decreases by a certain ratio as they pass through the layers. However, there is still a risk of mispruning when the distribution of importance is imbalanced, since the ratio-based pruning does not take into account the importance distribution\u00a0Zhao et\u00a0al. ([2019](#bib.bib48)). To address this issue, we propose to adopt the fuzzy logic by utilizing fuzzy membership functions to reflect the uncertainty and support token pruning.  \n\n\n\n\n\nHowever, the trade-off between performance and cost of pruning limits the number of tokens that can be removed, hence, self-attention operations may still require substantial time and memory resources. For further model compression, we propose a token combining approach. Another line of prior works \u00a0Pan et\u00a0al. ([2022](#bib.bib34)); Chen et\u00a0al. ([2023](#bib.bib5)); Bolya et\u00a0al. ([2022](#bib.bib2)); Zeng et\u00a0al. ([2022](#bib.bib47)) have demonstrated that combining tokens can reduce computational costs and improve performance in various computer vision tasks, including image classification, object detection, and segmentation. Motivated by these studies, we aim to compress text sequence tokens. Since text differs from images with locality, we explore Slot Attention\u00a0Locatello et\u00a0al. ([2020](#bib.bib29)), which can bind any object in the input. Instead of discarding tokens from the input sequence, we combine input sequences into smaller number of tokens adapting the Slot Attention mechanism. By doing so, we can decrease the amount of memory and time required for training, while also minimizing the loss of information.  \n\n\n\n\n\nIn this work, we propose to integrate token pruning and token combining to reduce the computational cost while improving document classification capabilities. During the token pruning stage, less significant tokens are gradually eliminated as they pass through the layers. We implement pruning to reduce the size of the key and value of attention. Subsequently, in the token combining stage, tokens are merged into a combined token. This process results in increased compression and enhanced computational efficiency.  \n\n\n\n\n\nWe conduct experiments with document classification datasets in various domains, employing efficient transformer-based baseline models. Compared to the existing BERT model, the most significant improvements show an increase of 5$\\%p$ in accuracy and an improvement of 5.6$\\%p$ in the F1 score. Additionally, memory cost is reduced to 0.61x, and a speedup of 1.64x is achieved, thus accelerating the training speed. We demonstrate that our integration results in a synergistic effect not only improving performance, but also reducing memory usage and time costs.  \n\n\n\n\n\nOur main contributions are as follows:  \n\n\n\n\n\n* We introduce a model that integrates token pruning and token combining to alleviate the expensive and destructive issues of self-attention-based models like BERT. Unlike previous works, our token pruning approach removes tokens from the attention\u2019s key and value, thereby reducing the information loss. Furthermore, we use fuzzy membership functions to support more stable pruning. \n\n\n* To our knowledge, our token combining approach is the first attempt to apply Slot Attention, originally used for object localization, for lightweight purposes in NLP. Our novel application not only significantly reduces computational load but also improves classification performance. \n\n\n* Our experiment demonstrates the efficiency of our proposed model, as it improves classification performance while reducing time and memory costs. Furthermore, we highlight the synergy between token pruning and combining. Integrating them enhances performance and reduces overall costs more effectively than using either method independently. \n\n\n\n\n\n## 2 Related Works\n\n\n\n\n\n### 2.1 Sparse Attention\n\n\n\n\n\nIn an effort to decrease the quadratic time and space complexity of attention mechanisms, sparse attention sparsifies the full attention operation with complexity $O(n^{2})$, where $n$ is the sequence length. Numerous studies have addressed the issue of sparse attention, which can hinder the ability of transformers to effectively process long sequences. The studies also demonstrate strong performances, especially in document classification. Sparse Transformer\u00a0Child et\u00a0al. ([2019](#bib.bib7)) introduces sparse factorizations of the attention matrix by using a dilated sliding window, which reduces the complexity to $O(n\\sqrt{n})$. Reformer\u00a0Kitaev et\u00a0al. ([2020](#bib.bib23)) reduces the complexity to $O(nlogn)$ using the locality-sensitive hashing attention to compute the nearest neighbors. Longformer\u00a0Beltagy et\u00a0al. ([2020](#bib.bib1)) scales complexity to $O(n)$ by combining local window attention with task-motivated global attention, making it easy to process long documents. Linformer\u00a0Wang et\u00a0al. ([2020](#bib.bib40)) performs linear self-attention with a complexity of $O(n)$, theoretically and empirically showing that self-attention can be approximated by a low-rank matrix. Similar to our work, Linformer reduces the dimensions of the key and value of attention. Additionally, we improve the mechanism by reducing the number of tokens instead of employing the linear projection, to maintain the interpretability. BigBird\u00a0Zaheer et\u00a0al. ([2020](#bib.bib46)) introduces a sparse attention method with $O(n)$ complexity by combining random attention, window attention, and global attention. BigBird shows good performance on various long-document tasks, but it also demonstrates that sparse attention mechanisms cannot universally replace dense attention mechanisms, and that the implementation of sparse attention is challenging. Additionally, applying sparse attention has the potential risks of incurring context fragmentation and leading to inferior modeling capabilities compared to models of similar sizes\u00a0Ding et\u00a0al. ([2020](#bib.bib10)).  \n\n\n\n\n\n### 2.2 Token Pruning and Combining\n\n\n\n\n\nNumerous studies have explored token pruning methods that eliminate less informative and redundant tokens, resulting in significant computational reductions in both NLP\u00a0Kim et\u00a0al. ([2022](#bib.bib21)); Kim and Cho ([2020](#bib.bib20)); Wang et\u00a0al. ([2021](#bib.bib39)) and Vision tasks\u00a0Chen et\u00a0al. ([2022](#bib.bib6)); Kong et\u00a0al. ([2021](#bib.bib24)); Fayyaz et\u00a0al. ([2021](#bib.bib11)); Meng et\u00a0al. ([2022](#bib.bib32)). Attention is one of the active methods used to determine the importance of tokens. For example, PPT\u00a0Ma et\u00a0al. ([2022](#bib.bib30)) uses attention maps to identify human body tokens and remove background tokens, thereby speeding up the entire network without compromising the accuracy of pose estimation. The model that uses the most similar method to our work to determine the importance of tokens is LTP\u00a0Kim et\u00a0al. ([2022](#bib.bib21)). LTP applies token pruning to input sequences in order to remove less significant tokens. The importance of each token is calculated through the attention score. On the other hand, DynamicViT\u00a0Rao et\u00a0al. ([2021](#bib.bib35)) proposes an learned token selector module to estimate the importance score of each token and to prune less informative tokens. Transkimmer\u00a0Guan et\u00a0al. ([2022](#bib.bib14)) leverages the skim predictor module to dynamically prune the sequence of token hidden state embeddings. Our work can also be interpreted as a form of sparse attention that reduces the computational load of attention by pruning the tokens. However, there is a limitation to pruning mechanisms in that the removal of tokens can result in a substantial loss of information\u00a0Kong et\u00a0al. ([2021](#bib.bib24)).  \n\n\n\n\n\nTo address this challenge, several studies have explored methods for replacing token pruning. ToMe\u00a0Bolya et\u00a0al. ([2022](#bib.bib2)) gradually combines tokens based on their similarity instead of removing redundant ones. TokenLearner\u00a0Ryoo et\u00a0al. ([2021](#bib.bib36)) extracts important tokens from visual data and combines them using MLP to decrease the number of tokens. F-TFM\u00a0Dai et\u00a0al. ([2020](#bib.bib8)) gradually compresses the sequence of hidden states while still preserving the ability to generate token-level representations. Slot Attention\u00a0Locatello et\u00a0al. ([2020](#bib.bib29)) learns a set of task-dependent abstract representations, called \u201cslots\", to bind the objects in the input through self-supervision. Similar to Slot Attention, GroupViT\u00a0Xu et\u00a0al. ([2022](#bib.bib42)) groups tokens that belong to similar semantic regions using cross-attention for semantic segmentation with weak text supervision. In contrast to GroupViT, Slot Attention extracts object-centric representations from perceptual input. Our work is fundamentally inspired by Slot Attention. To apply Slot Attention, which uses a CNN as the backbone, to our transformer-based model, we propose a combining module that functions similarly to the grouping block of GroupViT. TPS\u00a0Wei et\u00a0al. ([2023](#bib.bib41)) introduces an aggressive token pruning method that divides tokens into reserved and pruned sets through token pruning. Then, instead of removing the pruned set, it is squeezed to reduce its size. TPS shares similarities with our work in that both pruning and squeezing are applied. However, while TPS integrates the squeezing process with pruning by extracting information from pruned tokens, our model processes combining and pruning independently.  \n\n\n\n\n\n## 3 Methods\n\n\n\n\n\nIn this section, we first describe the overall architecture of our proposed model, which integrates token pruning and token combining. Then, we introduce each compression stage in detail, including the token pruning strategy in section [3.2](#S3.SS2 \"3.2 Fuzzy-based Token Pruning Self-attention \u2023 3 Methods \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\") and the token combining module in section [3.3](#S3.SS3 \"3.3 Token Combining Module \u2023 3 Methods \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\").  \n\n\n\n\n\n### 3.1 Overall Architecture\n\n\n\n\n\n\n\n\n\n\n\nOur proposed model architecture is illustrated in Figure [1](#S3.F1 \"Figure 1 \u2023 3.1 Overall Architecture \u2023 3 Methods \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\"). The existing BERT model\u00a0Devlin et\u00a0al. ([2018](#bib.bib9)) consists of stacked attention blocks. We modify the vanilla self-attention mechanism by applying a fuzzy-based token pruning strategy. Subsequently, we replace one of the token-pruned attention blocks with a token combining module. Replacing a token-pruned attention block instead of inserting an additional module not only enhances model performance but also reduces computational overhead due to its dot product operations. First, suppose $X=\\{x_{i}\\}_{i=1}^{n}$ is a sequence token from an input text with sequence length $n$. Given $X$, let $E=\\{e_{i}\\}_{i=1}^{n}$ be an embedded token after passing through the embedding layer. Each $e_{i}$ is an embedded token that corresponds to the sequence token $x_{i}$. Additionally, we add learnable combination tokens. Suppose $C=\\{c_{i}\\}_{i=1}^{m}$ is a set of learnable combination tokens, where $m$ is the number of combination tokens. These combination tokens bind other embedded tokens through the token combining module. We simplify $\\{e_{i}\\}_{i=1}^{n}$ to $\\{e_{i}\\}$ and $\\{c_{i}\\}_{i=1}^{m}$ to $\\{c_{i}\\}$. We concatenate $\\{e_{i}\\}$ and $\\{c_{i}\\}$ and use them as input for token-pruned attention blocks. We denote fuzzy-based token pruning self-attention by $FTP_{Attn}$ , feed-forward layers by $FF$, and layer norm by $LN$. The operations performed within the token-pruned attention block in $l$-th layer are as follows:  \n\n\n\n\n\n|  | $\\displaystyle\\{\\tilde{e_{i}}^{l}\\},\\{\\tilde{c_{i}}^{l}\\}$ | $\\displaystyle=FTP_{Attn}([\\{e_{i}^{l}\\};\\{c_{i}\\}^{l}])$ |  | (1) |\n\n\n| --- | --- | --- | --- | --- |\n\n\n|  | $\\displaystyle\\{\\hat{e_{i}}^{l}\\},\\{\\hat{c_{i}}^{l}\\}$ | $\\displaystyle=LN(FF([\\{\\tilde{e_{i}}^{l}\\};\\{\\tilde{c_{i}}^{l}\\}])$ |  |\n\n\n| --- | --- | --- | --- |\n\n\n|  |  | $\\displaystyle\\quad+[\\{\\tilde{e_{i}}^{l}\\};\\{\\tilde{c_{i}}^{l}\\}]$ |  | (2) |\n\n\n| --- | --- | --- | --- | --- |\n\n\n\n\n\nThe token combining module receives $\\{\\hat{e_{i}}^{l}\\}$ and $\\{\\hat{c_{i}}^{l}\\}$ as input and merges $\\{\\hat{e_{i}}^{l}\\}$ into $\\{\\hat{c_{i}}^{l}\\}$ to output combined tokens $\\{c_{i}^{l+1}\\}$. After the token combining module, subsequent attention blocks do not perform pruning. Finally, we obtain the sequence representation by aggregating the output tokens $\\{r_{i}\\}$, in which our method averages the output.  \n\n\n\n\n\n### 3.2 Fuzzy-based Token Pruning Self-attention\n\n\n\n\n\nWe modify vanilla self-attention by implementing token pruning. Our token pruning attention mechanism gradually reduces the size of the key and value matrices by eliminating relatively unimportant embedded tokens, except for the combination tokens.        Importance Score We measure the significance of tokens based on their importance score. For each layer and head, the attention probability $Attention_{prob}$ is defined as:  \n\n\n\n\n\n|  | $\\displaystyle Attention_{prob}^{l,h}=softmax(\\frac{Q_{p}^{l,h}{{K_{p}^{l,h}}^{T}}}{\\sqrt{d}})\\in\\mathbb{R}^{n\\times n}$ |  | (3) |\n\n\n| --- | --- | --- | --- |\n\n\n\n\n\nwhere $l$ is the layer index, $h$ is the head index, $d$ is the feature dimension, and $Q_{p}^{l,h},K_{p}^{l,h}\\in\\mathbb{R}^{n\\times\\frac{d}{h}}$ indicate query, key, and respectively. $Attention_{prob}$ is interpreted as a similarity between the $i$-th token $e_{i}$ and the $j$-th token $e_{j}$ , with row index $i\\in[1,n]$ and column index $j\\in[1,n]$. As the similarity increases, a larger weight is assigned to the value corresponding to $e_{j}$ . The $j$-th column in Equation [3](#S3.Ex4 \"In 3.2 Fuzzy-based Token Pruning Self-attention \u2023 3 Methods \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\") represents the amount of token $e_{j}$ attended by other tokens $e_{i}$ \u00a0Wang et\u00a0al. ([2021](#bib.bib39)). Therefore, $e_{j}$ is considered a relatively important token as it is attended by more tokens. We define the importance score $S(e_{j})$ in layer $l$ and head $h$ as:  \n\n\n\n\n\n|  | $\\displaystyle S(e_{j})^{l,h}=\\frac{1}{n}\\sum_{i=1}^{n}(Attention_{prob}^{l,h})_{i,j}$ |  | (4) |\n\n\n| --- | --- | --- | --- |\n\n\n\n\n\n  \n\n\n\n\n\nToken Preservation Ratio After calculating the importance score using $Q_{p}$ and $K_{p}$ in the $l$-th layer, we select $t_{l+1}$ embedded tokens in descending order of their scores. The $t_{l+1}$ embedded tokens are then indexed for $K_{p}$ and $V_{p}$ in the $(l+1)$-th layer. Other embedded tokens with relatively low importance score are pruned as a result. We define the number of tokens that remain after token pruning in the $(l+1)$-th layer as:  \n\n\n\n\n\n|  | $\\displaystyle t^{l+1}=\\lfloor{t^{l}\\times p}\\rfloor$ |  | (5) |\n\n\n| --- | --- | --- | --- |\n\n\n\n\n\nwhere $t_{l+1}$ depends on $p$, a hyperparameter indicating the token preservation ratio of $t^{l+1}$ to $t^{l}$. This preservation ratio represents the proportion of tokens that are retained after pruning, relative to the number of tokens before pruning. As token pruning is not performed in the first layer, $t_{1}=n$, and the attention uses the entire token in $Q_{p}$, $K_{p}$, and $V_{p}$. In the $(l+1)$-th layer, tokens are pruned based on $S(e_{j})^{l,h}$ with $Q_{p}^{l,h}\\in\\mathbb{R}^{n\\times\\frac{d}{h}}$ and $K_{p}^{l,h}\\in\\mathbb{R}^{t^{l}\\times\\frac{d}{h}}$, where $t^{l+1}\\leq t^{l}$. In the subsequent layers, the dimensions of $K_{p}$ and $V_{p}$ gradually decreases.        Fuzzy-based Token Pruning However, simply discarding a fixed proportion of tokens based on a importance score could lead to mispruning. Especially in imbalanced distributions, this pruning strategy may remove crucial tokens while retaining unimportant ones, thereby decreasing the model accuracy\u00a0Zhao et\u00a0al. ([2019](#bib.bib48)). Insufficient training in the initial layers of the model can lead to uncertain importance scores, thereby increasing the risk of mistakenly pruning essential tokens. Furthermore, the importance score of a token is relative, and the distinction between the degree of importance and unimportance may be unclear and uncertain. To address this challenge, we exploit fuzzy theory, which can better perceive uncertainty. We employ two fuzzy membership functions to evaluate the degree of importance and unimportance together. Inspired by the previous work\u00a0Zhao et\u00a0al. ([2019](#bib.bib48)) on fuzzy-based filter pruning in CNN, we design fuzzy membership functions for $Importance(S(e))$ and $Unimportance(S(e))$ as:  \n\n\n\n\n\n|  | $\\displaystyle Importance(S)=$ | $\\displaystyle\\begin{cases}0&{\\mbox{if }S(e)\\leq a}\\\\ \\frac{S(e)-a}{b-a}&{\\mbox{if }a<S(e)<b}\\\\ 1&{\\mbox{if }S(e)\\geq b}\\end{cases}$ |  | (6) |\n\n\n| --- | --- | --- | --- | --- |\n\n\n|  | $\\displaystyle Unimportance(S)=$ | $\\displaystyle\\begin{cases}1&\\mbox{if }S(e)\\leq a\\\\ \\frac{b-S(e)}{b-a}&\\mbox{if }a<S(e)<b\\\\ 0&\\mbox{if }S(e)\\geq b\\end{cases}$ |  | (7) |\n\n\n| --- | --- | --- | --- | --- |\n\n\n\n\n\nwhere we simplify the importance score $S(e_{j})^{l,h}$ to $S(e)$. Unlike the previous workZhao et\u00a0al. ([2019](#bib.bib48)) that uses fixed constants as hyperparameters, our approach adopts the quantile function $Q_{S(e)}(0.25)$ and $Q_{S(e)}(0.75)$ for $a$ and $b$, respectively, to ensure robustness. We compute a quantile function for all importance scores, capturing the complete spectrum of head information. The importance set $I$ and the unimportance set $U$ are defined using the $\\alpha-cut$, commonly referred to as ${}^{\\alpha}A={x|A(x)\\geq\\alpha}$ in fuzzy theory. To mitigate information loss due to imbalanced distribution, we employ token pruning based on the preservation ratio $p$ for tokens that fall within the set $(I-U)^{c}$. In the initial layers, where attention might not be adequately trained, there\u2019s a risk of erroneously removing crucial tokens. To counteract this, we\u2019ve set the $\\alpha$ for $I$ to a minimal value of 0.01, while the $\\alpha$ for $U$ is empirically set to 0.9. Finally, our fuzzy-based token pruning self-attention $FTP_{Attn}$ is defined as :  \n\n\n\n\n\n|  | $\\displaystyle FTP_{Attn}=softmax(\\frac{Q_{p}^{l,h}{K_{p}^{l,h}}^{T}}{\\sqrt{d}})V_{p}^{l,h},$ |  |\n\n\n| --- | --- | --- |\n\n\n|  | $\\displaystyle(Q_{p}^{l,h}\\in\\mathbb{R}^{n\\times\\frac{d}{h}},\\ K_{p}^{l,h},V_{p}^{l,h}\\in\\mathbb{R}^{t^{l}\\times\\frac{d}{h}})$ |  | (8) |\n\n\n| --- | --- | --- | --- |\n\n\n\n\n\n### 3.3 Token Combining Module\n\n\n\n\n\nToken combining module takes token-pruned attention block\u2019s output representation ${\\hat{e_{i}}^{l}}$, ${\\hat{c_{i}}^{l}}$ as inputs. Combination tokens, which are concatenated with embedded tokens, pass through token-pruned attention blocks to incorporate global information from input sequences. Then, combination tokens integrate embedded tokens based on their similarity in the embedded space. Similar to GroupViT\u00a0Xu et\u00a0al. ([2022](#bib.bib42)), our token combining module uses Gumbel-Softmax\u00a0Jang et\u00a0al. ([2016](#bib.bib18)) to perform cross-attention between combination tokens and embedded tokens. We define the similarity matrix $Sim$ as:  \n\n\n\n\n\n|  | $\\displaystyle Sim_{i,j}^{\\ l}$ |  | |\n\n\n| --- | --- | --- | --- |\n\n\n|  | $\\displaystyle=\\frac{\\mbox{exp}(W_{q}LN(\\hat{c_{i}}^{l})\\cdot W_{k}LN(\\hat{e_{j}}^{l})+g_{i})}{{\\sum_{t=1}^{m}}\\mbox{exp}(W_{q}LN{(\\hat{c_{t}}^{l})}\\cdot W_{k}LN(\\hat{e_{j}}^{l})+g_{t})}$ |  |  | (9) |\n\n\n| --- | --- | --- | --- | --- |\n\n\n\n\n\nwhere $LN$ is layer normalization, $W_{q}$ and $W_{k}$ are the weights of projection matrix for the combination tokens and embedded tokens, respectively, and $\\{g_{i}\\}$ are $i.i.d$ random samples from the $Gumbel(0,1)$ distribution. Subsequently, we implement hard assignment technique\u00a0Xu et\u00a0al. ([2022](#bib.bib42)), which employs a one-hot operation to determine the specific combination token to which each embedded token belongs. We define hard assignment $HA$ as:  \n\n\n\n\n\n|  | $\\displaystyle HA_{i,j}^{l}=\\mathds{1}_{M_{i}^{l}}(Sim_{i,j}^{l})+Sim_{i,j}^{l}-\\mbox{sg}(Sim_{i,j}^{l}),$ |  |\n\n\n| --- | --- | --- |\n\n\n|  | $\\displaystyle M_{i}=max(Sim_{-,j})$ |  | (10) |\n\n\n| --- | --- | --- | --- |\n\n\n\n\n\nwhere $sg$ is the stop gradient operator to stop the accumulated gradient of the inputs. We update the combination token by calculating the weighted sum of the embedded token that corresponds to the same combination token. The output of the token combining block is calculated as follows:  \n\n\n\n\n\n|  | $\\displaystyle c_{i}^{l+1}=\\hat{c_{i}}^{l}+W_{o}\\frac{\\sum_{j=1}^{m}HA_{i,j}^{l}W_{v}\\hat{e_{j}}^{l}}{\\sum_{j=1}^{m}HA_{i,j}^{l}}$ |  | (11) |\n\n\n| --- | --- | --- | --- |\n\n\n\n\n\nwhere $W_{v}$ and $W_{o}$ are the weights of the projection matrix. We adopt the grouping mechanism described in GroupViT. GroupViT learns semantic segmentation by grouping output segment tokens to object classes through several grouping stages. Our method, on the other hand, replaces one layer with a token combining module and compresses embedded tokens to a few informative combined tokens. Empirically, we find that this approach reduces the training memory and time of the model, increasing performance.  \n\n\n\n\n\n## 4 Experiments\n\n\n\n\n\nThis section aims to validate the effectiveness of our proposed model. Firstly, we evaluate the document classification performance of our proposed model compared to the baseline models. Secondly, we investigate the time and memory costs of our proposed model and evaluate its efficiency. Lastly, through the ablation study, we compare the effects of different preservation ratios on fuzzy-based token pruning self-attention. We also analyze the impact of the position of the token combining module and the number of combination tokens.  \n\n\n\n\n\n### 4.1 Dataset\n\n\n\n\n\nWe evaluate our proposed model using six datasets across different domains with varying numbers of classes. SST-2\u00a0Socher et\u00a0al. ([2013](#bib.bib37)) and IMDB\u00a0Maas et\u00a0al. ([2011](#bib.bib31)) are datasets for sentiment classification on movie reviews. BBC News\u00a0Greene and Cunningham ([2006](#bib.bib13)) and 20 NewsGroups\u00a0Lang ([1995](#bib.bib25)) comprise a collection of public news articles on various topics. LEDGAR\u00a0Tuggener et\u00a0al. ([2020](#bib.bib38)) includes a corpus of legal provisions in contract, which is part of the LexGLUE\u00a0Chalkidis et\u00a0al. ([2021](#bib.bib4)) benchmark to evaluate the capabilities of legal text. arXiv is a digital archive that stores scholarly articles from a wide range of fields, such as mathematics, computer science, and physics. We use the arXiv dataset employed by the controller\u00a0He et\u00a0al. ([2019](#bib.bib16)) and perform classification based on the abstract of the paper as the input. We present more detailed statistics of the dataset in Table [1](#S4.T1 \"Table 1 \u2023 4.1 Dataset \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\").  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n### 4.2 Experimental Setup and Baselines\n\n\n\n\n\nThe primary aim of this work is to address the issues of the BERT, which can be expensive and destructive. To evaluate the effectiveness of our proposed model, we conduct experiments comparing it with the existing BERT model(bert-base-uncased). For a fair comparion, both of BERT and our proposed model follow the same settings, and ours is warm-started on bert-base-uncased. Our model has the same number of layers and heads, embedding and hidden sizes, and dropout ratio as BERT. Our model has the same number of layers and heads, embedding and hidden sizes, and dropout ratio as BERT. We also compare our method to other baselines, including BigBird\u00a0Zaheer et\u00a0al. ([2020](#bib.bib46)) and Longformer\u00a0Beltagy et\u00a0al. ([2020](#bib.bib1)), which employ sparse attention, as well as F-TFM\u00a0Dai et\u00a0al. ([2020](#bib.bib8)) and Transkimmer\u00a0Guan et\u00a0al. ([2022](#bib.bib14)), which utilize token compression and token pruning, respectively.  \n\n\n\n\n\nFor IMDB, BBC News, and 20NewsGroup, 20% of the training data is randomly selected for validation. During training, all model parameters are fine-tuned using the Adam optimizer\u00a0Kingma and Ba ([2014](#bib.bib22)). The first 512 tokens of the input sequences are processed. The learning rate is set to 2e-5, and we only use 3e-5 for the LEDGAR dataset. We also use a linear warm-up learning rate scheduler. In all experiments, we use a batch size of 16. We choose the model with the lowest validation loss during the training step as the best model. We set the token preservation ratio $p$ to 0.9.  \n\n\n\n\n\n### 4.3 Main Result\n\n\n\n\n\nTo evaluate the performance and the efficiency of each strategy, we compare our proposed model(ours-PFC) with five baselines and three other models: one that uses only token pruning(ours-P), one that applies fuzzy membership functions for token pruning(ours-PF), and one that uses only a token combining module(ours-C), as shown in Table [2](#S4.T2 \"Table 2 \u2023 4.1 Dataset \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\") and Table [3](#S4.T3 \"Table 3 \u2023 4.1 Dataset \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\").  \n\n\n\n\n\nCompared to BERT, ours-P consistently outperforms it for all datasets with higher accuracy and F1 scores, achieving approximately 1.33x speedup and 0.88x memory savings. More importantly, the performance of ours-PF significantly surpasses that of ours-P with up to 5.0%$p$ higher accuracy, 4.4%$p$ higher F1(macro) score, and 3.8%$p$ higher F1(micro) score, with the same FLOPs and comparable memory costs. To evaluate the performance of ours-C and ours-PFC, we incorporate the combining module at the 11-th layer, which results in the optimal performance. A comprehensive discussion on performance fluctuations in relation to the location of the combining module is presented in Section [4.4](#S4.SS4 \"4.4 Ablation study \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\"). Excluding the IMDB dataset, ours-C not only achieves higher values in both the accuracy and F1 scores compared to the BERT but also exceeds by 0.89x speedup and 1.26x memory savings while reducing FLOPs. Across all datasets, our models(ours-PF or ours-PFC) consistently outperform all efficient transformer-based baseline models. Furthermore, ours-PFC outperforms the BERT with up to 5.0%$p$ higher accuracy, 5.6%$p$ higher macro F1 score, and 4.8%$p$ higher micro F1 score. Additionally, ours-PFC exhibits the best performance with the least amount of time and memory required, compared to models that use pruning or combining methodologies individually. These findings highlight the effectiveness of integrating token pruning and token combining on BERT\u2019s document classification performance, from both the performance and the efficiency perspective.  \n\n\n\n\n\nSubsequently, we evaluate the potential effectiveness of ours-C and ours-PFC by implementing the combining module at the 7-th layer. As shown in Table [5](#S4.T5 \"Table 5 \u2023 4.4 Ablation study \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\") of Section [4.4](#S4.SS4 \"4.4 Ablation study \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\"), applying the combining module to the 7-th layer leads to further time and memory savings while also mitigating the potential decrease in accuracy. Compared to BERT, it only shows a minimal decrease in accuracy (at most 0.8%$p$). Moreover, it reduces FLOPs and memory costs to 0.61x, while achieving a 1.64x speedup. In our experiments, we find that our proposed model effectively improves document classification performance, outperforming all baselines. Even when the combination module is applied to the 7th layer, it maintains performance similar to BERT while further reducing FLOPs, lowering memory usage, and enhancing speed.  \n\n\n\n\n\n### 4.4 Ablation study\n\n\n\n\n\nToken Preservation Ratio We evaluate different token preservation ratios $p$ on the BBC News dataset, as shown in Table [4](#S4.T4 \"Table 4 \u2023 4.4 Ablation study \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\"). Our findings indicate that the highest accuracy, at 98.1%, was achieved when $p$ is 0.9. Moreover, our fuzzy-based pruning strategy results in 1.17x reduction in memory cost and 1.12x speedup compared to the vanilla self-attention mechanism. As $p$ decreases, we observe that performance deteriorates and time and memory costs decrease. A smaller $p$ leads to the removal of more tokens from the fuzzy-based token pruning self-attention. While leading a higher degree of information loss in attention, it removes more tokens can result in time and memory savings.  \n\n\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\n\nToken Combining Module In Table [5](#S4.T5 \"Table 5 \u2023 4.4 Ablation study \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\"), we compare the positions of different token combining modules on the BBC News dataset. We observe that placing the token combining module earlier within the layers results in greater speedup and memory savings. Since fewer combined tokens proceed through subsequent layers, the earlier this process begins, the greater the computational reduction that can be achieved. However, this reduction in the interaction between the combination token and the embedded token hinders the combination token to learn global information, potentially degrading the model performance. Our proposed model shows the highest performance when the token combining module is placed in the 11-th layer, achieving an accuracy of 98.1%.  \n\n\n\n\n\n\n\n\n\n\n\nCombination Tokens In Table [6](#S4.T6 \"Table 6 \u2023 4.4 Ablation study \u2023 4 Experiments \u2023 Focus on the Core: Efficient Attention via Pruned Token Compression for Document Classification\"), we compare the accuracy achieved with different numbers of combination tokens. We use four datasets to analyze the impact of the number of classes on the combination tokens. We hypothesized that an increased number of classes would require more combination tokens to encompass a greater range of information. However, we observe that the highest accuracy is achieved when using eight combination tokens across all four datasets. When more combination tokens are used, performance gradually degrades. These results indicate that when the number of combination tokens is fewer than the number of classes, each combination token can represent more information as a feature vector in a 768-dimensional embedding space, similar to findings in GroupViT. Through this experiment, we find that the optimal number of combination tokens is 8. We show that our proposed model performs well in multi-class classification without adding computation and memory costs.  \n\n\n\n\n\n\n\n\n\n\n\n## 5 Conclusion\n\n\n\n\n\nIn this paper, we introduce an approach that integrates token pruning and token combining to improve document classification by addressing expensive and destructive problems of self-attention in the existing BERT model. Our approach consists of fuzzy-based token pruned attention and token combining module. Our pruning strategy gradually removes unimportant tokens from the key and value in attention. Moreover, we enhance the robustness of the model by incorporating fuzzy membership functions. For further compression, our token combining module reduces the time and memory costs of the model by merging the tokens in the input sequence into a smaller number of combination tokens. Experimental results show that our proposed model enhances the document classification performance by reducing computational requirements with focusing on more significant tokens. Our findings also demonstrate a synergistic effect by integrating token pruning and token combining, commonly used in object detection and semantic segmentation. Ultimately, our research provides a novel way to use pre-trained transformer models more flexibly and effectively, boosting performance and efficiency in a myriad of applications that involve text data processing.  \n\n\n\n\n\n## Limitations\n\n\n\n\n\nIn this paper, our goal is to address the fundamental challenges of the BERT model, which include high cost and performance degradation, that hinder its application to document classification. We demonstrate the effectiveness of our proposed method, which integrates token pruning and token combining, by improving the existing BERT model. However, our model, which is based on BERT, has an inherent limitation in that it can only handle input sequences with a maximum length of 512. Therefore, it is not suitable for processing datasets that are longer than this limit. The problems arising from the quadratic computation of self-attention and the existence of redundant and uninformative tokens are not specific to BERT and are expected to intensify when processing longer input sequences. Thus, we will improve other transformer-based models that can handle long sequence datasets, such as LexGLUE, and are proficient in performing natural language inference tasks in our future work.  \n\n\n\n\n\n## Ethics Statement\n\n\n\n\n\nOur research adheres to ethical standards of practice. The datasets used to fine-tune our model are publicly available and do not contain any sensitive or private information. The use of open-source data ensures that our research maintains transparency. Additionally, our proposed model is built upon a pre-trained model that has been publicly released. Our research goal aligns with an ethical commitment to conserve resources and promote accessibility. By developing a model that minimizes hardware resource requirements and time costs, we are making a valuable contribution towards a more accessible and inclusive AI landscape. We aim to make advanced AI techniques, including our proposed model, accessible and practical for researchers with diverse resource capacities, ultimately promoting equity in the field.  \n\n\n\n\n\n## Acknowledgment\n\n\n\n\n\nThis research was supported by Basic Science Research Program through the National Research Foundation of Korea(NRF) funded by the Ministry of Education(NRF-2022R1C1C1008534), and Institute for Information & communications Technology Planning & Evaluation (IITP) through the Korea government (MSIT) under Grant No. 2021-0-01341 (Artificial Intelligence Graduate School Program, Chung-Ang University).  \n\n\n\n\n\n## References\n\n\n\n\n\n* Beltagy et\u00a0al. (2020)  Iz\u00a0Beltagy, Matthew\u00a0E Peters, and Arman Cohan. 2020.   Longformer: The long-document transformer.   *arXiv preprint arXiv:2004.05150*. \n\n\n* Bolya et\u00a0al. (2022)  Daniel Bolya, Cheng-Yang Fu, Xiaoliang Dai, Peizhao Zhang, Christoph Feichtenhofer, and Judy Hoffman. 2022.   Token merging: Your vit but faster.   *arXiv preprint arXiv:2210.09461*. \n\n\n* Brown et\u00a0al. (2020)  Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared\u00a0D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et\u00a0al. 2020.   Language models are few-shot learners.   *Advances in neural information processing systems*, 33:1877\u20131901. \n\n\n* Chalkidis et\u00a0al. (2021)  Ilias Chalkidis, Abhik Jana, Dirk Hartung, Michael Bommarito, Ion Androutsopoulos, Daniel\u00a0Martin Katz, and Nikolaos Aletras. 2021.   Lexglue: A benchmark dataset for legal language understanding in english.   *arXiv preprint arXiv:2110.00976*. \n\n\n* Chen et\u00a0al. (2023)  Mengzhao Chen, Wenqi Shao, Peng Xu, Mingbao Lin, Kaipeng Zhang, Fei Chao, Rongrong Ji, Yu\u00a0Qiao, and Ping Luo. 2023.   Diffrate: Differentiable compression rate for efficient vision transformers.   *arXiv preprint arXiv:2305.17997*. \n\n\n* Chen et\u00a0al. (2022)  Tianlong Chen, Zhenyu Zhang, Yu\u00a0Cheng, Ahmed Awadallah, and Zhangyang Wang. 2022.   The principle of diversity: Training stronger vision transformers calls for reducing all levels of redundancy.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 12020\u201312030. \n\n\n* Child et\u00a0al. (2019)  Rewon Child, Scott Gray, Alec Radford, and Ilya Sutskever. 2019.   Generating long sequences with sparse transformers.   *arXiv preprint arXiv:1904.10509*. \n\n\n* Dai et\u00a0al. (2020)  Zihang Dai, Guokun Lai, Yiming Yang, and Quoc Le. 2020.   Funnel-transformer: Filtering out sequential redundancy for efficient language processing.   *Advances in neural information processing systems*, 33:4271\u20134282. \n\n\n* Devlin et\u00a0al. (2018)  Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2018.   Bert: Pre-training of deep bidirectional transformers for language understanding.   *arXiv preprint arXiv:1810.04805*. \n\n\n* Ding et\u00a0al. (2020)  Siyu Ding, Junyuan Shang, Shuohuan Wang, Yu\u00a0Sun, Hao Tian, Hua Wu, and Haifeng Wang. 2020.   Ernie-doc: A retrospective long-document modeling transformer.   *arXiv preprint arXiv:2012.15688*. \n\n\n* Fayyaz et\u00a0al. (2021)  Mohsen Fayyaz, Soroush\u00a0Abbasi Kouhpayegani, Farnoush\u00a0Rezaei Jafari, Eric Sommerlade, Hamid Reza\u00a0Vaezi Joze, Hamed Pirsiavash, and Juergen Gall. 2021.   Ats: Adaptive token sampling for efficient vision transformers.   *arXiv preprint arXiv:2111.15667*. \n\n\n* Goyal et\u00a0al. (2020)  Saurabh Goyal, Anamitra\u00a0Roy Choudhury, Saurabh Raje, Venkatesan Chakaravarthy, Yogish Sabharwal, and Ashish Verma. 2020.   Power-bert: Accelerating bert inference via progressive word-vector elimination.   In *International Conference on Machine Learning*, pages 3690\u20133699. PMLR. \n\n\n* Greene and Cunningham (2006)  Derek Greene and P\u00e1draig Cunningham. 2006.   Practical solutions to the problem of diagonal dominance in kernel document clustering.   In *Proceedings of the 23rd international conference on Machine learning*, pages 377\u2013384. \n\n\n* Guan et\u00a0al. (2022)  Yue Guan, Zhengyi Li, Jingwen Leng, Zhouhan Lin, and Minyi Guo. 2022.   Transkimmer: Transformer learns to layer-wise skim.   *arXiv preprint arXiv:2205.07324*. \n\n\n* Guo et\u00a0al. (2020)  Daya Guo, Shuo Ren, Shuai Lu, Zhangyin Feng, Duyu Tang, Shujie Liu, Long Zhou, Nan Duan, Alexey Svyatkovskiy, Shengyu Fu, et\u00a0al. 2020.   Graphcodebert: Pre-training code representations with data flow.   *arXiv preprint arXiv:2009.08366*. \n\n\n* He et\u00a0al. (2019)  Jun He, Liqun Wang, Liu Liu, Jiao Feng, and Hao Wu. 2019.   Long document classification from local word glimpses via recurrent attention learning.   *IEEE Access*, 7:40707\u201340718. \n\n\n* He et\u00a0al. (2020)  Pengcheng He, Xiaodong Liu, Jianfeng Gao, and Weizhu Chen. 2020.   Deberta: Decoding-enhanced bert with disentangled attention.   *arXiv preprint arXiv:2006.03654*. \n\n\n* Jang et\u00a0al. (2016)  Eric Jang, Shixiang Gu, and Ben Poole. 2016.   Categorical reparameterization with gumbel-softmax.   *arXiv preprint arXiv:1611.01144*. \n\n\n* Karl and Scherp (2022)  Fabian Karl and Ansgar Scherp. 2022.   Transformers are short text classifiers: A study of inductive short text classifiers on benchmarks and real-world datasets.   *arXiv preprint arXiv:2211.16878*. \n\n\n* Kim and Cho (2020)  Gyuwan Kim and Kyunghyun Cho. 2020.   Length-adaptive transformer: Train once with length drop, use anytime with search.   *arXiv preprint arXiv:2010.07003*. \n\n\n* Kim et\u00a0al. (2022)  Sehoon Kim, Sheng Shen, David Thorsley, Amir Gholami, Woosuk Kwon, Joseph Hassoun, and Kurt Keutzer. 2022.   Learned token pruning for transformers.   In *Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining*, pages 784\u2013794. \n\n\n* Kingma and Ba (2014)  Diederik\u00a0P Kingma and Jimmy Ba. 2014.   Adam: A method for stochastic optimization.   *arXiv preprint arXiv:1412.6980*. \n\n\n* Kitaev et\u00a0al. (2020)  Nikita Kitaev, \u0141ukasz Kaiser, and Anselm Levskaya. 2020.   Reformer: The efficient transformer.   *arXiv preprint arXiv:2001.04451*. \n\n\n* Kong et\u00a0al. (2021)  Zhenglun Kong, Peiyan Dong, Xiaolong Ma, Xin Meng, Mengshu Sun, Wei Niu, Xuan Shen, Geng Yuan, Bin Ren, Minghai Qin, et\u00a0al. 2021.   Spvit: Enabling faster vision transformers via soft token pruning.   *arXiv preprint arXiv:2112.13890*. \n\n\n* Lang (1995)  Ken Lang. 1995.   Newsweeder: Learning to filter netnews.   In *Machine learning proceedings 1995*, pages 331\u2013339. Elsevier. \n\n\n* Lee et\u00a0al. (2022)  Minchul Lee, Kijong Han, and Myeong\u00a0Cheol Shin. 2022.   Littlebird: Efficient faster & longer transformer for question answering.   *arXiv preprint arXiv:2210.11870*. \n\n\n* Lewis et\u00a0al. (2019)  Mike Lewis, Yinhan Liu, Naman Goyal, Marjan Ghazvininejad, Abdelrahman Mohamed, Omer Levy, Ves Stoyanov, and Luke Zettlemoyer. 2019.   Bart: Denoising sequence-to-sequence pre-training for natural language generation, translation, and comprehension.   *arXiv preprint arXiv:1910.13461*. \n\n\n* Liang et\u00a0al. (2022)  Youwei Liang, Chongjian Ge, Zhan Tong, Yibing Song, Jue Wang, and Pengtao Xie. 2022.   Not all patches are what you need: Expediting vision transformers via token reorganizations.   *arXiv preprint arXiv:2202.07800*. \n\n\n* Locatello et\u00a0al. (2020)  Francesco Locatello, Dirk Weissenborn, Thomas Unterthiner, Aravindh Mahendran, Georg Heigold, Jakob Uszkoreit, Alexey Dosovitskiy, and Thomas Kipf. 2020.   Object-centric learning with slot attention.   *Advances in Neural Information Processing Systems*, 33:11525\u201311538. \n\n\n* Ma et\u00a0al. (2022)  Haoyu Ma, Zhe Wang, Yifei Chen, Deying Kong, Liangjian Chen, Xingwei Liu, Xiangyi Yan, Hao Tang, and Xiaohui Xie. 2022.   Ppt: token-pruned pose transformer for monocular and multi-view human pose estimation.   In *Computer Vision\u2013ECCV 2022: 17th European Conference, Tel Aviv, Israel, October 23\u201327, 2022, Proceedings, Part V*, pages 424\u2013442. Springer. \n\n\n* Maas et\u00a0al. (2011)  Andrew Maas, Raymond\u00a0E Daly, Peter\u00a0T Pham, Dan Huang, Andrew\u00a0Y Ng, and Christopher Potts. 2011.   Learning word vectors for sentiment analysis.   In *Proceedings of the 49th annual meeting of the association for computational linguistics: Human language technologies*, pages 142\u2013150. \n\n\n* Meng et\u00a0al. (2022)  Lingchen Meng, Hengduo Li, Bor-Chun Chen, Shiyi Lan, Zuxuan Wu, Yu-Gang Jiang, and Ser-Nam Lim. 2022.   Adavit: Adaptive vision transformers for efficient image recognition.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 12309\u201312318. \n\n\n* Munikar et\u00a0al. (2019)  Manish Munikar, Sushil Shakya, and Aakash Shrestha. 2019.   Fine-grained sentiment classification using bert.   In *2019 Artificial Intelligence for Transforming Business and Society (AITB)*, volume\u00a01, pages 1\u20135. IEEE. \n\n\n* Pan et\u00a0al. (2022)  Zizheng Pan, Bohan Zhuang, Haoyu He, Jing Liu, and Jianfei Cai. 2022.   Less is more: Pay less attention in vision transformers.   In *Proceedings of the AAAI Conference on Artificial Intelligence*, volume\u00a036, pages 2035\u20132043. \n\n\n* Rao et\u00a0al. (2021)  Yongming Rao, Wenliang Zhao, Benlin Liu, Jiwen Lu, Jie Zhou, and Cho-Jui Hsieh. 2021.   Dynamicvit: Efficient vision transformers with dynamic token sparsification.   *Advances in neural information processing systems*, 34:13937\u201313949. \n\n\n* Ryoo et\u00a0al. (2021)  Michael Ryoo, AJ\u00a0Piergiovanni, Anurag Arnab, Mostafa Dehghani, and Anelia Angelova. 2021.   Tokenlearner: Adaptive space-time tokenization for videos.   *Advances in Neural Information Processing Systems*, 34:12786\u201312797. \n\n\n* Socher et\u00a0al. (2013)  Richard Socher, Alex Perelygin, Jean Wu, Jason Chuang, Christopher\u00a0D Manning, Andrew\u00a0Y Ng, and Christopher Potts. 2013.   Recursive deep models for semantic compositionality over a sentiment treebank.   In *Proceedings of the 2013 conference on empirical methods in natural language processing*, pages 1631\u20131642. \n\n\n* Tuggener et\u00a0al. (2020)  Don Tuggener, Pius Von\u00a0D\u00e4niken, Thomas Peetz, and Mark Cieliebak. 2020.   Ledgar: a large-scale multi-label corpus for text classification of legal provisions in contracts.   In *Proceedings of the Twelfth Language Resources and Evaluation Conference*, pages 1235\u20131241. \n\n\n* Wang et\u00a0al. (2021)  Hanrui Wang, Zhekai Zhang, and Song Han. 2021.   Spatten: Efficient sparse attention architecture with cascade token and head pruning.   In *2021 IEEE International Symposium on High-Performance Computer Architecture (HPCA)*, pages 97\u2013110. IEEE. \n\n\n* Wang et\u00a0al. (2020)  Sinong Wang, Belinda\u00a0Z Li, Madian Khabsa, Han Fang, and Hao Ma. 2020.   Linformer: Self-attention with linear complexity.   *arXiv preprint arXiv:2006.04768*. \n\n\n* Wei et\u00a0al. (2023)  Siyuan Wei, Tianzhu Ye, Shen Zhang, Yao Tang, and Jiajun Liang. 2023.   Joint token pruning and squeezing towards more aggressive compression of vision transformers.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 2092\u20132101. \n\n\n* Xu et\u00a0al. (2022)  Jiarui Xu, Shalini De\u00a0Mello, Sifei Liu, Wonmin Byeon, Thomas Breuel, Jan Kautz, and Xiaolong Wang. 2022.   Groupvit: Semantic segmentation emerges from text supervision.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 18134\u201318144. \n\n\n* Yang et\u00a0al. (2020)  Liu Yang, Mingyang Zhang, Cheng Li, Michael Bendersky, and Marc Najork. 2020.   Beyond 512 tokens: Siamese multi-depth transformer-based hierarchical encoder for long-form document matching.   In *Proceedings of the 29th ACM International Conference on Information & Knowledge Management*, pages 1725\u20131734. \n\n\n* Yang et\u00a0al. (2019)  Zhilin Yang, Zihang Dai, Yiming Yang, Jaime Carbonell, Russ\u00a0R Salakhutdinov, and Quoc\u00a0V Le. 2019.   Xlnet: Generalized autoregressive pretraining for language understanding.   *Advances in neural information processing systems*, 32. \n\n\n* Yasunaga et\u00a0al. (2022)  Michihiro Yasunaga, Jure Leskovec, and Percy Liang. 2022.   Linkbert: Pretraining language models with document links.   *arXiv preprint arXiv:2203.15827*. \n\n\n* Zaheer et\u00a0al. (2020)  Manzil Zaheer, Guru Guruganesh, Kumar\u00a0Avinava Dubey, Joshua Ainslie, Chris Alberti, Santiago Ontanon, Philip Pham, Anirudh Ravula, Qifan Wang, Li\u00a0Yang, et\u00a0al. 2020.   Big bird: Transformers for longer sequences.   *Advances in neural information processing systems*, 33:17283\u201317297. \n\n\n* Zeng et\u00a0al. (2022)  Wang Zeng, Sheng Jin, Wentao Liu, Chen Qian, Ping Luo, Wanli Ouyang, and Xiaogang Wang. 2022.   Not all tokens are equal: Human-centric visual analysis via token clustering transformer.   In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pages 11101\u201311111. \n\n\n* Zhao et\u00a0al. (2019)  Wei\u00a0Bin Zhao, Yue Li, and Lin Shang. 2019.   Fuzzy pruning for compression of convolutional neural networks.   In *2019 IEEE International Conference on Fuzzy Systems (FUZZ-IEEE)*, pages 1\u20135. IEEE. \n\n\n\n\n\n\n\n\n\n\n\n## Figures and Tables\n\n\n\n\n\n[FIGURE S3.F1.1.1.g1]\n\n\n![Figure S3.F1.1.1.g1](./media/figure.jpg)\n\n\n\n\n\nFigure 1: Overall architecture of our purposed model Model architecture is composed of several Token-pruned Attention Blocks, a Token Combining Module, and Attention Blocks. (Left): Fuzzy-based Token Pruning Self-attention In each layer, fuzzy-based pruning method removes tokens using importance score and fuzzy membership function. (Right): Token Combining Module This module apportions embedded tokens to each of the combination token using a similarity matrix between them.\n\n\n[/FIGURE]\n\n\n\n\n\n[TABLE S4.T1]\n\n\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_t\">Dataset</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_t\">Genre</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_t\"><math class=\"ltx_Math\"><semantics><mi>C</mi><annotation-xml><ci>\ud835\udc36</ci></annotation-xml><annotation>C</annotation></semantics></math></th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_t\"><math class=\"ltx_Math\"><semantics><mi>I</mi><annotation-xml><ci>\ud835\udc3c</ci></annotation-xml><annotation>I</annotation></semantics></math></th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\"><math class=\"ltx_Math\"><semantics><mi>T</mi><annotation-xml><ci>\ud835\udc47</ci></annotation-xml><annotation>T</annotation></semantics></math></th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">SST-2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">review</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">9613</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">23.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">IMDB</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">review</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">50000</td>\n\n\n<td class=\"ltx_td ltx_align_center\">292.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">BBC News</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">news</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">2225</td>\n\n\n<td class=\"ltx_td ltx_align_center\">452.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">20 NewsGroup</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">news</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">20</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">18846</td>\n\n\n<td class=\"ltx_td ltx_align_center\">330.6</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">LEDGAR</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">legal</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">100</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">80000</td>\n\n\n<td class=\"ltx_td ltx_align_center\">138.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">arXiv</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">scientific publication</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">11</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">1200</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">202.6</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n</span></div>\n\n\n\n\n\nTable 1: Statistics of the datasets. $C$ denotes the number of classes in the dataset, $I$ the number of instances, and $T$ the average number of tokens calculated using BERT(bert-base-uncased) tokenizer.\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S4.T2]\n\n\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Dataset</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_t\">Model</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_r ltx_border_t\">Location</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Accuracy</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">F1(macro)</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_rr ltx_border_t\">F1(micro)</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Dataset</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_t\">Model</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_r ltx_border_t\">Location</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Accuracy</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">F1(macro)</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">F1(micro)</th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">\n\n\n<span class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<span class=\"ltx_p\">SST-2</span>\n\n\n</span></span></span></td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">BigBird</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">91.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">91.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr ltx_border_tt\">91.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">\n\n\n<span class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<span class=\"ltx_p\">20 NewsGroup</span>\n\n\n</span></span></span></td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">BigBird</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">69.3</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">67.7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">69.3</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">Longformer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">91.0</td>\n\n\n<td class=\"ltx_td ltx_align_left\">Longformer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">67.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.5</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">F-TFM</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">92.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">92.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">92.0</td>\n\n\n<td class=\"ltx_td ltx_align_left\">F-TFM</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">Transkimmer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">91.4</td>\n\n\n<td class=\"ltx_td ltx_align_left\">Transkimmer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">67.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">64.9</td>\n\n\n<td class=\"ltx_td ltx_align_center\">67.8</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">BERT</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">90.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">89.4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">90.7</td>\n\n\n<td class=\"ltx_td ltx_align_left\">BERT</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">56.1</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_t\">ours-P</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">91.1</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">89.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr ltx_border_t\">91.1</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_t\">ours-P</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">69.4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">56.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">70.0</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PF</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">90.1</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">91.4</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PF</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">70.7</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">58.2</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">70.7</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-C</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">90.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">91.8</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-C</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.2</td>\n\n\n<td class=\"ltx_td ltx_align_center\">56.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">92.1</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">91.0</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\"><span class=\"ltx_text ltx_font_bold\">92.1</span></td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.9</td>\n\n\n<td class=\"ltx_td ltx_align_center\">57.1</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.9</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">90.1</td>\n\n\n<td class=\"ltx_td ltx_align_center\">88.6</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">90.1</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">55.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.5</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">\n\n\n<span class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<span class=\"ltx_p\">IMDB</span>\n\n\n</span></span></span></td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">BigBird</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">92.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">92.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr ltx_border_tt\">92.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">\n\n\n<span class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<span class=\"ltx_p\">LEDGAR</span>\n\n\n</span></span></span></td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">BigBird</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">86.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">78.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">86.9</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">Longformer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">93.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">93.4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">93.4</td>\n\n\n<td class=\"ltx_td ltx_align_left\">Longformer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">84.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">82.1</td>\n\n\n<td class=\"ltx_td ltx_align_center\">84.0</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">F-TFM</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">91.7</td>\n\n\n<td class=\"ltx_td ltx_align_left\">F-TFM</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">78.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">Transkimmer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">93.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">93.7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">93.7</td>\n\n\n<td class=\"ltx_td ltx_align_left\">Transkimmer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">87.1</td>\n\n\n<td class=\"ltx_td ltx_align_center\">77.3</td>\n\n\n<td class=\"ltx_td ltx_align_center\">87.1</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">BERT</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">93.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">92.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">93.7</td>\n\n\n<td class=\"ltx_td ltx_align_left\">BERT</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.2</td>\n\n\n<td class=\"ltx_td ltx_align_center\">77.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_t\">ours-P</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">93.8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">92.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr ltx_border_t\">93.8</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_t\">ours-P</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">86.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">77.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">86.5</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PF</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">94.3</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">93.4</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\"><span class=\"ltx_text ltx_font_bold\">94.3</span></td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PF</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">78.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.8</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-C</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">92.6</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.3</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">92.6</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-C</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.9</td>\n\n\n<td class=\"ltx_td ltx_align_center\">78.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">86.9</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">93.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">92.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">93.5</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">87.3</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">79.2</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">87.3</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">92.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">91.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">92.8</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">85.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">76.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">85.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_tt\"><span class=\"ltx_text\">\n\n\n<span class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<span class=\"ltx_p\">BBC News</span>\n\n\n</span></span></span></td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">BigBird</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">97.1</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">97.1</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr ltx_border_tt\">97.1</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_tt\"><span class=\"ltx_text\">\n\n\n<span class=\"ltx_inline-block ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<span class=\"ltx_p\">arXiv</span>\n\n\n</span></span></span></td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">BigBird</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">74.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">70.4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">74.0</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">Longformer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">97.9</td>\n\n\n<td class=\"ltx_td ltx_align_center\">97.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">97.9</td>\n\n\n<td class=\"ltx_td ltx_align_left\">Longformer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">66.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">64.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">66.0</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">F-TFM</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">96.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">96.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">96.5</td>\n\n\n<td class=\"ltx_td ltx_align_left\">F-TFM</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">70.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">66.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">70.0</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">Transkimmer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">97.6</td>\n\n\n<td class=\"ltx_td ltx_align_center\">97.6</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">97.6</td>\n\n\n<td class=\"ltx_td ltx_align_left\">Transkimmer</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">73.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">72.6</td>\n\n\n<td class=\"ltx_td ltx_align_center\">73.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">BERT</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">96.2</td>\n\n\n<td class=\"ltx_td ltx_align_center\">94.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">96.2</td>\n\n\n<td class=\"ltx_td ltx_align_left\">BERT</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">52.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">68.3</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_t\">ours-P</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">97.2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">95.4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr ltx_border_t\">97.2</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_t\">ours-P</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">71.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">56.6</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">70.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PF</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">97.9</td>\n\n\n<td class=\"ltx_td ltx_align_center\">96.6</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">97.9</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PF</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">76.0</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">61.0</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">74.0</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-C</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">96.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">95.2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\">96.8</td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-C</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">70.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">52.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">69.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">98.1</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">97.1</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_rr\"><span class=\"ltx_text ltx_font_bold\">98.1</span></td>\n\n\n<td class=\"ltx_td ltx_align_left\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_r\">layer 11</td>\n\n\n<td class=\"ltx_td ltx_align_center\">74.0</td>\n\n\n<td class=\"ltx_td ltx_align_center\">58.1</td>\n\n\n<td class=\"ltx_td ltx_align_center\">73.1</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_b\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_b ltx_border_r\">layer 7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">97.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">95.2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_rr\">97.0</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_b\">ours-PFC</td>\n\n\n<td class=\"ltx_td ltx_align_left ltx_border_b ltx_border_r\">layer 7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">68.0</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">50.7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">67.3</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n</span></div>\n\n\n\n\n\nTable 2: Performance comparison on document classification. To our proposed model, ours-P applies token pruning, ours-PF applies fuzzy-based token pruning, ours-C applies token combining module, and ours-PFC applies both fuzzy-based token pruning and token combining module. The best performance is highlighted in bold.\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S4.T3]\n\n\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_t\">Model</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t\">Location</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">FLOPs</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Memory Cost</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Speedup</th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">BigBird</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_tt\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">1.57x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">0.82x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">0.94x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Longformer</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center\">2.10x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.11x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.55x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">F-TFM</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center\">1.03x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.39x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.11x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Transkimmer</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.13x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.87x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.70x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">BERT</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center\">-</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">ours-P</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_t\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">1x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.88x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">1.33x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">ours-PF</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">-</th>\n\n\n<td class=\"ltx_td ltx_align_center\">1x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.88x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.25x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">ours-C</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">layer 11</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.877x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.89x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.26x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">ours-PFC</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">layer 11</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.877x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.80x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.29x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_b\">ours-PFC</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_b ltx_border_r\">layer 7</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">0.544x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">0.61x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">1.64x</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n</span></div>\n\n\n\n\n\nTable 3: Efficiency comparison on document classification.\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S4.T4]\n\n\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t\">Preservation Ratio <math class=\"ltx_Math\"><semantics><mi>p</mi><annotation-xml><ci>\ud835\udc5d</ci></annotation-xml><annotation>p</annotation></semantics></math>\n\n\n</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Accuracy</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Memory Cost</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Speedup</th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_tt\">0.95</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">97.7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">0.99x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">1.07x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.9</th>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">97.9</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.86x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.12x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.85</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.6</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.79x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.14x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.8</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.2</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.75x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.17x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.75</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.71x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.19x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.7</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.2</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.69x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.24x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.65</th>\n\n\n<td class=\"ltx_td ltx_align_center\">96.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.68x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.25x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">0.6</th>\n\n\n<td class=\"ltx_td ltx_align_center\">96.5</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.67x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.25x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_b ltx_border_r ltx_border_t\">BERT</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_t\">96.2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_t\">-</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_t\">-</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n</span></div>\n\n\n\n\n\nTable 4: Comparisons of different token preservation ratios\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S4.T5]\n\n\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t\">Layer</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Accuracy</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Memory Cost</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">Speedup</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">FLOPs</th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_tt\">5</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">96.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">0.47x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">1.69x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">2.65x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">6</th>\n\n\n<td class=\"ltx_td ltx_align_center\">96.6</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.54x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.53x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">2.17x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">7</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.61x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.39x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.84x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">8</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.2</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.68x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.29x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.60x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">9</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.4</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.76x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.17x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.41x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">10</th>\n\n\n<td class=\"ltx_td ltx_align_center\">97.8</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.82x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.17x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.26x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">11</th>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">98.1</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.89x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.03x</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.14x</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r\">11(*)</th>\n\n\n<td class=\"ltx_td ltx_align_center\">(97.7)</td>\n\n\n<td class=\"ltx_td ltx_align_center\">(0.90x)</td>\n\n\n<td class=\"ltx_td ltx_align_center\">(0.88x)</td>\n\n\n<td class=\"ltx_td ltx_align_center\">(1.14x)</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_b ltx_border_r\">12</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">97.6</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">0.96x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">0.97x</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">1.04x</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n</span></div>\n\n\n\n\n\nTable 5: Comparisons according to combining module location. We replace one of the existing transformer layers with a token combining module. (\\*) represents a case where a combining module is additionally inserted without replacing.\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S4.T6]\n\n\n\n\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n\n\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text\">Dataset</span></th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_t\"><span class=\"ltx_text\"><math class=\"ltx_Math\"><semantics><mi>C</mi><annotation-xml><ci>\ud835\udc36</ci></annotation-xml><annotation>C</annotation></semantics></math></span></th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_l ltx_border_t\">Number of Combination Tokens</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_t\">4</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_t\">8</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_t\">16</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_t\">32</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">64</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\">SST-2</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_tt\">2</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">91.2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">92</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">90.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\">91.2</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\">89.7</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">BBC News</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">5</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">97.3</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">98.1</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">97.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">97.6</td>\n\n\n<td class=\"ltx_td ltx_align_center\">97.2</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">20 NewsGroup</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r\">20</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">68.5</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">69.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">68.9</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_r\">68.7</td>\n\n\n<td class=\"ltx_td ltx_align_center\">67.6</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_b\">LEDGAR</th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_b ltx_border_r\">100</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">85.6</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">87.3</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">86.7</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b ltx_border_r\">86</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_b\">85.9</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n</span></div>\n\n\n\n\n\nTable 6: Performance comparison of different numbers of combination tokens. $C$ denotes the number of classes in the dataset.\n\n\n[/TABLE]\n\n\n",
+        "structured_md": {
+            "title": [
+                3,
+                3
+            ],
+            "abstract": [
+                12,
+                23
+            ],
+            "sections": {
+                "1 Introduction": [
+                    24,
+                    83
+                ],
+                "2 Related Works": [
+                    84,
+                    119
+                ],
+                "3 Methods": [
+                    120,
+                    344
+                ],
+                "4 Experiments": [
+                    345,
+                    476
+                ],
+                "5 Conclusion": [
+                    477,
+                    488
+                ],
+                "Limitations": [
+                    489,
+                    500
+                ],
+                "Ethics Statement": [
+                    501,
+                    512
+                ],
+                "Acknowledgment": [
+                    513,
+                    524
+                ],
+                "References": [
+                    525,
+                    683
+                ],
+                "Figures and Tables": [
+                    684,
+                    3060
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Related Works": {
+                    "2.1 Sparse Attention": [
+                        90,
+                        101
+                    ],
+                    "2.2 Token Pruning and Combining": [
+                        102,
+                        119
+                    ]
+                },
+                "3 Methods": {
+                    "3.1 Overall Architecture": [
+                        132,
+                        176
+                    ],
+                    "3.2 Fuzzy-based Token Pruning Self-attention": [
+                        177,
+                        275
+                    ],
+                    "3.3 Token Combining Module": [
+                        276,
+                        344
+                    ]
+                },
+                "4 Experiments": {
+                    "4.1 Dataset": [
+                        357,
+                        386
+                    ],
+                    "4.2 Experimental Setup and Baselines": [
+                        387,
+                        404
+                    ],
+                    "4.3 Main Result": [
+                        405,
+                        428
+                    ],
+                    "4.4 Ablation study": [
+                        429,
+                        476
+                    ]
+                },
+                "5 Conclusion": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgment": {},
+                "References": {},
+                "Figures and Tables": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        30,
+                        30
+                    ],
+                    [
+                        36,
+                        36
+                    ],
+                    [
+                        42,
+                        42
+                    ],
+                    [
+                        48,
+                        48
+                    ],
+                    [
+                        54,
+                        54
+                    ],
+                    [
+                        60,
+                        60
+                    ],
+                    [
+                        66,
+                        66
+                    ],
+                    [
+                        72,
+                        72
+                    ],
+                    [
+                        75,
+                        75
+                    ],
+                    [
+                        78,
+                        78
+                    ]
+                ],
+                "2 Related Works": [
+                    [
+                        96,
+                        96
+                    ],
+                    [
+                        108,
+                        108
+                    ],
+                    [
+                        114,
+                        114
+                    ]
+                ],
+                "3 Methods": [
+                    [
+                        126,
+                        126
+                    ],
+                    [
+                        144,
+                        144
+                    ],
+                    [
+                        150,
+                        150
+                    ],
+                    [
+                        153,
+                        153
+                    ],
+                    [
+                        156,
+                        156
+                    ],
+                    [
+                        159,
+                        159
+                    ],
+                    [
+                        162,
+                        162
+                    ],
+                    [
+                        165,
+                        165
+                    ],
+                    [
+                        171,
+                        171
+                    ],
+                    [
+                        183,
+                        183
+                    ],
+                    [
+                        189,
+                        189
+                    ],
+                    [
+                        192,
+                        192
+                    ],
+                    [
+                        198,
+                        198
+                    ],
+                    [
+                        204,
+                        204
+                    ],
+                    [
+                        207,
+                        207
+                    ],
+                    [
+                        213,
+                        213
+                    ],
+                    [
+                        219,
+                        219
+                    ],
+                    [
+                        225,
+                        225
+                    ],
+                    [
+                        228,
+                        228
+                    ],
+                    [
+                        234,
+                        234
+                    ],
+                    [
+                        240,
+                        240
+                    ],
+                    [
+                        243,
+                        243
+                    ],
+                    [
+                        246,
+                        246
+                    ],
+                    [
+                        249,
+                        249
+                    ],
+                    [
+                        255,
+                        255
+                    ],
+                    [
+                        261,
+                        261
+                    ],
+                    [
+                        264,
+                        264
+                    ],
+                    [
+                        267,
+                        267
+                    ],
+                    [
+                        270,
+                        270
+                    ],
+                    [
+                        282,
+                        282
+                    ],
+                    [
+                        288,
+                        288
+                    ],
+                    [
+                        291,
+                        291
+                    ],
+                    [
+                        294,
+                        294
+                    ],
+                    [
+                        297,
+                        297
+                    ],
+                    [
+                        303,
+                        303
+                    ],
+                    [
+                        309,
+                        309
+                    ],
+                    [
+                        312,
+                        312
+                    ],
+                    [
+                        315,
+                        315
+                    ],
+                    [
+                        318,
+                        318
+                    ],
+                    [
+                        324,
+                        324
+                    ],
+                    [
+                        330,
+                        330
+                    ],
+                    [
+                        333,
+                        333
+                    ],
+                    [
+                        339,
+                        339
+                    ]
+                ],
+                "4 Experiments": [
+                    [
+                        351,
+                        351
+                    ],
+                    [
+                        363,
+                        363
+                    ],
+                    [
+                        393,
+                        393
+                    ],
+                    [
+                        399,
+                        399
+                    ],
+                    [
+                        411,
+                        411
+                    ],
+                    [
+                        417,
+                        417
+                    ],
+                    [
+                        423,
+                        423
+                    ],
+                    [
+                        435,
+                        435
+                    ],
+                    [
+                        447,
+                        447
+                    ],
+                    [
+                        453,
+                        453
+                    ],
+                    [
+                        465,
+                        465
+                    ]
+                ],
+                "5 Conclusion": [
+                    [
+                        483,
+                        483
+                    ]
+                ],
+                "Limitations": [
+                    [
+                        495,
+                        495
+                    ]
+                ],
+                "Ethics Statement": [
+                    [
+                        507,
+                        507
+                    ]
+                ],
+                "Acknowledgment": [
+                    [
+                        519,
+                        519
+                    ]
+                ],
+                "References": [
+                    [
+                        531,
+                        531
+                    ],
+                    [
+                        534,
+                        534
+                    ],
+                    [
+                        537,
+                        537
+                    ],
+                    [
+                        540,
+                        540
+                    ],
+                    [
+                        543,
+                        543
+                    ],
+                    [
+                        546,
+                        546
+                    ],
+                    [
+                        549,
+                        549
+                    ],
+                    [
+                        552,
+                        552
+                    ],
+                    [
+                        555,
+                        555
+                    ],
+                    [
+                        558,
+                        558
+                    ],
+                    [
+                        561,
+                        561
+                    ],
+                    [
+                        564,
+                        564
+                    ],
+                    [
+                        567,
+                        567
+                    ],
+                    [
+                        570,
+                        570
+                    ],
+                    [
+                        573,
+                        573
+                    ],
+                    [
+                        576,
+                        576
+                    ],
+                    [
+                        579,
+                        579
+                    ],
+                    [
+                        582,
+                        582
+                    ],
+                    [
+                        585,
+                        585
+                    ],
+                    [
+                        588,
+                        588
+                    ],
+                    [
+                        591,
+                        591
+                    ],
+                    [
+                        594,
+                        594
+                    ],
+                    [
+                        597,
+                        597
+                    ],
+                    [
+                        600,
+                        600
+                    ],
+                    [
+                        603,
+                        603
+                    ],
+                    [
+                        606,
+                        606
+                    ],
+                    [
+                        609,
+                        609
+                    ],
+                    [
+                        612,
+                        612
+                    ],
+                    [
+                        615,
+                        615
+                    ],
+                    [
+                        618,
+                        618
+                    ],
+                    [
+                        621,
+                        621
+                    ],
+                    [
+                        624,
+                        624
+                    ],
+                    [
+                        627,
+                        627
+                    ],
+                    [
+                        630,
+                        630
+                    ],
+                    [
+                        633,
+                        633
+                    ],
+                    [
+                        636,
+                        636
+                    ],
+                    [
+                        639,
+                        639
+                    ],
+                    [
+                        642,
+                        642
+                    ],
+                    [
+                        645,
+                        645
+                    ],
+                    [
+                        648,
+                        648
+                    ],
+                    [
+                        651,
+                        651
+                    ],
+                    [
+                        654,
+                        654
+                    ],
+                    [
+                        657,
+                        657
+                    ],
+                    [
+                        660,
+                        660
+                    ],
+                    [
+                        663,
+                        663
+                    ],
+                    [
+                        666,
+                        666
+                    ],
+                    [
+                        669,
+                        669
+                    ],
+                    [
+                        672,
+                        672
+                    ]
+                ],
+                "Figures and Tables": []
+            },
+            "figures": {
+                "1 Introduction": {},
+                "2 Related Works": {},
+                "3 Methods": {},
+                "4 Experiments": {},
+                "5 Conclusion": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgment": {},
+                "References": {},
+                "Figures and Tables": {
+                    "[FIGURE S3.F1.1.1.g1]": [
+                        690,
+                        702
+                    ]
+                }
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Related Works": {},
+                "3 Methods": {},
+                "4 Experiments": {},
+                "5 Conclusion": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgment": {},
+                "References": {},
+                "Figures and Tables": {
+                    "[TABLE S4.T1]": [
+                        708,
+                        891
+                    ],
+                    "[TABLE S4.T2]": [
+                        897,
+                        2127
+                    ],
+                    "[TABLE S4.T3]": [
+                        2133,
+                        2400
+                    ],
+                    "[TABLE S4.T4]": [
+                        2406,
+                        2625
+                    ],
+                    "[TABLE S4.T5]": [
+                        2631,
+                        2877
+                    ],
+                    "[TABLE S4.T6]": [
+                        2883,
+                        3057
+                    ]
+                }
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Related Works": {},
+                "3 Methods": {},
+                "4 Experiments": {},
+                "5 Conclusion": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgment": {},
+                "References": {},
+                "Figures and Tables": {}
+            }
+        }
+    },
+    "changes": [
+        "replaced \\n by random number of \\n",
+        "moved all figures and tables to the very back of the paper"
+    ],
+    "counterfactual_type": "paper_layout"
+}

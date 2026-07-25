@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2312.16159] Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages</title><meta content="Large language models (LLMs) have shown impressive zero-shot capabilities in various document reranking tasks.
+Despite their successful implementations, there is still a gap in existing literature on their effectivenes…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2312.16159" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2312.16159" rel="canonical" target="_blank"/>
+<!--Generated on Tue Feb 27 11:53:05 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document">
+<h1 class="ltx_title ltx_title_document">Zero-Shot Cross-Lingual Reranking with Large Language
+<br class="ltx_break"/>Models for Low-Resource Languages</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id2.id1">Large language models (LLMs) have shown impressive zero-shot capabilities in various document reranking tasks.
+Despite their successful implementations, there is still a gap in existing literature on their effectiveness in low-resource languages.
+To address this gap, we investigate how LLMs function as rerankers in cross-lingual information retrieval (CLIR) systems for African languages.
+Our implementation covers English and four African languages (Hausa, Somali, Swahili, and Yoruba) and we examine cross-lingual reranking with queries in English and passages in the African languages.
+Additionally,
+we analyze and compare the effectiveness of monolingual reranking using both query and document translations.
+We also evaluate the effectiveness of LLMs when leveraging their <em class="ltx_emph ltx_font_italic" id="id2.id1.1">own</em> generated translations.
+To get a grasp of the effectiveness of multiple LLMs, our study focuses on the proprietary models RankGPT<sub class="ltx_sub" id="id2.id1.2">4</sub> and RankGPT<sub class="ltx_sub" id="id2.id1.3">3.5</sub>, along with the open-source model, RankZephyr.
+While reranking remains most effective in English,
+our results reveal that cross-lingual reranking may be competitive with reranking in African languages depending on the multilingual capability of the LLM.</p>
+</div>
+<div class="ltx_para ltx_noindent" id="p1">
+<div class="ltx_block ltx_align_bottom" id="p1.1">
+<p class="ltx_p" id="p1.1.1"><span class="ltx_text ltx_font_bold" id="p1.1.1.1">Zero-Shot Cross-Lingual Reranking with Large Language
+<br class="ltx_break"/>Models for Low-Resource Languages</span></p>
+<br class="ltx_break ltx_centering"/>
+<p class="ltx_p ltx_align_center" id="p1.1.2" style="width:433.6pt;"><span class="ltx_text ltx_inline-block" id="p1.1.2.1" style="width:0.0pt;">
+<span class="ltx_tabular ltx_align_top" id="p1.1.2.1.1">
+<span class="ltx_tbody">
+<span class="ltx_tr" id="p1.1.2.1.1.1.1">
+<span class="ltx_td ltx_align_center" id="p1.1.2.1.1.1.1.1" style="padding-bottom:4.30554pt;"><span class="ltx_text ltx_font_bold" id="p1.1.2.1.1.1.1.1.1">Mofetoluwa Adeyemi, Akintunde Oladipo, Ronak Pradeep, Jimmy Lin</span></span></span>
+<span class="ltx_tr" id="p1.1.2.1.1.2.2">
+<span class="ltx_td ltx_align_center" id="p1.1.2.1.1.2.2.1">David R. Cheriton School of Computer Science</span></span>
+<span class="ltx_tr" id="p1.1.2.1.1.3.3">
+<span class="ltx_td ltx_align_center" id="p1.1.2.1.1.3.3.1" style="padding-bottom:4.30554pt;">University of Waterloo</span></span>
+<span class="ltx_tr" id="p1.1.2.1.1.4.4">
+<span class="ltx_td ltx_align_center" id="p1.1.2.1.1.4.4.1"><span class="ltx_text ltx_font_typewriter" id="p1.1.2.1.1.4.4.1.1">{moadeyem, aooladipo, rpradeep, jimmylin}@uwaterloo.ca</span></span></span>
+</span>
+</span></span></p>
+<br class="ltx_break ltx_centering"/>
+</div>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Several works have demonstrated the effectiveness of large language models (LLMs) across NLP tasks <cite class="ltx_cite ltx_citemacro_cite">Zhou et al. (<a class="ltx_ref" href="#bib.bib21" title="">2022</a>); Zhu et al. (<a class="ltx_ref" href="#bib.bib22" title="">2023</a>); Wang et al. (<a class="ltx_ref" href="#bib.bib19" title="">2023</a>)</cite>.
+For text ranking, researchers have explored the effectiveness of LLMs as retrievers <cite class="ltx_cite ltx_citemacro_cite">Ma et al. (<a class="ltx_ref" href="#bib.bib7" title="">2023a</a>)</cite>, and as pointwise or listwise rerankers.
+Reranking is cast as text generation so that the models either generate an ordered list <cite class="ltx_cite ltx_citemacro_cite">Sun et al. (<a class="ltx_ref" href="#bib.bib17" title="">2023</a>); Pradeep et al. (<a class="ltx_ref" href="#bib.bib13" title="">2023a</a>); Ma et al. (<a class="ltx_ref" href="#bib.bib8" title="">2023b</a>)</cite> or the ordered list is created by sorting the token probabilities generated <cite class="ltx_cite ltx_citemacro_cite">Ma et al. (<a class="ltx_ref" href="#bib.bib8" title="">2023b</a>)</cite>.
+The large context size of LLMs makes listwise approaches particularly attractive because the model attends to multiple documents and produces a relative ordering.
+<cite class="ltx_cite ltx_citemacro_citet">Ma et al. (<a class="ltx_ref" href="#bib.bib8" title="">2023b</a>)</cite> outperforms zero-shot pointwise approach on three TREC web search datasets using a listwise approach.
+Further, their work showed the potential that listwise reranking by LLMs generalizes across different languages.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">In this study, we examine the effectiveness of proprietary and open-source models for listwise reranking in low-resource African languages.
+Our investigation is guided by the following research questions:</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<ul class="ltx_itemize" id="S1.I1">
+<li class="ltx_item" id="S1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i1.p1">
+<p class="ltx_p" id="S1.I1.i1.p1.1">How well do LLMs perform as listwise rerankers for low-resource languages?</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i2.p1">
+<p class="ltx_p" id="S1.I1.i2.p1.1">How effectively do LLMs perform listwise reranking in cross-lingual scenarios compared to monolingual (English or low-resource language) scenarios?</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i3.p1">
+<p class="ltx_p" id="S1.I1.i3.p1.1">When we leverage translation, is reranking more effective when translation is performed using the same LLM used for zero-shot reranking?</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">This study aims to answer these questions through an extensive investigation of the effectiveness of RankGPT <cite class="ltx_cite ltx_citemacro_cite">Sun et al. (<a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite> and RankZephyr <cite class="ltx_cite ltx_citemacro_cite">Pradeep et al. (<a class="ltx_ref" href="#bib.bib14" title="">2023b</a>)</cite> in cross-lingual and monolingual retrieval settings.
+We use CIRAL <cite class="ltx_cite ltx_citemacro_cite">Adeyemi et al. (<a class="ltx_ref" href="#bib.bib1" title="">2023</a>)</cite>, a cross-lingual information retrieval dataset covering four (<math alttext="4" class="ltx_Math" display="inline" id="S1.p4.1.m1.1"><semantics id="S1.p4.1.m1.1a"><mn id="S1.p4.1.m1.1.1" xref="S1.p4.1.m1.1.1.cmml">4</mn><annotation-xml encoding="MathML-Content" id="S1.p4.1.m1.1b"><cn id="S1.p4.1.m1.1.1.cmml" type="integer" xref="S1.p4.1.m1.1.1">4</cn></annotation-xml><annotation encoding="application/x-tex" id="S1.p4.1.m1.1c">4</annotation></semantics></math>) African languages, and construct monolingual retrieval scenarios through either document or query translation.
+The cross-lingual scenarios entail searching with English queries and retrieving passages in the African languages.</p>
+</div>
+<div class="ltx_para" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1">Our results show that cross-lingual reranking using these models is consistently more effective than reranking in low-resource languages, underscoring the fact that these LLMs are better tuned to English than low-resource languages. Across all languages, we achieve our best results when reranking entirely in English language using retrieval results obtained by document translation. In this setting, we see up to 7 points improvement in nDCG@20 over cross-lingual reranking using RankGPT<sub class="ltx_sub" id="S1.p5.1.1">4</sub>, and up to 9 points over reranking in African languages. When reranking in African languages, we gain improvements for RankGPT<sub class="ltx_sub" id="S1.p5.1.2">4</sub> when we perform query translation using GPT-4 itself. However, for RankGPT<sub class="ltx_sub" id="S1.p5.1.3">3.5</sub>, we see no significant difference in reranking effectiveness when we translate queries using GPT-3.5.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Background and Related Work</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.3">Given a corpus <math alttext="C=\{D_{1},D_{2},...,D_{n}\}" class="ltx_Math" display="inline" id="S2.p1.1.m1.4"><semantics id="S2.p1.1.m1.4a"><mrow id="S2.p1.1.m1.4.4" xref="S2.p1.1.m1.4.4.cmml"><mi id="S2.p1.1.m1.4.4.5" xref="S2.p1.1.m1.4.4.5.cmml">C</mi><mo id="S2.p1.1.m1.4.4.4" xref="S2.p1.1.m1.4.4.4.cmml">=</mo><mrow id="S2.p1.1.m1.4.4.3.3" xref="S2.p1.1.m1.4.4.3.4.cmml"><mo id="S2.p1.1.m1.4.4.3.3.4" stretchy="false" xref="S2.p1.1.m1.4.4.3.4.cmml">{</mo><msub id="S2.p1.1.m1.2.2.1.1.1" xref="S2.p1.1.m1.2.2.1.1.1.cmml"><mi id="S2.p1.1.m1.2.2.1.1.1.2" xref="S2.p1.1.m1.2.2.1.1.1.2.cmml">D</mi><mn id="S2.p1.1.m1.2.2.1.1.1.3" xref="S2.p1.1.m1.2.2.1.1.1.3.cmml">1</mn></msub><mo id="S2.p1.1.m1.4.4.3.3.5" xref="S2.p1.1.m1.4.4.3.4.cmml">,</mo><msub id="S2.p1.1.m1.3.3.2.2.2" xref="S2.p1.1.m1.3.3.2.2.2.cmml"><mi id="S2.p1.1.m1.3.3.2.2.2.2" xref="S2.p1.1.m1.3.3.2.2.2.2.cmml">D</mi><mn id="S2.p1.1.m1.3.3.2.2.2.3" xref="S2.p1.1.m1.3.3.2.2.2.3.cmml">2</mn></msub><mo id="S2.p1.1.m1.4.4.3.3.6" xref="S2.p1.1.m1.4.4.3.4.cmml">,</mo><mi id="S2.p1.1.m1.1.1" mathvariant="normal" xref="S2.p1.1.m1.1.1.cmml">…</mi><mo id="S2.p1.1.m1.4.4.3.3.7" xref="S2.p1.1.m1.4.4.3.4.cmml">,</mo><msub id="S2.p1.1.m1.4.4.3.3.3" xref="S2.p1.1.m1.4.4.3.3.3.cmml"><mi id="S2.p1.1.m1.4.4.3.3.3.2" xref="S2.p1.1.m1.4.4.3.3.3.2.cmml">D</mi><mi id="S2.p1.1.m1.4.4.3.3.3.3" xref="S2.p1.1.m1.4.4.3.3.3.3.cmml">n</mi></msub><mo id="S2.p1.1.m1.4.4.3.3.8" stretchy="false" xref="S2.p1.1.m1.4.4.3.4.cmml">}</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S2.p1.1.m1.4b"><apply id="S2.p1.1.m1.4.4.cmml" xref="S2.p1.1.m1.4.4"><eq id="S2.p1.1.m1.4.4.4.cmml" xref="S2.p1.1.m1.4.4.4"></eq><ci id="S2.p1.1.m1.4.4.5.cmml" xref="S2.p1.1.m1.4.4.5">𝐶</ci><set id="S2.p1.1.m1.4.4.3.4.cmml" xref="S2.p1.1.m1.4.4.3.3"><apply id="S2.p1.1.m1.2.2.1.1.1.cmml" xref="S2.p1.1.m1.2.2.1.1.1"><csymbol cd="ambiguous" id="S2.p1.1.m1.2.2.1.1.1.1.cmml" xref="S2.p1.1.m1.2.2.1.1.1">subscript</csymbol><ci id="S2.p1.1.m1.2.2.1.1.1.2.cmml" xref="S2.p1.1.m1.2.2.1.1.1.2">𝐷</ci><cn id="S2.p1.1.m1.2.2.1.1.1.3.cmml" type="integer" xref="S2.p1.1.m1.2.2.1.1.1.3">1</cn></apply><apply id="S2.p1.1.m1.3.3.2.2.2.cmml" xref="S2.p1.1.m1.3.3.2.2.2"><csymbol cd="ambiguous" id="S2.p1.1.m1.3.3.2.2.2.1.cmml" xref="S2.p1.1.m1.3.3.2.2.2">subscript</csymbol><ci id="S2.p1.1.m1.3.3.2.2.2.2.cmml" xref="S2.p1.1.m1.3.3.2.2.2.2">𝐷</ci><cn id="S2.p1.1.m1.3.3.2.2.2.3.cmml" type="integer" xref="S2.p1.1.m1.3.3.2.2.2.3">2</cn></apply><ci id="S2.p1.1.m1.1.1.cmml" xref="S2.p1.1.m1.1.1">…</ci><apply id="S2.p1.1.m1.4.4.3.3.3.cmml" xref="S2.p1.1.m1.4.4.3.3.3"><csymbol cd="ambiguous" id="S2.p1.1.m1.4.4.3.3.3.1.cmml" xref="S2.p1.1.m1.4.4.3.3.3">subscript</csymbol><ci id="S2.p1.1.m1.4.4.3.3.3.2.cmml" xref="S2.p1.1.m1.4.4.3.3.3.2">𝐷</ci><ci id="S2.p1.1.m1.4.4.3.3.3.3.cmml" xref="S2.p1.1.m1.4.4.3.3.3.3">𝑛</ci></apply></set></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p1.1.m1.4c">C=\{D_{1},D_{2},...,D_{n}\}</annotation></semantics></math> and a query <math alttext="q" class="ltx_Math" display="inline" id="S2.p1.2.m2.1"><semantics id="S2.p1.2.m2.1a"><mi id="S2.p1.2.m2.1.1" xref="S2.p1.2.m2.1.1.cmml">q</mi><annotation-xml encoding="MathML-Content" id="S2.p1.2.m2.1b"><ci id="S2.p1.2.m2.1.1.cmml" xref="S2.p1.2.m2.1.1">𝑞</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p1.2.m2.1c">q</annotation></semantics></math>, information retrieval (IR) systems aim to return the <math alttext="k" class="ltx_Math" display="inline" id="S2.p1.3.m3.1"><semantics id="S2.p1.3.m3.1a"><mi id="S2.p1.3.m3.1.1" xref="S2.p1.3.m3.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S2.p1.3.m3.1b"><ci id="S2.p1.3.m3.1.1.cmml" xref="S2.p1.3.m3.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p1.3.m3.1c">k</annotation></semantics></math> most relevant documents. Modern IR pipelines typically feature multi-stage architecture in which a first-stage <span class="ltx_text ltx_font_italic" id="S2.p1.3.1">retriever</span> returns a list of candidate documents which a <span class="ltx_text ltx_font_italic" id="S2.p1.3.2">reranker</span> reorders for improved quality <cite class="ltx_cite ltx_citemacro_cite">Asadi and Lin (<a class="ltx_ref" href="#bib.bib2" title="">2013</a>); Nogueira et al. (<a class="ltx_ref" href="#bib.bib12" title="">2019</a>); Zhuang et al. (<a class="ltx_ref" href="#bib.bib23" title="">2023</a>)</cite>.
+While earlier work relied on sparse models such as TF-IDF or BM25 <cite class="ltx_cite ltx_citemacro_cite">Robertson and Zaragoza (<a class="ltx_ref" href="#bib.bib16" title="">2009</a>)</cite> as first-stage retrievers, the improved dense representations of pretrained text encoders such as BERT have encouraged research and adoption of dense retrievers <cite class="ltx_cite ltx_citemacro_cite">Karpukhin et al. (<a class="ltx_ref" href="#bib.bib4" title="">2020</a>); Ni et al. (<a class="ltx_ref" href="#bib.bib11" title="">2021</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.p2">
+<p class="ltx_p" id="S2.p2.1">More recently, the effectiveness of Transformer decoder models as components of multi-stage IR systems have been explored in greater depth. Researchers have finetuned GPT-like models in the standard contrastive learning framework <cite class="ltx_cite ltx_citemacro_cite">Neelakantan et al. (<a class="ltx_ref" href="#bib.bib10" title="">2022</a>); Muennighoff (<a class="ltx_ref" href="#bib.bib9" title="">2022</a>); Zhang et al. (<a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite>, and studied different approaches to reranking using both open-source and proprietary GPT models.
+<cite class="ltx_cite ltx_citemacro_citet">Sun et al. (<a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite> evaluate the effectiveness of OpenAI models on multiple IR benchmarks using query, relevance and permutation generation approaches.
+While <cite class="ltx_cite ltx_citemacro_citet">Qin et al. (<a class="ltx_ref" href="#bib.bib15" title="">2023</a>)</cite> propose a pairwise approach to ranking with LLMs, <cite class="ltx_cite ltx_citemacro_citet">Ma et al. (<a class="ltx_ref" href="#bib.bib8" title="">2023b</a>)</cite> demonstrate the effectiveness of GPT-3 as a zero-shot listwise reranker and the superiority of listwise over pointwise approaches.</p>
+</div>
+<div class="ltx_para" id="S2.p3">
+<p class="ltx_p" id="S2.p3.1">While these works focus on reranking with LLMs, they only cover two African languages—Swahili &amp; Yoruba.
+For both languages, GPT-3 improves over BM25 significantly but still falls behind supervised reranking baselines.
+In this work, we examine the effectiveness of these LLMs as components of IR systems for African languages.
+Specifically, we study the effectiveness of open-source and proprietary LLMs as listwise rerankers for four African languages (Hausa, Somali, Swahili &amp; Yoruba) in the CIRAL cross-lingual IR test collection <cite class="ltx_cite ltx_citemacro_cite">Adeyemi et al. (<a class="ltx_ref" href="#bib.bib1" title="">2023</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.p4">
+<p class="ltx_p" id="S2.p4.2">Cross-lingual Information Retrieval (CLIR) is a retrieval task in which the queries <math alttext="q_{i}" class="ltx_Math" display="inline" id="S2.p4.1.m1.1"><semantics id="S2.p4.1.m1.1a"><msub id="S2.p4.1.m1.1.1" xref="S2.p4.1.m1.1.1.cmml"><mi id="S2.p4.1.m1.1.1.2" xref="S2.p4.1.m1.1.1.2.cmml">q</mi><mi id="S2.p4.1.m1.1.1.3" xref="S2.p4.1.m1.1.1.3.cmml">i</mi></msub><annotation-xml encoding="MathML-Content" id="S2.p4.1.m1.1b"><apply id="S2.p4.1.m1.1.1.cmml" xref="S2.p4.1.m1.1.1"><csymbol cd="ambiguous" id="S2.p4.1.m1.1.1.1.cmml" xref="S2.p4.1.m1.1.1">subscript</csymbol><ci id="S2.p4.1.m1.1.1.2.cmml" xref="S2.p4.1.m1.1.1.2">𝑞</ci><ci id="S2.p4.1.m1.1.1.3.cmml" xref="S2.p4.1.m1.1.1.3">𝑖</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p4.1.m1.1c">q_{i}</annotation></semantics></math> are in a different language from the documents in the corpus <math alttext="C" class="ltx_Math" display="inline" id="S2.p4.2.m2.1"><semantics id="S2.p4.2.m2.1a"><mi id="S2.p4.2.m2.1.1" xref="S2.p4.2.m2.1.1.cmml">C</mi><annotation-xml encoding="MathML-Content" id="S2.p4.2.m2.1b"><ci id="S2.p4.2.m2.1.1.cmml" xref="S2.p4.2.m2.1.1">𝐶</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p4.2.m2.1c">C</annotation></semantics></math>. Popular approaches to CLIR include query translation, document translation, and language-independent representations <cite class="ltx_cite ltx_citemacro_cite">Lin et al. (<a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite>.
+As the focus of this work is on the effectiveness of LLMs as listwise rerankers, we explore document and query translation approaches in this study.</p>
+</div>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Method</h2>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Listwise Reranking</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.3">In listwise reranking, LLMs compare and attribute relevance over multiple documents in a single prompt. As this approach has been proven to be more effective than pointwise and pairwise reranking <cite class="ltx_cite ltx_citemacro_cite">Ma et al. (<a class="ltx_ref" href="#bib.bib8" title="">2023b</a>); Pradeep et al. (<a class="ltx_ref" href="#bib.bib13" title="">2023a</a>)</cite>, we solely employ listwise reranking in this work. For each query <math alttext="q" class="ltx_Math" display="inline" id="S3.SS1.p1.1.m1.1"><semantics id="S3.SS1.p1.1.m1.1a"><mi id="S3.SS1.p1.1.m1.1.1" xref="S3.SS1.p1.1.m1.1.1.cmml">q</mi><annotation-xml encoding="MathML-Content" id="S3.SS1.p1.1.m1.1b"><ci id="S3.SS1.p1.1.m1.1.1.cmml" xref="S3.SS1.p1.1.m1.1.1">𝑞</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p1.1.m1.1c">q</annotation></semantics></math>,
+a list of provided documents <math alttext="D_{1},...,D_{n}" class="ltx_Math" display="inline" id="S3.SS1.p1.2.m2.3"><semantics id="S3.SS1.p1.2.m2.3a"><mrow id="S3.SS1.p1.2.m2.3.3.2" xref="S3.SS1.p1.2.m2.3.3.3.cmml"><msub id="S3.SS1.p1.2.m2.2.2.1.1" xref="S3.SS1.p1.2.m2.2.2.1.1.cmml"><mi id="S3.SS1.p1.2.m2.2.2.1.1.2" xref="S3.SS1.p1.2.m2.2.2.1.1.2.cmml">D</mi><mn id="S3.SS1.p1.2.m2.2.2.1.1.3" xref="S3.SS1.p1.2.m2.2.2.1.1.3.cmml">1</mn></msub><mo id="S3.SS1.p1.2.m2.3.3.2.3" xref="S3.SS1.p1.2.m2.3.3.3.cmml">,</mo><mi id="S3.SS1.p1.2.m2.1.1" mathvariant="normal" xref="S3.SS1.p1.2.m2.1.1.cmml">…</mi><mo id="S3.SS1.p1.2.m2.3.3.2.4" xref="S3.SS1.p1.2.m2.3.3.3.cmml">,</mo><msub id="S3.SS1.p1.2.m2.3.3.2.2" xref="S3.SS1.p1.2.m2.3.3.2.2.cmml"><mi id="S3.SS1.p1.2.m2.3.3.2.2.2" xref="S3.SS1.p1.2.m2.3.3.2.2.2.cmml">D</mi><mi id="S3.SS1.p1.2.m2.3.3.2.2.3" xref="S3.SS1.p1.2.m2.3.3.2.2.3.cmml">n</mi></msub></mrow><annotation-xml encoding="MathML-Content" id="S3.SS1.p1.2.m2.3b"><list id="S3.SS1.p1.2.m2.3.3.3.cmml" xref="S3.SS1.p1.2.m2.3.3.2"><apply id="S3.SS1.p1.2.m2.2.2.1.1.cmml" xref="S3.SS1.p1.2.m2.2.2.1.1"><csymbol cd="ambiguous" id="S3.SS1.p1.2.m2.2.2.1.1.1.cmml" xref="S3.SS1.p1.2.m2.2.2.1.1">subscript</csymbol><ci id="S3.SS1.p1.2.m2.2.2.1.1.2.cmml" xref="S3.SS1.p1.2.m2.2.2.1.1.2">𝐷</ci><cn id="S3.SS1.p1.2.m2.2.2.1.1.3.cmml" type="integer" xref="S3.SS1.p1.2.m2.2.2.1.1.3">1</cn></apply><ci id="S3.SS1.p1.2.m2.1.1.cmml" xref="S3.SS1.p1.2.m2.1.1">…</ci><apply id="S3.SS1.p1.2.m2.3.3.2.2.cmml" xref="S3.SS1.p1.2.m2.3.3.2.2"><csymbol cd="ambiguous" id="S3.SS1.p1.2.m2.3.3.2.2.1.cmml" xref="S3.SS1.p1.2.m2.3.3.2.2">subscript</csymbol><ci id="S3.SS1.p1.2.m2.3.3.2.2.2.cmml" xref="S3.SS1.p1.2.m2.3.3.2.2.2">𝐷</ci><ci id="S3.SS1.p1.2.m2.3.3.2.2.3.cmml" xref="S3.SS1.p1.2.m2.3.3.2.2.3">𝑛</ci></apply></list></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p1.2.m2.3c">D_{1},...,D_{n}</annotation></semantics></math> is reranked by the LLM, <math alttext="n" class="ltx_Math" display="inline" id="S3.SS1.p1.3.m3.1"><semantics id="S3.SS1.p1.3.m3.1a"><mi id="S3.SS1.p1.3.m3.1.1" xref="S3.SS1.p1.3.m3.1.1.cmml">n</mi><annotation-xml encoding="MathML-Content" id="S3.SS1.p1.3.m3.1b"><ci id="S3.SS1.p1.3.m3.1.1.cmml" xref="S3.SS1.p1.3.m3.1.1">𝑛</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p1.3.m3.1c">n</annotation></semantics></math> being the number of documents at a specific prompt.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Prompt Design</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1">We adopt RankGPT’s <cite class="ltx_cite ltx_citemacro_citep">(Sun et al., <a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite> listwise prompt design as modified by <cite class="ltx_cite ltx_citemacro_citet">Pradeep et al. (<a class="ltx_ref" href="#bib.bib13" title="">2023a</a>)</cite>. The input prompt and generated completion are as follows:</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p2">
+<p class="ltx_p" id="S3.SS2.p2.1"><span class="ltx_text ltx_font_italic" id="S3.SS2.p2.1.1">Input Prompt:</span></p>
+<div class="ltx_listing ltx_lstlisting ltx_listing" id="S3.SS2.p2.2">
+<div class="ltx_listing_data"><a download="" href="data:text/plain;base64,U1lTVEVNCllvdSBhcmUgUmFua0dQVCwgYW4gaW50ZWxsaWdlbnQgYXNzaXN0YW50CnRoYXQgY2FuIHJhbmsgcGFzc2FnZXMgYmFzZWQgb24gdGhlaXIgcmVsZXZhbmN5CnRvIHRoZSBxdWVyeS4KVVNFUgpJIHdpbGwgcHJvdmlkZSB5b3Ugd2l0aCB7bnVtfSBwYXNzYWdlcywKZWFjaCBpbmRpY2F0ZWQgYnkgbnVtYmVyIGlkZW50aWZpZXIgW10uClJhbmsgdGhlIHBhc3NhZ2VzIGJhc2VkIG9uIHRoZWlyIHJlbGV2YW5jZQp0byB0aGUgcXVlcnk6IHtxdWVyeX0uClsxXSB7cGFzc2FnZSAxfQpbMl0ge3Bhc3NhZ2UgMn0KLi4uCltudW1dIHtwYXNzYWdlIG51bX0KU2VhcmNoIFF1ZXJ5OiB7cXVlcnl9ClJhbmsgdGhlIHtudW19IHBhc3NhZ2VzIGFib3ZlIGJhc2VkCm9uIHRoZWlyIHJlbGV2YW5jZSB0byB0aGUgc2VhcmNoIHF1ZXJ5LgpUaGUgcGFzc2FnZXMgc2hvdWxkIGJlIGxpc3RlZCBpbiBkZXNjZW5kaW5nCm9yZGVyIHVzaW5nIGlkZW50aWZpZXJzLiBUaGUgbW9zdCByZWxldmFudApwYXNzYWdlcyBzaG91bGQgYmUgbGlzdGVkIGZpcnN0LiBUaGUgb3V0cHV0CmZvcm1hdCBzaG91bGQgYmUgW10gPiBbXSwgZS5nLiwgWzFdID4gWzJdLgpPbmx5IHJlc3BvbmQgd2l0aCB0aGUgcmFua2luZyByZXN1bHRzLCBkbyBub3QKc2F5IGFueSB3b3JkIG9yIGV4cGxhaW4u">⬇</a></div>
+<div class="ltx_listingline" id="lstnumberx1">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx1.1">SYSTEM</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx2">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx2.1">You</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx2.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx2.3">are</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx2.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx2.5">RankGPT</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx2.6">,</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx2.7"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx2.8">an</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx2.9"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx2.10">intelligent</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx2.11"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx2.12">assistant</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx3">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.1">that</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.3">can</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.5">rank</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.7">passages</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.9">based</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.10"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.11">on</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.12"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.13">their</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx3.14"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx3.15">relevancy</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx4">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx4.1">to</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx4.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx4.3">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx4.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx4.5">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx4.6">.</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx5">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx5.1">USER</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx6">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.1">I</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx6.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.3">will</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx6.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.5">provide</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx6.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.7">you</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx6.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.9">with</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx6.10"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx6.11">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.12">num</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx6.13">}</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx6.14"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx6.15">passages</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx6.16">,</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx7">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx7.1">each</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx7.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx7.3">indicated</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx7.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx7.5">by</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx7.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx7.7">number</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx7.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx7.9">identifier</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx7.10"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx7.11">[].</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx8">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.1">Rank</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx8.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.3">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx8.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.5">passages</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx8.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.7">based</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx8.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.9">on</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx8.10"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.11">their</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx8.12"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx8.13">relevance</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx9">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx9.1">to</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx9.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx9.3">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx9.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx9.5">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx9.6">:</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx9.7"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx9.8">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx9.9">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx9.10">}.</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx10">
+<span class="ltx_text ltx_font_typewriter" id="lstnumberx10.1">[1]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx10.2"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx10.3">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx10.4">passage</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx10.5"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx10.6">1}</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx11">
+<span class="ltx_text ltx_font_typewriter" id="lstnumberx11.1">[2]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx11.2"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx11.3">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx11.4">passage</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx11.5"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx11.6">2}</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx12">
+<span class="ltx_text ltx_font_typewriter" id="lstnumberx12.1">...</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx13">
+<span class="ltx_text ltx_font_typewriter" id="lstnumberx13.1">[</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx13.2">num</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx13.3">]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx13.4"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx13.5">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx13.6">passage</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx13.7"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx13.8">num</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx13.9">}</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx14">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx14.1">Search</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx14.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx14.3">Query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx14.4">:</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx14.5"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx14.6">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx14.7">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx14.8">}</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx15">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx15.1">Rank</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx15.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx15.3">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx15.4"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx15.5">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx15.6">num</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx15.7">}</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx15.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx15.9">passages</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx15.10"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx15.11">above</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx15.12"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx15.13">based</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx16">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.1">on</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx16.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.3">their</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx16.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.5">relevance</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx16.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.7">to</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx16.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.9">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx16.10"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.11">search</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx16.12"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx16.13">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx16.14">.</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx17">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.1">The</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx17.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.3">passages</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx17.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.5">should</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx17.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.7">be</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx17.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.9">listed</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx17.10"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.11">in</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx17.12"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx17.13">descending</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx18">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx18.1">order</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx18.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx18.3">using</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx18.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx18.5">identifiers</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx18.6">.</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx18.7"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx18.8">The</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx18.9"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx18.10">most</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx18.11"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx18.12">relevant</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx19">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.1">passages</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx19.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.3">should</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx19.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.5">be</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx19.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.7">listed</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx19.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.9">first</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx19.10">.</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx19.11"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.12">The</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx19.13"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx19.14">output</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx20">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx20.1">format</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx20.3">should</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx20.5">be</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.6"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.7">[]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.8"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.9">&gt;</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.10"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.11">[],</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.12"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx20.13">e</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.14">.</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx20.15">g</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.16">.,</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.17"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.18">[1]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.19"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.20">&gt;</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx20.21"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx20.22">[2].</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx21">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.1">Only</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.3">respond</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.5">with</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.7">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.9">ranking</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.10"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.11">results</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx21.12">,</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.13"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.14">do</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx21.15"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx21.16">not</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx22">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx22.1">say</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx22.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx22.3">any</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx22.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx22.5">word</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx22.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx22.7">or</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx22.8"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx22.9">explain</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx22.10">.</span>
+</div>
+</div>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p3">
+<p class="ltx_p" id="S3.SS2.p3.1"><span class="ltx_text ltx_font_italic" id="S3.SS2.p3.1.1">Model Completion:</span></p>
+</div>
+<div class="ltx_para" id="S3.SS2.p4">
+<div class="ltx_listing ltx_lstlisting ltx_listing" id="S3.SS2.p4.1">
+<div class="ltx_listing_data"><a download="" href="data:text/plain;base64,WzEwXSA+IFs0XSA+IFs1XSA+IFs2XSAuLi4gWzEyXQ==">⬇</a></div>
+<div class="ltx_listingline" id="lstnumberx23">
+<span class="ltx_text ltx_font_typewriter" id="lstnumberx23.1">[10]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.2"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.3">&gt;</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.4"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.5">[4]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.6"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.7">&gt;</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.8"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.9">[5]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.10"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.11">&gt;</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.12"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.13">[6]</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.14"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.15">...</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx23.16"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx23.17">[12]</span>
+</div>
+</div>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.3 </span>LLM Zero-Shot Translations</h3>
+<div class="ltx_para" id="S3.SS3.p1">
+<p class="ltx_p" id="S3.SS3.p1.1">Query translation is useful for crossing the language barrier in cross-lingual retrieval and reranking settings. We examine the effectiveness of LLMs in this scenario. For a given LLM, we generate zero-shot translations of queries from English to African languages and implement reranking with the LLM using its translations.
+With this approach, we are able to examine the ranking effectiveness of the LLM solely in African languages,
+and look out for the correlation between its translation quality and reranking.
+The prompt design for generating the query translation is as follows:</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p2">
+<p class="ltx_p" id="S3.SS3.p2.1"><span class="ltx_text ltx_font_italic" id="S3.SS3.p2.1.1">Input Prompt:</span></p>
+</div>
+<div class="ltx_para" id="S3.SS3.p3">
+<div class="ltx_listing ltx_lstlisting ltx_listing" id="S3.SS3.p3.1">
+<div class="ltx_listing_data"><a download="" href="data:text/plain;base64,UXVlcnk6IHtxdWVyeX0KVHJhbnNsYXRlIHRoaXMgcXVlcnkgdG8ge0FmcmljYW4gbGFuZ3VhZ2V9LgpPbmx5IHJldHVybiB0aGUgdHJhbnNsYXRpb24sIGRvbid0IHNheSBhbnkKb3RoZXIgd29yZC4=">⬇</a></div>
+<div class="ltx_listingline" id="lstnumberx24">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx24.1">Query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx24.2">:</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx24.3"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx24.4">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx24.5">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx24.6">}</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx25">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx25.1">Translate</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx25.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx25.3">this</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx25.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx25.5">query</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx25.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx25.7">to</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx25.8"> </span><span class="ltx_text ltx_font_typewriter" id="lstnumberx25.9">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx25.10">African</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx25.11"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx25.12">language</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx25.13">}.</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx26">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.1">Only</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx26.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.3">return</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx26.4"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.5">the</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx26.6"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.7">translation</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx26.8">,</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx26.9"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.10">don</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx26.11">’</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.12">t</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx26.13"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.14">say</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx26.15"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx26.16">any</span>
+</div>
+<div class="ltx_listingline" id="lstnumberx27">
+<span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx27.1">other</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx27.2"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx27.3">word</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx27.4">.</span>
+</div>
+</div>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p4">
+<p class="ltx_p" id="S3.SS3.p4.1"><span class="ltx_text ltx_font_italic" id="S3.SS3.p4.1.1">Model Completion:</span></p>
+</div>
+<div class="ltx_para" id="S3.SS3.p5">
+<div class="ltx_listing ltx_lstlisting ltx_listing" id="S3.SS3.p5.1">
+<div class="ltx_listing_data"><a download="" href="data:text/plain;base64,e1RyYW5zbGF0ZWQgcXVlcnl9">⬇</a></div>
+<div class="ltx_listingline" id="lstnumberx28">
+<span class="ltx_text ltx_font_typewriter" id="lstnumberx28.1">{</span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx28.2">Translated</span><span class="ltx_text ltx_lst_space ltx_font_typewriter" id="lstnumberx28.3"> </span><span class="ltx_text ltx_lst_identifier ltx_font_typewriter" id="lstnumberx28.4">query</span><span class="ltx_text ltx_font_typewriter" id="lstnumberx28.5">}</span>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Experimental Setup</h2>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Models</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">We implement zero-shot reranking for African languages on three (3) models.
+These include proprietary reranking LLMs—RankGPT<sub class="ltx_sub" id="S4.SS1.p1.1.2">4</sub> and RankGPT<sub class="ltx_sub" id="S4.SS1.p1.1.3">3.5</sub>, using the <span class="ltx_text ltx_font_typewriter" id="S4.SS1.p1.1.4">gpt-4</span> and <span class="ltx_text ltx_font_typewriter" id="S4.SS1.p1.1.5">gpt-3.5-turbo</span> models respectively from OpenAI’s API.
+To examine the effectiveness of open-source LLMs, we rerank with RankZephyr <cite class="ltx_cite ltx_citemacro_cite">Pradeep et al. (<a class="ltx_ref" href="#bib.bib14" title="">2023b</a>)</cite>, an open-source reranking LLM obtained by instruction-finetuning Zephyr<sub class="ltx_sub" id="S4.SS1.p1.1.1"><math alttext="\beta" class="ltx_Math" display="inline" id="S4.SS1.p1.1.1.m1.1"><semantics id="S4.SS1.p1.1.1.m1.1a"><mi id="S4.SS1.p1.1.1.m1.1.1" xref="S4.SS1.p1.1.1.m1.1.1.cmml">β</mi><annotation-xml encoding="MathML-Content" id="S4.SS1.p1.1.1.m1.1b"><ci id="S4.SS1.p1.1.1.m1.1.1.cmml" xref="S4.SS1.p1.1.1.m1.1.1">𝛽</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.SS1.p1.1.1.m1.1c">\beta</annotation></semantics></math></sub> <cite class="ltx_cite ltx_citemacro_cite">Tunstall et al. (<a class="ltx_ref" href="#bib.bib18" title="">2023</a>)</cite> to achieve competitive performance with RankGPT models.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Test Collection</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1">Models are evaluated on CIRAL <cite class="ltx_cite ltx_citemacro_cite">Adeyemi et al. (<a class="ltx_ref" href="#bib.bib1" title="">2023</a>)</cite>,
+a CLIR test collection consisting of four African languages: Hausa, Somali, Swahili and Yoruba.
+Queries in CIRAL  are natural language factoid questions in English
+while passages are in the respective African languages.
+Each language comprises between 80 and 100 queries,
+and evaluations are done using deep relevance judgements obtained from the passage retrieval task.<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://ciralproject.github.io/" target="_blank" title="">https://ciralproject.github.io/</a></span></span></span>
+We also make use of CIRAL’s translated passage collection,<span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://huggingface.co/datasets/CIRAL/ciral-corpus#translated-dataset" target="_blank" title="">https://huggingface.co/datasets/CIRAL/ciral-corpus#translated-dataset</a></span></span></span>
+in our document translation use cases. The test collection’s documents were translated using the NLLB machine translation model.<span class="ltx_note ltx_role_footnote" id="footnote3"><sup class="ltx_note_mark">3</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">3</sup><span class="ltx_tag ltx_tag_note">3</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://huggingface.co/facebook/nllb-200-1.3B" target="_blank" title="">https://huggingface.co/facebook/nllb-200-1.3B</a></span></span></span></p>
+</div>
+<div class="ltx_para" id="S4.SS2.p2">
+<p class="ltx_p" id="S4.SS2.p2.1">We report nDCG@20 scores following the test collection standard,
+and MRR@100.</p>
+</div>
+<figure class="ltx_table" id="S4.T1">
+<div class="ltx_inline-block ltx_transformed_outer" id="S4.T1.2" style="width:433.6pt;height:186.5pt;vertical-align:-0.9pt;"><span class="ltx_transformed_inner" style="transform:translate(-35.5pt,15.2pt) scale(0.859384443270618,0.859384443270618) ;">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S4.T1.2.2">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S4.T1.2.2.3.1">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_tt" id="S4.T1.2.2.3.1.1"></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_tt" colspan="2" id="S4.T1.2.2.3.1.2"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.3.1.2.1">Source</span></th>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="4" id="S4.T1.2.2.3.1.3"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.3.1.3.1">nDCG@20</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="4" id="S4.T1.2.2.3.1.4"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.3.1.4.1">MRR@100</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.4.2">
+<th class="ltx_td ltx_th ltx_th_row" id="S4.T1.2.2.4.2.1"></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.4.2.2"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.2.1">Prev.</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.4.2.3"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.3.1">top-k</span></th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.4"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.4.1">ha</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.5"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.5.1">so</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.6"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.6.1">sw</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.7"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.7.1">yo</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.8"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.8.1">ha</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.9"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.9.1">so</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.10"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.10.1">sw</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.4.2.11"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.4.2.11.1">yo</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S4.T1.1.1.1.2">(1a) BM25-QT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t" id="S4.T1.1.1.1.3">None</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t" id="S4.T1.1.1.1.1"><math alttext="|C|" class="ltx_Math" display="inline" id="S4.T1.1.1.1.1.m1.1"><semantics id="S4.T1.1.1.1.1.m1.1a"><mrow id="S4.T1.1.1.1.1.m1.1.2.2" xref="S4.T1.1.1.1.1.m1.1.2.1.cmml"><mo id="S4.T1.1.1.1.1.m1.1.2.2.1" stretchy="false" xref="S4.T1.1.1.1.1.m1.1.2.1.1.cmml">|</mo><mi id="S4.T1.1.1.1.1.m1.1.1" xref="S4.T1.1.1.1.1.m1.1.1.cmml">C</mi><mo id="S4.T1.1.1.1.1.m1.1.2.2.2" stretchy="false" xref="S4.T1.1.1.1.1.m1.1.2.1.1.cmml">|</mo></mrow><annotation-xml encoding="MathML-Content" id="S4.T1.1.1.1.1.m1.1b"><apply id="S4.T1.1.1.1.1.m1.1.2.1.cmml" xref="S4.T1.1.1.1.1.m1.1.2.2"><abs id="S4.T1.1.1.1.1.m1.1.2.1.1.cmml" xref="S4.T1.1.1.1.1.m1.1.2.2.1"></abs><ci id="S4.T1.1.1.1.1.m1.1.1.cmml" xref="S4.T1.1.1.1.1.m1.1.1">𝐶</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.1.1.1.1.m1.1c">|C|</annotation></semantics></math></th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.4">0.0870</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.5">0.0824</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.6">0.1252</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.7">0.2600</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.8">0.1942</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.9">0.1513</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.10">0.3098</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1.11">0.3914</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T1.2.2.2.2">(1b) BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.2.3">None</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.2.1"><math alttext="|C|" class="ltx_Math" display="inline" id="S4.T1.2.2.2.1.m1.1"><semantics id="S4.T1.2.2.2.1.m1.1a"><mrow id="S4.T1.2.2.2.1.m1.1.2.2" xref="S4.T1.2.2.2.1.m1.1.2.1.cmml"><mo id="S4.T1.2.2.2.1.m1.1.2.2.1" stretchy="false" xref="S4.T1.2.2.2.1.m1.1.2.1.1.cmml">|</mo><mi id="S4.T1.2.2.2.1.m1.1.1" xref="S4.T1.2.2.2.1.m1.1.1.cmml">C</mi><mo id="S4.T1.2.2.2.1.m1.1.2.2.2" stretchy="false" xref="S4.T1.2.2.2.1.m1.1.2.1.1.cmml">|</mo></mrow><annotation-xml encoding="MathML-Content" id="S4.T1.2.2.2.1.m1.1b"><apply id="S4.T1.2.2.2.1.m1.1.2.1.cmml" xref="S4.T1.2.2.2.1.m1.1.2.2"><abs id="S4.T1.2.2.2.1.m1.1.2.1.1.cmml" xref="S4.T1.2.2.2.1.m1.1.2.2.1"></abs><ci id="S4.T1.2.2.2.1.m1.1.1.cmml" xref="S4.T1.2.2.2.1.m1.1.1">𝐶</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.2.2.2.1.m1.1c">|C|</annotation></semantics></math></th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.4">0.2142</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.5">0.2517</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.6">0.2260</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.7">0.4169</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.8">0.4009</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.9">0.4348</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.10">0.4313</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.2.11">0.5359</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.5.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" colspan="11" id="S4.T1.2.2.5.3.1"><span class="ltx_text ltx_font_italic" id="S4.T1.2.2.5.3.1.1">Cross-lingual Reranking: English queries, passages in African languages</span></th>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.6.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T1.2.2.6.4.1">(2a) RankGPT<sub class="ltx_sub" id="S4.T1.2.2.6.4.1.1">4</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.6.4.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.6.4.3">100</th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.4"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.4.1">0.3577</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.5"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.5.1">0.3268</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.6"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.6.1">0.2991</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.7"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.7.1">0.4738</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.8"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.8.1">0.7006</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.9"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.9.1">0.6038</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.10"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.10.1">0.6270</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.6.4.11"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.6.4.11.1">0.6732</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.7.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T1.2.2.7.5.1">(2b) RankGPT<sub class="ltx_sub" id="S4.T1.2.2.7.5.1.1">3.5</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.7.5.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.7.5.3">100</th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.4">0.2413</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.5">0.2984</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.6">0.2497</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.7">0.4413</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.8">0.5125</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.9">0.5360</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.10">0.5577</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.7.5.11">0.6080</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.8.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T1.2.2.8.6.1">(2c) RankZephyr</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.8.6.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.8.6.3">100</th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.4">0.2741</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.5">0.2996</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.6">0.2881</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.7">0.4218</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.8">0.4917</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.9">0.5397</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.10">0.5823</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.8.6.11">0.5853</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.9.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" colspan="11" id="S4.T1.2.2.9.7.1"><span class="ltx_text ltx_font_italic" id="S4.T1.2.2.9.7.1.1">English Reranking: English queries, English passages</span></th>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.10.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T1.2.2.10.8.1">(3a) RankGPT<sub class="ltx_sub" id="S4.T1.2.2.10.8.1.1">4</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.10.8.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.10.8.3">100</th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.4"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.4.1">0.3967</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.5"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.5.1">0.3812</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.6"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.6.1">0.3694</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.7"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.7.1">0.5355</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.8"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.8.1">0.7042</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.9">0.6313</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.10"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.10.1">0.7058</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.10.8.11"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.10.8.11.1">0.6858</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.11.9">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S4.T1.2.2.11.9.1">(3b) RankGPT<sub class="ltx_sub" id="S4.T1.2.2.11.9.1.1">3.5</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.11.9.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S4.T1.2.2.11.9.3">100</th>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.4">0.2980</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.5">0.3189</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.6">0.3010</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.7">0.4621</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.8">0.5702</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.9">0.5826</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.10">0.6150</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.2.2.11.9.11">0.6582</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2.12.10">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S4.T1.2.2.12.10.1">(3c) RankZephyr</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb" id="S4.T1.2.2.12.10.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb" id="S4.T1.2.2.12.10.3">100</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.4">0.3686</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.5">0.3622</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.6">0.3601</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.7">0.4887</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.8">0.6431</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.9"><span class="ltx_text ltx_font_bold" id="S4.T1.2.2.12.10.9.1">0.6453</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.10">0.6995</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.2.2.12.10.11">0.6467</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 1: </span>Comparison of Cross-lingual and English reranking results. The cross-lingual scenario uses CIRAL’s English queries and African language passages while English reranking crosses the language barrier with English translations of the passages.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>Configurations</h3>
+<div class="ltx_para" id="S4.SS3.p1">
+<p class="ltx_p" id="S4.SS3.p1.1">First-stage retrieval is BM25 <cite class="ltx_cite ltx_citemacro_cite">Robertson and Zaragoza (<a class="ltx_ref" href="#bib.bib16" title="">2009</a>)</cite> using the open-source Pyserini <cite class="ltx_cite ltx_citemacro_cite">Lin et al. (<a class="ltx_ref" href="#bib.bib6" title="">2021</a>)</cite> toolkit.
+We use whitespace tokenization for passages in native languages and the default English tokenizer for the translated passages.
+We investigate first-stage retrieval using document (BM25-DT) and query translation (BM25-QT).
+For BM25-QT, we translate queries using Google Machine Translation (GMT).</p>
+</div>
+<div class="ltx_para" id="S4.SS3.p2">
+<p class="ltx_p" id="S4.SS3.p2.1">We rerank the top 100 passages retrieved by BM25 using the sliding window technique by <cite class="ltx_cite ltx_citemacro_citet">Sun et al. (<a class="ltx_ref" href="#bib.bib17" title="">2023</a>)</cite> with a window of 20 and a stride of 10.
+We use a context size of 4,096 tokens for RankGPT<sub class="ltx_sub" id="S4.SS3.p2.1.1">3.5</sub> and 8,192 tokens for RankGPT<sub class="ltx_sub" id="S4.SS3.p2.1.2">4</sub>.
+These context sizes are also maintained for the zero-shot LLM translation experiments.
+For each model, translations is done over 3 iterations and we vary the model’s temperatures from 0 to 0.6 to allow variation in the translations. Translations are only obtained for the GPT models considering that RankZephyr is suited only for reranking.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Results</h2>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Cross-Lingual vs. Monolingual Reranking</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<p class="ltx_p" id="S5.SS1.p1.1"><a class="ltx_ref ltx_refmacro_autoref" href="#S4.T1" title="Table 1 ‣ 4.2 Test Collection ‣ 4 Experimental Setup ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 1</span></a> compares results for the cross-lingual reranking using CIRAL’s queries and passages as is, and English reranking scenarios.
+Row (1) reports scores for two baselines, BM25 with query translation (BM25-QT) and document translation (BM25-DT).
+Cross-lingual reranking scores for the different LLMs are presented in Row (2), and we employ BM25-DT for first-stage retrieval given it is the more effective baseline.
+Scores for reranking in English are reported in Row (3), and results show this to be the more effective scenario across the models and languages.</p>
+</div>
+<div class="ltx_para" id="S5.SS1.p2">
+<p class="ltx_p" id="S5.SS1.p2.1">Improved reranking effectiveness with English translations is expected, given that LLMs, despite being multilingual, are more attuned to English.
+The results obtained from reranking solely with African languages further investigate the effectiveness of LLMs in low-resource language scenarios.
+We report scores using query translations in <a class="ltx_ref ltx_refmacro_autoref" href="#S5.T2" title="Table 2 ‣ 5.2 LLM Reranking Effectiveness ‣ 5 Results ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 2</span></a>,
+with BM25-DT also as the first-stage retriever.
+Scores for using the query translations obtained from the specific LLM are reported in Row (2), i.e.,
+results in Row (2b) use query translations from RankGPT<sub class="ltx_sub" id="S5.SS1.p2.1.1">3.5</sub> and rerank with RankGPT<sub class="ltx_sub" id="S5.SS1.p2.1.2">3.5</sub>.
+The obtained results are a fusion over the <math alttext="3" class="ltx_Math" display="inline" id="S5.SS1.p2.1.m1.1"><semantics id="S5.SS1.p2.1.m1.1a"><mn id="S5.SS1.p2.1.m1.1.1" xref="S5.SS1.p2.1.m1.1.1.cmml">3</mn><annotation-xml encoding="MathML-Content" id="S5.SS1.p2.1.m1.1b"><cn id="S5.SS1.p2.1.m1.1.1.cmml" type="integer" xref="S5.SS1.p2.1.m1.1.1">3</cn></annotation-xml><annotation encoding="application/x-tex" id="S5.SS1.p2.1.m1.1c">3</annotation></semantics></math> translation iterations using Reciprocal Rank Fusion (RRF) <cite class="ltx_cite ltx_citemacro_cite">Cormack et al. (<a class="ltx_ref" href="#bib.bib3" title="">2009</a>)</cite>.
+In comparing results from the query translation scenario to the cross-lingual results in Row (2) of <a class="ltx_ref ltx_refmacro_autoref" href="#S4.T1" title="Table 1 ‣ 4.2 Test Collection ‣ 4 Experimental Setup ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 1</span></a>, we generally observe competitive effectiveness in cross-lingual, and monolingual reranking in the African languages.
+Specifically, RankGPT<sub class="ltx_sub" id="S5.SS1.p2.1.3">4</sub> obtains higher scores for Swahili and Yoruba in the African language scenario,
+especially with its query translations (comparing Rows (2a) in <a class="ltx_ref ltx_refmacro_autoref" href="#S4.T1" title="Table 1 ‣ 4.2 Test Collection ‣ 4 Experimental Setup ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 1</span></a> and <a class="ltx_ref" href="#S5.T2" title="Table 2 ‣ 5.2 LLM Reranking Effectiveness ‣ 5 Results ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">2</span></a>).</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S5.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.2 </span>LLM Reranking Effectiveness</h3>
+<div class="ltx_para" id="S5.SS2.p1">
+<p class="ltx_p" id="S5.SS2.p1.1">We compare the effectiveness of the different LLMs across the reranking scenarios.
+RankGPT<sub class="ltx_sub" id="S5.SS2.p1.1.1">4</sub> generally achieves better reranking among the 3 LLMs as presented in the Tables <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ 4.2 Test Collection ‣ 4 Experimental Setup ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">1</span></a> and <a class="ltx_ref" href="#S5.T2" title="Table 2 ‣ 5.2 LLM Reranking Effectiveness ‣ 5 Results ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">2</span></a>.
+In the cross-lingual and English reranking scenarios, open-source LLM RankZephyr <cite class="ltx_cite ltx_citemacro_cite">Pradeep et al. (<a class="ltx_ref" href="#bib.bib14" title="">2023b</a>)</cite> achieves better reranking scores in comparison with RankGPT<sub class="ltx_sub" id="S5.SS2.p1.1.2">3.5</sub> as reported in Rows (*b) and (*c) in <a class="ltx_ref ltx_refmacro_autoref" href="#S4.T1" title="Table 1 ‣ 4.2 Test Collection ‣ 4 Experimental Setup ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 1</span></a>.
+RankZephyr also achieves comparable scores with RankGPT<sub class="ltx_sub" id="S5.SS2.p1.1.3">4</sub> in the English reranking scenario, and even a higher MRR for Somali as reported in Row (3c) of <a class="ltx_ref ltx_refmacro_autoref" href="#S4.T1" title="Table 1 ‣ 4.2 Test Collection ‣ 4 Experimental Setup ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 1</span></a>.
+However, Row (3) in <a class="ltx_ref ltx_refmacro_autoref" href="#S5.T2" title="Table 2 ‣ 5.2 LLM Reranking Effectiveness ‣ 5 Results ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 2</span></a> shows that both GPT models achieve better reranking effectiveness compared to RankZephyr  in the query translation scenario. Comparison with RankZephyr in the query translations scenario is done only with translations from GMT.
+Albeit, these results still establish the growing effectiveness of open-source LLMs for various language tasks considering the limited availability of closed-source LLMs, but with room for improvement in low-resource languages.</p>
+</div>
+<figure class="ltx_table" id="S5.T2">
+<div class="ltx_inline-block ltx_transformed_outer" id="S5.T2.1" style="width:429.3pt;height:154pt;vertical-align:-0.9pt;"><span class="ltx_transformed_inner" style="transform:translate(-37.6pt,13.4pt) scale(0.8507952922639,0.8507952922639) ;">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S5.T2.1.1">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S5.T2.1.1.2.1">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_tt" id="S5.T2.1.1.2.1.1"></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_tt" colspan="2" id="S5.T2.1.1.2.1.2"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.2.1.2.1">Source</span></th>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="4" id="S5.T2.1.1.2.1.3"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.2.1.3.1">nDCG@20</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="4" id="S5.T2.1.1.2.1.4"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.2.1.4.1">MRR@100</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.3.2">
+<th class="ltx_td ltx_th ltx_th_row" id="S5.T2.1.1.3.2.1"></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.3.2.2"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.2.1">Prev.</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.3.2.3"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.3.1">top-k</span></th>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.4"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.4.1">ha</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.5"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.5.1">so</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.6"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.6.1">sw</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.7"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.7.1">yo</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.8"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.8.1">ha</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.9"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.9.1">so</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.10"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.10.1">sw</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.3.2.11"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.2.11.1">yo</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S5.T2.1.1.1.2">(1) BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t" id="S5.T2.1.1.1.3">None</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t" id="S5.T2.1.1.1.1"><math alttext="|C|" class="ltx_Math" display="inline" id="S5.T2.1.1.1.1.m1.1"><semantics id="S5.T2.1.1.1.1.m1.1a"><mrow id="S5.T2.1.1.1.1.m1.1.2.2" xref="S5.T2.1.1.1.1.m1.1.2.1.cmml"><mo id="S5.T2.1.1.1.1.m1.1.2.2.1" stretchy="false" xref="S5.T2.1.1.1.1.m1.1.2.1.1.cmml">|</mo><mi id="S5.T2.1.1.1.1.m1.1.1" xref="S5.T2.1.1.1.1.m1.1.1.cmml">C</mi><mo id="S5.T2.1.1.1.1.m1.1.2.2.2" stretchy="false" xref="S5.T2.1.1.1.1.m1.1.2.1.1.cmml">|</mo></mrow><annotation-xml encoding="MathML-Content" id="S5.T2.1.1.1.1.m1.1b"><apply id="S5.T2.1.1.1.1.m1.1.2.1.cmml" xref="S5.T2.1.1.1.1.m1.1.2.2"><abs id="S5.T2.1.1.1.1.m1.1.2.1.1.cmml" xref="S5.T2.1.1.1.1.m1.1.2.2.1"></abs><ci id="S5.T2.1.1.1.1.m1.1.1.cmml" xref="S5.T2.1.1.1.1.m1.1.1">𝐶</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.T2.1.1.1.1.m1.1c">|C|</annotation></semantics></math></th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.4">0.2142</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.5">0.2517</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.6">0.2260</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.7">0.4169</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.8">0.4009</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.9">0.4348</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.10">0.4313</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T2.1.1.1.11">0.5359</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.4.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" colspan="11" id="S5.T2.1.1.4.3.1"><span class="ltx_text ltx_font_italic" id="S5.T2.1.1.4.3.1.1">LLM Query Translations: Queries and passages in African languages</span></th>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.5.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.1.5.4.1">(2a) RankGPT<sub class="ltx_sub" id="S5.T2.1.1.5.4.1.1">4</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.5.4.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.5.4.3">100</th>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.4">0.3458</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.5"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.5.4.5.1">0.3487</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.6"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.5.4.6.1">0.3559</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.7"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.5.4.7.1">0.4834</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.8">0.6293</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.9">0.4253</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.10"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.5.4.10.1">0.6961</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.5.4.11"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.5.4.11.1">0.6551</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.6.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.1.6.5.1">(2b) RankGPT<sub class="ltx_sub" id="S5.T2.1.1.6.5.1.1">3.5</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.6.5.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.6.5.3">100</th>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.4">0.2370</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.5">0.2850</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.6">0.2741</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.7">0.4190</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.8">0.4651</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.9">0.4937</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.10">0.5295</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.6.5.11">0.5594</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.7.6">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" colspan="11" id="S5.T2.1.1.7.6.1"><span class="ltx_text ltx_font_italic" id="S5.T2.1.1.7.6.1.1">GMT Query Translations: Queries and passages in African languages</span></th>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.8.7">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.1.8.7.1">(3a) RankGPT<sub class="ltx_sub" id="S5.T2.1.1.8.7.1.1">4</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.8.7.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.8.7.3">100</th>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.4"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.8.7.4.1">0.3523</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.5">0.3159</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.6">0.3012</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.7">0.4386</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.8"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.8.7.8.1">0.6800</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.9"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.8.7.9.1">0.5421</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.10">0.6149</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.8.7.11">0.5935</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.9.8">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="S5.T2.1.1.9.8.1">(3b) RankGPT<sub class="ltx_sub" id="S5.T2.1.1.9.8.1.1">3.5</sub>
+</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.9.8.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row" id="S5.T2.1.1.9.8.3">100</th>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.4">0.2479</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.5">0.2894</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.6">0.2692</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.7">0.4001</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.8">0.4996</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.9">0.5005</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.10">0.5539</td>
+<td class="ltx_td ltx_align_center" id="S5.T2.1.1.9.8.11">0.5419</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.1.10.9">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="S5.T2.1.1.10.9.1">(3c) RankZephyr</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb" id="S5.T2.1.1.10.9.2">BM25-DT</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb" id="S5.T2.1.1.10.9.3">100</th>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.4">0.2515</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.5">0.2621</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.6">0.2497</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.7">0.3873</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.8">0.4573</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.9">0.4644</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.10">0.5401</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T2.1.1.10.9.11">0.5171</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 2: </span>Reranking in African languages using query translations and passages in the African language. BM25-DT is used as first stage. Query translations are done using the LLMs, and we compare effectiveness with GMT translations.</figcaption>
+</figure>
+<figure class="ltx_table" id="S5.T3">
+<div class="ltx_inline-block ltx_transformed_outer" id="S5.T3.1" style="width:398.9pt;height:131.3pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(90.1pt,-29.7pt) scale(1.82379061320466,1.82379061320466) ;">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S5.T3.1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S5.T3.1.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.1.1">Model</th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S5.T3.1.1.1.1.2.1">ha</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S5.T3.1.1.1.1.3.1">so</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.1.4"><span class="ltx_text ltx_font_bold" id="S5.T3.1.1.1.1.4.1">sw</span></th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_r ltx_border_tt" id="S5.T3.1.1.1.1.5"><span class="ltx_text ltx_font_bold" id="S5.T3.1.1.1.1.5.1">yo</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" id="S5.T3.1.1.1.1.6"><span class="ltx_text ltx_font_bold" id="S5.T3.1.1.1.1.6.1">avg</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S5.T3.1.1.2.1">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S5.T3.1.1.2.1.1">RankGPT<sub class="ltx_sub" id="S5.T3.1.1.2.1.1.1">4</sub>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T3.1.1.2.1.2">21.8</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T3.1.1.2.1.3">7.4</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S5.T3.1.1.2.1.4">43.8</td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_t" id="S5.T3.1.1.2.1.5">16.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T3.1.1.2.1.6">22.3</td>
+</tr>
+<tr class="ltx_tr" id="S5.T3.1.1.3.2">
+<td class="ltx_td ltx_align_left" id="S5.T3.1.1.3.2.1">RankGPT<sub class="ltx_sub" id="S5.T3.1.1.3.2.1.1">3.5</sub>
+</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.1.3.2.2">7.1</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.1.3.2.3">1.8</td>
+<td class="ltx_td ltx_align_right" id="S5.T3.1.1.3.2.4">42.4</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T3.1.1.3.2.5">6.6</td>
+<td class="ltx_td ltx_align_center" id="S5.T3.1.1.3.2.6">14.5</td>
+</tr>
+<tr class="ltx_tr" id="S5.T3.1.1.4.3">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S5.T3.1.1.4.3.1">GMT</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T3.1.1.4.3.2">45.3</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T3.1.1.4.3.3">17.9</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T3.1.1.4.3.4">85.9</td>
+<td class="ltx_td ltx_align_right ltx_border_bb ltx_border_r" id="S5.T3.1.1.4.3.5">36.7</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S5.T3.1.1.4.3.6">46.5</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 3: </span>Evaluation of the LLMs query translation quality using the BLEU metric. Scores reported are the average over three (3) translation iterations. LLM translations are evaluated against CIRAL’s human query translation, and results obtained for Google Machine translate are also reported.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S5.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.3 </span>LLM Translations and Reranking</h3>
+<div class="ltx_para" id="S5.SS3.p1">
+<p class="ltx_p" id="S5.SS3.p1.1">Given that RankGPT<sub class="ltx_sub" id="S5.SS3.p1.1.1">4</sub> achieves better reranking effectiveness using its query translations in the monolingual setting,
+we further examine the effectiveness of this scenario.
+Row (2) in <a class="ltx_ref ltx_refmacro_autoref" href="#S5.T2" title="Table 2 ‣ 5.2 LLM Reranking Effectiveness ‣ 5 Results ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 2</span></a> reports results using LLMs translations, and we compare these to results obtained using translations from GMT.
+Compared to results obtained with GMT translations, RankGPT<sub class="ltx_sub" id="S5.SS3.p1.1.2">4</sub> does achieve better monolingual reranking effectiveness in the African language using its query translations.
+There is also a difference in the effectiveness of both translation types when compared with cross-lingual reranking, as using RankGPT<sub class="ltx_sub" id="S5.SS3.p1.1.3">4</sub>’s translations is more effective than the cross-lingual scenario, however, the cross-lingual scenario is generally more effective than using GMT query translations.
+RankGPT<sub class="ltx_sub" id="S5.SS3.p1.1.4">3.5</sub> on the other hand achieves less competitive scores using its query translations when compared to translations from the GMT model.</p>
+</div>
+<div class="ltx_para" id="S5.SS3.p2">
+<p class="ltx_p" id="S5.SS3.p2.1">Considering translation quality’s effect on reranking, we evaluate the LLMs’ translations and report results in <a class="ltx_ref ltx_refmacro_autoref" href="#S5.T3" title="Table 3 ‣ 5.2 LLM Reranking Effectiveness ‣ 5 Results ‣ Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages"><span class="ltx_text ltx_ref_tag">Table 3</span></a>.
+Evaluation is done against CIRAL’s human query translations using the BLEU<span class="ltx_note ltx_role_footnote" id="footnote4"><sup class="ltx_note_mark">4</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">4</sup><span class="ltx_tag ltx_tag_note">4</span><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/mjpost/sacrebleu" target="_blank" title="">https://github.com/mjpost/sacrebleu</a></span></span></span> metric.
+We observe better translations with RankGPT<sub class="ltx_sub" id="S5.SS3.p2.1.1">4</sub>, and RankGPT<sub class="ltx_sub" id="S5.SS3.p2.1.2">3.5</sub> having less translation quality. Hence, in addition to the model’s capabilities, this could be a contributing factor to its reranking results when using its translations. Translations obtained from GMT have the best quality among the three, considering the nature of the model.
+Notwithstanding, RankGPT<sub class="ltx_sub" id="S5.SS3.p2.1.3">4</sub> still performs better using its query translations, indicating a correlation in the model’s understanding of the African languages.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Conclusion</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">In this work, we implement zero-shot cross-lingual reranking with large language models (LLMs) on African languages. Using the list-wise reranking method, our results demonstrate that reranking in English via translation is the most optimal. We examine the effectiveness of the LLMs in reranking for low-resource languages in the cross-lingual and African language monolingual scenarios and find that the LLMs have comparable performances in both scenarios but with better results in cross-lingual. In the process, we also establish that good translations obtained from the LLMs do improve its reranking effectiveness in the African language reranking scenario as discovered with RankGPT<sub class="ltx_sub" id="S6.p1.1.1">4</sub>.</p>
+</div>
+<div class="ltx_para" id="S6.p2">
+<p class="ltx_p" id="S6.p2.1">Our implementation covered three reranking (3) LLMs: RankGPT<sub class="ltx_sub" id="S6.p2.1.1">4</sub>, RankGPT<sub class="ltx_sub" id="S6.p2.1.2">3.5</sub> and RankZephyr and although results indicate RankGPT<sub class="ltx_sub" id="S6.p2.1.3">4</sub> to be the most effective reranker, they also demonstrate the growing effectiveness of open-source LLMs in reranking for low-resource languages when comparing RankZephyr and RankGPT<sub class="ltx_sub" id="S6.p2.1.4">3.5</sub>.</p>
+</div>
+<div class="ltx_para" id="S6.p3">
+<p class="ltx_p" id="S6.p3.1">We believe our work further highlights the capabilities of large language models in tasks regarding low-resourced languages and indicates the prospects that exist for these languages. We additionally hope it encourages research efforts towards the development of methods that improve the effectiveness of LLMs on low-resource languages.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1">This research was supported in part by the Natural Sciences and Engineering Research Council (NSERC) of Canada.
+</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Adeyemi et al. (2023)</span>
+<span class="ltx_bibblock">
+Mofetoluwa Adeyemi, Akintunde Oladipo, Xinyu Zhang, David Alfonso-Hermelo, Mehdi Rezagholizadeh, Boxing Chen, and Jimmy Lin. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://huggingface.co/datasets/CIRAL/ciral" target="_blank" title="">CIRAL: A Test Suite for CLIR in African Languages</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Asadi and Lin (2013)</span>
+<span class="ltx_bibblock">
+Nima Asadi and Jimmy Lin. 2013.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:5939749" target="_blank" title="">Effectiveness/Efficiency Tradeoffs for Candidate Generation in Multi-stage Retrieval Architectures</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib2.1.1">Proceedings of the 36th International ACM SIGIR Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Cormack et al. (2009)</span>
+<span class="ltx_bibblock">
+Gordon V. Cormack, Charles L. A. Clarke, and Stefan Büttcher. 2009.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:12408211" target="_blank" title="">Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib3.1.1">Proceedings of the 32nd International ACM SIGIR Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Karpukhin et al. (2020)</span>
+<span class="ltx_bibblock">
+Vladimir Karpukhin, Barlas Oğuz, Sewon Min, Patrick Lewis, Ledell Yu Wu, Sergey Edunov, Danqi Chen, and Wen tau Yih. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:215737187" target="_blank" title="">Dense Passage Retrieval for Open-Domain Question Answering</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">ArXiv</em>, abs/2004.04906.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin et al. (2023)</span>
+<span class="ltx_bibblock">
+Jimmy Lin, David Alfonso-Hermelo, Vitor Jeronymo, Ehsan Kamalloo, Carlos Lassance, Rodrigo Nogueira, Odunayo Ogundepo, Mehdi Rezagholizadeh, Nandan Thakur, Jheng-Hong Yang, and Xinyu Crystina Zhang. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:257913208" target="_blank" title="">Simple Yet Effective Neural Ranking and Reranking Baselines for Cross-Lingual Information Retrieval</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">ArXiv</em>, abs/2304.01019.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin et al. (2021)</span>
+<span class="ltx_bibblock">
+Jimmy Lin, Xueguang Ma, Sheng-Chieh Lin, Jheng-Hong Yang, Ronak Pradeep, and Rodrigo Nogueira. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:235366815" target="_blank" title="">Pyserini: A Python Toolkit for Reproducible Information Retrieval Research with Sparse and Dense Representations</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Proceedings of the 44th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR 2021)</em>, pages 2356–2362.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2023a)</span>
+<span class="ltx_bibblock">
+Xueguang Ma, Liang Wang, Nan Yang, Furu Wei, and Jimmy Lin. 2023a.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:263908865" target="_blank" title="">Fine-Tuning LLaMA for Multi-Stage Text Retrieval</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">ArXiv</em>, abs/2310.08319.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2023b)</span>
+<span class="ltx_bibblock">
+Xueguang Ma, Xinyu Zhang, Ronak Pradeep, and Jimmy Lin. 2023b.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:258461030" target="_blank" title="">Zero-Shot Listwise Document Reranking with a Large Language Model</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">ArXiv</em>, abs/2305.02156.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Muennighoff (2022)</span>
+<span class="ltx_bibblock">
+Niklas Muennighoff. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:246996947" target="_blank" title="">SGPT: GPT Sentence Embeddings for Semantic Search</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">ArXiv</em>, abs/2202.08904.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Neelakantan et al. (2022)</span>
+<span class="ltx_bibblock">
+Arvind Neelakantan, Tao Xu, Raul Puri, Alec Radford, Jesse Michael Han, Jerry Tworek, Qiming Yuan, Nikolas A. Tezak, Jong Wook Kim, Chris Hallacy, Johannes Heidecke, Pranav Shyam, Boris Power, Tyna Eloundou Nekoul, Girish Sastry, Gretchen Krueger, David P. Schnurr, Felipe Petroski Such, Kenny Sai-Kin Hsu, Madeleine Thompson, Tabarak Khan, Toki Sherbakov, Joanne Jang, Peter Welinder, and Lilian Weng. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:246275593" target="_blank" title="">Text and Code Embeddings by Contrastive Pre-Training</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">ArXiv</em>, abs/2201.10005.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ni et al. (2021)</span>
+<span class="ltx_bibblock">
+Jianmo Ni, Chen Qu, Jing Lu, Zhuyun Dai, Gustavo Hernandez Abrego, Ji Ma, Vincent Zhao, Yi Luan, Keith B. Hall, Ming-Wei Chang, and Yinfei Yang. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:245144556" target="_blank" title="">Large Dual Encoders Are Generalizable Retrievers</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">ArXiv</em>, abs/2112.07899.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nogueira et al. (2019)</span>
+<span class="ltx_bibblock">
+Rodrigo Nogueira, Wei Yang, Kyunghyun Cho, and Jimmy Lin. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:207758365" target="_blank" title="">Multi-Stage Document Ranking with BERT</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">ArXiv</em>, abs/1910.14424.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pradeep et al. (2023a)</span>
+<span class="ltx_bibblock">
+Ronak Pradeep, Sahel Sharifymoghaddam, and Jimmy Lin. 2023a.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:262825475" target="_blank" title="">RankVicuna: Zero-Shot Listwise Document Reranking with Open-Source Large Language Models</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">ArXiv</em>, abs/2309.15088.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pradeep et al. (2023b)</span>
+<span class="ltx_bibblock">
+Ronak Pradeep, Sahel Sharifymoghaddam, and Jimmy Lin. 2023b.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:265659387" target="_blank" title="">RankZephyr: Effective and Robust Zero-Shot Listwise Reranking is a Breeze!</a>
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">ArXiv</em>, abs/2312.02724.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Qin et al. (2023)</span>
+<span class="ltx_bibblock">
+Zhen Qin, Rolf Jagerman, Kai Hui, Honglei Zhuang, Junru Wu, Jiaming Shen, Tianqi Liu, Jialu Liu, Donald Metzler, Xuanhui Wang, and Michael Bendersky. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:259309299" target="_blank" title="">Large Language Models are Effective Text Rankers with Pairwise Ranking Prompting</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">ArXiv</em>, abs/2306.17563.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Robertson and Zaragoza (2009)</span>
+<span class="ltx_bibblock">
+Stephen E. Robertson and Hugo Zaragoza. 2009.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:207178704" target="_blank" title="">The Probabilistic Relevance Framework: BM25 and Beyond</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">Found. Trends Inf. Retr.</em>, 3:333–389.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sun et al. (2023)</span>
+<span class="ltx_bibblock">
+Weiwei Sun, Lingyong Yan, Xinyu Ma, Pengjie Ren, Dawei Yin, and Zhaochun Ren. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:258212638" target="_blank" title="">Is ChatGPT Good at Search? Investigating Large Language Models as Re-Ranking Agent</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">ArXiv</em>, abs/2304.09542.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tunstall et al. (2023)</span>
+<span class="ltx_bibblock">
+Lewis Tunstall, Edward Beeching, Nathan Lambert, Nazneen Rajani, Kashif Rasul, Younes Belkada, Shengyi Huang, Leandro von Werra, Clémentine Fourrier, Nathan Habib, et al. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:264490502" target="_blank" title="">Zephyr: Direct Distillation of LM Alignment</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">ArXiv</em>, abs/2310.16944.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2023)</span>
+<span class="ltx_bibblock">
+Shuhe Wang, Xiaofei Sun, Xiaoya Li, Rongbin Ouyang, Fei Wu, Tianwei Zhang, Jiwei Li, and Guoyin Wang. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:258236561" target="_blank" title="">GPT-NER: Named Entity Recognition via Large Language Models</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">ArXiv</em>, abs/2304.10428.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2023)</span>
+<span class="ltx_bibblock">
+Xin Zhang, Zehan Li, Yanzhao Zhang, Dingkun Long, Pengjun Xie, Meishan Zhang, and Min Zhang. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:263909146" target="_blank" title="">Language Models are Universal Embedders</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">ArXiv</em>, abs/2310.08232.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhou et al. (2022)</span>
+<span class="ltx_bibblock">
+Yongchao Zhou, Andrei Ioan Muresanu, Ziwen Han, Keiran Paster, Silviu Pitis, Harris Chan, and Jimmy Ba. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:253265328" target="_blank" title="">Large Language Models Are Human-Level Prompt Engineers</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">ArXiv</em>, abs/2211.01910.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhu et al. (2023)</span>
+<span class="ltx_bibblock">
+Wenhao Zhu, Hongyi Liu, Qingxiu Dong, Jingjing Xu, Lingpeng Kong, Jiajun Chen, Lei Li, and Shujian Huang. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:258048937" target="_blank" title="">Multilingual Machine Translation with Large Language Models: Empirical Results and Analysis</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">ArXiv</em>, abs/2304.04675.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhuang et al. (2023)</span>
+<span class="ltx_bibblock">
+Honglei Zhuang, Zhen Qin, Kai Hui, Junru Wu, Le Yan, Xuanhui Wang, and Michael Bendersky. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:264426465" target="_blank" title="">Beyond Yes and No: Improving Zero-Shot LLM Rankers via Scoring Fine-Grained Relevance Labels</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">ArXiv</em>, abs/2310.14122.
+
+</span>
+</li>
+</ul>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2312.16157">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2312.16159">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2312.16159" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2312.16159">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2312.16160">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Tue Feb 27 11:53:05 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

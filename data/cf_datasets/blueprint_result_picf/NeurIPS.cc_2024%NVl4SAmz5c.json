@@ -1,0 +1,698 @@
+{
+    "o_paper": "NeurIPS.cc_2024%NVl4SAmz5c",
+    "cf_paper": {
+        "id": "NeurIPS.cc_2024%NVl4SAmz5c",
+        "meta": {
+            "venue": "NeurIPS.cc_2024",
+            "authors": [
+                "Dayal Singh Kalra",
+                "Maissam Barkeshli"
+            ],
+            "categories": [
+                "cs.LG",
+                "cond-mat.dis-nn",
+                "stat.ML"
+            ],
+            "entry_id": "http://arxiv.org/abs/2406.09405v2",
+            "links": [
+                "http://arxiv.org/abs/2406.09405v2",
+                "http://arxiv.org/pdf/2406.09405v2"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2406.09405v2",
+            "published": "2024-06-13T17:59:35+00:00",
+            "updated": "2024-11-01T18:16:03+00:00",
+            "primary_category": "cs.LG",
+            "title": "Why Warmup the Learning Rate? Underlying Mechanisms and Improvements",
+            "summary": "It is common in deep learning to warm up the learning rate $\\eta$, often by a\nlinear schedule between $\\eta_{\\text{init}} = 0$ and a predetermined target\n$\\eta_{\\text{trgt}}$. In this paper, we show through systematic experiments\nusing SGD and Adam that the overwhelming benefit of warmup arises from allowing\nthe network to tolerate larger $\\eta_{\\text{trgt}}$ {by forcing the network to\nmore well-conditioned areas of the loss landscape}. The ability to handle\nlarger $\\eta_{\\text{trgt}}$ makes hyperparameter tuning more robust while\nimproving the final performance. We uncover different regimes of operation\nduring the warmup period, depending on whether training starts off in a\nprogressive sharpening or sharpness reduction phase, which in turn depends on\nthe initialization and parameterization. Using these insights, we show how\n$\\eta_{\\text{init}}$ can be properly chosen by utilizing the loss catapult\nmechanism, which saves on the number of warmup steps, in some cases completely\neliminating the need for warmup. We also suggest an initialization for the\nvariance in Adam which provides benefits similar to warmup.",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "venue_config": {
+                "id": "NeurIPS.cc_2024_Conference",
+                "name": "Conference on Neural Information Processing Systems of 2024",
+                "type": "Conference on Neural Information Processing Systems",
+                "description": "The Conference on Neural Information Processing Systems (NeurIPS) is one of the most prestigious conferences in machine learning, artificial intelligence (AI), and computational neuroscience. It covers a broad range of topics, including deep learning, reinforcement learning, probabilistic methods, optimization, and AI ethics. NeurIPS attracts top researchers from academia and industry, fostering innovation and interdisciplinary collaboration.",
+                "guidelines": "### Write thoughtful reviews:\n\n    * We know that serving as a reviewer for NeurIPS is time consuming, but the community depends on your high quality reviews to uphold the scientific quality of NeurIPS. \n    * Please make your review as informative and substantiated as possible; superficial, uninformed reviews are worse than no review as they may contribute noise to the review process.\n    * You can see the review form questions and guidance on how to answer each question in the 'Review Form' below.\n    * In general, authors should be rewarded rather than punished for being up front about the limitations of their work and any potential negative societal impact. You are encouraged to think through whether any critical points are missing and provide these as feedback for the authors.\n    * Do not worry about minor violations of the required format (e.g., papers that exceed the page limit by a few lines), but immediately report any major violations that you notice to your AC.\n    * When writing your review, please keep in mind that after decisions have been made, reviews and meta-reviews of accepted papers as well as your discussion with the authors will be made public (but reviewer and SAC/AC identities will remain anonymous). \n    * Please note that the review form this year asks for some additional fields such as text fields for the strengths and weaknesses, and questions and suggestions for authors. There are also additional ratings on soundness, presentation and contribution, in addition to the overall rating. These are intended to make it easier for the AC and SAC to understand your rationale for the rating, and facilitate better discussions.",
+                "guidelines_detailed": "### Checklist\n 1. Claims\nAssess whether the main claims in the abstract and introduction accurately reflect the paper's contributions and scope. Ensure that claims align with theoretical and experimental results in terms of generalizability. Contributions, assumptions, and limitations should be clearly stated. Aspirational goals can be included as motivation but should be distinguished from actual contributions.\n\n 2. Limitations\nEvaluate whether the paper discusses its limitations explicitly. Consider if strong assumptions are identified and their robustness is addressed (e.g., independence assumptions, model well-specification, asymptotic approximations). Reflect on how these assumptions might be violated in practice and their implications. Assess whether empirical results depend on implicit assumptions that are clearly articulated. \n\n 3. Theory, Assumptions, and Proofs\nIf the paper includes theoretical results, verify that all assumptions are clearly stated or referenced. Ensure that proofs are complete and either included in the main paper or supplemental materials. Informal proofs in the main text should be complemented by formal proofs in the appendix. Theorems and lemmas should be properly referenced, and the relationship to related literature should be discussed.\n\n 4. Experimental Result Reproducibility\nIf the paper presents a dataset or model, assess whether it provides sufficient details to allow others to verify or reproduce results. Depending on the contribution, this may involve full architecture descriptions, replication instructions, model access, or model checkpoints. Consider whether the approach to reproducibility is appropriate given the research's nature.\n\n 5. Open Access to Data and Code\nFor experimental results, determine whether the paper includes the code, data, and instructions necessary for reproduction. Check if main experimental results, including baselines, are reproducible and whether instructions provide exact commands and environment details. Consider whether the lack of code/data is justifiable (e.g., proprietary constraints) and if an anonymized version is provided.\n\n 6. Experimental Setting/Details\nFor empirical studies, verify that the paper specifies training details such as data splits, hyperparameters, and their selection process. Important details should be in the main paper, while full details may be in the appendix or supplement. The experimental setup should be described sufficiently to allow proper interpretation of results.\n\n 7. Experiment Statistical Significance\nCheck if error bars, confidence intervals, or statistical significance tests are reported for key experimental results. The factors contributing to variability (e.g., train/test split, initialization) should be clearly stated, along with the method used to compute error bars. Assumptions underlying statistical tests should be specified, and graphical or tabular representations should avoid misleading depictions of uncertainty.\n\n 8. Compute Resources\nReview whether the paper provides sufficient information on computational resources used for experiments, including hardware type (CPU/GPU, cloud provider), memory, and execution time. Consider whether total compute usage, including failed or preliminary experiments, is disclosed.\n\n 9. Code of Ethics\nEnsure the research aligns with the NeurIPS Code of Ethics. If any deviations are necessary, they should be explained while preserving anonymity.\n\n 10. Broader Impacts\nIf relevant, consider whether the paper discusses potential negative societal impacts. These could include issues related to fairness, privacy, security, and potential misuse. Evaluate whether mitigation strategies are proposed where appropriate. If foundational research is not tied to applications, an impact discussion may not be necessary.\n\n 11. Safeguards\nFor high-risk models (e.g., pretrained language models), assess whether safeguards are in place to prevent misuse. Consider whether access restrictions, usage guidelines, or other control mechanisms are provided. If datasets contain scraped content, the paper should describe steps taken to avoid releasing unsafe data.\n\n 12. Licenses\nEnsure that any external assets (code, data, models) are properly cited and that their licenses and terms of use are respected. The paper should state license names, provide citations, and include URLs where applicable. If data was scraped, its copyright status and terms of service should be acknowledged.\n\n 13. Assets\nIf the paper releases new datasets, models, or code, check whether they are well-documented. This includes providing structured templates detailing training procedures, licenses, and limitations. Assess whether consent was obtained for any human-derived data and whether anonymization was applied when necessary.\n\n 14. Crowdsourcing and Human Subjects Research\nFor research involving human subjects or crowdsourcing, verify that participant instructions, compensation details, and other relevant documentation are included (in the main text or supplement). Ensure compliance with ethical guidelines, including fair compensation for crowdsourced labor.\n\n",
+                "template_field_semantics": {
+                    "summary": "Summary",
+                    "strengths": "Strengths",
+                    "weaknesses": "Weaknesses",
+                    "suggestions": "Questions"
+                },
+                "review_template": {
+                    "Summary": "Briefly summarize the paper and its contributions. This is not the place to critique the paper; the authors should generally agree with a well-written summary.",
+                    "Strengths": "Please provide a thorough assessment of the strengths of the paper, touching on each of the following dimensions:\na. Originality: Are the tasks or methods new? Is the work a novel combination of well-known techniques? (This can be valuable!) Is it clear how this work differs from previous contributions? Is related work adequately cited?\nb. Quality: Is the submission technically sound? Are claims well supported (e.g., by theoretical analysis or experimental results)? Are the methods used appropriate? Is this a complete piece of work or work in progress? Are the authors careful and honest about evaluating both the strengths and weaknesses of their work?\nc. Clarity: Is the submission clearly written? Is it well organized? (If not, please make constructive suggestions for improving its clarity.) Does it adequately inform the reader? (Note that a superbly written paper provides enough information for an expert reader to reproduce its results.)\nd. Significance: Are the results important? Are others (researchers or practitioners) likely to use the ideas or build on them? Does the submission address a difficult task in a better way than previous work? Does it advance the state of the art in a demonstrable way? Does it provide unique data, unique conclusions about existing data, or a unique theoretical or experimental approach?",
+                    "Weaknesses": "Please provide a thorough assessment of the weaknesses of the paper, touching on each of the following dimensions:\na. Originality: Are the tasks or methods new? Is the work a novel combination of well-known techniques? (This can be valuable!) Is it clear how this work differs from previous contributions? Is related work adequately cited?\nb. Quality: Is the submission technically sound? Are claims well supported (e.g., by theoretical analysis or experimental results)? Are the methods used appropriate? Is this a complete piece of work or work in progress? Are the authors careful and honest about evaluating both the strengths and weaknesses of their work?\nc. Clarity: Is the submission clearly written? Is it well organized? (If not, please make constructive suggestions for improving its clarity.) Does it adequately inform the reader? (Note that a superbly written paper provides enough information for an expert reader to reproduce its results.)\nd. Significance: Are the results important? Are others (researchers or practitioners) likely to use the ideas or build on them? Does the submission address a difficult task in a better way than previous work? Does it advance the state of the art in a demonstrable way? Does it provide unique data, unique conclusions about existing data, or a unique theoretical or experimental approach?",
+                    "Questions": "Please list up and carefully describe any questions and suggestions for the authors. Think of the things where a response from the author can change your opinion, clarify a confusion or address a limitation. This can be very important for a productive rebuttal and discussion phase with the authors.",
+                    "Limitations": "Have the authors adequately addressed the limitations and potential negative societal impact of their work? If not, please include constructive suggestions for improvement. In general, authors should be rewarded rather than punished for being up front about the limitations of their work and any potential negative societal impact. You are encouraged to think through whether any critical points are missing and provide these as feedback for the authors."
+                },
+                "overall_score_name": "Overall",
+                "review_scores": {
+                    "Soundness": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the soundness of the technical claims, experimental and research methodology and on whether the central claims of the paper are adequately supported with evidence.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Presentation": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the quality of the presentation. This should take into account the writing style and clarity, as well as contextualization relative to prior work.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Contribution": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the quality of the overall contribution this paper makes to the research area being studied. Are the questions being asked important? Does the paper bring a significant originality of ideas and/or execution? Are the results valuable to share with the broader NeurIPS community.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully.",
+                            "4": "You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.",
+                            "3": "You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.",
+                            "2": "You are willing to defend your assessment, but it is quite likely that you did not understand the central parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.",
+                            "1": "Your assessment is an educated guess. The submission is not in your area or the submission was difficult to understand. Math/other details were not carefully checked."
+                        }
+                    },
+                    "Overall": {
+                        "meaning": "Please provide an 'overall score' for this submission.",
+                        "scores": {
+                            "10": "Award quality: Technically flawless paper with groundbreaking impact on one or more areas of AI, with exceptionally strong evaluation, reproducibility, and resources, and no unaddressed ethical considerations.",
+                            "9": "Very Strong Accept: Technically flawless paper with groundbreaking impact on at least one area of AI and excellent impact on multiple areas of AI, with flawless evaluation, resources, and reproducibility, and no unaddressed ethical considerations.",
+                            "8": "Strong Accept: Technically strong paper with, with novel ideas, excellent impact on at least one area of AI or high-to-excellent impact on multiple areas of AI, with excellent evaluation, resources, and reproducibility, and no unaddressed ethical considerations.",
+                            "7": "Accept: Technically solid paper, with high impact on at least one sub-area of AI or moderate-to-high impact on more than one area of AI, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.",
+                            "6": "Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.",
+                            "5": "Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+                            "4": "Borderline reject: Technically solid paper where reasons to reject, e.g., limited evaluation, outweigh reasons to accept, e.g., good evaluation. Please use sparingly.",
+                            "3": "Reject: For instance, a paper with technical flaws, weak evaluation, inadequate reproducibility and incompletely addressed ethical considerations.",
+                            "2": "Strong Reject: For instance, a paper with major technical flaws, and/or poor evaluation, limited impact, poor reproducibility and mostly unaddressed ethical considerations.",
+                            "1": "Very Strong Reject: For instance, a paper with trivial results or unaddressed ethical considerations"
+                        }
+                    }
+                }
+            },
+            "oid": "NeurIPS.cc_2024%NVl4SAmz5c",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/NeurIPS.cc_2024_Conference/NeurIPS.cc_2024%NVl4SAmz5c/media"
+        },
+        "md": "\n# Why Warmup the Learning Rate? \nUnderlying Mechanisms and Improvements\n\n###### Abstract\n\nIt is common in deep learning to warm up the learning rate $\\eta$, often by a linear schedule between $\\eta_{\\text{init}}=0$ and a predetermined target $\\eta_{\\text{trgt}}$. In this paper, we show through systematic experiments using SGD and Adam that the overwhelming benefit of warmup arises from allowing the network to tolerate larger $\\eta_{\\text{trgt}}$ by forcing the network to more well-conditioned areas of the loss landscape. The ability to handle larger $\\eta_{\\text{trgt}}$ makes hyperparameter tuning more robust while improving the final performance. We uncover different regimes of operation during the warmup period, depending on whether training starts off in a progressive sharpening or sharpness reduction phase, which in turn depends on the initialization and parameterization. Using these insights, we show how $\\eta_{\\text{init}}$ can be properly chosen by utilizing the loss catapult mechanism, which saves on the number of warmup steps, in some cases completely eliminating the need for warmup. We also suggest an initialization for the variance in Adam which provides benefits similar to warmup.  \n\n11footnotetext: Department of Physics, University of Maryland, College Park22footnotetext: Institute for Physical Science and Technology, University of Maryland, College Park33footnotetext: Joint Quantum Institute, University of Maryland, College Park44footnotetext: Condensed Matter Theory Center, University of Maryland, College Park\n\n## 1 Introduction\n\nOne of the most important choices to make in gradient-based optimization is the learning rate (step size) $\\eta$. If $\\eta$ is too small, then learning may take place too slowly or the model might get stuck in unfavorable regions of the loss landscape. If $\\eta$ is too large, training will typically diverge. In practice, it is common to pick a dynamical learning rate schedule $\\eta_{t}$ [[2](#bib.bib2), [4](#bib.bib4), [41](#bib.bib41), [27](#bib.bib27)]. Modern learning rate schedules for deep learning typically consist of a warmup period where $\\eta_{t}$ is increased linearly from zero to a target value $\\eta_{\\text{trgt}}$ over a warmup time $T_{\\text{wrm}}$ [[14](#bib.bib14), [35](#bib.bib35)]. After the warmup period, it is common to eventually decay the learning rate, for example via a cosine decay schedule [[35](#bib.bib35), [27](#bib.bib27), [41](#bib.bib41)].  \n\nGiven that warmup is standard in the practitioner\u2019s toolkit, it is important to understand it deeply and identify improvements. In modern settings, perhaps the earliest work to use warmup was [[15](#bib.bib15)], which used a small constant learning rate for the first few epochs of training and then switched to a larger learning rate. A linear warmup schedule was later introduced in [[14](#bib.bib14)]. The intuition given was that to scale the minibatch size in SGD by a factor of $k$, it is natural to also scale the learning rate by a factor of $k$, provided the model is not changing too rapidly and successive gradients are roughly aligned. However at the beginning of training, the model is changing rapidly, so it is natural to start with a lower learning rate and gradually increase it to the target value after the network has stabilized.  \n\nOther explanations suggest that since the network is initialized randomly, the gradient steps at the beginning of training are not meaningful, and thus it would be harmful to take large steps in such directions [[41](#bib.bib41)], so it makes sense to take smaller steps early in training. The analysis by [[13](#bib.bib13)] suggests that warmup primarily limits the magnitude of weight updates in the deeper layers, preventing large instabilities. It has also been suggested that the key benefit of warmup arises for adaptive optimizers, such as Adam: [[24](#bib.bib24)] argues that the variance of the adaptive learning rate is large during early training because the network has seen too few training samples; it is asserted that this large variance is harmful, and that warmup acts as a variance reduction method by allowing the network to collect accurate statistics of the gradient moments before using larger learning rates. Alternatively, it is also sometimes stated that the initialization may start the model off at places in parameter space that are unstable, difficult to optimize, and easily lead to divergence, and that warmup can help alleviate this [[41](#bib.bib41)].  \n\nThe above explanations are varied and do not clearly demonstrate why and to what extent warmup is necessary. A loss landscape perspective was given in [[11](#bib.bib11)] (and summarized in [[27](#bib.bib27)] Ch. 8), which argued that an important effect of warmup is to gradually reduce the sharpness (the top eigenvalue of the Hessian of the loss), thus causing the model to leave poorly conditioned areas of the loss landscape and move towards flatter regions which can tolerate only marginally larger learning rates. They argue that the mechanism for this is similar to the dynamical stability (catapult) mechanisms studied in [[36](#bib.bib36), [23](#bib.bib23)].\n\n### 1.1 Our contributions\n\nIn this paper, we perform extensive studies on the effect of learning rate warmup across a variety of architectures (FCNs, ResNets, and Transformers), initializations and parameterizations, datasets (CIFAR-10, CIFAR-100, TinyImageNet, WikiText-2), and for both SGD and Adam optimizers.   \n\nWe demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate larger learning rates than it otherwise would have. This builds on the observations of [[11](#bib.bib11)] by showing that any other benefits are marginal, disentangling the effect of warmup duration and target learning rate, and by extending the empirical evidence to include adaptive optimizers and transformers.  \n\nFor SGD, the maximal allowable learning rate is determined by the sharpness (the top eigenvalue of the Hessian of the loss). As we discuss in [Section\u00a04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we find that there are several qualitatively distinct regimes and mechanisms at play. These depend on whether the network starts off in a sharpness reduction or progressive sharpening phase [[19](#bib.bib19), [20](#bib.bib20), [6](#bib.bib6)], which in turn depends on the initialization and parameterization. We further find that the performance of the network is largely determined by the target learning rate. For a fixed target learning rate, increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary. The ability of the network to withstand a larger target learning rate in turn makes hyperparameter tuning of the target learning rate more robust, since the network responds well to a larger window of target learning rates, possibly explaining the popularity of warmup.  \n\nWe then investigate Adam in detail, and show that the underlying mechanisms of warmup are similar to the SGD case, but with sharpness replaced by a preconditioned sharpness (the top eigenvalue of the pre-conditioned Hessian, defined below) . Our results disagree somewhat with prior results [[24](#bib.bib24)] on the underlying reason for warmup\u2019s benefits: We find that the key issue is not observing too few training samples, but rather that the pre-conditioned sharpness typically starts off at high values (even in the large batch case), causing considerable instabilities at high learning rates. Such instabilities, which may be retained in Adam\u2019s memory, can result in performance degradation and even training failures. Warmup mitigates such instabilities by gradually pushing down the preconditioned sharpness, enhancing performance, and preventing training failures. We propose a simple alternative initialization for Adam, which we refer to as GI-Adam, which provides benefits similar to warmup and consistently improves over standard Adam by inducing lower preconditioned sharpness at initialization, thus pushing the training failure boundary to higher target learning rates. It also demonstrates a different way to remove the bias correction of RMSProp with momentum.  \n\nOur analysis shows how much of the time spent during the warmup period is wasted. We show that this wasted time can be saved by making use of the catapult mechanism [[23](#bib.bib23)] to effectively estimate the initial sharpness scale by line search, providing a more principled choice of $\\eta_{\\text{init}}$. Our experiments show that, depending on the target learning rate and initial sharpness, one can dramatically reduce the warmup time, and in some cases remove it altogether.  \n\n## 2 Notations and Preliminaries\n\nSharpness: The sharpness is defined as the maximum eigenvalue of the Hessian of the loss $\\lambda_{t}^{H}:=\\lambda_{\\text{max}}(\\nabla_{\\theta}^{2}L)$ at training step $t$. For adaptive optimizers with pre-conditioner $P$, $\\lambda^{P^{-1}H}:=\\lambda_{\\text{max}}(P^{-1}\\nabla_{\\theta}^{2}L)$ denotes the pre-conditioned sharpness.  \n\nSGD(-M): Given gradients $\\bm{g}_{t}$ at step $t$, Stochastic Gradient Descent with momentum (SGD-M) updates the parameters $\\bm{\\theta}_{t}$ using learning rate $\\eta_{t}$ and momentum $\\bm{m}_{t}$ with coefficient $\\beta$. The update equations are: $\\bm{m}_{t}=\\bm{g}_{t}+\\beta\\bm{m}_{t-1}$ and $\\bm{\\theta}_{t+1}=\\bm{\\theta}_{t}-\\eta_{t}\\bm{m}_{t}.$ $\\beta=0$ corresponds to SGD.  \n\nAdam: Given gradients $\\bm{g}_{t}$ at step $t$, Adam [[21](#bib.bib21)] updates the parameters $\\bm{\\theta}_{t}$ using learning rate $\\eta_{t}$ and the first two moments of the gradient $\\bm{m}_{t}$ and $\\bm{v}_{t}$ with their coefficients $\\beta_{1}$ and $\\beta_{2}$, respectively. The equations governing the updates are: $\\bm{m}_{t}=\\beta_{1}\\bm{m}_{t-1}+(1-\\beta_{1})\\bm{g}_{t}$, $\\bm{v}_{t}=\\beta_{2}\\bm{v}_{t-1}+(1-\\beta_{2})\\bm{g}_{t}^{2}$, and $\\bm{\\theta}_{t+1}=\\bm{\\theta}_{t}-\\eta_{t}\\frac{\\hat{\\bm{m}}_{t}}{\\sqrt{\\hat{\\bm{v}}_{t}}+\\epsilon}$, where $\\hat{\\bm{m}}_{t}=\\frac{\\bm{m}_{t}}{1-\\beta_{1}^{t}}$ $\\hat{\\bm{v}}_{t}=\\frac{\\bm{v}_{t}}{1-\\beta_{2}^{t}}$ are the bias-corrected moments, and $\\epsilon$ is a small scalar used for numerical stability. Adam\u2019s preconditioner is: $P_{t}=({1-\\beta^{t}_{1}})\\left[\\mathrm{diag}\\left(\\hat{\\bm{v}}_{t}\\right)+\\epsilon\\mathbf{I}\\right]$.  \n\nLinear Warmup: This is defined by the schedule $\\eta_{t}=\\eta_{\\text{init}}+(\\eta_{\\text{trgt}}-\\eta_{\\text{init}})\\left(\\frac{t}{T_{\\text{wrm}}}\\right)$. The warmup rate is $\\alpha:=\\frac{(\\eta_{\\text{trgt}}-\\eta_{\\text{init}})}{T_{\\text{wrm}}}$. $T_{\\mathrm{wrm}}=1$ corresponds to constant learning rate. Unless otherwise specified, we set $\\eta_{\\text{init}}=0$ when referring to linear warmup. We propose strategies for selecting $\\eta_{\\text{init}}$ in [Section\u00a06.1](#S6.SS1 \"6.1 Initial Learning Rate Selection for Warmup \u2023 6 Improved Hyperparameter Initialization Schemes for Optimizers \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\nParameterizations in Neural Networks: The mechanism of warmup and its effectiveness is heavily influenced by the network parameterization (see [Sections\u00a04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") and\u00a0[5](#S5 \"5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")). Standard Parameterization (SP) [[34](#bib.bib34)] is a staple in common libraries [[29](#bib.bib29), [3](#bib.bib3)]. Another notable parameterization is the Neural Tangent Parameterization (NTP) [[18](#bib.bib18)], which along with SP resides in the kernel learning class at infinite width. Ref. [[38](#bib.bib38)] proposed Maximal Update Parameterization ($\\mu$P) which exhibits feature learning at infinite width. Neural network parameterizations significantly impact training dynamics [[20](#bib.bib20)].  \n\n## 3 Overview of Training Instabilities and the Self-Stabilization Mechanism\n\n[FIGURE S3.F1.1.g1]\n![Figure S3.F1.1.g1](./media/x1.png)\n\n(a)\n[/FIGURE]\n\nThe underlying mechanism of warmup is intimately tied to training instabilities. These training instabilities, often referred to as \u2018catapults\u2019 [[23](#bib.bib23), [6](#bib.bib6)], arise when the learning rate $\\eta$ exceeds a critical threshold $\\eta_{c}$, where both $\\eta$ and $\\eta_{c}$ generally change with time. When the instability threshold is exceeded ($\\eta>\\eta_{c}$), two cases arise: (i) if the learning rate is higher than the instability threshold but smaller than a maximum stable learning rate (which varies with time), i.e., $\\eta_{c}<\\eta<\\eta_{\\text{max}}$, training stabilizes through a self-stabilization process and training continues, (ii) if the learning rate exceeds this maximum stable learning rate $\\eta>\\eta_{\\text{max}}$, training experiences severe instabilities. For SGD, these can result in training divergence, characterized by the loss increasing to infinity, whereas for Adam, training may cease, resulting in a training failure, where the loss fails to improve significantly over its initial value.  \n\nFor vanilla GD, the critical threshold is related to sharpness as $\\eta_{c}\\approx\\nicefrac{{2}}{{\\lambda^{H}}}$ 111This relationship holds for the MSE loss and simple settings only. For an overview of instability thresholds in various settings and different optimizers, see [Section\u00a0B.1](#A2.SS1 \"B.1 Overview of Instability Thresholds \u2023 Appendix B Instability Thresholds \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")., and the self-stabilization mechanism can be described as a four-step process [[23](#bib.bib23), [8](#bib.bib8)]. To illustrate this, consider the $T_{\\text{wrm}}=64$ trajectories depicted in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(c, d). In the sharpness plot, the dashed lines represent the $\\nicefrac{{2}}{{\\eta_{t}}}$ curves, and when $\\lambda^{H}_{t}$ is above these curves, training exceeds the instability threshold ($\\eta>\\eta_{c}$). The four steps of the self-stabilization mechanism are:  \n\n1. Approaching instability: Due to increasing learning rate and/or progressive sharpening, training approaches the instability threshold $\\eta=\\eta_{c}$. In [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d), this occurs within the first $10$ steps due to increasing learning rate. \n2. Loss increases: The loss begins to rise when the instability threshold is exceeded ($\\eta>\\eta_{c}$), as seen in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(c). \n3. Sharpness reduction: For small enough learning rates, the increasing loss causes an abrupt decrease in sharpness, as observed in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d). If the sharpness fails to decrease over extended steps, it may result in training divergence (e.g., see $T_{\\text{wrm}}=1$ trajectories in the same figure). \n4. Return to stability: The reduction in sharpness causes $\\eta_{c}=\\nicefrac{{2}}{{\\lambda^{H}}}$ to increase, restoring stability ($\\eta<\\eta_{c}$) and allowing for an eventual loss decrease. \n\nWhile the self-stabilization process for more complex optimizers, such as SGD with momentum or Adam, remains poorly understood, a qualitatively similar mechanism is observed in practice, as we will see in the later sections.  \n\nThe critical learning rate $\\eta_{c}$ is influenced by a variety of factors, including the choice optimizer [[6](#bib.bib6), [7](#bib.bib7)], mini-batch size [[36](#bib.bib36), [7](#bib.bib7)], and model properties such as depth, width, parameterization, and initialization [[19](#bib.bib19), [20](#bib.bib20)]. For a detailed overview of instability thresholds, see [Appendix\u00a0B](#A2 \"Appendix B Instability Thresholds \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\n## 4 Warmup Mechanisms of Gradient and Adaptive Methods\n\nThis section analyzes the underlying mechanism of warmup through the lens of training instability. A key finding is a dichotomy between cooperative versus competitive dynamics based on how the natural evolution of the sharpness interplays with the training instability.  \n\n### 4.1 Stochastic Gradient Descent\n\nLearning rate warmup is intrinsically tied to sharpness dynamics, as sharpness determines the instability threshold $\\eta_{c}$. As the learning rate is increased during warmup, training instabilities can be triggered. Assuming the warmup rate is not too high, these instabilities induce a temporary increase in the loss and a decrease in the sharpness to restore stability through the self-stabilization mechanism. Ultimately this allows the model to adapt to the increased learning rate. In other words, the primary goal of warmup is to gradually reduce sharpness, guiding training towards flatter regions that can accommodate training at higher learning rates [[11](#bib.bib11)].  \n\nHowever, digging deeper, we find that training has a \u2018natural\u2019 preference for sharpness evolution throughout the training course [[20](#bib.bib20)]. Before exceeding the instability threshold $(\\eta<\\eta_{c})$, training naturally experiences either a progressive increase or decrease in sharpness, as observed in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), which is unrelated to warmup. For instance, consider the sharpness trajectories with $T_{\\text{wrm}}=1024$ in the above figure. In [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(b), sharpness has a natural preference for increasing, whereas in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d), it tends to decrease on its own. The interplay between this natural sharpness evolution and the deliberate intervention of warmup to reduce sharpness can result in completely distinct dynamics. Below, we detail these cases and describe the conditions that typically exhibit them.  \n\n(C1) Natural Progressive Sharpening (top row of [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")): The combined effect of the network naturally increasing sharpness while the learning rate is also being increased results in a \u201chead-on collision\" at which the network reaches the instability threshold $\\eta_{c}$. This causes the loss to increase, leading to a decrease in sharpness and facilitating a return to stability. As training proceeds, both sharpness and learning rate continue to increase, again surpassing the instability threshold. This results in a persistent catapult cycle, characterized by $\\eta_{t}\\approx\\nicefrac{{2}}{{\\lambda_{t}^{H}}}\\approx\\eta_{c}$, for the remainder of the warmup period, as seen in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(b).  \n\n(C2) Natural Sharpness Reduction (bottom row of [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")): The network is naturally already reducing its sharpness during early training. However, if the learning rate is increased sufficiently quickly, eventually the instability threshold will be reached (akin to a \u201crear-end collision\"), causing the loss to increase. For small enough learning rates, the increased loss induces a dramatically more pronounced decrease in sharpness than would naturally occur, ultimately restoring stability. To exceed the instability threshold again, the learning rate must significantly increase to account for the decreased sharpness, potentially requiring considerable training steps. Consequently, training experiences one or more separated catapults during the warmup phase, as seen in Figure [1](#S3.F1 \"Figure 1 \u2023 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(c, d). This contrasts with the progressive sharpening case, where training enters a continuous catapult cycle after reaching the instability threshold for the first time. Notably, training may eventually reach a very flat region of the landscape during warmup, with gradients pointing towards increasing sharpness (e.g., $T_{\\text{wrm}}=64$ in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d)). Upon reaching such a region, the dynamics aligns with the natural progressive sharpening scenario.  \n\nThese two scenarios can be interpreted as cooperative or competitive dynamics between warmup and the natural evolution of sharpness. When training inherently undergoes sharpness reduction, it cooperates with warmup in decreasing sharpness. Conversely, if the natural trajectory of training is towards increasing sharpness, it opposes the warmup\u2019s effort, leading to a persistent cycle of catapults.  \n\n(C3) Constant Sharpness: Sharpness may also prefer to remain constant throughout the training process, as illustrated in [Figure\u00a015](#A5.F15 \"In E.5 Different Architectures and Datasets \u2023 Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d) in [Appendix\u00a0E](#A5 \"Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"). In such rare scenarios, sharpness decrease is predominantly driven by the increasing learning rate, without intrinsic dynamics of its own.  \n\nThe Effect of Warmup Duration: Given a fixed target learning rate $\\eta_{\\text{trgt}}$, increasing the warmup duration $T_{\\mathrm{wrm}}$ delays the point at which training exceeds the instability threshold $\\eta_{c}$, allowing the sharpness to evolve freely before reaching this point. In the sharpness reduction case, sharpness can significantly decrease by the time this threshold is reached, lowering the need for warmup to decrease sharpness actively. Consequently, increasing $T_{\\mathrm{wrm}}$ results in catapults that are both delayed and smaller in magnitude, as seen in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d). As the catapults become less intense on increasing the warmup duration, the model can train at higher learning rates without diverging, pushing the divergence boundary. For extended warmup durations, warmup may not actively reduce sharpness in these sharpness reduction cases and instead \u201cpiggy-backs\u201d on the inherent sharpness decrease.  \n\nIn the progressive sharpening case, increasing $T_{\\text{wrm}}$ allows the sharpness to naturally increase. As a result, training exceeds the instability threshold for the first time at a relatively lower learning rate compared to the constant learning rate case. Although warmup has to now undertake more work in decreasing sharpness, it does so in a more gradual manner since increasing the warmup duration amounts to a lower warmup rate $\\nicefrac{{\\eta_{\\mathrm{trgt}}}}{{T_{\\mathrm{wrm}}}}$. As a result, the fluctuations observed on exceeding the instability threshold are much smaller in magnitude, as seen in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(a, b).  \n\n[FIGURE S4.F2.1.g1]\n![Figure S4.F2.1.g1](./media/x5.png)\n\n(a)\n[/FIGURE]\n\nSmall vs. Large Initializations: So far, we have outlined different warmup mechanisms without describing specific conditions that typically exhibit them. Small initializations, such as those using maximal update parameterization ($\\mu$P) [[38](#bib.bib38)] or appropriately using normalizing layers (e.g. standard Transformer architectures, see [Figure\u00a017](#A5.F17 \"In E.5 Different Architectures and Datasets \u2023 Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") in [Section\u00a0E.5](#A5.SS5 \"E.5 Different Architectures and Datasets \u2023 Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")), are characterized by a small initial network output. Such initializations start in flat regions where gradients point toward increasing sharpness [[20](#bib.bib20)], placing them in the progressive sharpening category (C1). As we will see in [Section\u00a05](#S5 \"5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), such initializations may not significantly benefit from warmup as they already start in a flat region. In contrast, large initializations, such as FCNS, CNNs, ResNets with Standard Parameterization (SP) initialized at criticality [[30](#bib.bib30), [32](#bib.bib32)] or Transformers with the last layer-norm removed, undergo an early sharpness reduction, categorizing them into sharpness reduction category (C2). As the primary effect of warmup is to reduce sharpness, we expect such large initializations to considerably benefit from warmup. Notably, large initializations can eventually undergo progressive sharpening at later training stages [[19](#bib.bib19), [20](#bib.bib20)] and adhere to the second mechanism, especially for prolonged warmups. Instances of constant sharpness (C3) typically arise in models operating near the lazy regime [[5](#bib.bib5)], such as wide networks in NTP or SP.  \n\n### 4.2 Stochastic Gradient Descent with Momentum (SGD-M)\n\nThe warmup mechanism of SGD-M, while at its core is similar to that of vanilla SGD, has a few subtleties. Here we summarize the major differences, leaving details to [Section\u00a0E.2](#A5.SS2 \"E.2 Stochastic Gradient Descent with Momentum \u2023 Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\nDuring early training, the loss may decrease non-monotonically on incorporating momentum, even at small learning rates. Such oscillations are also observed when quadratic loss functions are optimized using GD with momentum [[12](#bib.bib12)]. These oscillations make it challenging to differentiate between warmup-induced catapults and fluctuations in loss due to the intrinsic effects of momentum. Nevertheless, we can still observe loss spikes correlated with an abrupt decrease in sharpness at large learning rates, as detailed in [Section\u00a0E.2](#A5.SS2 \"E.2 Stochastic Gradient Descent with Momentum \u2023 Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\nAdditionally, the instability threshold $\\eta_{c}$ itself evolves differently during training. It changes from $\\nicefrac{{2}}{{\\lambda^{H}_{0}}}$ at initialization to $\\nicefrac{{(2+2\\beta)}}{{\\lambda_{t}^{H}}}$ later in training. Moreover, the late-time instability threshold is significantly influenced by the batch size, exhibiting a much smaller value than SGD for the same batch size. These properties make it more challenging to analyze the training dynamics of SGD with momentum. Nonetheless, the fundamental warmup mechanisms closely mirror the vanilla SGD case. We leave a more detailed analysis of the early training dynamics of SGD-M for future studies.  \n\n[FIGURE S4.F3.1.g1]\n![Figure S4.F3.1.g1](./media/x11.png)\n\n(a)\n[/FIGURE]\n\n### 4.3 Adaptive Gradient Methods (Adam)\n\n[Figure\u00a02](#S4.F2 \"In 4.1 Stochastic Gradient Descent \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") shows the training loss, pre-conditioned sharpness, and sharpness trajectories for full batch Adam. These results suggest that the local stability of adaptive optimizers is determined by the largest eigenvalue of the pre-conditioned Hessian, denoted by $\\lambda^{P^{-1}H}$, rather than the sharpness itself (also, see Ref. [[7](#bib.bib7)] for late time instability). In these figures, sharpness is significantly smaller than its instability threshold $\\nicefrac{{(2+2\\beta_{1})}}{{\\eta_{t}}}\\approx 4000$, indicating that sharpness does not determine stability. Instead, loss catapults are associated with $\\lambda^{P^{-1}H}$ exceeding its corresponding instability threshold.  \n\nThe pre-conditioned sharpness starts high for both progressive sharpening (simple-$\\mu$P) and sharpness reduction (SP) scenarios considered in the previous section. For simplicity, we considered a simpler version of $\\mu$P, detailed in [Section\u00a0D.2.1](#A4.SS2.SSS1 \"D.2.1 Parameterizations \u2023 D.2 Model Details \u2023 Appendix D Experimental Details \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"). In particular, for $\\mu$P models, $\\lambda^{P^{-1}H}_{0}\\sim 10^{5}$ despite being initialized in a flat region as measured by sharpness, while for SP models, $\\lambda^{P^{-1}H}_{0}\\sim 10^{6}$. These large initial values of $\\lambda^{P^{-1}H}_{0}$ can lead to training failures. We put forward strategies to improve Adam\u2019s initialization in [Section\u00a06.2](#S6.SS2 \"6.2 GI-Adam: Improving Adam by Initializing The Second Moment using Gradients \u2023 6 Improved Hyperparameter Initialization Schemes for Optimizers \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"); here we continue characterizing the warmup mechanisms of Adam.  \n\nGiven that the pre-conditioned sharpness consistently starts high and decreases during early training, this behavior can be viewed as an extreme example of the natural sharpness reduction scenario (C2) described in the previous section. Training Adam at high initial learning rates without warmup can cause large catapults, as seen in [Figure\u00a02](#S4.F2 \"In 4.1 Stochastic Gradient Descent \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d), potentially leading to training failures. Increasing the warmup duration allows the pre-conditioned sharpness to naturally decrease. This prevents the loss from spiking during early training and avoids training failures. In the later stages of training, the pre-conditioned sharpness may continue reducing or exhibit progressive sharpening. From here on, the dynamics follows the warmup mechanisms discussed in the previous sections, with sharpness replaced with pre-conditioned sharpness. Similar to the momentum case, Adam\u2019s stability threshold at late training times significantly decreases for smaller batch sizes [[7](#bib.bib7)], also shown in [Section\u00a0E.4](#A5.SS4 \"E.4 Warmup Mechanisms of Adam \u2023 Appendix E Additional Results for Mechanisms of Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\n## 5 Impact of Warmup on Training and Generalization\n\nHere we investigate the impact of warmup on training efficacy and generalization by disentangling the role of $\\eta_{\\text{trgt}}$ and $T_{\\text{wrm}}$. Our key findings are that generalization capability is primarily determined by $\\eta_{\\text{trgt}}$ and that Adam is particularly sensitive to large learning rates (specifically, large catapults). The role of increasing $T_{\\text{wrm}}$ is to (i) allow the network to tolerate larger $\\eta_{\\text{trgt}}$, and (ii) move the network further away from the divergence (failure) boundary, leading to a marginal improvement in generalization.  \n\nExperimental Setup: We consider WideResNets (WRNs) and Transformers (LM) parameterized in either SP or $\\mu$P. WRNs are trained on standard classification tasks such as CIFAR-10, CIFAR-100, and Tiny-ImageNet, employing data augmentation. Transformers are trained on the next token prediction task using the WikiText-2 dataset. These models are trained with MSE or cross-entropy (xent) loss functions using SGD or Adam optimizers for a fixed training budget of $T=10^{5}$ steps unless otherwise specified. Training begins with a linear warmup phase from $\\eta_{\\text{init}}=0$ to $\\eta_{\\text{trgt}}$ over $T_{\\text{wrm}}$ steps. After the warmup phase, training continues at $\\eta_{\\text{trgt}}$ for the remaining training budget. In some cases, following the warmup period, we gradually decrease the learning rate using cosine decay [[25](#bib.bib25)]. Target learning rates are sampled exponentially until divergence or a \u2018training failure\u2019 is observed. Here, training failure refers to instances where the performance at the end of the training fails to improve significantly compared to its initial value. For example, if the final training accuracy for a classification task is less than $1.5$ times the accuracy of a random guess, we consider it as a training failure. We refer to the transition between convergence and training failure as the failure boundary. Further details are provided in [Appendix\u00a0D](#A4 \"Appendix D Experimental Details \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\n[FIGURE S5.F4.1.g1]\n![Figure S5.F4.1.g1](./media/x15.png)\n\n(a)\n[/FIGURE]\n\n### 5.1 Stochastic Gradient Descent (SGD)\n\n[Figure\u00a03](#S4.F3 \"In 4.2 Stochastic Gradient Descent with Momentum (SGD-M) \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") presents heatmaps that show the best test accuracy achieved during training, plotted in the $\\eta_{\\text{trgt}}$-$T_{\\text{wrm}}$ plane for different parameterizations and loss functions. These phase diagrams of warmup also show the convergence-divergence boundary, with empty cells indicating training divergences, illustrating the interplay between warmup duration and the maximum trainable $\\eta_{\\text{trgt}}$. Below, we discuss the crucial insights these results provide into warmup\u2019s role in training dynamics.  \n\nLonger Warmup Facilitates Training at Higher Learning Rates: These phase diagrams reveal that an extended warmup duration facilitates training at higher target learning rates. This benefit is particularly noticeable for large initializations (like SP) and MSE loss. In contrast, the advantage is less pronounced when using cross-entropy loss and smaller initializations (like $\\mu$P). The diminished benefit for $\\mu$P is likely due to its initialization in a relatively flat region of the loss landscape, which can already facilitate training at higher learning rates at initialization. This consistent increase in maximum $\\eta_{\\text{trgt}}$ with warmup durations can be understood through the lens of warmup mechanisms described in the previous section. As observed in [Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), when the warmup duration is increased, loss catapults occurring on surpassing the instability thresholds become milder. This effectively pushes the divergent boundary to higher learning rates.  \n\nFinal Performance Primarily Depends on the Target Learning Rate: A closer look into these phase diagrams reveals that, slightly away from the divergent boundary, the test accuracy primarily depends on the target learning rate and nominally on the warmup duration. Based on the model performance, we can categorize these phase diagrams into two distinct cases: (i) models that fail to achieve optimal performance when trained with a constant learning rate (e.g., [Figure\u00a03](#S4.F3 \"In 4.2 Stochastic Gradient Descent with Momentum (SGD-M) \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(c)), and (ii) models that attain optimal performance without warmup (e.g., [Figure\u00a03](#S4.F3 \"In 4.2 Stochastic Gradient Descent with Momentum (SGD-M) \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(b)). The first scenario corresponds to models with large initializations. Increasing the warmup duration improves performance by facilitating training at higher learning rates. Yet, similar performance is observed for different warmup durations, suggesting that the primary gain comes from the target learning rate, rather than the duration itself. The second case arises for flat initializations, which can already train at large learning rates, and resultantly the optimal performance is already achieved without warmup. While increasing warmup duration facilitates training at even higher learning rates, it does not enhance performance. Nevertheless, it does broaden the range of optimal learning rates, reducing the need for precise tuning of the target learning rate, and making training more practical and robust. We conclude that warmup can serve two key purposes: (i) it can significantly improve model performance in large initialization cases, and (ii) extend the range of optimal target learning rates for small initializations, making it easier to tune the target learning rate. In [Section\u00a0F.2](#A6.SS2 \"F.2 The Effect of Momentum and Learning Rate Decay \u2023 Appendix F Additional Phase Diagrams \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we demonstrate that these results hold on incorporating momentum and employing cosine learning rate decay.  \n\n[FIGURE S5.F5.1.g1]\n![Figure S5.F5.1.g1](./media/x17.png)\n\n(a)\n[/FIGURE]\n\n### 5.2 Adam\n\nThe warmup phase diagrams for Adam, as shown in [Figure\u00a04](#S5.F4 \"In 5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(a), exhibit characteristics similar to the sharpness reduction case of SGD, with notable differences. Increasing the warmup duration enables training at higher learning rates by allowing the pre-conditioned sharpness to decrease naturally, thereby reducing the severity of catapults. These large catapults, which may persist in Adam\u2019s memory, can lead to performance degradation and training failures. Thus, in addition to facilitating training at higher rates similar to SGD, warmup further improves Adam\u2019s performance by addressing its vulnerability to large catapults, justifying its widespread use with Adam. Below, we discuss the distinct properties of Adam phase diagrams in detail.  \n\nTraining Failures of Adam: Remarkably, we find that models trained with Adam always exhibit training failures rather than divergences where the loss grows without bound, as further demonstrated in [Appendix\u00a0G](#A7 \"Appendix G Non-divergence of Adam \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"). In cases of training failure, we often observed that certain layers or residual blocks output zero, leading to vanishing gradients. This implies that the model gets stuck at a critical point and is unable to train further. Understanding this unexpected phenomenon requires further study, which we leave to future work.  \n\nPerformance Degradation prior to Failure Boundary: Test accuracy in these phase diagrams declines well before the failure boundary, in stark contrast to SGD where optimal learning rates are observed near the divergence boundary. This discrepancy stems from Adam\u2019s property of retaining a memory of gradient magnitudes. At large learning rates, along with the loss, the gradients spike during early training, as seen in [Figure\u00a026](#A7.F26 \"In Appendix G Non-divergence of Adam \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") in [Appendix\u00a0G](#A7 \"Appendix G Non-divergence of Adam \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"). While the gradients decrease after a few training steps, the second moment of gradients $\\bm{v}$ remains large for an extended period, leading to a small effective learning rate $\\eta P^{-1}$. As a result, training struggles to escape high-loss regions. Therefore, a longer warmup is more beneficial for Adam compared to SGD, as it is crucial to stay away from the failure boundary.  \n\n## 6 Improved Hyperparameter Initialization Schemes for Optimizers\n\n### 6.1 Initial Learning Rate Selection for Warmup\n\nSetting the initial learning rate to $\\eta_{\\text{init}}=0$ is common practice in warmup [[28](#bib.bib28), [9](#bib.bib9)]. Our analysis reveals that the primary effect of warmup is to facilitate training at higher learning rates by annealing sharpness (or pre-conditioned sharpness for Adam). From this perspective, starting with $\\eta_{\\text{init}}=0$ appears suboptimal, as it can significantly delay the learning rate from exceeding the instability threshold, thus delaying the primary effect of warmup.  \n\nAn effective strategy involves setting $\\eta_{\\text{init}}=\\eta_{c}$ to induce loss increase and thereby sharpness decrease right from initialization. We introduce a straightforward search method that only uses forward passes to estimate the initial critical learning rate $\\eta_{c}$. The method consists of two stages: (i) an exponential search, starting from an initial guess $\\eta_{0}$, iteratively multiplies $\\eta_{0}$ by a factor $k>1$ until the loss increases. This identifies an interval $[\\eta_{\\text{lwr}},\\eta_{\\text{uppr}}]$ containing $\\eta_{c}$, (ii) a binary search further narrows down $[\\eta_{\\text{lwr}},\\eta_{\\text{uppr}}]$ by evaluating the loss at the midpoint $\\eta_{\\text{mid}}=\\nicefrac{{(\\eta_{\\text{lwr}}+\\eta_{\\text{uppr}})}}{{2}}$. If the loss increases, $\\eta_{\\text{uppr}}$ is updated to $\\eta_{\\text{mid}}$; otherwise, $\\eta_{\\text{lwr}}$ is set to $\\eta_{\\text{mid}}$. This process is repeated until the loss in the next step $L(\\theta_{1})$ satisfies the condition $L(\\theta_{1})<L(\\theta_{0})(1+\\delta)$, for some hyperparameter $\\delta>0$. For details, see [Section\u00a0B.2](#A2.SS2 \"B.2 Estimating the Instability Threshold \u2023 Appendix B Instability Thresholds \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\nBy setting $\\eta_{\\text{init}}=\\eta_{c}$, training can achieve the target learning rate earlier. Consider the modified warmup schedule: $\\eta_{t}=\\eta_{\\text{init}}+\\eta_{\\text{trgt}}(\\nicefrac{{t}}{{T_{\\text{wrm}}}})$, which attains $\\eta_{\\text{trgt}}$ in $T_{\\text{reach}}=T_{\\text{wrm}}(1-\\nicefrac{{\\eta_{c}}}{{\\eta_{\\text{trgt}}}})$ steps, saving $T_{\\text{wrm}}(\\nicefrac{{\\eta_{c}}}{{\\eta_{\\text{trgt}}}})$ steps. Incorporating the computational cost of additional forward passes $T_{\\text{fp}}$ required for estimating $\\eta_{c}$ ($\\sim 10$ in number), and noting that one training step approximately equates to two forward passes, the net computational savings is $T_{\\text{save}}=T_{\\text{wrm}}\\left(\\nicefrac{{\\eta_{c}}}{{\\eta_{\\text{trgt}}}}\\right)-\\nicefrac{{T_{\\text{fp}}}}{{2}}$. [Figure\u00a05](#S5.F5 \"In 5.1 Stochastic Gradient Descent (SGD) \u2023 5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") demonstrates how $T_{\\text{reach}}$ and $T_{\\text{save}}$ vary with the $T_{\\text{wrm}}$ and $\\eta_{\\text{trgt}}$. For $\\eta_{\\text{trgt}}<\\eta_{c}$, the target learning rate is reached in a single step, nearly saving the entire duration of the warmup, whereas for $(\\eta_{\\text{trgt}}>\\eta_{c})$, starting $\\eta_{\\text{init}}\\gtrsim\\eta_{c}$ can save up to half of the allocated warmup duration, although this saving diminishes on approaching the divergent/failure boundary.  \n\nIt is worth noting that there can be instances where there is no loss catapult at initialization. In our experiments, this only occurs for Transformers trained using SGD. In such scenarios, the prescribed approach is not applicable and one can resort to heuristics, such as setting the initial learning rate to a fraction of the maximum stable learning rate, such as $\\eta_{\\text{init}}=\\nicefrac{{\\eta_{\\text{trgt}}}}{{10}}$.  \n\n[FIGURE S6.F6.1.g1]\n![Figure S6.F6.1.g1](./media/x19.png)\n\n(a)\n[/FIGURE]\n\n### 6.2 GI-Adam: Improving Adam by Initializing The Second Moment using Gradients\n\nIn [Section\u00a04.3](#S4.SS3 \"4.3 Adaptive Gradient Methods (Adam) \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we observed that the pre-conditioned sharpness for Adam starts at a high value, even for low sharpness initializations like $\\mu$P, and can lead to training failures at large learning rates. We propose Gradient Initialized Adam (GI-Adam), which initializes the second moment using the gradient squared, $\\bm{v}_{0}=\\bm{g}_{0}^{2}$. In [Section\u00a0I.2](#A9.SS2 \"I.2 GI-Adam as an Automated Warmup \u2023 Appendix I Additional Results on GI-Adam \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we show that a bias correction is not required when the second moment is initialized using the gradients. As a result, GI-Adam can be viewed as standard Adam with an automated warmup given by $\\eta_{t}=\\eta_{\\text{trgt}}\\sqrt{1-\\beta_{2}^{t}}$. It would be interesting to explore a wider space of initializations for Adam, such as $v_{0}=a\\bm{g}_{0}^{2}$, with $a\\geq 1$.  \n\nThis simple trick reduces the initial pre-conditioned sharpness by around two orders of magnitude (more precisely by a factor of $\\sqrt{1-\\beta_{2}}$) at initialization, preventing large catapults, as illustrated in [Figure\u00a06](#S6.F6 \"In 6.1 Initial Learning Rate Selection for Warmup \u2023 6 Improved Hyperparameter Initialization Schemes for Optimizers \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") (c.f. [Figure\u00a02](#S4.F2 \"In 4.1 Stochastic Gradient Descent \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(d-f)). Moreover, it consistently shows improvement over standard Adam across datasets and prevents training failures by pushing the training failure boundary to higher $\\eta_{\\text{trgt}}$, as shown in [Figure\u00a04](#S5.F4 \"In 5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\")(b). We provide additional results for different datasets in [Section\u00a0F.3](#A6.SS3 \"F.3 Phase Diagrams of Adam and GI-Adam \u2023 Appendix F Additional Phase Diagrams \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\nTo further assess that the primary cause of instability during early training is the large pre-conditioned sharpness, we randomly initialize $\\bm{v}_{0}$ but with the same norm as the gradients at initialization. Like GI-Adam, this also results in improved performance as shown in [Section\u00a0I.3](#A9.SS3 \"I.3 The Primary benefit of GI-Adam results from the magnitude of the second moment at initialization \u2023 Appendix I Additional Results on GI-Adam \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\n## 7 Towards Parameter Free Warmup Strategies\n\nOur analysis also motivates a potential parameter-free warmup strategy, which we refer to as *persistent catapult warmup*. The central idea behind this strategy is to repeatedly induce catapults aimed to progressively reduce sharpness (or pre-conditioned sharpness), thereby facilitating training at higher learning rates. Given a target learning rate $\\eta_{\\text{trgt}}$, the strategy consists of the following steps:  \n\n1. Start with a \u2018stable\u2019 reference point $\\theta^{*}$, defined as a point where the loss decreases in the next step and estimate the interval $[\\eta_{\\text{lwr}},\\eta_{\\text{uppr}}]$ containing $\\eta_{c}$, as described in [Section\u00a0B.2](#A2.SS2 \"B.2 Estimating the Instability Threshold \u2023 Appendix B Instability Thresholds \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"). \n2. Induce a catapult by increasing the learning rate to $\\eta=\\eta_{\\text{uppr}}$. \n3. Continue training and wait until the loss falls below the reference point, i.e., $L(\\theta_{t})<L(\\theta^{*})$. This new point now becomes the stable reference point. \n4. Repeat the above steps until the target learning is achieved, i.e., $\\eta=\\eta_{\\text{trgt}}$. \n\nHere, the initial stable reference point is the model\u2019s initialization. The detailed algorithm is described in [Algorithm\u00a03](#alg3 \"In Appendix C Persistent Catapult Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") in [Appendix\u00a0C](#A3 \"Appendix C Persistent Catapult Warmup \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\").  \n\n[Figure\u00a07](#S8.F7 \"In 8 Discussion \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") compares persistent catapult warmup (shown in black) with linear warmup. The persistent catapult warmup facilitates training at higher learning rates without the need to specify warmup duration. Since $\\eta_{c}$ serves as an indicator of sharpness, persistent catapult warmup utilizes the local sharpness information to automatically determine the warmup rate, resulting in an adaptive non-linear warmup. This adaptive approach eliminates the need for manual tuning of the warmup duration, allowing for a more efficient and effective warmup.  \n\nAlthough persistent catapult warmup is a promising approach to warmup, it requires specifying how large a catapult should be induced, which introduces another hyperparameter. Nevertheless, persistent catapult warmup motivates the development of parameter-free warmup strategies that could simplify the training process. We leave further development of parameter-free warmup to future work.  \n\n## 8 Discussion\n\nOur analysis provides new insights into the role of warmup across optimizers and parameterizations. We found compelling evidence that the primary effect of warmup is to facilitate training at higher learning rates and stabilizing the training dynamics by keeping it away from the failure (divergence) boundary. Looking under the hood, we found a variety of underlying mechanisms, which also suggested several improvements for hyperparameter initialization. In [Appendix\u00a0A](#A1 \"Appendix A Practical Guidance for Practitioners \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\") we provide practical guidance for practitioners on choosing the warmup duration.  \n\n[FIGURE S8.F7.1.g1]\n![Figure S8.F7.1.g1](./media/x22.png)\n\n(a)\n[/FIGURE]\n\nIt would be interesting to further understand the robustness of the location of the failure boundary to changes in dataset or architecture. The relative robustness of the location of this boundary might explain the success of heuristic choices of learning rate based on past experience in training networks.  \n\nLimitations: Our experiments were conducted on relatively small-scale datasets and models, and further investigations are needed to understand the generalizability of our findings to larger-scale settings. For Adam, we did not explore the dependence on hyperparameters $\\beta_{1}$, $\\beta_{2}$, $\\epsilon$.  \n\n## Acknowledgments and Disclosure of Funding\n\nWe thank Tianyu He, Darshil Doshi, Andrey Gromov, Dan Roberts, Jeremy Cohen, and Jonas Geiping for discussions and comments on the draft. The authors acknowledge the University of Maryland supercomputing resources (<http://hpcc.umd.edu>) made available for conducting the research reported in this paper. This work is supported in part by NSF DMR-2345644 (MB) and by the Laboratory for Physical Sciences through the Condensed Matter Theory Center (MB and DS).  \n\n## References\n\n* [1]  Tiny imagenet challenge.   <https://cs231n.stanford.edu/reports/2017/pdfs/930.pdf>. \n* Boyd and Vandenberghe [2004]  Stephen\u00a0P Boyd and Lieven Vandenberghe.   *Convex optimization*.   Cambridge university press, 2004. \n* Bradbury et\u00a0al. [2018]  James Bradbury, Roy Frostig, Peter Hawkins, Matthew\u00a0James Johnson, Chris Leary, Dougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye Wanderman-Milne, and Qiao Zhang.   JAX: composable transformations of Python+NumPy programs, 2018.   URL <http://github.com/google/jax>. \n* Bubeck et\u00a0al. [2015]  S\u00e9bastien Bubeck et\u00a0al.   Convex optimization: Algorithms and complexity.   *Foundations and Trends\u00ae in Machine Learning*, 8(3-4):231\u2013357, 2015. \n* Chizat et\u00a0al. [2019]  L\u00e9na\u00efc Chizat, Edouard Oyallon, and Francis Bach.   On lazy training in differentiable programming.   In H.\u00a0Wallach, H.\u00a0Larochelle, A.\u00a0Beygelzimer, F.\u00a0d'Alch\u00e9-Buc, E.\u00a0Fox, and R.\u00a0Garnett, editors, *Advances in Neural Information Processing Systems*, volume\u00a032. Curran Associates, Inc., 2019.   URL <https://proceedings.neurips.cc/paper_files/paper/2019/file/ae614c557843b1df326cb29c57225459-Paper.pdf>. \n* Cohen et\u00a0al. [2021]  Jeremy Cohen, Simran Kaur, Yuanzhi Li, J\u00a0Zico Kolter, and Ameet Talwalkar.   Gradient descent on neural networks typically occurs at the edge of stability.   In *International Conference on Learning Representations*, 2021.   URL <https://openreview.net/forum?id=jh-rTtvkGeM>. \n* Cohen et\u00a0al. [2022]  Jeremy\u00a0M. Cohen, Behrooz Ghorbani, Shankar Krishnan, Naman Agarwal, Sourabh Medapati, Michal Badura, Daniel Suo, David Cardoze, Zachary Nado, George\u00a0E. Dahl, and Justin Gilmer.   Adaptive gradient methods at the edge of stability, 2022. \n* Damian et\u00a0al. [2023]  Alex Damian, Eshaan Nichani, and Jason\u00a0D. Lee.   Self-stabilization: The implicit bias of gradient descent at the edge of stability.   In *The Eleventh International Conference on Learning Representations*, 2023.   URL <https://openreview.net/forum?id=nhKHA59gXz>. \n* DeepMind et\u00a0al. [2020]  DeepMind, Igor Babuschkin, Kate Baumli, Alison Bell, Surya Bhupatiraju, Jake Bruce, Peter Buchlovsky, David Budden, Trevor Cai, Aidan Clark, Ivo Danihelka, Antoine Dedieu, Claudio Fantacci, Jonathan Godwin, Chris Jones, Ross Hemsley, Tom Hennigan, Matteo Hessel, Shaobo Hou, Steven Kapturowski, Thomas Keck, Iurii Kemaev, Michael King, Markus Kunesch, Lena Martens, Hamza Merzic, Vladimir Mikulik, Tamara Norman, George Papamakarios, John Quan, Roman Ring, Francisco Ruiz, Alvaro Sanchez, Laurent Sartran, Rosalia Schneider, Eren Sezener, Stephen Spencer, Srivatsan Srinivasan, Milo\u0161 Stanojevi\u0107, Wojciech Stokowiec, Luyu Wang, Guangyao Zhou, and Fabio Viola.   The DeepMind JAX Ecosystem, 2020.   URL <http://github.com/google-deepmind>. \n* Dinan et\u00a0al. [2023]  Emily Dinan, Sho Yaida, and Susan Zhang.   Effective theory of transformers at initialization, 2023. \n* Gilmer et\u00a0al. [2022]  Justin Gilmer, Behrooz Ghorbani, Ankush Garg, Sneha Kudugunta, Behnam Neyshabur, David Cardoze, George\u00a0Edward Dahl, Zachary Nado, and Orhan Firat.   A loss curvature perspective on training instabilities of deep learning models.   In *International Conference on Learning Representations*, 2022.   URL <https://openreview.net/forum?id=OcKMT-36vUs>. \n* Goh [2017]  Gabriel Goh.   Why momentum really works.   *Distill*, 2017.   doi: 10.23915/distill.00006.   URL <http://distill.pub/2017/momentum>. \n* Gotmare et\u00a0al. [2019]  Akhilesh Gotmare, Nitish\u00a0Shirish Keskar, Caiming Xiong, and Richard Socher.   A closer look at deep learning heuristics: Learning rate restarts, warmup and distillation.   In *International Conference on Learning Representations*, 2019.   URL <https://openreview.net/forum?id=r14EOsCqKX>. \n* Goyal et\u00a0al. [2017]  Priya Goyal, Piotr Doll\u00e1r, Ross Girshick, Pieter Noordhuis, Lukasz Wesolowski, Aapo Kyrola, Andrew Tulloch, Yangqing Jia, and Kaiming He.   Accurate, large minibatch sgd: Training imagenet in 1 hour.   *arXiv preprint arXiv:1706.02677*, 2017. \n* He et\u00a0al. [2016]  Kaiming He, X.\u00a0Zhang, Shaoqing Ren, and Jian Sun.   Deep residual learning for image recognition.   *2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, pages 770\u2013778, 2016. \n* Heek et\u00a0al. [2020]  Jonathan Heek, Anselm Levskaya, Avital Oliver, Marvin Ritter, Bertrand Rondepierre, Andreas Steiner, and Marc van Zee.   Flax: A neural network library and ecosystem for JAX, 2020.   URL <http://github.com/google/flax>. \n* Hendrycks and Gimpel [2016]  Dan Hendrycks and Kevin Gimpel.   Bridging nonlinearities and stochastic regularizers with gaussian error linear units.   *CoRR*, abs/1606.08415, 2016.   URL <http://arxiv.org/abs/1606.08415>. \n* Jacot et\u00a0al. [2018]  Arthur Jacot, Franck Gabriel, and Clement Hongler.   Neural tangent kernel: Convergence and generalization in neural networks.   In S.\u00a0Bengio, H.\u00a0Wallach, H.\u00a0Larochelle, K.\u00a0Grauman, N.\u00a0Cesa-Bianchi, and R.\u00a0Garnett, editors, *Advances in Neural Information Processing Systems*, volume\u00a031. Curran Associates, Inc., 2018.   URL <https://proceedings.neurips.cc/paper_files/paper/2018/file/5a4be1fa34e62bb8a6ec6b91d2462f5a-Paper.pdf>. \n* Kalra and Barkeshli [2023]  Dayal\u00a0Singh Kalra and Maissam Barkeshli.   Phase diagram of early training dynamics in deep neural networks: effect of the learning rate, depth, and width.   In *Thirty-seventh Conference on Neural Information Processing Systems*, 2023.   URL <https://openreview.net/forum?id=Al9yglQGKj>. \n* Kalra et\u00a0al. [2023]  Dayal\u00a0Singh Kalra, Tianyu He, and Maissam Barkeshli.   Universal sharpness dynamics in neural network training: Fixed point analysis, edge of stability, and route to chaos.   *arXiv preprint arXiv:2311.02076*, 2023. \n* Kingma and Ba [2015]  Diederik Kingma and Jimmy Ba.   Adam: A method for stochastic optimization.   In *International Conference on Learning Representations (ICLR)*, San Diego, CA, USA, 2015. \n* Krizhevsky et\u00a0al. [2009]  Alex Krizhevsky, Geoffrey Hinton, et\u00a0al.   Learning multiple layers of features from tiny images.   2009. \n* Lewkowycz et\u00a0al. [2020]  Aitor Lewkowycz, Yasaman Bahri, Ethan Dyer, Jascha Sohl-Dickstein, and Guy Gur-Ari.   The large learning rate phase of deep learning: the catapult mechanism.   *arXiv preprint arXiv:2003.02218*, 2020. \n* Liu et\u00a0al. [2020]  Liyuan Liu, Haoming Jiang, Pengcheng He, Weizhu Chen, Xiaodong Liu, Jianfeng Gao, and Jiawei Han.   On the variance of the adaptive learning rate and beyond.   In *International Conference on Learning Representations*, 2020.   URL <https://openreview.net/forum?id=rkgz2aEKDr>. \n* Loshchilov and Hutter [2017]  Ilya Loshchilov and Frank Hutter.   SGDR: Stochastic gradient descent with warm restarts.   In *International Conference on Learning Representations*, 2017.   URL <https://openreview.net/forum?id=Skq89Scxx>. \n* Merity et\u00a0al. [2017]  Stephen Merity, Caiming Xiong, James Bradbury, and Richard Socher.   Pointer sentinel mixture models.   In *International Conference on Learning Representations*, 2017.   URL <https://openreview.net/forum?id=Byj72udxe>. \n* Murphy [2022]  Kevin\u00a0P Murphy.   *Probabilistic machine learning: an introduction*.   MIT press, 2022. \n* Paszke et\u00a0al. [2019a]  Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito, Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner, Lu\u00a0Fang, Junjie Bai, and Soumith Chintala.   Pytorch: An imperative style, high-performance deep learning library.   In H.\u00a0Wallach, H.\u00a0Larochelle, A.\u00a0Beygelzimer, F.\u00a0d'Alch\u00e9-Buc, E.\u00a0Fox, and R.\u00a0Garnett, editors, *Advances in Neural Information Processing Systems*, volume\u00a032. Curran Associates, Inc., 2019a.   URL <https://proceedings.neurips.cc/paper_files/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf>. \n* Paszke et\u00a0al. [2019b]  Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et\u00a0al.   Pytorch: An imperative style, high-performance deep learning library.   *Advances in neural information processing systems*, 32, 2019b. \n* Poole et\u00a0al. [2016]  Ben Poole, Subhaneil Lahiri, Maithra Raghu, Jascha Sohl-Dickstein, and Surya Ganguli.   Exponential expressivity in deep neural networks through transient chaos.   In *NIPS*, 2016. \n* Radford et\u00a0al. [2019]  Alec Radford, Jeff Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever.   Language models are unsupervised multitask learners.   2019. \n* Roberts et\u00a0al. [2022]  Daniel\u00a0A. Roberts, Sho Yaida, and Boris Hanin.   *The Principles of Deep Learning Theory*.   Cambridge University Press, 2022.   <https://deeplearningtheory.com>. \n* Sennrich et\u00a0al. [2016]  Rico Sennrich, Barry Haddow, and Alexandra Birch.   Neural machine translation of rare words with subword units.   In Katrin Erk and Noah\u00a0A. Smith, editors, *Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pages 1715\u20131725, Berlin, Germany, August 2016. Association for Computational Linguistics.   doi: 10.18653/v1/P16-1162.   URL <https://aclanthology.org/P16-1162>. \n* Sohl-Dickstein et\u00a0al. [2020]  Jascha\u00a0Narain Sohl-Dickstein, Roman Novak, Samuel\u00a0S. Schoenholz, and Jaehoon Lee.   On the infinite width limit of neural networks with a standard parameterization.   *ArXiv*, abs/2001.07301, 2020.   URL <https://api.semanticscholar.org/CorpusID:210839595>. \n* Vaswani et\u00a0al. [2017]  Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan\u00a0N Gomez, \u0141ukasz Kaiser, and Illia Polosukhin.   Attention is all you need.   *Advances in neural information processing systems*, 30, 2017. \n* Wu et\u00a0al. [2018]  Lei Wu, Chao Ma, et\u00a0al.   How sgd selects the global minima in over-parameterized learning: A dynamical stability perspective.   *Advances in Neural Information Processing Systems*, 31, 2018. \n* Xiong et\u00a0al. [2020]  Ruibin Xiong, Yunchang Yang, Di\u00a0He, Kai Zheng, Shuxin Zheng, Chen Xing, Huishuai Zhang, Yanyan Lan, Liwei Wang, and Tieyan Liu.   On layer normalization in the transformer architecture.   In Hal\u00a0Daum\u00e9 III and Aarti Singh, editors, *Proceedings of the 37th International Conference on Machine Learning*, volume 119 of *Proceedings of Machine Learning Research*, pages 10524\u201310533. PMLR, 13\u201318 Jul 2020.   URL <https://proceedings.mlr.press/v119/xiong20b.html>. \n* Yang and Hu [2021]  Greg Yang and Edward\u00a0J. Hu.   Tensor programs iv: Feature learning in infinite-width neural networks.   In Marina Meila and Tong Zhang, editors, *Proceedings of the 38th International Conference on Machine Learning*, volume 139 of *Proceedings of Machine Learning Research*, pages 11727\u201311737. PMLR, 18\u201324 Jul 2021.   URL <https://proceedings.mlr.press/v139/yang21c.html>. \n* Yang et\u00a0al. [2021]  Greg Yang, Edward\u00a0J Hu, Igor Babuschkin, Szymon Sidor, Xiaodong Liu, David Farhi, Nick Ryder, Jakub Pachocki, Weizhu Chen, and Jianfeng Gao.   Tuning large neural networks via zero-shot hyperparameter transfer.   In A.\u00a0Beygelzimer, Y.\u00a0Dauphin, P.\u00a0Liang, and J.\u00a0Wortman Vaughan, editors, *Advances in Neural Information Processing Systems*, 2021.   URL <https://openreview.net/forum?id=Bx6qKuBM2AD>. \n* Zagoruyko and Komodakis [2017]  Sergey Zagoruyko and Nikos Komodakis.   Wide residual networks.   2017. \n* Zhang et\u00a0al. [2023]  Aston Zhang, Zachary\u00a0C Lipton, Mu\u00a0Li, and Alexander\u00a0J Smola.   *Dive into deep learning*.   Cambridge University Press, 2023. \n* Zhang et\u00a0al. [2018]  Hongyi Zhang, Moustapha Cisse, Yann\u00a0N. Dauphin, and David Lopez-Paz.   mixup: Beyond empirical risk minimization.   In *International Conference on Learning Representations*, 2018.   URL <https://openreview.net/forum?id=r1Ddp1-Rb>. \n",
+        "structured_md": {
+            "title": [
+                1,
+                1
+            ],
+            "abstract": [
+                4,
+                9
+            ],
+            "sections": {
+                "1 Introduction": [
+                    10,
+                    31
+                ],
+                "2 Notations and Preliminaries": [
+                    32,
+                    43
+                ],
+                "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": [
+                    44,
+                    64
+                ],
+                "4 Warmup Mechanisms of Gradient and Adaptive Methods": [
+                    65,
+                    116
+                ],
+                "5 Impact of Warmup on Training and Generalization": [
+                    117,
+                    150
+                ],
+                "6 Improved Hyperparameter Initialization Schemes for Optimizers": [
+                    151,
+                    176
+                ],
+                "7 Towards Parameter Free Warmup Strategies": [
+                    177,
+                    191
+                ],
+                "8 Discussion": [
+                    192,
+                    205
+                ],
+                "Acknowledgments and Disclosure of Funding": [
+                    206,
+                    209
+                ],
+                "References": [
+                    210,
+                    254
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {
+                    "1.1 Our contributions": [
+                        20,
+                        31
+                    ]
+                },
+                "2 Notations and Preliminaries": {},
+                "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {},
+                "4 Warmup Mechanisms of Gradient and Adaptive Methods": {
+                    "4.1 Stochastic Gradient Descent": [
+                        69,
+                        94
+                    ],
+                    "4.2 Stochastic Gradient Descent with Momentum (SGD-M)": [
+                        95,
+                        108
+                    ],
+                    "4.3 Adaptive Gradient Methods (Adam)": [
+                        109,
+                        116
+                    ]
+                },
+                "5 Impact of Warmup on Training and Generalization": {
+                    "5.1 Stochastic Gradient Descent (SGD)": [
+                        129,
+                        142
+                    ],
+                    "5.2 Adam": [
+                        143,
+                        150
+                    ]
+                },
+                "6 Improved Hyperparameter Initialization Schemes for Optimizers": {
+                    "6.1 Initial Learning Rate Selection for Warmup": [
+                        153,
+                        168
+                    ],
+                    "6.2 GI-Adam: Improving Adam by Initializing The Second Moment using Gradients": [
+                        169,
+                        176
+                    ]
+                },
+                "7 Towards Parameter Free Warmup Strategies": {},
+                "8 Discussion": {},
+                "Acknowledgments and Disclosure of Funding": {},
+                "References": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        12,
+                        12
+                    ],
+                    [
+                        14,
+                        14
+                    ],
+                    [
+                        16,
+                        16
+                    ],
+                    [
+                        18,
+                        18
+                    ],
+                    [
+                        22,
+                        22
+                    ],
+                    [
+                        24,
+                        24
+                    ],
+                    [
+                        26,
+                        26
+                    ],
+                    [
+                        28,
+                        28
+                    ],
+                    [
+                        30,
+                        30
+                    ]
+                ],
+                "2 Notations and Preliminaries": [
+                    [
+                        34,
+                        34
+                    ],
+                    [
+                        36,
+                        36
+                    ],
+                    [
+                        38,
+                        38
+                    ],
+                    [
+                        40,
+                        40
+                    ],
+                    [
+                        42,
+                        42
+                    ]
+                ],
+                "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": [
+                    [
+                        52,
+                        52
+                    ],
+                    [
+                        54,
+                        54
+                    ],
+                    [
+                        56,
+                        59
+                    ],
+                    [
+                        61,
+                        61
+                    ],
+                    [
+                        63,
+                        63
+                    ]
+                ],
+                "4 Warmup Mechanisms of Gradient and Adaptive Methods": [
+                    [
+                        67,
+                        67
+                    ],
+                    [
+                        71,
+                        71
+                    ],
+                    [
+                        73,
+                        73
+                    ],
+                    [
+                        75,
+                        75
+                    ],
+                    [
+                        77,
+                        77
+                    ],
+                    [
+                        79,
+                        79
+                    ],
+                    [
+                        81,
+                        81
+                    ],
+                    [
+                        83,
+                        83
+                    ],
+                    [
+                        85,
+                        85
+                    ],
+                    [
+                        93,
+                        93
+                    ],
+                    [
+                        97,
+                        97
+                    ],
+                    [
+                        99,
+                        99
+                    ],
+                    [
+                        101,
+                        101
+                    ],
+                    [
+                        111,
+                        111
+                    ],
+                    [
+                        113,
+                        113
+                    ],
+                    [
+                        115,
+                        115
+                    ]
+                ],
+                "5 Impact of Warmup on Training and Generalization": [
+                    [
+                        119,
+                        119
+                    ],
+                    [
+                        121,
+                        121
+                    ],
+                    [
+                        131,
+                        131
+                    ],
+                    [
+                        133,
+                        133
+                    ],
+                    [
+                        135,
+                        135
+                    ],
+                    [
+                        145,
+                        145
+                    ],
+                    [
+                        147,
+                        147
+                    ],
+                    [
+                        149,
+                        149
+                    ]
+                ],
+                "6 Improved Hyperparameter Initialization Schemes for Optimizers": [
+                    [
+                        155,
+                        155
+                    ],
+                    [
+                        157,
+                        157
+                    ],
+                    [
+                        159,
+                        159
+                    ],
+                    [
+                        161,
+                        161
+                    ],
+                    [
+                        171,
+                        171
+                    ],
+                    [
+                        173,
+                        173
+                    ],
+                    [
+                        175,
+                        175
+                    ]
+                ],
+                "7 Towards Parameter Free Warmup Strategies": [
+                    [
+                        179,
+                        179
+                    ],
+                    [
+                        181,
+                        184
+                    ],
+                    [
+                        186,
+                        186
+                    ],
+                    [
+                        188,
+                        188
+                    ],
+                    [
+                        190,
+                        190
+                    ]
+                ],
+                "8 Discussion": [
+                    [
+                        194,
+                        194
+                    ],
+                    [
+                        202,
+                        202
+                    ],
+                    [
+                        204,
+                        204
+                    ]
+                ],
+                "Acknowledgments and Disclosure of Funding": [
+                    [
+                        208,
+                        208
+                    ]
+                ],
+                "References": [
+                    [
+                        212,
+                        253
+                    ]
+                ]
+            },
+            "figures": {
+                "1 Introduction": {},
+                "2 Notations and Preliminaries": {},
+                "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {
+                    "[FIGURE S3.F1.1.g1]": [
+                        46,
+                        50
+                    ]
+                },
+                "4 Warmup Mechanisms of Gradient and Adaptive Methods": {
+                    "[FIGURE S4.F2.1.g1]": [
+                        87,
+                        91
+                    ],
+                    "[FIGURE S4.F3.1.g1]": [
+                        103,
+                        107
+                    ]
+                },
+                "5 Impact of Warmup on Training and Generalization": {
+                    "[FIGURE S5.F4.1.g1]": [
+                        123,
+                        127
+                    ],
+                    "[FIGURE S5.F5.1.g1]": [
+                        137,
+                        141
+                    ]
+                },
+                "6 Improved Hyperparameter Initialization Schemes for Optimizers": {
+                    "[FIGURE S6.F6.1.g1]": [
+                        163,
+                        167
+                    ]
+                },
+                "7 Towards Parameter Free Warmup Strategies": {},
+                "8 Discussion": {
+                    "[FIGURE S8.F7.1.g1]": [
+                        196,
+                        200
+                    ]
+                },
+                "Acknowledgments and Disclosure of Funding": {},
+                "References": {}
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Notations and Preliminaries": {},
+                "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {},
+                "4 Warmup Mechanisms of Gradient and Adaptive Methods": {},
+                "5 Impact of Warmup on Training and Generalization": {},
+                "6 Improved Hyperparameter Initialization Schemes for Optimizers": {},
+                "7 Towards Parameter Free Warmup Strategies": {},
+                "8 Discussion": {},
+                "Acknowledgments and Disclosure of Funding": {},
+                "References": {}
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Notations and Preliminaries": {},
+                "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {},
+                "4 Warmup Mechanisms of Gradient and Adaptive Methods": {},
+                "5 Impact of Warmup on Training and Generalization": {},
+                "6 Improved Hyperparameter Initialization Schemes for Optimizers": {},
+                "7 Towards Parameter Free Warmup Strategies": {},
+                "8 Discussion": {},
+                "Acknowledgments and Disclosure of Funding": {},
+                "References": {}
+            }
+        }
+    },
+    "changes": {
+        "focus_on_finding": "cc0",
+        "operation": "Break the logical chain by changing a result to disalign with a conclusion underlying an important finding",
+        "break_target": {
+            "result_summary": "Warmup allows networks to tolerate larger target learning rates ($\\eta_{\\text{trgt}}$) than they would otherwise, improving performance and robustness in hyperparameter tuning.",
+            "evidences": [
+                {
+                    "location": "paragraph 6",
+                    "span": "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate larger learning rates than it otherwise would have."
+                },
+                {
+                    "location": "paragraph 7",
+                    "span": "We further find that the performance of the network is largely determined by the target learning rate."
+                },
+                {
+                    "location": "Figure 1",
+                    "span": "In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements",
+                    "media_summary": "Figure 1 illustrates the trajectories of sharpness and loss during training with warmup. The dashed lines represent the curves of 2/eta_t, indicating the instability threshold. The sharpness plot shows that when the sharpness exceeds its instability threshold, the loss increases, indicating training instability. The four steps of the self-stabilization mechanism are depicted: approaching instability, loss increases, sharpness reduction, and return to stability."
+                }
+            ],
+            "id": "res0",
+            "associated_conclusions": [
+                "conc0",
+                "conc1",
+                "conc2",
+                "conc2",
+                "conc3",
+                "conc4",
+                "conc5"
+            ],
+            "relevance_to_conclusion": "This result directly supports the conclusion by highlighting that warmup enables the network to handle higher target learning rates, which is central to the claim regarding the benefits of learning rate warmup. This result highlights that the main benefit of warmup is to enable the network to handle higher learning rates, suggesting that initializing the learning rate to zero may prevent this benefit from being realized. This result explicitly states that the primary benefit of learning rate warmup is to enable the network to handle larger target learning rates, which directly ties into the conclusion that network performance is determined by the target learning rate. This result directly reiterates the conclusion itself, confirming that the target learning rate is a significant factor in determining network performance. This result explains the primary benefit of warmup, which is essential for understanding the analysis of wasted time during warmup. The ability to tolerate larger learning rates indicates that the warmup phase is critical for network performance, making it relevant to the conclusion about optimizing warmup duration. This result shows that the primary benefit of warmup is the ability to handle larger learning rates, which can vary with the architecture, thereby suggesting that different architectures might respond differently to the same warmup strategy. This result directly supports the conclusion by indicating that warmup enables the network to tolerate higher learning rates, which is essential for mitigating instabilities during training.",
+            "coreferences": [
+                {
+                    "location": 6,
+                    "span": "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate larger learning rates than it otherwise would have."
+                },
+                {
+                    "location": 7,
+                    "span": "We further find that the performance of the network is largely determined by the target learning rate."
+                },
+                {
+                    "location": 4,
+                    "span": "They argue that the mechanism for this is similar to the dynamical stability (catapult) mechanisms studied in [[36](#bib.bib36), [23](#bib.bib23)]."
+                },
+                {
+                    "location": 8,
+                    "span": "Such instabilities, which may be retained in Adam\u2019s memory, can result in performance degradation and even training failures."
+                }
+            ]
+        },
+        "break_result": {
+            "selected_result_id": "res0",
+            "negated_key_fact": "Changed the assertion that warmup allows networks to tolerate larger learning rates, indicating a much smaller tolerance instead, which undermines the conclusion about warmup facilitating training at higher learning rates.",
+            "edited_result": "Warmup allows networks to tolerate only marginally larger target learning rates ($\\eta_{\\text{trgt}}$) than they would otherwise, with limited improvement in performance and robustness in hyperparameter tuning.",
+            "detailed_changes": "In paragraph 6, change the phrase 'the primary benefit of learning rate warmup is to allow the network to tolerate larger learning rates' to 'the primary benefit of learning rate warmup is to allow the network to tolerate only marginally larger learning rates'. Additionally, in paragraph 7, adjust the statement about performance improvement to reflect that the changes are 'limited' rather than 'larger' or 'significant'.",
+            "conclusion_verification": "The conclusion that 'Longer warmup duration facilitates training at higher learning rates, particularly for large initializations' is no longer supported because the modified result suggests that the improvement is marginal, which contradicts the claim that warmup significantly enhances the network's ability to handle higher learning rates.",
+            "masked_version": "While warmup has been shown to provide some benefits in tolerating marginally larger target learning rates ($\\eta_{\\text{trgt}}$), it is important to note that these improvements are limited in their impact on overall performance and robustness in hyperparameter tuning."
+        },
+        "core_redactions": [
+            {
+                "loc_type": "paragraph",
+                "loc_id": 6,
+                "original_text": "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate larger learning rates than it otherwise would have. This builds on the observations of [[11](#bib.bib11)] by showing that any other benefits are marginal, disentangling the effect of warmup duration and target learning rate, and by extending the empirical evidence to include adaptive optimizers and transformers.  ",
+                "revision": "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate only marginally larger learning rates than it otherwise would have. This builds on the observations of [[11](#bib.bib11)] by showing that any other benefits are marginal, disentangling the effect of warmup duration and target learning rate, and by extending the empirical evidence to include adaptive optimizers and transformers.",
+                "detailed_edits": [
+                    {
+                        "span": "to allow the network to tolerate larger learning rates than it otherwise would have.",
+                        "revised_span": "to allow the network to tolerate only marginally larger learning rates than it otherwise would have.",
+                        "rationale": "This change reflects the revised understanding that the benefit of warmup is limited to marginal increases, aligning the text with the updated result."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 7,
+                "original_text": "For SGD, the maximal allowable learning rate is determined by the sharpness (the top eigenvalue of the Hessian of the loss). As we discuss in [Section\u00a04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we find that there are several qualitatively distinct regimes and mechanisms at play. These depend on whether the network starts off in a sharpness reduction or progressive sharpening phase [[19](#bib.bib19), [20](#bib.bib20), [6](#bib.bib6)], which in turn depends on the initialization and parameterization. We further find that the performance of the network is largely determined by the target learning rate. For a fixed target learning rate, increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary. The ability of the network to withstand a larger target learning rate in turn makes hyperparameter tuning of the target learning rate more robust, since the network responds well to a larger window of target learning rates, possibly explaining the popularity of warmup.  ",
+                "revision": "For SGD, the maximal allowable learning rate is determined by the sharpness (the top eigenvalue of the Hessian of the loss). As we discuss in [Section\\xa04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we find that there are several qualitatively distinct regimes and mechanisms at play. These depend on whether the network starts off in a sharpness reduction or progressive sharpening phase [[19](#bib.bib19), [20](#bib.bib20), [6](#bib.bib6)], which in turn depends on the initialization and parameterization. We further find that the performance of the network is largely determined by the target learning rate. For a fixed target learning rate, increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary. The ability of the network to withstand a larger target learning rate in turn makes hyperparameter tuning of the target learning rate more robust, since the network responds well to a larger window of target learning rates, possibly explaining the popularity of warmup.",
+                "detailed_edits": [
+                    {
+                        "span": "increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary.",
+                        "revised_span": "increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary.",
+                        "rationale": "This edit aligns the language with the revised understanding that the benefits of warmup are limited, ensuring consistency with the modified result."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 6,
+                "original_text": "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate larger learning rates than it otherwise would have. This builds on the observations of [[11](#bib.bib11)] by showing that any other benefits are marginal, disentangling the effect of warmup duration and target learning rate, and by extending the empirical evidence to include adaptive optimizers and transformers.  ",
+                "revision": "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate only marginally larger learning rates than it otherwise would have. This builds on the observations of [[11](#bib.bib11)] by showing that any other benefits are marginal, disentangling the effect of warmup duration and target learning rate, and by extending the empirical evidence to include adaptive optimizers and transformers.",
+                "detailed_edits": [
+                    {
+                        "span": "to allow the network to tolerate larger learning rates than it otherwise would have.",
+                        "revised_span": "to allow the network to tolerate only marginally larger learning rates than it otherwise would have.",
+                        "rationale": "This change reflects the revised understanding that the benefit of warmup is limited to marginal increases, aligning the text with the updated result."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 7,
+                "original_text": "For SGD, the maximal allowable learning rate is determined by the sharpness (the top eigenvalue of the Hessian of the loss). As we discuss in [Section\u00a04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we find that there are several qualitatively distinct regimes and mechanisms at play. These depend on whether the network starts off in a sharpness reduction or progressive sharpening phase [[19](#bib.bib19), [20](#bib.bib20), [6](#bib.bib6)], which in turn depends on the initialization and parameterization. We further find that the performance of the network is largely determined by the target learning rate. For a fixed target learning rate, increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary. The ability of the network to withstand a larger target learning rate in turn makes hyperparameter tuning of the target learning rate more robust, since the network responds well to a larger window of target learning rates, possibly explaining the popularity of warmup.  ",
+                "revision": "For SGD, the maximal allowable learning rate is determined by the sharpness (the top eigenvalue of the Hessian of the loss). As we discuss in [Section\\xa04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we find that there are several qualitatively distinct regimes and mechanisms at play. These depend on whether the network starts off in a sharpness reduction or progressive sharpening phase [[19](#bib.bib19), [20](#bib.bib20), [6](#bib.bib6)], which in turn depends on the initialization and parameterization. We further find that the performance of the network is largely determined by the target learning rate. For a fixed target learning rate, increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary. The ability of the network to withstand a larger target learning rate in turn makes hyperparameter tuning of the target learning rate more robust, since the network responds well to a larger window of target learning rates, possibly explaining the popularity of warmup.",
+                "detailed_edits": []
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 4,
+                "original_text": "The above explanations are varied and do not clearly demonstrate why and to what extent warmup is necessary. A loss landscape perspective was given in [[11](#bib.bib11)] (and summarized in [[27](#bib.bib27)] Ch. 8), which argued that an important effect of warmup is to gradually reduce the sharpness (the top eigenvalue of the Hessian of the loss), thus causing the model to leave poorly conditioned areas of the loss landscape and move towards flatter regions which can tolerate larger learning rates. They argue that the mechanism for this is similar to the dynamical stability (catapult) mechanisms studied in [[36](#bib.bib36), [23](#bib.bib23)].  ",
+                "revision": "The above explanations are varied and do not clearly demonstrate why and to what extent warmup is necessary. A loss landscape perspective was given in [[11](#bib.bib11)] (and summarized in [[27](#bib.bib27)] Ch. 8), which argued that an important effect of warmup is to gradually reduce the sharpness (the top eigenvalue of the Hessian of the loss), thus causing the model to leave poorly conditioned areas of the loss landscape and move towards flatter regions which can tolerate only marginally larger learning rates. They argue that the mechanism for this is similar to the dynamical stability (catapult) mechanisms studied in [[36](#bib.bib36), [23](#bib.bib23)].",
+                "detailed_edits": [
+                    {
+                        "span": "tolerate larger learning rates.",
+                        "revised_span": "tolerate only marginally larger learning rates.",
+                        "rationale": "This edit is necessary to align the text with the revised understanding of the impact of warmup on learning rates."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 8,
+                "original_text": "We then investigate Adam in detail, and show that the underlying mechanisms of warmup are similar to the SGD case, but with sharpness replaced by a preconditioned sharpness (the top eigenvalue of the pre-conditioned Hessian, defined below) . Our results disagree somewhat with prior results [[24](#bib.bib24)] on the underlying reason for warmup\u2019s benefits: We find that the key issue is not observing too few training samples, but rather that the pre-conditioned sharpness typically starts off at high values (even in the large batch case), causing considerable instabilities at high learning rates. Such instabilities, which may be retained in Adam\u2019s memory, can result in performance degradation and even training failures. Warmup mitigates such instabilities by gradually pushing down the preconditioned sharpness, enhancing performance, and preventing training failures. We propose a simple alternative initialization for Adam, which we refer to as GI-Adam, which provides benefits similar to warmup and consistently improves over standard Adam by inducing lower preconditioned sharpness at initialization, thus pushing the training failure boundary to higher target learning rates. It also demonstrates a different way to remove the bias correction of RMSProp with momentum.  ",
+                "revision": "We then investigate Adam in detail, and show that the underlying mechanisms of warmup are similar to the SGD case, but with sharpness replaced by a preconditioned sharpness (the top eigenvalue of the pre-conditioned Hessian, defined below). Our results disagree somewhat with prior results [[24](#bib.bib24)] on the underlying reason for warmup\u2019s benefits: We find that the key issue is not observing too few training samples, but rather that the pre-conditioned sharpness typically starts off at high values (even in the large batch case), causing considerable instabilities at high learning rates. Such instabilities, which may be retained in Adam\u2019s memory, can result in performance degradation and even training failures. Warmup mitigates such instabilities by gradually pushing down the preconditioned sharpness, enhancing performance, and preventing training failures. We propose a simple alternative initialization for Adam, which we refer to as GI-Adam, which provides benefits similar to warmup and consistently improves over standard Adam by inducing lower preconditioned sharpness at initialization, thus pushing the training failure boundary to higher target learning rates. It also demonstrates a different way to remove the bias correction of RMSProp with momentum.",
+                "detailed_edits": []
+            }
+        ],
+        "cascaded_redactions": [],
+        "edits": [
+            [
+                "paragraph",
+                "The above explanations are varied and do not clearly demonstrate why and to what extent warmup is necessary. A loss landscape perspective was given in [[11](#bib.bib11)] (and summarized in [[27](#bib.bib27)] Ch. 8), which argued that an important effect of warmup is to gradually reduce the sharpness (the top eigenvalue of the Hessian of the loss), thus causing the model to leave poorly conditioned areas of the loss landscape and move towards flatter regions which can tolerate only marginally larger learning rates. They argue that the mechanism for this is similar to the dynamical stability (catapult) mechanisms studied in [[36](#bib.bib36), [23](#bib.bib23)].",
+                "4"
+            ]
+        ],
+        "considered_edits": [
+            [
+                "paragraph",
+                "We demonstrate through systematic experiments that by far the primary benefit of learning rate warmup is to allow the network to tolerate only marginally larger learning rates than it otherwise would have. This builds on the observations of [[11](#bib.bib11)] by showing that any other benefits are marginal, disentangling the effect of warmup duration and target learning rate, and by extending the empirical evidence to include adaptive optimizers and transformers.",
+                "6"
+            ],
+            [
+                "paragraph",
+                "For SGD, the maximal allowable learning rate is determined by the sharpness (the top eigenvalue of the Hessian of the loss). As we discuss in [Section\u00a04](#S4 \"4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"), we find that there are several qualitatively distinct regimes and mechanisms at play. These depend on whether the network starts off in a sharpness reduction or progressive sharpening phase [[19](#bib.bib19), [20](#bib.bib20), [6](#bib.bib6)], which in turn depends on the initialization and parameterization. We further find that the performance of the network is largely determined by the target learning rate. For a fixed target learning rate, increasing the warmup time provides only marginal benefit, which arises by keeping the network further away from the divergence (failure) boundary. The ability of the network to withstand a larger target learning rate in turn makes hyperparameter tuning of the target learning rate more robust, since the network responds well to a larger window of target learning rates, possibly explaining the popularity of warmup.",
+                "7"
+            ],
+            [
+                "paragraph",
+                "The above explanations are varied and do not clearly demonstrate why and to what extent warmup is necessary. A loss landscape perspective was given in [[11](#bib.bib11)] (and summarized in [[27](#bib.bib27)] Ch. 8), which argued that an important effect of warmup is to gradually reduce the sharpness (the top eigenvalue of the Hessian of the loss), thus causing the model to leave poorly conditioned areas of the loss landscape and move towards flatter regions which can tolerate only marginally larger learning rates. They argue that the mechanism for this is similar to the dynamical stability (catapult) mechanisms studied in [[36](#bib.bib36), [23](#bib.bib23)].",
+                "4"
+            ],
+            [
+                "paragraph",
+                "We then investigate Adam in detail, and show that the underlying mechanisms of warmup are similar to the SGD case, but with sharpness replaced by a preconditioned sharpness (the top eigenvalue of the pre-conditioned Hessian, defined below). Our results disagree somewhat with prior results [[24](#bib.bib24)] on the underlying reason for warmup\u2019s benefits: We find that the key issue is not observing too few training samples, but rather that the pre-conditioned sharpness typically starts off at high values (even in the large batch case), causing considerable instabilities at high learning rates. Such instabilities, which may be retained in Adam\u2019s memory, can result in performance degradation and even training failures. Warmup mitigates such instabilities by gradually pushing down the preconditioned sharpness, enhancing performance, and preventing training failures. We propose a simple alternative initialization for Adam, which we refer to as GI-Adam, which provides benefits similar to warmup and consistently improves over standard Adam by inducing lower preconditioned sharpness at initialization, thus pushing the training failure boundary to higher target learning rates. It also demonstrates a different way to remove the bias correction of RMSProp with momentum.",
+                "8"
+            ]
+        ]
+    },
+    "counterfactual_type": "result_perturbator.blueprint_result__gpt-4o-mini"
+}

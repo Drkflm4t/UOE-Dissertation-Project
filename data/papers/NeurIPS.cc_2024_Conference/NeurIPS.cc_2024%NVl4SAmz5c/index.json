@@ -1,0 +1,1179 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        9
+    ],
+    "sections": {
+        "1 Introduction": [
+            10,
+            31
+        ],
+        "2 Notations and Preliminaries": [
+            32,
+            43
+        ],
+        "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": [
+            44,
+            64
+        ],
+        "4 Warmup Mechanisms of Gradient and Adaptive Methods": [
+            65,
+            116
+        ],
+        "5 Impact of Warmup on Training and Generalization": [
+            117,
+            150
+        ],
+        "6 Improved Hyperparameter Initialization Schemes for Optimizers": [
+            151,
+            176
+        ],
+        "7 Towards Parameter Free Warmup Strategies": [
+            177,
+            191
+        ],
+        "8 Discussion": [
+            192,
+            205
+        ],
+        "Acknowledgments and Disclosure of Funding": [
+            206,
+            209
+        ],
+        "References": [
+            210,
+            254
+        ],
+        "Appendix A Practical Guidance for Practitioners": [
+            255,
+            272
+        ],
+        "Appendix B Instability Thresholds": [
+            273,
+            372
+        ],
+        "Appendix C Persistent Catapult Warmup": [
+            373,
+            415
+        ],
+        "Appendix D Experimental Details": [
+            416,
+            560
+        ],
+        "Appendix E Additional Results for Mechanisms of Warmup": [
+            561,
+            664
+        ],
+        "Appendix F Additional Phase Diagrams": [
+            665,
+            728
+        ],
+        "Appendix G Non-divergence of Adam": [
+            729,
+            748
+        ],
+        "Appendix H Additional results for the Initial Learning Rate Selection": [
+            749,
+            764
+        ],
+        "Appendix I Additional Results on GI-Adam": [
+            765,
+            810
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {
+            "1.1 Our contributions": [
+                20,
+                31
+            ]
+        },
+        "2 Notations and Preliminaries": {},
+        "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {},
+        "4 Warmup Mechanisms of Gradient and Adaptive Methods": {
+            "4.1 Stochastic Gradient Descent": [
+                69,
+                94
+            ],
+            "4.2 Stochastic Gradient Descent with Momentum (SGD-M)": [
+                95,
+                108
+            ],
+            "4.3 Adaptive Gradient Methods (Adam)": [
+                109,
+                116
+            ]
+        },
+        "5 Impact of Warmup on Training and Generalization": {
+            "5.1 Stochastic Gradient Descent (SGD)": [
+                129,
+                142
+            ],
+            "5.2 Adam": [
+                143,
+                150
+            ]
+        },
+        "6 Improved Hyperparameter Initialization Schemes for Optimizers": {
+            "6.1 Initial Learning Rate Selection for Warmup": [
+                153,
+                168
+            ],
+            "6.2 GI-Adam: Improving Adam by Initializing The Second Moment using Gradients": [
+                169,
+                176
+            ]
+        },
+        "7 Towards Parameter Free Warmup Strategies": {},
+        "8 Discussion": {},
+        "Acknowledgments and Disclosure of Funding": {},
+        "References": {},
+        "Appendix A Practical Guidance for Practitioners": {
+            "How to Select the Warmup Duration?": [
+                257,
+                260
+            ],
+            "How to Select the Target Learning Rate?": [
+                261,
+                264
+            ],
+            "When to Decay the Learning Rate?": [
+                265,
+                268
+            ],
+            "Leveraging $\\mu$P for Effecient Training:": [
+                269,
+                272
+            ]
+        },
+        "Appendix B Instability Thresholds": {
+            "B.1 Overview of Instability Thresholds": [
+                275,
+                278
+            ],
+            "B.2 Estimating the Instability Threshold": [
+                279,
+                282
+            ],
+            "Exponential Search:": [
+                283,
+                327
+            ],
+            "Binary search:": [
+                328,
+                372
+            ]
+        },
+        "Appendix C Persistent Catapult Warmup": {},
+        "Appendix D Experimental Details": {
+            "D.1 Datasets Details": [
+                420,
+                421
+            ],
+            "D.1.1 Image Classification Tasks": [
+                422,
+                427
+            ],
+            "D.1.2 Language Modeling Tasks": [
+                428,
+                431
+            ],
+            "D.2 Model Details": [
+                432,
+                435
+            ],
+            "D.2.1 Parameterizations": [
+                436,
+                437
+            ],
+            "Standard Parameterization (SP):": [
+                438,
+                441
+            ],
+            "Maximal Update Parameterization ($\\mu$P):": [
+                442,
+                445
+            ],
+            "D.2.2 Architectures": [
+                446,
+                447
+            ],
+            "Fully Connected Networks (FCNs):": [
+                448,
+                451
+            ],
+            "WideResNets (WRNs):": [
+                452,
+                455
+            ],
+            "Transformers:": [
+                456,
+                459
+            ],
+            "D.3 Optimization Details": [
+                460,
+                461
+            ],
+            "D.3.1 Optimizers": [
+                462,
+                463
+            ],
+            "SGD(-M):": [
+                464,
+                474
+            ],
+            "Adam:": [
+                475,
+                492
+            ],
+            "D.3.2 Linear Warmup": [
+                493,
+                501
+            ],
+            "D.3.3 Learning Rate Decay": [
+                502,
+                505
+            ],
+            "Cosine Decay:": [
+                506,
+                514
+            ],
+            "D.3.4 Target Learning Rate Sampling for Phase Diagrams": [
+                515,
+                518
+            ],
+            "D.4 Sharpness and Pre-conditioned Sharpness Measurement": [
+                519,
+                524
+            ],
+            "D.5 Additional Figure Details": [
+                525,
+                526
+            ],
+            "[Figure\u00a01](#S3.F1 \"In 3 Overview of Training Instabilities and the Self-Stabilization Mechanism \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"):": [
+                527,
+                530
+            ],
+            "[Figure\u00a02](#S4.F2 \"In 4.1 Stochastic Gradient Descent \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"):": [
+                531,
+                534
+            ],
+            "[Figure\u00a03](#S4.F3 \"In 4.2 Stochastic Gradient Descent with Momentum (SGD-M) \u2023 4 Warmup Mechanisms of Gradient and Adaptive Methods \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"):": [
+                535,
+                538
+            ],
+            "[Figure\u00a04](#S5.F4 \"In 5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"):": [
+                539,
+                542
+            ],
+            "[Figure\u00a05](#S5.F5 \"In 5.1 Stochastic Gradient Descent (SGD) \u2023 5 Impact of Warmup on Training and Generalization \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"):": [
+                543,
+                546
+            ],
+            "[Figure\u00a06](#S6.F6 \"In 6.1 Initial Learning Rate Selection for Warmup \u2023 6 Improved Hyperparameter Initialization Schemes for Optimizers \u2023 Why Warmup the Learning Rate? Underlying Mechanisms and Improvements\"):": [
+                547,
+                556
+            ],
+            "D.6 Estimation of Computational Resources": [
+                557,
+                560
+            ]
+        },
+        "Appendix E Additional Results for Mechanisms of Warmup": {
+            "E.1 Stochastic Gradient Descent": [
+                565,
+                568
+            ],
+            "E.2 Stochastic Gradient Descent with Momentum": [
+                569,
+                592
+            ],
+            "E.3 Stochastic Gradient Descent and Cross-entropy Loss": [
+                593,
+                608
+            ],
+            "E.4 Warmup Mechanisms of Adam": [
+                609,
+                628
+            ],
+            "E.5 Different Architectures and Datasets": [
+                629,
+                664
+            ]
+        },
+        "Appendix F Additional Phase Diagrams": {
+            "F.1 Phase Diagrams for different Models and Datasets": [
+                669,
+                692
+            ],
+            "F.2 The Effect of Momentum and Learning Rate Decay": [
+                693,
+                700
+            ],
+            "F.3 Phase Diagrams of Adam and GI-Adam": [
+                701,
+                728
+            ]
+        },
+        "Appendix G Non-divergence of Adam": {},
+        "Appendix H Additional results for the Initial Learning Rate Selection": {},
+        "Appendix I Additional Results on GI-Adam": {
+            "I.1 Warmup Mechanisms of GI-Adam": [
+                769,
+                778
+            ],
+            "I.2 GI-Adam as an Automated Warmup": [
+                779,
+                799
+            ],
+            "I.3 The Primary benefit of GI-Adam results from the magnitude of the second moment at initialization": [
+                800,
+                810
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                12,
+                12
+            ],
+            [
+                14,
+                14
+            ],
+            [
+                16,
+                16
+            ],
+            [
+                18,
+                18
+            ],
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ],
+            [
+                26,
+                26
+            ],
+            [
+                28,
+                28
+            ],
+            [
+                30,
+                30
+            ]
+        ],
+        "2 Notations and Preliminaries": [
+            [
+                34,
+                34
+            ],
+            [
+                36,
+                36
+            ],
+            [
+                38,
+                38
+            ],
+            [
+                40,
+                40
+            ],
+            [
+                42,
+                42
+            ]
+        ],
+        "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": [
+            [
+                52,
+                52
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                59
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                63,
+                63
+            ]
+        ],
+        "4 Warmup Mechanisms of Gradient and Adaptive Methods": [
+            [
+                67,
+                67
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                99,
+                99
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                115
+            ]
+        ],
+        "5 Impact of Warmup on Training and Generalization": [
+            [
+                119,
+                119
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                131,
+                131
+            ],
+            [
+                133,
+                133
+            ],
+            [
+                135,
+                135
+            ],
+            [
+                145,
+                145
+            ],
+            [
+                147,
+                147
+            ],
+            [
+                149,
+                149
+            ]
+        ],
+        "6 Improved Hyperparameter Initialization Schemes for Optimizers": [
+            [
+                155,
+                155
+            ],
+            [
+                157,
+                157
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                173,
+                173
+            ],
+            [
+                175,
+                175
+            ]
+        ],
+        "7 Towards Parameter Free Warmup Strategies": [
+            [
+                179,
+                179
+            ],
+            [
+                181,
+                184
+            ],
+            [
+                186,
+                186
+            ],
+            [
+                188,
+                188
+            ],
+            [
+                190,
+                190
+            ]
+        ],
+        "8 Discussion": [
+            [
+                194,
+                194
+            ],
+            [
+                202,
+                202
+            ],
+            [
+                204,
+                204
+            ]
+        ],
+        "Acknowledgments and Disclosure of Funding": [
+            [
+                208,
+                208
+            ]
+        ],
+        "References": [
+            [
+                212,
+                253
+            ]
+        ],
+        "Appendix A Practical Guidance for Practitioners": [
+            [
+                259,
+                259
+            ],
+            [
+                263,
+                263
+            ],
+            [
+                267,
+                267
+            ],
+            [
+                271,
+                271
+            ]
+        ],
+        "Appendix B Instability Thresholds": [
+            [
+                277,
+                277
+            ],
+            [
+                281,
+                281
+            ],
+            [
+                285,
+                285
+            ],
+            [
+                330,
+                330
+            ],
+            [
+                371,
+                371
+            ]
+        ],
+        "Appendix C Persistent Catapult Warmup": [
+            [
+                375,
+                375
+            ],
+            [
+                377,
+                380
+            ],
+            [
+                382,
+                382
+            ],
+            [
+                384,
+                384
+            ],
+            [
+                386,
+                386
+            ]
+        ],
+        "Appendix D Experimental Details": [
+            [
+                418,
+                418
+            ],
+            [
+                424,
+                424
+            ],
+            [
+                426,
+                426
+            ],
+            [
+                430,
+                430
+            ],
+            [
+                434,
+                434
+            ],
+            [
+                440,
+                440
+            ],
+            [
+                444,
+                444
+            ],
+            [
+                450,
+                450
+            ],
+            [
+                454,
+                454
+            ],
+            [
+                458,
+                458
+            ],
+            [
+                466,
+                466
+            ],
+            [
+                468,
+                471
+            ],
+            [
+                473,
+                473
+            ],
+            [
+                477,
+                477
+            ],
+            [
+                479,
+                484
+            ],
+            [
+                486,
+                486
+            ],
+            [
+                488,
+                489
+            ],
+            [
+                491,
+                491
+            ],
+            [
+                495,
+                495
+            ],
+            [
+                497,
+                498
+            ],
+            [
+                500,
+                500
+            ],
+            [
+                504,
+                504
+            ],
+            [
+                508,
+                508
+            ],
+            [
+                510,
+                511
+            ],
+            [
+                513,
+                513
+            ],
+            [
+                517,
+                517
+            ],
+            [
+                521,
+                521
+            ],
+            [
+                523,
+                523
+            ],
+            [
+                529,
+                529
+            ],
+            [
+                533,
+                533
+            ],
+            [
+                537,
+                537
+            ],
+            [
+                541,
+                541
+            ],
+            [
+                545,
+                545
+            ],
+            [
+                549,
+                549
+            ],
+            [
+                559,
+                559
+            ]
+        ],
+        "Appendix E Additional Results for Mechanisms of Warmup": [
+            [
+                563,
+                563
+            ],
+            [
+                567,
+                567
+            ],
+            [
+                577,
+                577
+            ],
+            [
+                579,
+                579
+            ],
+            [
+                587,
+                587
+            ],
+            [
+                589,
+                589
+            ],
+            [
+                591,
+                591
+            ],
+            [
+                601,
+                601
+            ],
+            [
+                617,
+                617
+            ],
+            [
+                625,
+                625
+            ],
+            [
+                627,
+                627
+            ],
+            [
+                643,
+                643
+            ],
+            [
+                645,
+                645
+            ],
+            [
+                659,
+                659
+            ],
+            [
+                661,
+                661
+            ],
+            [
+                663,
+                663
+            ]
+        ],
+        "Appendix F Additional Phase Diagrams": [
+            [
+                667,
+                667
+            ],
+            [
+                671,
+                671
+            ],
+            [
+                673,
+                673
+            ],
+            [
+                695,
+                695
+            ],
+            [
+                697,
+                697
+            ],
+            [
+                699,
+                699
+            ],
+            [
+                703,
+                703
+            ]
+        ],
+        "Appendix G Non-divergence of Adam": [
+            [
+                737,
+                737
+            ],
+            [
+                739,
+                739
+            ],
+            [
+                741,
+                741
+            ]
+        ],
+        "Appendix H Additional results for the Initial Learning Rate Selection": [
+            [
+                751,
+                751
+            ]
+        ],
+        "Appendix I Additional Results on GI-Adam": [
+            [
+                767,
+                767
+            ],
+            [
+                777,
+                777
+            ],
+            [
+                781,
+                781
+            ],
+            [
+                783,
+                783
+            ],
+            [
+                785,
+                786
+            ],
+            [
+                788,
+                788
+            ],
+            [
+                790,
+                791
+            ],
+            [
+                793,
+                793
+            ],
+            [
+                795,
+                796
+            ],
+            [
+                798,
+                798
+            ],
+            [
+                808,
+                808
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Notations and Preliminaries": {},
+        "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {
+            "[FIGURE S3.F1.1.g1]": [
+                46,
+                50
+            ]
+        },
+        "4 Warmup Mechanisms of Gradient and Adaptive Methods": {
+            "[FIGURE S4.F2.1.g1]": [
+                87,
+                91
+            ],
+            "[FIGURE S4.F3.1.g1]": [
+                103,
+                107
+            ]
+        },
+        "5 Impact of Warmup on Training and Generalization": {
+            "[FIGURE S5.F4.1.g1]": [
+                123,
+                127
+            ],
+            "[FIGURE S5.F5.1.g1]": [
+                137,
+                141
+            ]
+        },
+        "6 Improved Hyperparameter Initialization Schemes for Optimizers": {
+            "[FIGURE S6.F6.1.g1]": [
+                163,
+                167
+            ]
+        },
+        "7 Towards Parameter Free Warmup Strategies": {},
+        "8 Discussion": {
+            "[FIGURE S8.F7.1.g1]": [
+                196,
+                200
+            ]
+        },
+        "Acknowledgments and Disclosure of Funding": {},
+        "References": {},
+        "Appendix A Practical Guidance for Practitioners": {},
+        "Appendix B Instability Thresholds": {},
+        "Appendix C Persistent Catapult Warmup": {},
+        "Appendix D Experimental Details": {
+            "[FIGURE A4.F8.sf1.g1]": [
+                551,
+                555
+            ]
+        },
+        "Appendix E Additional Results for Mechanisms of Warmup": {
+            "[FIGURE A5.F9.sf1.g1]": [
+                571,
+                575
+            ],
+            "[FIGURE A5.F10.sf1.g1]": [
+                581,
+                585
+            ],
+            "[FIGURE A5.F11.sf1.g1]": [
+                595,
+                599
+            ],
+            "[FIGURE A5.F12.sf1.g1]": [
+                603,
+                607
+            ],
+            "[FIGURE A5.F13.sf1.g1]": [
+                611,
+                615
+            ],
+            "[FIGURE A5.F14.sf1.g1]": [
+                619,
+                623
+            ],
+            "[FIGURE A5.F15.sf1.g1]": [
+                631,
+                635
+            ],
+            "[FIGURE A5.F16.sf1.g1]": [
+                637,
+                641
+            ],
+            "[FIGURE A5.F17.sf1.g1]": [
+                647,
+                651
+            ],
+            "[FIGURE A5.F18.sf1.g1]": [
+                653,
+                657
+            ]
+        },
+        "Appendix F Additional Phase Diagrams": {
+            "[FIGURE A6.F19.sf1.g1]": [
+                675,
+                679
+            ],
+            "[FIGURE A6.F20.sf1.g1]": [
+                681,
+                685
+            ],
+            "[FIGURE A6.F21.sf1.g1]": [
+                687,
+                691
+            ],
+            "[FIGURE A6.F22.sf1.g1]": [
+                705,
+                709
+            ],
+            "[FIGURE A6.F23.sf1.g1]": [
+                711,
+                715
+            ],
+            "[FIGURE A6.F24.sf1.g1]": [
+                717,
+                721
+            ],
+            "[FIGURE A6.F25.sf1.g1]": [
+                723,
+                727
+            ]
+        },
+        "Appendix G Non-divergence of Adam": {
+            "[FIGURE A7.F26.sf1.g1]": [
+                731,
+                735
+            ],
+            "[FIGURE A7.F27.sf1.g1]": [
+                743,
+                747
+            ]
+        },
+        "Appendix H Additional results for the Initial Learning Rate Selection": {
+            "[FIGURE A8.F28.sf1.g1]": [
+                753,
+                757
+            ],
+            "[FIGURE A8.F29.sf1.g1]": [
+                759,
+                763
+            ]
+        },
+        "Appendix I Additional Results on GI-Adam": {
+            "[FIGURE A9.F30.1.g1]": [
+                771,
+                775
+            ],
+            "[FIGURE A9.F31.sf1.g1]": [
+                802,
+                806
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Notations and Preliminaries": {},
+        "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {},
+        "4 Warmup Mechanisms of Gradient and Adaptive Methods": {},
+        "5 Impact of Warmup on Training and Generalization": {},
+        "6 Improved Hyperparameter Initialization Schemes for Optimizers": {},
+        "7 Towards Parameter Free Warmup Strategies": {},
+        "8 Discussion": {},
+        "Acknowledgments and Disclosure of Funding": {},
+        "References": {},
+        "Appendix A Practical Guidance for Practitioners": {},
+        "Appendix B Instability Thresholds": {},
+        "Appendix C Persistent Catapult Warmup": {},
+        "Appendix D Experimental Details": {},
+        "Appendix E Additional Results for Mechanisms of Warmup": {},
+        "Appendix F Additional Phase Diagrams": {},
+        "Appendix G Non-divergence of Adam": {},
+        "Appendix H Additional results for the Initial Learning Rate Selection": {},
+        "Appendix I Additional Results on GI-Adam": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Notations and Preliminaries": {},
+        "3 Overview of Training Instabilities and the Self-Stabilization Mechanism": {},
+        "4 Warmup Mechanisms of Gradient and Adaptive Methods": {},
+        "5 Impact of Warmup on Training and Generalization": {},
+        "6 Improved Hyperparameter Initialization Schemes for Optimizers": {},
+        "7 Towards Parameter Free Warmup Strategies": {},
+        "8 Discussion": {},
+        "Acknowledgments and Disclosure of Funding": {},
+        "References": {},
+        "Appendix A Practical Guidance for Practitioners": {},
+        "Appendix B Instability Thresholds": {
+            "[ALGORITHM alg1]": [
+                287,
+                326
+            ],
+            "[ALGORITHM alg2]": [
+                332,
+                369
+            ]
+        },
+        "Appendix C Persistent Catapult Warmup": {
+            "[ALGORITHM alg3]": [
+                388,
+                414
+            ]
+        },
+        "Appendix D Experimental Details": {},
+        "Appendix E Additional Results for Mechanisms of Warmup": {},
+        "Appendix F Additional Phase Diagrams": {},
+        "Appendix G Non-divergence of Adam": {},
+        "Appendix H Additional results for the Initial Learning Rate Selection": {},
+        "Appendix I Additional Results on GI-Adam": {}
+    }
+}

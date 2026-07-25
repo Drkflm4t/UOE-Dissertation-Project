@@ -1,0 +1,1036 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        534
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            20
+        ],
+        "2 Related Works": [
+            21,
+            28
+        ],
+        "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": [
+            29,
+            118
+        ],
+        "4 Experimental Setup": [
+            119,
+            166
+        ],
+        "5 Experimental Results": [
+            167,
+            470
+        ],
+        "6 Conclusion": [
+            471,
+            474
+        ],
+        "Acknowledgment": [
+            475,
+            478
+        ],
+        "References": [
+            479,
+            538
+        ],
+        "Appendix A CUDA to C++ Translation Results": [
+            539,
+            580
+        ],
+        "Appendix B Functional Correctness Analysis": [
+            581,
+            1218
+        ],
+        "Appendix C Decontamination Analysis": [
+            1219,
+            1278
+        ],
+        "Appendix D Unsupervised Training Parameters": [
+            1279,
+            1407
+        ],
+        "Appendix E Impact of Beam Size": [
+            1408,
+            1460
+        ],
+        "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": [
+            1461,
+            2153
+        ],
+        "Appendix G Discussion on Unsupervised Training": [
+            2154,
+            2242
+        ],
+        "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": [
+            2243,
+            2246
+        ],
+        "Appendix I Prompt Template and LLMs": [
+            2247,
+            2269
+        ],
+        "Appendix J Additional Related Work": [
+            2270,
+            2273
+        ],
+        "Appendix K Limitations": [
+            2274,
+            2370
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {
+            "1 Introduction": [
+                7,
+                20
+            ]
+        },
+        "2 Related Works": {
+            "2 Related Works": [
+                21,
+                28
+            ]
+        },
+        "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {
+            "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": [
+                29,
+                32
+            ],
+            "3.1 Cross Language Masked Language Modeling": [
+                33,
+                46
+            ],
+            "3.2 Abstract Syntax Tree Entity Recognition": [
+                47,
+                64
+            ],
+            "3.3 Denoising Auto Encoding with Adaptive Noise Injection": [
+                65,
+                92
+            ],
+            "3.4 Back Translation for Unsupervised Refinement": [
+                93,
+                108
+            ],
+            "3.5 Finetuning with Synthetic Data from Language Models (Optional Step)": [
+                109,
+                118
+            ]
+        },
+        "4 Experimental Setup": {
+            "4 Experimental Setup": [
+                119,
+                122
+            ],
+            "4.1 Datasets": [
+                123,
+                135
+            ],
+            "4.2 Data Preprocessing": [
+                136,
+                160
+            ],
+            "4.3 Evaluation": [
+                161,
+                166
+            ]
+        },
+        "5 Experimental Results": {
+            "5 Experimental Results": [
+                167,
+                168
+            ],
+            "5.1 C++ to CUDA": [
+                169,
+                276
+            ],
+            "5.1.1 Post-processing: Compilation Error Analysis": [
+                277,
+                323
+            ],
+            "5.2 Runtime Evaluation": [
+                324,
+                327
+            ],
+            "5.3 Ablation Study": [
+                328,
+                415
+            ],
+            "5.4 Fortran to C++": [
+                416,
+                470
+            ]
+        },
+        "6 Conclusion": {
+            "6 Conclusion": [
+                471,
+                474
+            ]
+        },
+        "Acknowledgment": {
+            "Acknowledgment": [
+                475,
+                478
+            ]
+        },
+        "References": {
+            "References": [
+                479,
+                534
+            ]
+        },
+        "Appendix A CUDA to C++ Translation Results": {
+            "Appendix A CUDA to C++ Translation Results": [
+                539,
+                580
+            ]
+        },
+        "Appendix B Functional Correctness Analysis": {
+            "Appendix B Functional Correctness Analysis": [
+                581,
+                1218
+            ]
+        },
+        "Appendix C Decontamination Analysis": {
+            "Appendix C Decontamination Analysis": [
+                1219,
+                1278
+            ]
+        },
+        "Appendix D Unsupervised Training Parameters": {
+            "Appendix D Unsupervised Training Parameters": [
+                1279,
+                1280
+            ],
+            "D.1 Training Parameters": [
+                1281,
+                1284
+            ],
+            "D.2 AST Entity Recognition Tags": [
+                1285,
+                1339
+            ],
+            "D.3 Dataset Statistics": [
+                1340,
+                1407
+            ]
+        },
+        "Appendix E Impact of Beam Size": {
+            "Appendix E Impact of Beam Size": [
+                1408,
+                1460
+            ]
+        },
+        "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": {
+            "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": [
+                1461,
+                2050
+            ],
+            "F.1 Common Issues and Post-processing in CodeRosetta-Generated Code": [
+                2051,
+                2153
+            ]
+        },
+        "Appendix G Discussion on Unsupervised Training": {
+            "Appendix G Discussion on Unsupervised Training": [
+                2154,
+                2155
+            ],
+            "G.1 Fine-tuning for Code Translation": [
+                2156,
+                2159
+            ],
+            "G.2 Back Translation": [
+                2160,
+                2242
+            ]
+        },
+        "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": {
+            "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": [
+                2243,
+                2246
+            ]
+        },
+        "Appendix I Prompt Template and LLMs": {
+            "Appendix I Prompt Template and LLMs": [
+                2247,
+                2269
+            ]
+        },
+        "Appendix J Additional Related Work": {
+            "Appendix J Additional Related Work": [
+                2270,
+                2273
+            ]
+        },
+        "Appendix K Limitations": {
+            "Appendix K Limitations": [
+                2274,
+                2370
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                17
+            ],
+            [
+                19,
+                19
+            ]
+        ],
+        "2 Related Works": [
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ]
+        ],
+        "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": [
+            [
+                31,
+                31
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                59,
+                59
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                87,
+                87
+            ],
+            [
+                89,
+                89
+            ],
+            [
+                91,
+                91
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                103,
+                103
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                117,
+                117
+            ]
+        ],
+        "4 Experimental Setup": [
+            [
+                121,
+                121
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                128
+            ],
+            [
+                130,
+                130
+            ],
+            [
+                132,
+                134
+            ],
+            [
+                138,
+                138
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                144
+            ],
+            [
+                146,
+                146
+            ],
+            [
+                163,
+                163
+            ],
+            [
+                165,
+                165
+            ]
+        ],
+        "5 Experimental Results": [
+            [
+                273,
+                273
+            ],
+            [
+                275,
+                275
+            ],
+            [
+                279,
+                279
+            ],
+            [
+                322,
+                322
+            ],
+            [
+                326,
+                326
+            ],
+            [
+                408,
+                408
+            ],
+            [
+                410,
+                410
+            ],
+            [
+                412,
+                412
+            ],
+            [
+                414,
+                414
+            ],
+            [
+                418,
+                418
+            ],
+            [
+                469,
+                469
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                473,
+                473
+            ]
+        ],
+        "Acknowledgment": [
+            [
+                477,
+                477
+            ]
+        ],
+        "References": [
+            [
+                481,
+                531
+            ],
+            [
+                533,
+                533
+            ],
+            [
+                537,
+                537
+            ]
+        ],
+        "Appendix A CUDA to C++ Translation Results": [
+            [
+                541,
+                541
+            ]
+        ],
+        "Appendix B Functional Correctness Analysis": [
+            [
+                583,
+                583
+            ],
+            [
+                585,
+                585
+            ],
+            [
+                671,
+                672
+            ],
+            [
+                760,
+                761
+            ],
+            [
+                923,
+                924
+            ],
+            [
+                1216,
+                1217
+            ]
+        ],
+        "Appendix C Decontamination Analysis": [
+            [
+                1221,
+                1221
+            ],
+            [
+                1277,
+                1277
+            ]
+        ],
+        "Appendix D Unsupervised Training Parameters": [
+            [
+                1283,
+                1283
+            ],
+            [
+                1338,
+                1338
+            ],
+            [
+                1342,
+                1342
+            ]
+        ],
+        "Appendix E Impact of Beam Size": [
+            [
+                1410,
+                1410
+            ]
+        ],
+        "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": [
+            [
+                1463,
+                1463
+            ],
+            [
+                1631,
+                1632
+            ],
+            [
+                1777,
+                1778
+            ],
+            [
+                1780,
+                1780
+            ],
+            [
+                2048,
+                2049
+            ],
+            [
+                2053,
+                2053
+            ],
+            [
+                2151,
+                2152
+            ]
+        ],
+        "Appendix G Discussion on Unsupervised Training": [
+            [
+                2158,
+                2158
+            ],
+            [
+                2162,
+                2162
+            ],
+            [
+                2240,
+                2241
+            ]
+        ],
+        "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": [
+            [
+                2245,
+                2245
+            ]
+        ],
+        "Appendix I Prompt Template and LLMs": [
+            [
+                2249,
+                2249
+            ]
+        ],
+        "Appendix J Additional Related Work": [
+            [
+                2272,
+                2272
+            ]
+        ],
+        "Appendix K Limitations": [
+            [
+                2276,
+                2276
+            ],
+            [
+                2316,
+                2317
+            ],
+            [
+                2367,
+                2368
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {
+            "[FIGURE S3.F1.g1]": [
+                35,
+                39
+            ],
+            "[FIGURE S3.F2.g1]": [
+                49,
+                53
+            ],
+            "[FIGURE S3.F3.g1]": [
+                67,
+                71
+            ],
+            "[FIGURE S3.F4.g1]": [
+                95,
+                99
+            ]
+        },
+        "4 Experimental Setup": {
+            "[FIGURE S4.F5]": [
+                148,
+                159
+            ]
+        },
+        "5 Experimental Results": {},
+        "6 Conclusion": {},
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A CUDA to C++ Translation Results": {},
+        "Appendix B Functional Correctness Analysis": {
+            "[FIGURE A2.F6]": [
+                587,
+                589
+            ],
+            "[FIGURE A2.F6.sf1]": [
+                589,
+                608
+            ],
+            "[FIGURE A2.F6.sf2]": [
+                610,
+                629
+            ],
+            "[FIGURE A2.F6.sf3]": [
+                631,
+                648
+            ],
+            "[FIGURE A2.F6.sf4]": [
+                650,
+                669
+            ],
+            "[FIGURE A2.F7]": [
+                674,
+                676
+            ],
+            "[FIGURE A2.F7.sf1]": [
+                676,
+                697
+            ],
+            "[FIGURE A2.F7.sf2]": [
+                699,
+                720
+            ],
+            "[FIGURE A2.F7.sf3]": [
+                722,
+                739
+            ],
+            "[FIGURE A2.F7.sf4]": [
+                741,
+                758
+            ],
+            "[FIGURE A2.F8]": [
+                763,
+                765
+            ],
+            "[FIGURE A2.F8.sf1]": [
+                765,
+                800
+            ],
+            "[FIGURE A2.F8.sf2]": [
+                802,
+                837
+            ],
+            "[FIGURE A2.F8.sf3]": [
+                839,
+                878
+            ],
+            "[FIGURE A2.F8.sf4]": [
+                880,
+                921
+            ],
+            "[FIGURE A2.F9]": [
+                926,
+                928
+            ],
+            "[FIGURE A2.F9.sf1]": [
+                928,
+                991
+            ],
+            "[FIGURE A2.F9.sf2]": [
+                993,
+                1060
+            ],
+            "[FIGURE A2.F9.sf3]": [
+                1062,
+                1143
+            ],
+            "[FIGURE A2.F9.sf4]": [
+                1145,
+                1214
+            ]
+        },
+        "Appendix C Decontamination Analysis": {},
+        "Appendix D Unsupervised Training Parameters": {},
+        "Appendix E Impact of Beam Size": {},
+        "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": {
+            "[FIGURE A6.F10]": [
+                1465,
+                1467
+            ],
+            "[FIGURE A6.F10.sf1]": [
+                1467,
+                1492
+            ],
+            "[FIGURE A6.F10.sf2]": [
+                1494,
+                1515
+            ],
+            "[FIGURE A6.F10.sf3]": [
+                1517,
+                1548
+            ],
+            "[FIGURE A6.F10.sf4]": [
+                1550,
+                1575
+            ],
+            "[FIGURE A6.F10.sf5]": [
+                1577,
+                1604
+            ],
+            "[FIGURE A6.F10.sf6]": [
+                1606,
+                1629
+            ],
+            "[FIGURE A6.F11]": [
+                1634,
+                1636
+            ],
+            "[FIGURE A6.F11.sf1]": [
+                1636,
+                1653
+            ],
+            "[FIGURE A6.F11.sf2]": [
+                1655,
+                1674
+            ],
+            "[FIGURE A6.F11.sf3]": [
+                1676,
+                1693
+            ],
+            "[FIGURE A6.F11.sf4]": [
+                1695,
+                1724
+            ],
+            "[FIGURE A6.F11.sf5]": [
+                1726,
+                1775
+            ],
+            "[FIGURE A6.F12]": [
+                1819,
+                1821
+            ],
+            "[FIGURE A6.F12.sf1]": [
+                1821,
+                1860
+            ],
+            "[FIGURE A6.F12.sf2]": [
+                1862,
+                1907
+            ],
+            "[FIGURE A6.F12.sf3]": [
+                1909,
+                1954
+            ],
+            "[FIGURE A6.F12.sf4]": [
+                1956,
+                1999
+            ],
+            "[FIGURE A6.F12.sf5]": [
+                2001,
+                2046
+            ],
+            "[FIGURE A6.F13]": [
+                2055,
+                2057
+            ],
+            "[FIGURE A6.F13.sf1]": [
+                2057,
+                2082
+            ],
+            "[FIGURE A6.F13.sf2]": [
+                2084,
+                2111
+            ],
+            "[FIGURE A6.F13.sf3]": [
+                2113,
+                2130
+            ],
+            "[FIGURE A6.F13.sf4]": [
+                2132,
+                2149
+            ]
+        },
+        "Appendix G Discussion on Unsupervised Training": {
+            "[FIGURE A7.F14]": [
+                2164,
+                2166
+            ],
+            "[FIGURE A7.F14.sf1]": [
+                2166,
+                2201
+            ],
+            "[FIGURE A7.F14.sf2]": [
+                2203,
+                2238
+            ]
+        },
+        "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": {},
+        "Appendix I Prompt Template and LLMs": {
+            "[FIGURE A9.F15]": [
+                2251,
+                2268
+            ]
+        },
+        "Appendix J Additional Related Work": {},
+        "Appendix K Limitations": {
+            "[FIGURE A11.F16]": [
+                2278,
+                2280
+            ],
+            "[FIGURE A11.F16.sf1]": [
+                2280,
+                2295
+            ],
+            "[FIGURE A11.F16.sf2]": [
+                2297,
+                2314
+            ],
+            "[FIGURE A11.F17]": [
+                2319,
+                2321
+            ],
+            "[FIGURE A11.F17.sf1]": [
+                2321,
+                2342
+            ],
+            "[FIGURE A11.F17.sf2]": [
+                2344,
+                2365
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {},
+        "4 Experimental Setup": {},
+        "5 Experimental Results": {
+            "[TABLE S5.T1]": [
+                171,
+                271
+            ],
+            "[TABLE S5.T2]": [
+                281,
+                320
+            ],
+            "[TABLE S5.T3]": [
+                330,
+                406
+            ],
+            "[TABLE S5.T4]": [
+                420,
+                467
+            ]
+        },
+        "6 Conclusion": {},
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A CUDA to C++ Translation Results": {
+            "[TABLE A1.T5]": [
+                543,
+                579
+            ]
+        },
+        "Appendix B Functional Correctness Analysis": {},
+        "Appendix C Decontamination Analysis": {
+            "[TABLE A3.T6]": [
+                1223,
+                1275
+            ]
+        },
+        "Appendix D Unsupervised Training Parameters": {
+            "[TABLE A4.T7]": [
+                1287,
+                1336
+            ],
+            "[TABLE A4.T8]": [
+                1344,
+                1406
+            ]
+        },
+        "Appendix E Impact of Beam Size": {
+            "[TABLE A5.T9]": [
+                1412,
+                1459
+            ]
+        },
+        "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": {
+            "[TABLE A6.T10]": [
+                1782,
+                1817
+            ]
+        },
+        "Appendix G Discussion on Unsupervised Training": {},
+        "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": {},
+        "Appendix I Prompt Template and LLMs": {},
+        "Appendix J Additional Related Work": {},
+        "Appendix K Limitations": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {},
+        "4 Experimental Setup": {},
+        "5 Experimental Results": {},
+        "6 Conclusion": {},
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A CUDA to C++ Translation Results": {},
+        "Appendix B Functional Correctness Analysis": {},
+        "Appendix C Decontamination Analysis": {},
+        "Appendix D Unsupervised Training Parameters": {},
+        "Appendix E Impact of Beam Size": {},
+        "Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs": {},
+        "Appendix G Discussion on Unsupervised Training": {},
+        "Appendix H Translation Pitfalls: Invalid Tokens in Target Language": {},
+        "Appendix I Prompt Template and LLMs": {},
+        "Appendix J Additional Related Work": {},
+        "Appendix K Limitations": {}
+    }
+}

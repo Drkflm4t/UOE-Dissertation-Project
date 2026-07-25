@@ -1,0 +1,587 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        10
+    ],
+    "sections": {
+        "1 Introduction": [
+            11,
+            30
+        ],
+        "2 Methodology": [
+            31,
+            188
+        ],
+        "3 Experiments": [
+            189,
+            481
+        ],
+        "4 Analysis": [
+            482,
+            668
+        ],
+        "5 Related Work": [
+            669,
+            676
+        ],
+        "6 Conclusion": [
+            677,
+            680
+        ],
+        "Limitations": [
+            681,
+            684
+        ],
+        "Ethics Statement": [
+            685,
+            688
+        ],
+        "Acknowledgement": [
+            689,
+            692
+        ],
+        "References": [
+            693,
+            725
+        ],
+        "Appendix A Appendix": [
+            726,
+            890
+        ],
+        "Appendix B Subgraph Compression": [
+            891,
+            901
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Methodology": {
+            "2.1 EAE as Link Prediction": [
+                35,
+                40
+            ],
+            "2.2 Tailored AMR Graph for EAE": [
+                41,
+                44
+            ],
+            "Coalescing edges": [
+                45,
+                102
+            ],
+            "Compressing Subgraphs": [
+                103,
+                112
+            ],
+            "Missing Spans": [
+                113,
+                116
+            ],
+            "Surrounding Events": [
+                117,
+                120
+            ],
+            "2.3 Implementation": [
+                121,
+                124
+            ],
+            "Encoder Module": [
+                125,
+                138
+            ],
+            "Span Proposal Module": [
+                139,
+                154
+            ],
+            "AMR Graph Module": [
+                155,
+                172
+            ],
+            "Classification Module": [
+                173,
+                188
+            ]
+        },
+        "3 Experiments": {
+            "3.1 Datasets and Evaluation Metrics": [
+                191,
+                326
+            ],
+            "3.2 Settings": [
+                327,
+                330
+            ],
+            "3.3 Main Results": [
+                331,
+                481
+            ]
+        },
+        "4 Analysis": {
+            "4.1 Ablation Study": [
+                484,
+                561
+            ],
+            "What is the effect of explicit AMR graphs?": [
+                562,
+                565
+            ],
+            "What is the effect of tailored AMR graphs for EAE?": [
+                566,
+                569
+            ],
+            "What is the effect of heterogeneous graph structures?": [
+                570,
+                573
+            ],
+            "4.2 Efficiency": [
+                574,
+                616
+            ],
+            "4.3 Error Analysis": [
+                617,
+                664
+            ],
+            "4.4 Case Study for TAG": [
+                665,
+                668
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "A.1 Statistics of Datasets": [
+                760,
+                820
+            ],
+            "A.2 Hyperparameters": [
+                821,
+                824
+            ],
+            "A.3 The choice of $k$": [
+                825,
+                886
+            ],
+            "A.4 AMR parsers": [
+                887,
+                890
+            ]
+        },
+        "Appendix B Subgraph Compression": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                13,
+                13
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ]
+        ],
+        "2 Methodology": [
+            [
+                33,
+                33
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                127,
+                127
+            ],
+            [
+                129,
+                130
+            ],
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                135
+            ],
+            [
+                137,
+                137
+            ],
+            [
+                141,
+                141
+            ],
+            [
+                143,
+                144
+            ],
+            [
+                146,
+                146
+            ],
+            [
+                148,
+                148
+            ],
+            [
+                150,
+                151
+            ],
+            [
+                153,
+                153
+            ],
+            [
+                157,
+                157
+            ],
+            [
+                159,
+                160
+            ],
+            [
+                162,
+                162
+            ],
+            [
+                164,
+                164
+            ],
+            [
+                166,
+                167
+            ],
+            [
+                169,
+                169
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                175,
+                175
+            ],
+            [
+                177,
+                178
+            ],
+            [
+                180,
+                180
+            ],
+            [
+                182,
+                183
+            ],
+            [
+                185,
+                185
+            ],
+            [
+                187,
+                187
+            ]
+        ],
+        "3 Experiments": [
+            [
+                193,
+                193
+            ],
+            [
+                195,
+                195
+            ],
+            [
+                329,
+                329
+            ],
+            [
+                472,
+                472
+            ],
+            [
+                474,
+                474
+            ],
+            [
+                476,
+                476
+            ],
+            [
+                478,
+                478
+            ],
+            [
+                480,
+                480
+            ]
+        ],
+        "4 Analysis": [
+            [
+                560,
+                560
+            ],
+            [
+                564,
+                564
+            ],
+            [
+                568,
+                568
+            ],
+            [
+                572,
+                572
+            ],
+            [
+                615,
+                615
+            ],
+            [
+                661,
+                661
+            ],
+            [
+                663,
+                663
+            ],
+            [
+                667,
+                667
+            ]
+        ],
+        "5 Related Work": [
+            [
+                671,
+                671
+            ],
+            [
+                673,
+                673
+            ],
+            [
+                675,
+                675
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                679,
+                679
+            ]
+        ],
+        "Limitations": [
+            [
+                683,
+                683
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                687,
+                687
+            ]
+        ],
+        "Acknowledgement": [
+            [
+                691,
+                691
+            ]
+        ],
+        "References": [
+            [
+                695,
+                724
+            ]
+        ],
+        "Appendix A Appendix": [
+            [
+                819,
+                819
+            ],
+            [
+                823,
+                823
+            ],
+            [
+                885,
+                885
+            ],
+            [
+                889,
+                889
+            ]
+        ],
+        "Appendix B Subgraph Compression": [
+            [
+                899,
+                899
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                15,
+                19
+            ]
+        },
+        "2 Methodology": {
+            "[FIGURE S2.F2.g1]": [
+                49,
+                53
+            ],
+            "[FIGURE S2.F3.g1]": [
+                107,
+                111
+            ]
+        },
+        "3 Experiments": {},
+        "4 Analysis": {
+            "[FIGURE S4.F4.g1]": [
+                609,
+                613
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "[FIGURE A1.F5.g1]": [
+                827,
+                831
+            ]
+        },
+        "Appendix B Subgraph Compression": {
+            "[FIGURE A2.F6.g1]": [
+                893,
+                897
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Methodology": {
+            "[TABLE S2.T1]": [
+                55,
+                101
+            ]
+        },
+        "3 Experiments": {
+            "[TABLE S3.T2]": [
+                197,
+                325
+            ],
+            "[TABLE S3.T3]": [
+                333,
+                470
+            ]
+        },
+        "4 Analysis": {
+            "[TABLE S4.T4]": [
+                486,
+                558
+            ],
+            "[TABLE S4.T5]": [
+                576,
+                607
+            ],
+            "[TABLE S4.T6]": [
+                619,
+                659
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "[TABLE A1.T7]": [
+                728,
+                758
+            ],
+            "[TABLE A1.T8]": [
+                762,
+                817
+            ],
+            "[TABLE A1.T9]": [
+                833,
+                883
+            ]
+        },
+        "Appendix B Subgraph Compression": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Methodology": {},
+        "3 Experiments": {},
+        "4 Analysis": {},
+        "5 Related Work": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgement": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Subgraph Compression": {}
+    }
+}

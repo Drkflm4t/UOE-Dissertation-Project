@@ -1,0 +1,702 @@
+{
+    "o_paper": "2023.acl%2023.acl-long.424",
+    "cf_paper": {
+        "id": "2023.acl%2023.acl-long.424",
+        "meta": {
+            "venue": "2023.acl",
+            "authors": [
+                "Weiwei Sun",
+                "Hengyi Cai",
+                "Hongshen Chen",
+                "Pengjie Ren",
+                "Zhumin Chen",
+                "Maarten de Rijke",
+                "Zhaochun Ren"
+            ],
+            "categories": [
+                "cs.CL"
+            ],
+            "entry_id": "http://arxiv.org/abs/2307.03897v1",
+            "links": [
+                "http://arxiv.org/abs/2307.03897v1",
+                "http://arxiv.org/pdf/2307.03897v1"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2307.03897v1",
+            "published": "2023-07-08T04:32:17+00:00",
+            "updated": "2023-07-08T04:32:17+00:00",
+            "primary_category": "cs.CL",
+            "title": "Answering Ambiguous Questions via Iterative Prompting",
+            "summary": "In open-domain question answering, due to the ambiguity of questions,\nmultiple plausible answers may exist. To provide feasible answers to an\nambiguous question, one approach is to directly predict all valid answers, but\nthis can struggle with balancing relevance and diversity. An alternative is to\ngather candidate answers and aggregate them, but this method can be\ncomputationally costly and may neglect dependencies among answers. In this\npaper, we present AmbigPrompt to address the imperfections of existing\napproaches to answering ambiguous questions. Specifically, we integrate an\nanswering model with a prompting model in an iterative manner. The prompting\nmodel adaptively tracks the reading process and progressively triggers the\nanswering model to compose distinct and relevant answers. Additionally, we\ndevelop a task-specific post-pretraining approach for both the answering model\nand the prompting model, which greatly improves the performance of our\nframework. Empirical studies on two commonly-used open benchmarks show that\nAmbigPrompt achieves state-of-the-art or competitive results while using less\nmemory and having a lower inference latency than competing approaches.\nAdditionally, AmbigPrompt also performs well in low-resource settings. The code\nare available at: https://github.com/sunnweiwei/AmbigPrompt.",
+            "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+            "venue_config": {
+                "id": "2023.acl",
+                "name": "Association for Computational Linguistics Conferences of 2023",
+                "type": "Association for Computational Linguistics Conference",
+                "description": "The ACL (Association for Computational Linguistics) Conference is a premier international conference focused on natural language processing (NLP) and computational linguistics. Computational linguistics is the scientific study of language from a computational perspective. Computational linguists are interested in providing computational models of various kinds of linguistic phenomena. These models may be \"knowledge-based\" (\"hand-crafted\") or \"data-driven\" (\"statistical\" or \"empirical\").",
+                "guidelines": "## Review Guidelines:\n\n1. Be Specific:\n\tFlag issues with clear, detailed examples (e.g., \"X misses factor Y\" instead of \"X is wrong\").\n\tEnsure your points are understandable without requiring additional context.\n\n2. Avoid Common Review Pitfalls:\n\t* Avoid overused heuristics like \"Results are not surprising\" or \"The paper lacks novelty\" without clear justification.\n\t* Be open-minded about unexpected results, simpler methods, and niche topics.\n\n3. Watch for Common Issues in NLP Papers:\n\t* Methodology: Ensure valid evaluation, reproducibility, and clear assumptions.\n\t* Artifacts: Check for ethics issues and clear licensing.\n\t* Experimental Results: Avoid misleading framing, unsubstantiated claims, or statistical flaws.\n\t* General: Ensure clear research questions, proper citations, and accurate terminology.\n\n4. Ensure Consistency in Scores:\n\t* Justify low soundness scores with detailed explanations.\n\t* Use excitement scores for personal preferences and overall assessment for the paper\u2019s recommendation.\n\n5. Maintain a Professional, Neutral Tone:\n\t* Write reviews that help authors improve, avoiding sarcasm or dismissiveness.\n\t* Treat authors with respect, considering they may be early-career researchers or under stress.",
+                "guidelines_detailed": "## Write a strong review\n\n### 1. Be specific\n\nIf you would like to flag any issues, it should be specific and ideally understandable to the chairs without reading the full paper. Let us consider a few examples.\n\n* Instead of \"The paper is missing relevant references\" use \"The paper is missing references XYZ\"\n* Instead of \"X is not clear\" use \"Y and Z are missing from the description of X\"\n* Instead of \"The formulation of X is wrong\" use \"The formulation of X misses the factor Y\"\n* Instead of \"The contribution is not novel\" use \"Highly similar work X and Y has been published 3+ months prior to submission deadline\"\n* Instead of \"The paper is missing recent baselines\" use \"The proposed method should be compared against recent methods X, Y and Z\"\n* Instead of \"X was done in the way Y\" use \"X was done in the way Y which has the disadvantage Z\"\n* Instead of \"The algorithm's interaction with dataset is problematic\" use \"It's possible that when using the decoding (line 723) on the dataset 3 (line 512), there might not be enough training data to rely on the n-best list.\"\n\nThe advantage of the last version is that it can be understood by an area chair (who has expertise in the subarea) without looking for line numbers.\n\n### 2. Check for common review issues\n\nJudging whether a research paper is \u201cgood\u201d is an objectively hard task, and over the past conferences, we collected a list of common problems, which is presented below. Such comments may point at legitimate problems with the paper, but they are not always \u201cweaknesses\u201d. This can happen even to experienced reviewers, and it\u2019s worth checking your review for these problems before submitting.\n| Heuristic  | Why this is problematic |\n|------------|------------------------|\n| **H1. The results are not surprising** | Just because findings seem obvious doesn\u2019t mean they are known or useless. Empirical validation is still valuable. |\n| **H2. The results contradict what I would expect** | Avoid confirmation bias\u2014unexpected results can challenge assumptions and contribute to progress. |\n| **H3. The results are not novel** | If claiming lack of novelty, provide references. Contributions like analysis or reproduction are valid under CFP. |\n| **H4. This has no precedent in the existing literature** | Novel ideas can be harder to publish, but that doesn\u2019t make them invalid. Avoid excessive conservatism. |\n| **H5. The results do not surpass the latest SOTA** | SOTA is not required for a contribution. Improvements in efficiency, interpretability, or fairness also matter. |\n| **H6. The results are negative** | Negative results prevent hype and overclaiming. Knowing what doesn\u2019t work is as important as knowing what does. |\n| **H7. This method is too simple** | Simpler methods are often preferable\u2014effective, robust, and easier to deploy. Complexity isn\u2019t inherently better. |\n| **H8. The paper doesn't use [my preferred methodology]** | NLP includes diverse contributions beyond specific methodologies. Methodological diversity is essential. |\n| **H9. The topic is too niche** | Specialized research can have a significant impact within its subfield and contribute to broader understanding. |\n| **H10. The approach is tested only on [not English]** | Research on any language is valuable, both practically and theoretically, just as English-only studies are. |\n| **H11. The paper has language errors** | Clarity is more important than perfect language. Scientific content matters more than writing style. |\n| **H12. The paper is missing the [reference X]** | Missing key references is a concern only if the work was published 3+ months before the deadline. Otherwise, suggest rather than criticize. |\n| **H13. The authors could also do [extra experiment X]** | Extra experiments are always possible but not always necessary. If critical, justify why. Otherwise, suggest rather than reject. |\n| **H14. The authors should compare to a 'closed' model X** | Closed-model comparisons are useful only if relevant to the claim. Lack of transparency can make them unreliable. |\n| **H15. The authors should have done [X] instead** | Different approaches exist. Only critique if the chosen method prevents answering the research question or is misleading. |\n| **H16. Limitations != weaknesses** | Acknowledging limitations is required; listing them as weaknesses without justification is unfair. Argue why they invalidate the work if relevant. |\n\nIf you have something like the above listed as a \u201cweakness\u201d of the paper, do try to revisit the paper with an open mind. Both the authors and the ACs will be aware of these guidelines and can refer to them in discussion/meta-review.\n\n### 3. Check for common problems in NLP papers\n\nAs a counter to common problems with reviews, there are also common problems with NLP papers. We do ask you to watch out for these and point them out when you see them. Above all else, published research should at least be technically sound and appropriately scoped. As with the above reviewer issues, it\u2019s a case-by-case evaluation: some things in the list below may be appropriate in a given context, given that they are sufficiently motivated. We provide codes for different types of issues (e.g. M1, G2\u2026) that can be referenced in discussions.\n\n#### Issues with methodology (M)\n\n- **M1. LLM-only evaluation without validation**: If LLMs are used as evaluators, their reliability must be validated in this context.  \n\n- **M2. Reproducibility issues**: Are there enough details to reproduce the experiments, including hyperparameters? Is code or data provided for reviewer evaluation? Reproducibility refers to rerunning experiments with similar results, not reimplementing them.  \n\n- **M3. Undisclosed data quality issues**: If the paper provides datasets or samples, any quality issues should be disclosed. If undisclosed issues exist, it's a serious concern.  \n\n- **M4. Unmotivated selection**: The paper should justify its choice of models and benchmarks in relation to its claims. Even if you would have chosen differently, their selection must be reasonable.  \n\n- **M5. Incomplete assumptions or proofs**: Assumptions should be clearly stated, and formal statements (theorems, lemmas, etc.) must be backed by complete, correct proofs, even if placed in an appendix.  \n\n#### Issues with artifact sourcing or release (T)\n\n- **T1. Ethics issues with data collection**: If human data collection is involved, ethical considerations (e.g., approval, compensation) should be addressed. Major concerns can be flagged for ethics review.\n\n- **T2. Unclear license/release terms**: If a dataset or model is released, the terms should be explicitly stated. Reviewers should check clarity, not make legal judgments.  \n\n#### Issues with experimental results (R)\n\n- **R1. Analysis issues**: Issues include misleading statistics, cherry-picked results, or poorly tuned baselines that affect fairness in comparisons.  \n\n- **R2. Inappropriate scope of claims**: Claims should be based on representative samples. Evaluating a few benchmarks does not justify broad statements about reasoning, understanding, or LLM capabilities.  \n\n- **R3. Hypotheses/speculations as conclusions**: Claims must be supported by evidence or marked as speculation, not presented as established facts.  \n\n- **R4. Misleading framing or overclaiming**: Overgeneralized conclusions, such as stating that LLMs \"understand\" language based only on benchmark results, should be avoided.  \n\n- **R5. Missing statistical significance assessment**: Key results should include error bars, confidence intervals, and statistical significance tests, with details on variability and assumptions.  \n\n#### General issues (G)\n\n- **G1. Unclear research question or contribution**: The paper should clearly state the problem it addresses, its contributions, and its limitations in the abstract and introduction.  \n\n- **G2. Reliance on a bad precedent**: Justifying methods by citing flawed or outdated work is problematic. If precedent is questionable, reviewers should clarify their stance.  \n\n- **G3. Missing/misrepresented related work**: Authors should fairly represent previous research, ensuring novelty claims are justified and related work is accurately cited.  \n\n- **G4. Key terms too vague and undefined**: If an important term is unclear or undefined, the paper should specify or reference its meaning.  \n\n- **G5. Misleading/incorrect citations**: Citations must accurately reflect the referenced work. Increasing reliance on LLM-generated summaries makes this issue more prevalent.  \n\n\n### 4. Check that your scores reflect the review\n\nARR reviewers are asked to provide three scores: soundness, excitement, and overall recommendation.\n\nThe soundness scores must be justified by the text of the review . If you give a low Soundness score without finding any major faults, this means that your review is not a faithful explanation of your recommendation, and you need to revise it. One possible reason for low soundness scores without sufficient justification could be reliance on some unconscious bias or heuristic, like the ones listed in the previous section. Likewise, low reproducibility scores should be justified.\n\nSometimes you may find the work sound, but not something that is interesting for you personally. Such preferences are more subjective and should be reflected in a separate excitement score, which is orthogonal to the assessment of the soundness of the paper. Excitement scores reflect our personal taste, and so do not necessarily come with explicit reasons.\n\nThe Overall assessment score is an explicit recommendation for the outcome of this paper, if it were committed to an *ACL venue. This is a composite score reflecting your assessment of soundness, excitement, and also other factors like novelty and impact. All papers recommended for Findings and main conferences are expected to be sufficiently sound and reproducible, but you may consider a paper worthy of the main conference even if you personally are not excited about it. For example, improvements in efficiency of some algorithm, or creating a high-quality resource for a language/domain that does not yet have resources of that type may not sound very novel or exciting, but you may still consider it a significant contribution due to its potential impact (for its target community).\n\n\n### 5. Check that the tone is professional and neutral\n\nAbove all, a good review should be professional and neutral, if not kind. A key goal of peer review is to help the authors improve their papers. As an anonymous reviewer, you are in a position of power, and the written medium makes it easier to be more dismissive and sarcastic than if you were communicating with the authors face-to-face. Unfortunately such reviews are not uncommon.\n\nConsider that you may well be addressing someone who is only starting on the research path. And/or someone struggling with stress and other mental health issues. And/or someone who has been less lucky with their school and advisors. Academic lives are already stressful enough, and we do not need to inflict extra damage on the mental health of our colleagues with sarcastic or insulting reviews. Write the review you would like to get yourself.\n\nThe fact is, authors and reviewers are actually the same people: the conference crowd lining up for coffee, happily chatting with each other about the grand problems even if they do not always agree. Why can\u2019t we do peer review in the same spirit of fun intellectual interaction with colleagues?\n\nJust like the conference coffee break chats, reviewing is in fact, mutually beneficial: in exchange for feedback, the reviewers get to have the first look at cutting-edge research. Just like the coffee breaks, where you do not necessarily meet only the people working in your subsubfield, peer review may expose you to new techniques. Since there is careful written communication in the authors\u2019 response, you may even find that you were wrong about something, which is a much faster way to learn than making the same mistake in your own research.\n\nNot to mention, someone out there is reviewing your papers too. The more rude or dismissive reviews there are, the more of a norm they become, and the higher the chances you will get one yourself in the future.",
+                "template_field_semantics": {
+                    "summary": "Paper Summary",
+                    "strengths": "Summary of Strengths",
+                    "weaknesses": "Summary of Weaknesses",
+                    "suggestions": "Comments/Suggestions/Typos"
+                },
+                "review_template": {
+                    "Paper Summary": "Describe what this paper is about. This should help action editors and area chairs to understand the topic of the work and highlight any possible misunderstandings.",
+                    "Summary of Strengths": "What are the major reasons to publish this paper at a selective *ACL venue? These could include novel and useful methodology, insightful empirical results or theoretical analysis, clear organization of related literature, or any other reason why interested readers of *ACL papers may find the paper useful.",
+                    "Summary of Weaknesses": "What are the concerns that you have about the paper that would cause you to favor prioritizing other high-quality papers that are also under consideration for publication? These could include concerns about correctness of the results or argumentation, limited perceived impact of the methods or findings (note that impact can be significant both in broad or in narrow sub-fields), lack of clarity in exposition, or any other reason why interested readers of *ACL papers may gain less from this paper than they would from other papers under consideration. Where possible, please number your concerns so authors may respond to them individually.",
+                    "Comments/Suggestions/Typos": "If you have any comments to the authors about how they may improve their paper, other than addressing the concerns above, please list them here."
+                },
+                "overall_score_name": "Overall Assessment",
+                "review_scores": {
+                    "Reviewer Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "Positive that my evaluation is correct. I read the paper very carefully and am familiar with related work.",
+                            "4": "Quite sure. I tried to check the important points carefully. It\u2019s unlikely, though conceivable, that I missed something that should affect my ratings.",
+                            "3": "Pretty sure, but there\u2019s a chance I missed something. Although I have a good feel for this area in general, I did not carefully check the paper\u2019s details, e.g., the math or experimental design.",
+                            "2": "Willing to defend my evaluation, but it is fairly likely that I missed some details, didn\u2019t understand some central points, or can\u2019t be sure about the novelty of the work.",
+                            "1": "Not my area, or paper is very hard to understand. My evaluation is just an educated guess."
+                        }
+                    },
+                    "Soundness": {
+                        "meaning": "Given that this is a short/long paper, is it sufficiently sound and thorough? Does it clearly state scientific claims and provide adequate support for them? For experimental papers: consider the depth and/or breadth of the research questions investigated, technical soundness of experiments, methodological validity of evaluation. For position papers, surveys: consider whether the current state of the field is adequately represented and main counter-arguments acknowledged. For resource papers: consider the data collection methodology, resulting data & the difference from existing resources are described in sufficient detail.",
+                        "scores": {
+                            "5": "Excellent: This study is one of the most thorough I have seen, given its type.",
+                            "4": "Strong: This study provides sufficient support for all of its claims. Some extra experiments could be nice, but not essential.",
+                            "3": "Acceptable: This study provides sufficient support for its main claims. Some minor points may need extra support or details.",
+                            "2": "Poor: Some of the main claims are not sufficiently supported. There are major technical/methodological problems.",
+                            "1": "Major Issues: This study is not yet sufficiently thorough to warrant publication or is not relevant to ACL."
+                        }
+                    },
+                    "Excitement": {
+                        "meaning": "How exciting is this paper for you? Excitement is subjective, and does not necessarily follow what is popular in the field. We may perceive papers as transformational/innovative/surprising, e.g. because they present conceptual breakthroughs or evidence challenging common assumptions/methods/datasets/metrics. We may be excited about the possible impact of the paper on some community (not necessarily large or our own), e.g. lowering barriers, reducing costs, enabling new applications. We may be excited for papers that are relevant, inspiring, or useful for our own research. These factors may combine in different ways for different reviewers.",
+                        "scores": {
+                            "5": "Highly Exciting: I would recommend this paper to others and/or attend its presentation in a conference.",
+                            "4": "Exciting: I would mention this paper to others and/or make an effort to attend its presentation in a conference.",
+                            "3": "Interesting: I might mention some points of this paper to others and/or attend its presentation in a conference if there\u2019s time.",
+                            "2": "Potentially Interesting: this paper does not resonate with me, but it might with others in the *ACL community.",
+                            "1": "Not Exciting: this paper does not resonate with me, and I don\u2019t think it would with others in the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    },
+                    "Overall Assessment": {
+                        "meaning": "If this paper was committed to an *ACL conference, do you believe it should be accepted? If you recommend conference, Findings and or even award consideration, you can still suggest minor revisions (e.g. typos, non-core missing refs, etc.). Outstanding papers should be either fascinating, controversial, surprising, impressive, or potentially field-changing. Awards will be decided based on the camera-ready version of the paper. Main vs Findings papers: the main criteria for Findings are soundness and reproducibility. Conference recommendations may also consider novelty, impact and other factors.",
+                        "scores": {
+                            "5": "Consider for Award: I think this paper could be considered for an outstanding paper award at an *ACL conference (up to top 2.5% papers).",
+                            "4.5": "Borderline Award",
+                            "4": "Conference: I think this paper could be accepted to an *ACL conference.",
+                            "3.5": "Borderline Conference",
+                            "3": "Findings: I think this paper could be accepted to the Findings of the ACL.",
+                            "2.5": "Borderline Findings",
+                            "2": "Resubmit next cycle: I think this paper needs substantial revisions that can be completed by the next ARR cycle.",
+                            "1.5": "Resubmit after next cycle: I think this paper needs substantial revisions that cannot be completed by the next ARR cycle.",
+                            "1": "Do not resubmit: This paper has to be fully redone, or it is not relevant to the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    }
+                }
+            },
+            "oid": "2023.acl%2023.acl-long.424",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/2023.acl/2023.acl%2023.acl-long.424/media"
+        },
+        "md": "\n# Answering Ambiguous Questions via Iterative Prompting\n\n###### Abstract\n\nIn open-domain question answering, due to the ambiguity of questions, multiple plausible answers may exist. To provide feasible answers to an ambiguous question, one approach is to directly predict all valid answers, but this can struggle with balancing relevance and diversity. An alternative is to gather candidate answers and aggregate them, but this method can be computationally costly and may neglect dependencies among answers. In this paper, we present *AmbigPrompt* to address the imperfections of existing approaches to answering ambiguous questions. Specifically, we integrate an answering model with a prompting model in an iterative manner. The prompting model adaptively tracks the reading process and progressively triggers the answering model to compose distinct and relevant answers. Additionally, we develop a task-specific post-pretraining approach for both the answering model and the prompting model, which greatly improves the performance of our framework. Empirical studies on two commonly-used open benchmarks show that AmbigPrompt achieves state-of-the-art or competitive results while using less memory and having a lower inference latency than competing approaches. Additionally, AmbigPrompt also performs well in low-resource settings. The code are available at: <https://github.com/sunnweiwei/AmbigPrompt>.  \n\n## 1 Introduction\n\nRecent years have witnessed substantial advances in open-domain question answering (QA) systems\u00a0(Karpukhin et\u00a0al., [2021](#bib.bib13); Lewis et\u00a0al., [2020](#bib.bib19); Izacard and Grave, [2021b](#bib.bib11)), which aim to find the answer for the given question from a large knowledge corpus\u00a0(Chen et\u00a0al., [2017](#bib.bib4)). While a dominating scenario is the single-answer QA setting, i.e., only one exact answer is required for a given question\u00a0(Karpukhin et\u00a0al., [2021](#bib.bib13)), this work focuses on the more realistic scenario of *Multi-answer QA*, where multiple plausible answers are associated with a user-issued question\u00a0(Min et\u00a0al., [2020](#bib.bib26)), given that questions posed by humans are often open-ended and ambiguous.111The task of this paper primarily focuses on the occurrence of multiple answers resulting from different interpretations caused by question ambiguity. However, it\u2019s worth to note that question ambiguity is just one factor contributing to the presence of multiple answers. In this study, we adhere to the conceptual definition of Min et\u00a0al. ([2020](#bib.bib26)).  \n\n[FIGURE S1.F1.g1]\n![Figure S1.F1.g1](./media/x1.png)\n\nFigure 1: An example of an open-domain question, a subset of its evidential Wikipedia passages and multiple answers they lead to.\n[/FIGURE]\n\nA natural approach for answering ambiguous open-domain questions would be to fine-tune a pre-trained answer generation model, e.g., T5\u00a0(Raffel et\u00a0al., [2020](#bib.bib30)), using supervised data of the form (evidential passages, question, all plausible answers)\u00a0(Min et\u00a0al., [2020](#bib.bib26), [2021](#bib.bib25)). However, this approach often leads to sub-optimal solutions since it requires the model to balance the relevance and diversity of the generated multiple answers within a single-round decoding procedure, which is non-trivial. To manage the relevance-diversity trade-off, another approach is to decompose multi-answer QA into candidate answer prediction and answer post-processing. This typically requires a high-capacity model with billions of parameters to construct candidate answers and sophisticated answer aggregation pipelines to obtain the final results\u00a0(Shao and Huang, [2022](#bib.bib33); Gao et\u00a0al., [2021b](#bib.bib7)), incurring high computational costs. In addition, this approach suffers from the dilemma of having to predict diverse candidate answers before knowing which answer has been predicted, which is unnatural and intricate. For example, in Figure\u00a0[1](#S1.F1 \"Figure 1 \u2023 1 Introduction \u2023 Answering Ambiguous Questions via Iterative Prompting\"), given the question \u201c*Which movie was both directed and screenwritten by Kamal Haasan?*,\u201d with the existence of the answer *Vishwaroopam*, the model excludes its eponymous translation version *Vishwaroop* and deduces that *Vishwaroopam II* is another potential answer.  \n\nWhen facing an ambiguous question, people are capable of providing multiple valid answers by introspectively composing new content on the basis of what has already been devised, usually in an iterative manner. Inspired by this observation, in this paper, we conceptualize AmbigPrompt as an approach to mimic this mechanism by iteratively guiding the answering model with a lightweight prompting model. As shown in Figure\u00a0[2](#S1.F2 \"Figure 2 \u2023 1 Introduction \u2023 Answering Ambiguous Questions via Iterative Prompting\"), this prompting model steers the answering model to progressively generate valid answers whose content the prompting model will then condition on for the next-round prompt construction. Essentially, our proposed framework comprises two key components: (i) an encoder-decoder *answering model* and (ii) an interleaving answer-conditional *prompting model*. By conditioning on preceding generated contents, the proposed framework introspectively perceives which answer has been predicted before updating the hidden activation for the generation of subsequent answers. Furthermore, we devise a task-adaptive post-pretraining strategy, in which pseudo multi-QA training instances are constructed to facilitate the training of the proposed framework.   \n\nWe carry out extensive experiments on the AmbigQA\u00a0(Min et\u00a0al., [2020](#bib.bib26)) and WebQSP\u00a0(tau Yih et\u00a0al., [2016](#bib.bib37)) datasets. The results demonstrate that AmbigPrompt attains superior performance despite having a significantly smaller parameter scale, 14 times less than state-of-the-art models. Furthermore, as a lightweight approach, AmbigPrompt improves the answer relevance and diversity with a tiny fraction of the memory footprint and inference latency of competing approaches. Notably, AmbigPrompt achieves the best performance in the low-resource setting. The effectiveness of the proposed method is also verified by ablation experiments and analytical experiments.   \n\nIn summary, this paper makes the following contributions:   (i) We propose AmbigPrompt, which tackles ambiguous question answering by iterative prompting.  (ii) We propose an interleaving answer-conditional prompting model to generate meaningful continuous prompts.  (iii) Experiments on multi-QA datasets verify the effectiveness of the proposed approach.    \n\n[FIGURE S1.F2.g1]\n![Figure S1.F2.g1](./media/x2.png)\n\nFigure 2: Given the retrieved passages, AmbigPrompt alternates between (2) generating prompts based on previous answers, (3) generating a new answer using a question-answering model, and (4) appending the new answer to the answers set. Note that steps (2) and (3) operate in an interleaving way.\n[/FIGURE]\n\n## 2 Preliminaries\n\n### 2.1 Problem formalization\n\nFormally, given an open-domain question $q$, a multi-answer question answering (QA) model is required to make use of (multiple pieces of) evidence from a large-scale text corpus $\\Omega$ (e.g., Wikipedia) to find multiple plausible answers $\\mathcal{A}=\\{a_{1},a_{2},\\ldots,a_{n}\\}$, where $a_{i}$ denotes one answer and we suppose there are $n$ answers. The QA model aims to infer $p(\\mathcal{A}|q,\\Omega)$. In open-domain QA, the QA model typically follows a two-step pipeline, comprising *passage retrieval* and *answer generation*. In the passage retrieval step, a retrieval model $p(\\mathcal{C}|q,\\Omega)$ retrieves $m$ evidence passages $\\mathcal{C}=\\{c_{1},c_{2},\\ldots,c_{m}\\}$ according to the question $q$ from $\\Omega$. In the answer generation step, an answering model $p(\\mathcal{A}|q,\\mathcal{C})$ reads the evidential passages and finds the answers to the question.  \n\n### 2.2 Answering model\n\nWe use Fusion-in-Decoder (FiD) as a basic single-answer answering model\u00a0(Izacard and Grave, [2021b](#bib.bib11)). In particular, FiD has an encoder-decoder architecture. FiD first concatenates each retrieved passage with the question with a [SEP] token:  \n\n|  | $$X=\\{x_{1},x_{2},\\ldots,x_{m}\\},\\ x_{i}=q\\text{{[SEP]}}c_{i}$$ |  | (1) |\n| --- | --- | --- | --- |\n\nwhere we use $X$ to denote the concatenated sequence. Then, for each $x_{i}$, the FiD encoder $\\operatorname{Enc}$ encodes it to $\\mathbf{x}_{i}$:  \n\n|  | $$\\mathbf{X}=\\operatorname{Cat}(\\{\\mathbf{x}_{1},\\mathbf{x}_{2},\\ldots,\\mathbf{x}_{m}\\}),\\ \\mathbf{x}_{i}=\\operatorname{Enc}(x_{i})$$ |  | (2) |\n| --- | --- | --- | --- |\n\nwhere $\\operatorname{Cat}$ denotes a concatenation function. Finally, the decoder $\\operatorname{Dec}$ attends to the representations of all passages and generates an answer $a$:  \n\n|  | $$p(a|q,\\mathcal{C})=\\operatorname{Dec}(\\mathbf{X})$$ |  | (3) |\n| --- | --- | --- | --- |\n\n### 2.3 Prompt-tuning\n\nPrompt-tuning adapts pre-trained transformer models to downstream tasks by optimizing continuous prompting vectors\u00a0(Li and Liang, [2021](#bib.bib20); Liu et\u00a0al., [2022](#bib.bib22)). Suppose $x$ is the input sequence of the model, we denote $Q(x)^{j}$, $K(x)^{j}$, $V(x)^{j}$ as the query, key, and value representations of $x$ in the $j$-th attention layer in the transformer encoder. Prompt-tuning prepends learnable prompting vectors $\\mathbf{E}^{j}$ to $K(x)^{j}$ and $V(x)^{j}$ to modify the attention distribution as well as the output $\\mathbf{x}^{j}$ of the $j$-th layer as follows:  \n\n|  | $$\\begin{split}\\mathbf{x}^{j}=\\operatorname{Attn}(Q(x)^{j},&\\operatorname{Cat}(\\mathbf{E}^{j},K(x)^{j}),\\\\ &\\operatorname{Cat}(\\mathbf{E}^{j},V(x)^{j})),\\end{split}$$ |  | (4) |\n| --- | --- | --- | --- |\n\nwhere $\\mathbf{x}^{j}$ denotes the output of layer $j$, $\\operatorname{Attn}(\\cdot)$ represents the attention operation in the transformer, and $\\operatorname{Cat}(\\cdot)$ is the concatenation function.  \n\n## 3 AmbigPrompt\n\nConventionally, the question answering model generates the desired answer given the input context in a single pass\u00a0(Izacard and Grave, [2021b](#bib.bib11)). While it suffices to tackle the single-answer QA scenario, managing ambiguous questions with multiple answers can be more nuanced \u2013 the answering model is required to balance the relevance and diversity of the generated answers in a single pass, and precisely modeling dependencies among the answers can be non-trivial. In this paper, we propose AmbigPrompt, a question-answering model that answers ambiguous questions via iterative prompting, inferring more accurate answers progressively. Figure [2](#S1.F2 \"Figure 2 \u2023 1 Introduction \u2023 Answering Ambiguous Questions via Iterative Prompting\") gives an overview of the proposed method.  \n\nOverall, AmbigPrompt decomposes the generation of answers $\\mathcal{A}$ into multiple steps instead of one single pass, i.e.,  \n\n|  | $$p(\\mathcal{A}|q,\\mathcal{C})=\\prod_{t=1}^{n}p(a_{t}|\\phi(a_{<t}),q,\\mathcal{C}),$$ |  | (5) |\n| --- | --- | --- | --- |\n\nwhere $a_{<t}$ denotes the set of answers that have been generated at time $t$, and $\\phi(\\cdot)$ denotes a prompting model that generates prompt vectors for answer generation at the $t$-th step. The prompting model shares parameters with the answering model, allowing for seamless integration. AmbigPrompt iteratively composes a new answer $a_{t}$, conceiving the prompt of previous answers, i.e., $\\phi(a_{<t})$, and appends $a_{t}$ to the answers set, till all feasible answers are found.  \n\nThe proposed framework is optimized in a two-stage manner: *task-adaptive post-pretraining* and *prompt-based tuning*. In the former stage, the model is trained on a large synthesized multi-answer QA dataset, while in the latter stage, the model is tuned on the annotated multi-answer QA dataset. We first detail the prompting model (\u00a7[3.1](#S3.SS1 \"3.1 Retrospective prompting mechanism for answer generation \u2023 3 AmbigPrompt \u2023 Answering Ambiguous Questions via Iterative Prompting\")) and the iterative question answering procedure (\u00a7[3.2](#S3.SS2 \"3.2 Answering ambiguous questions via iterative prompting \u2023 3 AmbigPrompt \u2023 Answering Ambiguous Questions via Iterative Prompting\")), and then introduce the optimization scheme (\u00a7[3.3](#S3.SS3 \"3.3 Optimization \u2023 3 AmbigPrompt \u2023 Answering Ambiguous Questions via Iterative Prompting\")).  \n\n[FIGURE S3.F3.g1]\n![Figure S3.F3.g1](./media/x3.png)\n\nFigure 3: Details of the retrospective prompting mechanism. The prompting model produces the prompt vectors $\\mathbf{E}$ by cross-attending the contextual representation $\\mathbf{X}$. And the answering model predicts a new answer $a_{t}$ using the prompt $\\mathbf{E}$. The prompting and answering models operate in an interleaving manner.\n[/FIGURE]\n\n### 3.1 Retrospective prompting mechanism for answer generation\n\nTo capture intricate dependencies among answers, we devise an interleaving answer-conditional prompting model $\\phi(a_{<t})$, which generates the prompt vector $\\mathbf{E}=\\phi(a_{<t})$ conditioned on antecedent generated answers $a_{<t}$, as depicted in Figure\u00a0[3](#S3.F3 \"Figure 3 \u2023 3 AmbigPrompt \u2023 Answering Ambiguous Questions via Iterative Prompting\"). Specifically, the prompting model $\\phi$ is a transformer encoder that shares the same parameters with the encoder of the answering model. $\\phi$ processes the $a_{<t}$ in three steps:  \n\n1. Templating answers. First, $a_{<t}$ is transformed into a text sequence $e=\\mathcal{T}(a_{<t})$ using a template $\\mathcal{T}$. Here we use semicolons to splice answers. \n2. Generating prompts. Then, given the answer sequence $e$ and context $X$ (i.e., the concatenated question and passages in Eq.\u00a0[1](#S2.E1 \"In 2.2 Answering model \u2023 2 Preliminaries \u2023 Answering Ambiguous Questions via Iterative Prompting\")), the prompting model $\\phi$ computes the hidden activations $\\mathbf{E}^{j}$ of each layer $j$ via cross-attending the contextual representation $\\mathbf{X}^{j-1}$:      |  | $$\\begin{split}\\mathbf{E}^{j}=\\operatorname{Attn}(Q(e)^{j},&\\operatorname{Cat}(K(e)^{j},\\mathbf{X}^{j-1}),\\\\ &\\operatorname{Cat}(V(e)^{j},\\mathbf{X}^{j-1})),\\end{split}$$ |  | (6) | | --- | --- | --- | --- |   where $Q(e)^{j}$, $K(e)^{j}$, and $V(e)^{j}$ denote the query, key, and value representations of $e$ in the $j$-th attention layer in the prompting model; $\\mathbf{X}^{j-1}{=}\\operatorname{Cat}(\\{\\mathbf{x}_{1}^{j-1},\\mathbf{x}_{2}^{j-1},\\ldots,\\mathbf{x}_{m}^{j-1}\\})$ denotes the concatenated context representations of the $(j{-}1)$-th layer in the answering model. We write $\\mathbf{E}$ for the last layer output of the prompting model. \n3. Prompting answering model. Finally, the generated prompt $\\mathbf{E}^{j}$ is prepended to the attention layer of the encoder $\\operatorname{Enc}$ of the answering model as in Eq.\u00a0[4](#S2.E4 \"In 2.3 Prompt-tuning \u2023 2 Preliminaries \u2023 Answering Ambiguous Questions via Iterative Prompting\"). Meanwhile, the decoder $\\operatorname{Dec}$ of answering model attends to $\\operatorname{Cat}(\\mathbf{E},\\mathbf{X})$ and generates the target answer $a_{t}$:      |  | $$p(a_{t}|\\phi(a_{<t}),q,\\mathcal{C})=\\operatorname{Dec}(\\operatorname{Cat}(\\mathbf{E},\\mathbf{X})).$$ |  | (7) | | --- | --- | --- | --- | \n\nCapturing long-range dependencies among derived answers via a retrospective prompting mechanism enables the answering model to compose new contents grounding on what has already been devised, and thus the model is able to strike a good relevance-diversity balance for answering ambiguous questions.  \n\n### 3.2 Answering ambiguous questions via iterative prompting\n\nGiven the input context, i.e., the question and retrieved evidential passages, AmbigPrompt iteratively performs attention operations over the input context and the generated answers, addressing the answer generation and prompt construction interactively. The key is to pass the attention activations between the prompting model and answering model so that they can inspect each other\u2019s internal states and make harmonious predictions. Specifically, we start from an empty answer set and progressively append newly generated answers to it. As depicted in Figure\u00a0[2](#S1.F2 \"Figure 2 \u2023 1 Introduction \u2023 Answering Ambiguous Questions via Iterative Prompting\"), in each iteration, we first use the previously generated answer sequence to obtain the introspective prompts, and then interwoven the resultant prompting vectors into the answering model to predict the next answer. Our algorithm terminates if the model reaches the [EOI] token.  \n\n### 3.3 Optimization\n\nTo enhance the pre-training model towards multi-answer QA, one straightforward approach is to leverage a question-answering dataset such as NQ\u00a0(Kwiatkowski et\u00a0al., [2019](#bib.bib15)) for domain-adaptive pre-training\u00a0(Min et\u00a0al., [2021](#bib.bib25)). However, the effectiveness of such a trivial approach is limited to the inherent defect of the one-pass prediction process; that is, the lack of the modeling capability of the interactions between answer generation and answer perception, which is critical to achieving superior performance in multi-QA scenarios. To explicitly align the pre-training objective to task-specific preferences, we further propose to conduct task-adaptive post-pretraining on pseudo multi-answer QA dataset, and then finetune the proposed model using the task data.  \n\n#### Task-adaptive post-pretraining.\n\nWe first pre-train the model on NQ, in which only one answer $\\mathcal{A}=\\{a_{1}\\}$ is labeled for each question $q$. To explicitly characterize the pretraining stage as the efforts for finding which part of preceding answers to interact with regarding the input context, we construct the pseudo multi-answer dataset $\\hat{\\mathcal{A}}$ for post-pretraining the proposed framework to mimic the iterative question answering process. Specifically, we first train an *auxiliary reader* $g(a|q,c_{i})$, which learns to find an answer from the passage $c_{i}$ given a question $q$. Then, we use this auxiliary reader to generate a pseudo answer for each retrieved passage in $\\mathcal{C}$:  \n\n|  | $$\\hat{\\mathcal{A}}=\\{\\hat{a}\\mid\\forall i\\in[1,m],\\hat{a}\\sim g(a|q,c_{i})\\},$$ |  | (8) |\n| --- | --- | --- | --- |\n\nwhere $\\hat{\\mathcal{A}}$ denotes the pseudo-answer set of $q$.  \n\nThen, we aggregate the generated answers to construct the previously known answers $a_{<t}$ in Eq.\u00a0[5](#S3.E5 \"In 3 AmbigPrompt \u2023 Answering Ambiguous Questions via Iterative Prompting\"). In particular, we randomly sample $t$ answers from $\\hat{\\mathcal{A}}$ and filter out those that are equivalent to the ground-truth answer $a_{1}$; we denote the sampled set as $\\hat{a}_{<t}$. With the pseudo answers, we define the post-pretraining objective as:  \n\n|  | $$\\mathcal{L}_{\\text{Pre}}=-\\log p(a_{1}|\\phi(\\hat{a}_{<t}),q,\\mathcal{C}),$$ |  | (9) |\n| --- | --- | --- | --- |\n\nwhere the number of answers in $\\hat{a}_{<t}$, i.e., $t$, is sampled from a Bernoulli distribution.  \n\n#### Prompt-based fine-tuning.\n\nWe fine-tune the pre-trained model on downstream multi-answer QA datasets. Specifically, in multi-answer QA, $n$ answers $\\mathcal{A}=\\{a_{1},a_{2},\\ldots,a_{n}\\}$ corresponding to a question $q$ are provided. The model is tuned by the following objective:  \n\n|  | $$\\mathcal{L}_{\\text{FT}}=-\\log p(a_{t}|\\phi(a_{<t}),q,\\mathcal{C}),$$ |  | (10) |\n| --- | --- | --- | --- |\n\nwhere $t\\in[1,n]$ is sampled from a Bernoulli distribution. Since $\\mathcal{A}$ is unordered, we shuffle $\\mathcal{A}$ when constructing the $a_{<t}$ and $a_{t}$ to improve the robustness. Besides, we explicitly optimize the model to generate [EOI] to stop the iteration. Specifically, we define a parameter $\\alpha\\sim\\mathcal{U}(0,1)$ and a threshold $\\lambda$, which controls the propensity of generating [EOI]. If $\\alpha<\\lambda$, we replace the $a_{t}$ and $a_{<t}$ as [EOI] and $\\mathcal{A}$, respectively.  \n\n## 4 Experimental Setup\n\n### 4.1 Datasets\n\nWe evaluate AmbigPrompt on the AmbigQA\u00a0(Min et\u00a0al., [2020](#bib.bib26)) and WebQSP\u00a0(tau Yih et\u00a0al., [2016](#bib.bib37)) datasets. AmbigQA: AmbigQA is constructed to address the ambiguity of questions in open-domain QA. It samples 14,042 questions from NQ-Open\u00a0(Kwiatkowski et\u00a0al., [2019](#bib.bib15)), and asks annotators to search for, navigate and read multiple Wikipedia pages to find as many answers as possible. WebQSP: WebQSP consists of questions from Google Suggest API, originally from Berant et\u00a0al. ([2013](#bib.bib1)). The answer is a set of distinct entities in Freebase; we use the modified versions by Min et\u00a0al. ([2021](#bib.bib25)), which recasts WebQSP as textual question answering based on Wikipedia.  \n\nThe statistical details of these two datasets and NQ are shown in Table\u00a0[1](#S4.T1 \"Table 1 \u2023 4.1 Datasets \u2023 4 Experimental Setup \u2023 Answering Ambiguous Questions via Iterative Prompting\").  \n\n[TABLE S4.T1]\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_th ltx_th_row ltx_border_tt\"></th>\n<th class=\"ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">NQ</span></th>\n<th class=\"ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">AmbigQA</span></th>\n<th class=\"ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">WebQSP</span></th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Training size</th>\n<td class=\"ltx_td ltx_align_right ltx_border_t\">307,373</td>\n<td class=\"ltx_td ltx_align_right ltx_border_t\">10,036</td>\n<td class=\"ltx_td ltx_align_right ltx_border_t\">2,752</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Validation size</th>\n<td class=\"ltx_td ltx_align_right\">6,000</td>\n<td class=\"ltx_td ltx_align_right\">2,002</td>\n<td class=\"ltx_td ltx_align_right\">245</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Test size</th>\n<td class=\"ltx_td ltx_align_right\">6,000</td>\n<td class=\"ltx_td ltx_align_right\">2,004</td>\n<td class=\"ltx_td ltx_align_right\">1,582</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Mean # Answers</th>\n<td class=\"ltx_td ltx_align_right\">1.0</td>\n<td class=\"ltx_td ltx_align_right\">2.2</td>\n<td class=\"ltx_td ltx_align_right\">22.6</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">Median # Answers</th>\n<td class=\"ltx_td ltx_align_right ltx_border_bb\">1.0</td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb\">2.0</td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb\">1.0</td>\n</tr>\n</tbody>\n</table>\n</span></div>\n\nTable 1: Data statistics of NQ, AmbigQA, and WebQSP.\n[/TABLE]\n\n### 4.2 Evaluation metrics\n\nFollowing previous studies\u00a0(Min et\u00a0al., [2020](#bib.bib26)), we adopt F1 as the evaluation metric, which measures the precision and recall between the ground-truth answers and the predicted answers. The test set is further divided into two subsets: *full* and *multi*. The *full* subset evaluates the model on all the questions in the test set, while the *multi* subset evaluates the model on the questions with multiple answers (i.e., $n>1$). To assess the computational efficiency of various approaches, we also report the number of parameters, average latency, and peak memory usage during model inference. All the models are tested on the same device. We estimate the latency and memory usage of those baselines without public code using randomly initialized models since these metrics are independent of their parameters given a fixed number of encoded tokens and decoding length.  \n\n[TABLE S4.T2]\n\n<table class=\"ltx_tabular ltx_centering ltx_align_middle\">\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Methods</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">AmbigQA</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">WebQSP</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">#Params</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Latency</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Memory</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_right ltx_border_t\">Full</td>\n<td class=\"ltx_td ltx_align_right ltx_border_t\">Multi</td>\n<td class=\"ltx_td ltx_align_right ltx_border_t\">Full</td>\n<td class=\"ltx_td ltx_align_right ltx_border_t\">Multi</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_t\"><em class=\"ltx_emph ltx_font_italic\">High-capacity baselines</em></td>\n<td class=\"ltx_td ltx_border_t\"></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left\">JPR<sup class=\"ltx_sup\">\u2020</sup>\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Min et\u00a0al., <a class=\"ltx_ref\">2021</a>)</cite>\n</td>\n<td class=\"ltx_td ltx_align_right\">48.5</td>\n<td class=\"ltx_td ltx_align_right\">37.6</td>\n<td class=\"ltx_td ltx_align_right\">53.1</td>\n<td class=\"ltx_td ltx_align_right\">47.2</td>\n<td class=\"ltx_td ltx_align_right\">3B</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>8.7</mn><mo>\u00d7</mo></mrow><annotation>8.7\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">0.88s</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>2.3</mn><mo>\u00d7</mo></mrow><annotation>2.3\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">14GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>3.5</mn><mo>\u00d7</mo></mrow><annotation>3.5\\times</annotation></semantics></math></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left\">RECTIFY<sup class=\"ltx_sup\">\u2020</sup>\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Shao and Huang, <a class=\"ltx_ref\">2022</a>)</cite>\n</td>\n<td class=\"ltx_td ltx_align_right\">52.1</td>\n<td class=\"ltx_td ltx_align_right\">41.6</td>\n<td class=\"ltx_td ltx_align_right\">55.8</td>\n<td class=\"ltx_td ltx_align_right\">48.8</td>\n<td class=\"ltx_td ltx_align_right\">6B</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>17.4</mn><mo>\u00d7</mo></mrow><annotation>17.4\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">19.72s</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>51.3</mn><mo>\u00d7</mo></mrow><annotation>51.3\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">14GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>3.5</mn><mo>\u00d7</mo></mrow><annotation>3.5\\times</annotation></semantics></math></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_t\"><em class=\"ltx_emph ltx_font_italic\">Comparable low-capacity baselines</em></td>\n<td class=\"ltx_td ltx_border_t\"></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left\">DPR\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Karpukhin et\u00a0al., <a class=\"ltx_ref\">2021</a>)</cite>\n</td>\n<td class=\"ltx_td ltx_align_right\">38.9</td>\n<td class=\"ltx_td ltx_align_right\">29.9</td>\n<td class=\"ltx_td ltx_align_right\">44.7</td>\n<td class=\"ltx_td ltx_align_right\">35.5</td>\n<td class=\"ltx_td ltx_align_right\">345M</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.0</mn><mo>\u00d7</mo></mrow><annotation>1.0\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">0.37s</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.0</mn><mo>\u00d7</mo></mrow><annotation>1.0\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">4GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.0</mn><mo>\u00d7</mo></mrow><annotation>1.0\\times</annotation></semantics></math></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left\">SpanSeqGen\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Min et\u00a0al., <a class=\"ltx_ref\">2020</a>)</cite>\n</td>\n<td class=\"ltx_td ltx_align_right\">39.7</td>\n<td class=\"ltx_td ltx_align_right\">29.3</td>\n<td class=\"ltx_td ltx_align_right\">48.8</td>\n<td class=\"ltx_td ltx_align_right\">36.1</td>\n<td class=\"ltx_td ltx_align_right\">400M</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.2</mn><mo>\u00d7</mo></mrow><annotation>1.2\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">\u00a0\u00a00.49s</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.3</mn><mo>\u00d7</mo></mrow><annotation>1.3\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">5GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.3</mn><mo>\u00d7</mo></mrow><annotation>1.3\\times</annotation></semantics></math></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left\">FiD-Base\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Izacard and Grave, <a class=\"ltx_ref\">2021b</a>)</cite>\n</td>\n<td class=\"ltx_td ltx_align_right\">45.5</td>\n<td class=\"ltx_td ltx_align_right\">35.8</td>\n<td class=\"ltx_td ltx_align_right\">52.6</td>\n<td class=\"ltx_td ltx_align_right\">46.3</td>\n<td class=\"ltx_td ltx_align_right\">220M</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>0.6</mn><mo>\u00d7</mo></mrow><annotation>0.6\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">0.38s</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.0</mn><mo>\u00d7</mo></mrow><annotation>1.0\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">4GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.0</mn><mo>\u00d7</mo></mrow><annotation>1.0\\times</annotation></semantics></math></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left\">Refuel<sup class=\"ltx_sup\">\u2020</sup>\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Gao et\u00a0al., <a class=\"ltx_ref\">2021b</a>)</cite>\n</td>\n<td class=\"ltx_td ltx_align_right\">48.3</td>\n<td class=\"ltx_td ltx_align_right\">37.3</td>\n<td class=\"ltx_td ltx_align_right\">\u2013</td>\n<td class=\"ltx_td ltx_align_right\">\u2013</td>\n<td class=\"ltx_td ltx_align_right\">400M</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.2</mn><mo>\u00d7</mo></mrow><annotation>1.2\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">22.19s</td>\n<td class=\"ltx_td ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>58.6</mn><mo>\u00d7</mo></mrow><annotation>58.6\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right\">8GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>2.0</mn><mo>\u00d7</mo></mrow><annotation>2.0\\times</annotation></semantics></math></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_bb ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">AmbigPrompt</span></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">48.7</span></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">38.8</span></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">53.2</span></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">47.9</span></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\">220M</td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>0.6</mn><mo>\u00d7</mo></mrow><annotation>0.6\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\">0.68s</td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.8</mn><mo>\u00d7</mo></mrow><annotation>1.8\\times</annotation></semantics></math></td>\n<td class=\"ltx_td ltx_align_right ltx_border_bb ltx_border_t\">4GB</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_right ltx_border_bb ltx_border_t\"><math class=\"ltx_math_unparsed\"><semantics><mrow><mn>1.0</mn><mo>\u00d7</mo></mrow><annotation>1.0\\times</annotation></semantics></math></td>\n</tr>\n</tbody>\n</table>\n\nTable 2: Results on AmbigQA dev and WebQSP test in terms of effectiveness and efficiency. Full and Multi denote the full set and multi-answer set, respectively. The reported value is F1. Methods with \u2020 have no publicly available codes; therefore, we estimate the latency and memory footprint with randomly initialized parameters.\nWe divide baselines into two groups:\n(i) *high-capacity baselines* that use significantly larger models than AmbigPrompt, and\n(ii) *comparable low-capacity baselines* that use a low-capacity model like AmbigPrompt and can be reasonably compared with AmbigPrompt.\nBoldface indicates best performance among comparable baselines.\n[/TABLE]\n\n### 4.3 Baselines\n\nThe following models are adopted as baselines: DPR\u00a0(Karpukhin et\u00a0al., [2021](#bib.bib13)): A dual-encoder is trained using contrastive loss for passage retrieval, and a BERT-based reader is used for answer extraction. SpanSeqGen\u00a0(Min et\u00a0al., [2020](#bib.bib26)): DPR reranks the passages, and a BART-based generator is used for answer generation. FiD\u00a0(Izacard and Grave, [2021b](#bib.bib11)): The retrieved passages are encoded by a T5 encoder independently, and the representations are then concatenated and fed into the T5 Decoder to generate answers. Refuel\u00a0(Gao et\u00a0al., [2021b](#bib.bib7)): A question disambiguation module is proposed to generate disambiguated questions. The disambiguated questions are then used to find more answers. JPR\u00a0(Min et\u00a0al., [2021](#bib.bib25)): JPR is a passage reranker that reranks the passages using an autoregressive model. With the additional reranking stage, JPR selects ten diverse passages from 100 retrieved passages and uses a T5-3B FiD answering model to compose answers in one pass. RECTIFY\u00a0(Shao and Huang, [2022](#bib.bib33)): RECTIFY proposes the recall-then-verify framework, which separates the reasoning process of each answer. An answering model operates on each passage to recall surplus answers. Then, a sophisticated verifier based on T5-3B FiD verifies each answer with an aggregation module.  \n\nWe divide the baseline models into two categories depending on the number of parameters of the models: (i) *high-capacity baselines* that use large models with billions of parameters, while requiring more computational resources and memory; (ii) *comparable low-capacity baselines* that use low-capacity models with a similar number of parameters and computational effort as AmbigPrompt, which can be reasonably compared with AmbigPrompt.  \n\n### 4.4 Implementation details\n\nWe choose T5-Base\u00a0(Raffel et\u00a0al., [2020](#bib.bib30)) as the backbone of the answering model. Regarding the passage retrieval model, we fine-tune the pre-trained model from Gao and Callan ([2021](#bib.bib5)) on the NQ dataset (See Appendix\u00a0[C](#A3 \"Appendix C Retrieval results \u2023 Answering Ambiguous Questions via Iterative Prompting\") for details). The retrieval corpus is the English Wikipedia on 12/20/2018, and the documents are split into chunks with 100 words following Karpukhin et\u00a0al. ([2021](#bib.bib13)). We set $m{=}100$, $\\lambda{=}0.5$, the batch size to $32$, and the model is trained using the AdamW optimizer\u00a0(Loshchilov and Hutter, [2017](#bib.bib24)) with a constant learning rate of $5e{-}5$. We train the model up to 5k steps on on 4 V100-16G GPUs and choose the hyperparameters and checkpoints on the validation set.222Since we test on the AmbigQA dev set, we slice about 1k examples in the AmbigQA training set as the validation set.  \n\n## 5 Experimental Results\n\n### 5.1 Main results\n\nTable [2](#S4.T2 \"Table 2 \u2023 4.2 Evaluation metrics \u2023 4 Experimental Setup \u2023 Answering Ambiguous Questions via Iterative Prompting\") reports the evaluation results on AmbigQA and WebQSP. Based on the results, we have three main observations.  \n\nFirst, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 34.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 1% and 2% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.\n\nSecond, AmbigPrompt uses fewer resources compared to previous high-capacity models. AmbigPrompt uses a lightweight model with 220M parameters. Still, AmbigPrompt achieves superior performance compared to the high-capacity models, e.g., JPR, that use 3B parameters. The state-of-the-art model RECTIFY uses 6B parameters (3B for the answering model and 3B for the verifier), which is $27\\times$ as much as ours, significantly increasing the training and inference overhead. Similar results are witnessed in terms of latency. In particular, RECTIFY is $29\\times$ slower than our model due to the heavy design of the answering model and verifier. Refuel\u2019s iterative passage retrieval and clarifying question generation procedure results in a $32.6\\times$ latency compared with our approach. Finally, the comparison of peak memory usage also confirms our approach\u2019s lightweight nature. The lightweight design allows our approach to be adapted to academically accessible devices and reduces the carbon footprint for model training and deployment.  \n\nThird, we find that AmbigPrompt achieves a better resource-performance balance. In Figure\u00a0[4](#S5.F4 \"Figure 4 \u2023 5.1 Main results \u2023 5 Experimental Results \u2023 Answering Ambiguous Questions via Iterative Prompting\")\u00a0(a), we display the existing methods under the speed-performance coordinate system. Note that we place RECTIFY with different sizes (i.e., latency) on the diagram according to Shao and Huang ([2022](#bib.bib33)). AmbigPrompt improves the optimal latency-performance curve (the dashed lines), especially on the multi-answer test set, demonstrating the effectiveness of our approach in answering ambiguous questions.  \n\n[FIGURE S5.F4.g1]\n![Figure S5.F4.g1](./media/x4.png)\n\nFigure 4: (a) Latency (in log scale) versus performance (F1) on AmbigQA full dev and multi dev. The size of the circle indicates the number of parameters of these models. (b) Dataset size (in %) versus performance (F1) on AmbigQA full dev and multi dev.\n[/FIGURE]\n\n### 5.2 Low-resource setting\n\nFigure\u00a0[4](#S5.F4 \"Figure 4 \u2023 5.1 Main results \u2023 5 Experimental Results \u2023 Answering Ambiguous Questions via Iterative Prompting\")\u00a0(b) shows the results under different training data sizes to investigate the effectiveness of the proposed method in the low-resource setting. The proposed method achieves favorable results for different data sizes. Remarkably, AmbigPrompt achieves promising performance with little data, surpassing the fully supervised high-capacity model JPR on a multi-answer test set. This result suggests that the proposed prompting mechanism can better elicit the capabilities of the pre-trained model and effectively adapt the model trained on single-answer QA data to multi-answer scenarios.   \n\n[TABLE S5.T3]\n\n<div class=\"ltx_inline-block ltx_align_center ltx_transformed_outer\"><span class=\"ltx_transformed_inner\">\n<table class=\"ltx_tabular ltx_guessed_headers ltx_align_middle\">\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Methods</span></th>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">AmbigQA</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">WebQSP</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center ltx_border_t\">Full</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">Multi</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">Full</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_t\">Multi</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">AmbigPrompt</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">48.7</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">38.8</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">53.3</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_t\">46.7</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">- w/o task-adaptive pre-training</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">42.8</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">32.7</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">42.5</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_t\">38.7</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">- w/o prompting model</th>\n<td class=\"ltx_td ltx_align_center\">46.0</td>\n<td class=\"ltx_td ltx_align_center\">34.3</td>\n<td class=\"ltx_td ltx_align_center\">49.7</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\">44.6</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">- w/o interleaving prompting</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">47.8</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">36.9</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">50.9</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_bb\">45.4</td>\n</tr>\n</tbody>\n</table>\n</span></div>\n\nTable 3: Ablation study. The base model is compared with several ablative variants on two datasets.\n[/TABLE]\n\n### 5.3 Ablation study\n\nTo understand the contribution of each component of AmbigPrompt, we conduct an ablation study. The results are listed in Table\u00a0[3](#S5.T3 \"Table 3 \u2023 5.2 Low-resource setting \u2023 5 Experimental Results \u2023 Answering Ambiguous Questions via Iterative Prompting\"). The compared variants and the findings are:   \n\nW/o task-adaptive pre-training. The models are trained only on multi-QA data with $\\mathcal{L}_{PT}$. A notable performance decline can be seen. This observation suggests that task-adaptive pre-training is an important contributor to the model\u2019s performance since the size of multi-answer QA data is small.  \n\nW/o prompting model. We remove the prompting model in this variant and instantiate the learnable prompt vector to each step $t$ separately, like Liu et\u00a0al. ([2021a](#bib.bib21)). The performance drops by about 3% and 4% on the two datasets, respectively. The results verify the effectiveness of the proposed answer-conditional prompting mechanism.  \n\nW/o interleaving prompting. We remove the interaction mechanism between the prompting model and answering model, i.e., the FiD encoder encodes the $e$ and $X$ independently without cross-attention. The results drop by about 2% and 2% on two datasets, respectively, which reveals that enabling the answering model to generate new answers conditioned on the introspective prompts effectively improves the model\u2019s performance.  \n\n### 5.4 Analytical experiments\n\nConceptually, our proposed framework AmbigPrompt equips the FiD model with the ability to progressively compose the answers using retrospective prompts, i.e., iterative prompt learning. To further analyze the capability of such an iterative prompt learning approach in managing the relevance-diversity trade-off, we present the F1, precision, recall, and average answer numbers of AmbigPrompt and FiD model variants in Figure\u00a0[5](#S5.F5 \"Figure 5 \u2023 5.4 Analytical experiments \u2023 5 Experimental Results \u2023 Answering Ambiguous Questions via Iterative Prompting\"). In particular, FiD-multi denotes a variant of FiD in which we reduce the generation probability of the end-of-sequence token </s> to ensure that the number of generated answers is approximately the same as AmbigPrompt. We see that FiD-multi obtains comparable recall but gets significantly lower precision. In contrast, AmbigPrompt generates more answers than FiD without sacrificing precision, indicating that the designed iterative prompting mechanism induces the model with a superior ability to manage the trade-off between relevancy and diversity for ambiguous question answering.  \n\n[FIGURE S5.F5.g1]\n![Figure S5.F5.g1](./media/recall.png)\n\nFigure 5: The F1, Precision, Recall, and the average number of answers (#Answers) of AmbigPrompt and FiD model variants on AmbigQA dev.\n[/FIGURE]\n\n## 6 Related work\n\n### 6.1 Ambiguous question answering\n\nIn open-domain QA, given a question about any topic, the model finds the answer from a large knowledge corpus\u00a0(Chen et\u00a0al., [2017](#bib.bib4)). Typically, a retrieval model and an answering model are employed. The two modules can be trained separately\u00a0(Karpukhin et\u00a0al., [2021](#bib.bib13); Izacard and Grave, [2021b](#bib.bib11); Qu et\u00a0al., [2021](#bib.bib29)) or jointly\u00a0(Lee et\u00a0al., [2022](#bib.bib16); Lewis et\u00a0al., [2020](#bib.bib19); Izacard and Grave, [2021a](#bib.bib10)). Ambiguity is inherent to open-domain QA; especially when exploring new topics, it can be difficult to ask questions that have a single, unambiguous answer\u00a0(Min et\u00a0al., [2020](#bib.bib26); Rubin et\u00a0al., [2022](#bib.bib31)). Min et\u00a0al. ([2020](#bib.bib26)) identify the challenge of *multi-answer QA* and collect the dataset AmbigQA. Based on that, Min et\u00a0al. ([2021](#bib.bib25)) propose an autoregressive passage reranking model JPR, which reranks the top-retrieved passages and improves their diversity. Gao et\u00a0al. ([2021b](#bib.bib7)) propose a round-trip prediction approach, where clarification questions are generated and fed back into the model to find more answers. Shao and Huang ([2022](#bib.bib33)) propose a recall-and-verify framework, where surplus answers are generated first, and a verifier model then determines each candidate answer. Compared with existing methods, we propose a lightweight yet effective approach to answering ambiguous questions by iterative prompting.  \n\n### 6.2 Prompt-based learning\n\nPrompt-based learning has received much attention recently\u00a0(Liu et\u00a0al., [2021a](#bib.bib21)). Existing studies on prompt-based learning mainly focus on discrete and continuous prompts. The former designs text-based prompts\u00a0(Jiang et\u00a0al., [2020](#bib.bib12); Gao et\u00a0al., [2021a](#bib.bib6); Schick and Sch\u00fctze, [2021](#bib.bib32)), while the latter prepend a learnable prompt vector to word embeddings\u00a0(Lester et\u00a0al., [2021](#bib.bib18); Liu et\u00a0al., [2021b](#bib.bib23)) or attention layers\u00a0(Li and Liang, [2021](#bib.bib20); Liu et\u00a0al., [2022](#bib.bib22)). Prompt-based learning has demonstrated advantages in low-parameter tuning\u00a0(He et\u00a0al., [2022](#bib.bib8)) and few-shot/zero-shot performance\u00a0(Brown et\u00a0al., [2020](#bib.bib2); Wei et\u00a0al., [2022a](#bib.bib39)). We propose an iterative prompting method for multi-answer QA based on answer-conditional continuous prompts.  \n\n### 6.3 Iterative generation\n\nIterative generation (a.k.a.\u00a0progressive generation) aims to decompose a challenging generation task into multiple steps and progressively produce the target sequence. Iterative generation has been applied to the tasks of machine translation\u00a0(Lee et\u00a0al., [2018](#bib.bib17)), controllable text generation\u00a0(Casas et\u00a0al., [2020](#bib.bib3); Zhang et\u00a0al., [2020](#bib.bib43)), storytelling\u00a0(Hua and Wang, [2020](#bib.bib9); Tan et\u00a0al., [2021](#bib.bib36)), data-to-text\u00a0(Kasner and Dusek, [2020](#bib.bib14)), etc. Recently, Wang et\u00a0al. ([2022](#bib.bib38)) introduced an iterative prompting framework to progressively elicit knowledge from language models for commonsense reasoning and multi-hop question answering tasks\u00a0(Qi et\u00a0al., [2019](#bib.bib28); Xiong et\u00a0al., [2021](#bib.bib41)). Compared to existing work, we propose an answer-conditional prompting model and an effective task-specific pre-training scheme for multi-answer QA.  \n\n## 7 Conclusions\n\nIn this paper, we have proposed AmbigPrompt for multi-answer QA. AmbigPrompt is a simple yet effective model that answers ambiguous questions by iterative prompting. We have proposed an answer-conditional prompting model for prompt generation, and a task-adaptive post-pretraining scheme for model training. Extensive experiments suggest that AmbigPrompt achieves comparable performance as high-capacity models and achieves the best results in a low-resource setting.  \n\n## Limitations\n\nThe limitations of this paper include the absence of experiments on large language models. Previous studies have shown that using high-capacity pre-trained language models can significantly improve the accuracy of answers but also entails an increase in computational overhead. Due to (academic) limitations of computational resources, this paper employs a low-capacity T5 model for experiments. Our experiments have suggested that the proposed iterative prompting method that works with the low-capacity model can achieve comparable results with baseline methods equipping with large models.  \n\nIn future work, we would like to scale up the proposed model to improve the model\u2019s performance.  Recent research on large language models (LLMs) has shown that they can learn from few examples and reason well. We believe that it is worth exploring ways to enhance the prompting of LLMs to improve their completeness when responding to ambiguous questions and reduce model hallucination in generation\u00a0(OpenAI, [2023](#bib.bib27); Zhao et\u00a0al., [2023](#bib.bib44); Sun et\u00a0al., [2023](#bib.bib35)). Another direction worth exploring in the future is the application in low-resource scenarios, such as low-resource languages. Low-resources in our study are characterized by limited multi-answer-QA annotations, which aims to examine how data size impacts model performance. Other low-resource languages may behave differently with less training data and large models\u00a0(Xue et\u00a0al., [2020](#bib.bib42); Sun et\u00a0al., [2021](#bib.bib34)). Besides, we would like to explore more effective prompting methods, such as chain-of-thought prompting\u00a0(Wei et\u00a0al., [2022b](#bib.bib40)).  \n\n## Ethics Statement\n\nThe paper has proposed a question-answering model, which is intended to answer factoid open-domain questions. The model-predicted answers still have a considerable amount of misinformation. Besides, the proposed models rely on pre-trained question-answering models, which are trained on large-scale web data that is known to contain biased or discriminatory content.  \n\n## Acknowledgements\n\nThis work was supported by the National Key R&D Program of China with grant No. 2020YFB1406704, the Natural Science Foundation of China (62272274, 61972234, 62072279, 62102234, 62202271), the Natural Science Foundation of Shandong Province (ZR2022QF004), the Key Scientific and Technological Innovation Program of Shandong Province (2019JZZY010129), the Fundamental Research Funds of Shandong University, the Hybrid Intelligence Center, a 10-year program funded by the Dutch Ministry of Education, Culture and Science through the Netherlands Organization for Scientific Research, <https://hybrid-intelligence-centre.nl>.  \n\nAll content represents the opinion of the authors, which is not necessarily shared or endorsed by their respective employers and/or sponsors.  \n\n## References\n\n* Berant et\u00a0al. (2013)  Jonathan Berant, Andrew\u00a0K. Chou, Roy Frostig, and Percy Liang. 2013.   Semantic parsing on freebase from question-answer pairs.   In *EMNLP*. \n* Brown et\u00a0al. (2020)  Tom\u00a0B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, T.\u00a0J. Henighan, Rewon Child, Aditya Ramesh, Daniel\u00a0M. Ziegler, Jeff Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, and Dario Amodei. 2020.   Language models are few-shot learners.   In *NeurIPS*. \n* Casas et\u00a0al. (2020)  Noe Casas, Jos\u00e9 A.\u00a0R. Fonollosa, and Marta\u00a0Ruiz Costa-juss\u00e0. 2020.   Syntax-driven iterative expansion language models for controllable text generation.   In *SPNLP*. \n* Chen et\u00a0al. (2017)  Danqi Chen, Adam Fisch, Jason Weston, and Antoine Bordes. 2017.   Reading wikipedia to answer open-domain questions.   In *ACL*. \n* Gao and Callan (2021)  Luyu Gao and Jamie Callan. 2021.   Unsupervised corpus aware language model pre-training for dense passage retrieval.   In *ACL*. \n* Gao et\u00a0al. (2021a)  Tianyu Gao, Adam Fisch, and Danqi Chen. 2021a.   Making pre-trained language models better few-shot learners.   In *ACL*. \n* Gao et\u00a0al. (2021b)  Yifan Gao, Henghui Zhu, Patrick Ng, C\u00edcero\u00a0Nogueira dos Santos, Zhiguo Wang, Feng Nan, Dejiao Zhang, Ramesh Nallapati, Andrew\u00a0O. Arnold, and Bing Xiang. 2021b.   Answering ambiguous questions through generative evidence fusion and round-trip prediction.   In *ACL*. \n* He et\u00a0al. (2022)  Junxian He, Chunting Zhou, Xuezhe Ma, Taylor Berg-Kirkpatrick, and Graham Neubig. 2022.   Towards a unified view of parameter-efficient transfer learning.   In *ICLR*. \n* Hua and Wang (2020)  Xinyu Hua and Lu\u00a0Wang. 2020.   Pair: Planning and iterative refinement in pre-trained transformers for long text generation.   In *EMNLP*. \n* Izacard and Grave (2021a)  Gautier Izacard and Edouard Grave. 2021a.   Distilling knowledge from reader to retriever for question answering.   In *ICLR*. \n* Izacard and Grave (2021b)  Gautier Izacard and Edouard Grave. 2021b.   Leveraging passage retrieval with generative models for open domain question answering.   In *EACL*. \n* Jiang et\u00a0al. (2020)  Zhengbao Jiang, Frank\u00a0F. Xu, J.\u00a0Araki, and Graham Neubig. 2020.   How can we know what language models know?   *TACL*, 8:423\u2013438. \n* Karpukhin et\u00a0al. (2021)  Vladimir Karpukhin, Barlas O\u011fuz, Sewon Min, Patrick Lewis, Ledell\u00a0Yu Wu, Sergey Edunov, Danqi Chen, and Wen tau Yih. 2021.   Dense passage retrieval for open-domain question answering.   In *NAACL*. \n* Kasner and Dusek (2020)  Zden\u011bk Kasner and Ondrej Dusek. 2020.   Data-to-text generation with iterative text editing.   In *INLG*. \n* Kwiatkowski et\u00a0al. (2019)  Tom Kwiatkowski, Jennimaria Palomaki, Olivia Redfield, Michael Collins, Ankur\u00a0P. Parikh, Chris Alberti, Danielle Epstein, Illia Polosukhin, Jacob Devlin, Kenton Lee, Kristina Toutanova, Llion Jones, Matthew Kelcey, Ming-Wei Chang, Andrew\u00a0M. Dai, Jakob Uszkoreit, Quoc\u00a0V. Le, and Slav Petrov. 2019.   Natural questions: A benchmark for question answering research.   *TACL*, 7:453\u2013466. \n* Lee et\u00a0al. (2022)  Haejun Lee, Akhil Kedia, Jongwon Lee, Ashwin Paranjape, Christopher\u00a0D. Manning, and Kyoung-Gu Woo. 2022.   You only need one model for open-domain question answering.   In *EMNLP*. \n* Lee et\u00a0al. (2018)  Jason Lee, Elman Mansimov, and Kyunghyun Cho. 2018.   Deterministic non-autoregressive neural sequence modeling by iterative refinement.   In *EMNLP*. \n* Lester et\u00a0al. (2021)  Brian Lester, Rami Al-Rfou, and Noah Constant. 2021.   The power of scale for parameter-efficient prompt tuning.   In *EMNLP*. \n* Lewis et\u00a0al. (2020)  Patrick Lewis, Ethan Perez, Aleksandara Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Kuttler, Mike Lewis, Wen tau Yih, Tim Rockt\u00e4schel, Sebastian Riedel, and Douwe Kiela. 2020.   Retrieval-augmented generation for knowledge-intensive nlp tasks.   In *NeurIPS*. \n* Li and Liang (2021)  Xiang\u00a0Lisa Li and Percy Liang. 2021.   Prefix-tuning: Optimizing continuous prompts for generation.   In *ACL*. \n* Liu et\u00a0al. (2021a)  Pengfei Liu, Weizhe Yuan, Jinlan Fu, Zhengbao Jiang, Hiroaki Hayashi, and Graham Neubig. 2021a.   Pre-train, prompt, and predict: A systematic survey of prompting methods in natural language processing.   *arXiv preprint arXiv:2107.13586*. \n* Liu et\u00a0al. (2022)  Xiao Liu, Kaixuan Ji, Yicheng Fu, Zhengxiao Du, Zhilin Yang, and Jie Tang. 2022.   P-tuning v2: Prompt tuning can be comparable to fine-tuning universally across scales and tasks.   In *ACL*. \n* Liu et\u00a0al. (2021b)  Xiao Liu, Yanan Zheng, Zhengxiao Du, Ming Ding, Yujie Qian, Zhilin Yang, and Jie Tang. 2021b.   GPT understands, too.   *arXiv preprint arXiv:2103.10385*. \n* Loshchilov and Hutter (2017)  Ilya Loshchilov and Frank Hutter. 2017.   Decoupled weight decay regularization.   In *ICLR*. \n* Min et\u00a0al. (2021)  Sewon Min, Kenton Lee, Ming-Wei Chang, Kristina Toutanova, and Hannaneh Hajishirzi. 2021.   Joint passage ranking for diverse multi-answer retrieval.   In *EMNLP*. \n* Min et\u00a0al. (2020)  Sewon Min, Julian Michael, Hannaneh Hajishirzi, and Luke Zettlemoyer. 2020.   Ambigqa: Answering ambiguous open-domain questions.   In *EMNLP*. \n* OpenAI (2023)  OpenAI. 2023.   GPT-4 technical report.   *arXiv preprint arXiv:2303.08774*. \n* Qi et\u00a0al. (2019)  Peng Qi, Xiaowen Lin, Leo Mehr, Zijian Wang, and Christopher\u00a0D. Manning. 2019.   Answering complex open-domain questions through iterative query generation.   In *EMNLP*. \n* Qu et\u00a0al. (2021)  Yingqi Qu, Yuchen Ding, Jing Liu, Kai Liu, Ruiyang Ren, Xin Zhao, Daxiang Dong, Hua Wu, and Haifeng Wang. 2021.   Rocketqa: An optimized training approach to dense passage retrieval for open-domain question answering.   In *NAACL*. \n* Raffel et\u00a0al. (2020)  Colin Raffel, Noam\u00a0M. Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter\u00a0J. Liu. 2020.   Exploring the limits of transfer learning with a unified text-to-text transformer.   *JMLR*. \n* Rubin et\u00a0al. (2022)  Samuel\u00a0J. Rubin, Ori Yoran, Tomer Wolfson, Jonathan Herzig, and Jonathan Berant. 2022.   QAMPARI: An open-domain question answering benchmark for questions with many answers from multiple paragraphs.   *arXiv preprint arXiv:2205.12665*. \n* Schick and Sch\u00fctze (2021)  Timo Schick and Hinrich Sch\u00fctze. 2021.   It\u2019s not just size that matters: Small language models are also few-shot learners.   In *NAACL*. \n* Shao and Huang (2022)  Zhihong Shao and Minlie Huang. 2022.   Answering open-domain multi-answer questions via a recall-then-verify framework.   In *ACL*. \n* Sun et\u00a0al. (2021)  Weiwei Sun, Chuan Meng, Qi\u00a0Meng, Zhaochun Ren, Pengjie Ren, Zhumin Chen, and Maarten de\u00a0Rijke. 2021.   Conversations powered by cross-lingual knowledge.   In *SIGIR*. \n* Sun et\u00a0al. (2023)  Weiwei Sun, Zhengliang Shi, Shen Gao, Pengjie Ren, Maarten de\u00a0Rijke, and Zhaochun Ren. 2023.   Contrastive learning reduces hallucination in conversations.   In *AAAI*. \n* Tan et\u00a0al. (2021)  Bowen Tan, Zichao Yang, Maruan Al-Shedivat, Eric\u00a0P. Xing, and Zhiting Hu. 2021.   Progressive generation of long text with pretrained language models.   In *NAACL*. \n* tau Yih et\u00a0al. (2016)  Wen tau Yih, Matthew Richardson, Christopher Meek, Ming-Wei Chang, and Jina Suh. 2016.   The value of semantic parse labeling for knowledge base question answering.   In *ACL*. \n* Wang et\u00a0al. (2022)  Boshi Wang, Xiang Deng, and Huan Sun. 2022.   Shepherd pre-trained language models to develop a train of thought: An iterative prompting approach.   In *EMNLP*. \n* Wei et\u00a0al. (2022a)  Jason Wei, Maarten Bosma, Vincent Zhao, Kelvin Guu, Adams\u00a0Wei Yu, Brian Lester, Nan Du, Andrew\u00a0M. Dai, and Quoc\u00a0V. Le. 2022a.   Finetuned language models are zero-shot learners.   In *ICLR*. \n* Wei et\u00a0al. (2022b)  Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Ed\u00a0Huai hsin Chi, F.\u00a0Xia, Quoc Le, and Denny Zhou. 2022b.   Chain of thought prompting elicits reasoning in large language models.   In *NeurIPS*. \n* Xiong et\u00a0al. (2021)  Wenhan Xiong, Xiang\u00a0Lorraine Li, Srini Iyer, Jingfei Du, Patrick Lewis, William\u00a0Yang Wang, Yashar Mehdad, Wen tau Yih, Sebastian Riedel, Douwe Kiela, and Barlas O\u011fuz. 2021.   Answering complex open-domain questions with multi-hop dense retrieval.   In *ICLR*. \n* Xue et\u00a0al. (2020)  Linting Xue, Noah Constant, Adam Roberts, Mihir Kale, Rami Al-Rfou, Aditya Siddhant, Aditya Barua, and Colin Raffel. 2020.   mt5: A massively multilingual pre-trained text-to-text transformer.   In *NAACL*. \n* Zhang et\u00a0al. (2020)  Yizhe Zhang, Guoyin Wang, Chunyuan Li, Zhe Gan, Chris Brockett, and Bill Dolan. 2020.   Pointer: Constrained progressive text generation via insertion-based generative pre-training.   In *EMNLP*. \n* Zhao et\u00a0al. (2023)  Wayne\u00a0Xin Zhao, Kun Zhou, Junyi Li, Tianyi Tang, Xiaolei Wang, Yupeng Hou, Yingqian Min, Beichen Zhang, Junjie Zhang, Zican Dong, Yifan Du, Chen Yang, Yushuo Chen, Zhipeng Chen, Jinhao Jiang, Ruiyang Ren, Yifan Li, Xinyu Tang, Zikang Liu, Peiyu Liu, Jian-Yun Nie, and Ji-Rong Wen. 2023.   A survey of large language models.   *arXiv preprint arXiv:2303.18223*. \n",
+        "structured_md": {
+            "title": [
+                1,
+                1
+            ],
+            "abstract": [
+                3,
+                6
+            ],
+            "sections": {
+                "1 Introduction": [
+                    7,
+                    30
+                ],
+                "2 Preliminaries": [
+                    31,
+                    62
+                ],
+                "3 AmbigPrompt": [
+                    63,
+                    124
+                ],
+                "4 Experimental Setup": [
+                    125,
+                    329
+                ],
+                "5 Experimental Results": [
+                    330,
+                    422
+                ],
+                "6 Related work": [
+                    423,
+                    436
+                ],
+                "7 Conclusions": [
+                    437,
+                    440
+                ],
+                "Limitations": [
+                    441,
+                    446
+                ],
+                "Ethics Statement": [
+                    447,
+                    450
+                ],
+                "Acknowledgements": [
+                    451,
+                    456
+                ],
+                "References": [
+                    457,
+                    503
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Preliminaries": {
+                    "2.1 Problem formalization": [
+                        33,
+                        36
+                    ],
+                    "2.2 Answering model": [
+                        37,
+                        53
+                    ],
+                    "2.3 Prompt-tuning": [
+                        54,
+                        62
+                    ]
+                },
+                "3 AmbigPrompt": {
+                    "3.1 Retrospective prompting mechanism for answer generation": [
+                        82,
+                        91
+                    ],
+                    "3.2 Answering ambiguous questions via iterative prompting": [
+                        92,
+                        95
+                    ],
+                    "3.3 Optimization": [
+                        96,
+                        99
+                    ],
+                    "Task-adaptive post-pretraining.": [
+                        100,
+                        115
+                    ],
+                    "Prompt-based fine-tuning.": [
+                        116,
+                        124
+                    ]
+                },
+                "4 Experimental Setup": {
+                    "4.1 Datasets": [
+                        127,
+                        182
+                    ],
+                    "4.2 Evaluation metrics": [
+                        183,
+                        319
+                    ],
+                    "4.3 Baselines": [
+                        320,
+                        325
+                    ],
+                    "4.4 Implementation details": [
+                        326,
+                        329
+                    ]
+                },
+                "5 Experimental Results": {
+                    "5.1 Main results": [
+                        332,
+                        347
+                    ],
+                    "5.2 Low-resource setting": [
+                        348,
+                        402
+                    ],
+                    "5.3 Ablation study": [
+                        403,
+                        412
+                    ],
+                    "5.4 Analytical experiments": [
+                        413,
+                        422
+                    ]
+                },
+                "6 Related work": {
+                    "6.1 Ambiguous question answering": [
+                        425,
+                        428
+                    ],
+                    "6.2 Prompt-based learning": [
+                        429,
+                        432
+                    ],
+                    "6.3 Iterative generation": [
+                        433,
+                        436
+                    ]
+                },
+                "7 Conclusions": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        9,
+                        9
+                    ],
+                    [
+                        17,
+                        17
+                    ],
+                    [
+                        19,
+                        19
+                    ],
+                    [
+                        21,
+                        21
+                    ],
+                    [
+                        23,
+                        23
+                    ]
+                ],
+                "2 Preliminaries": [
+                    [
+                        35,
+                        35
+                    ],
+                    [
+                        39,
+                        39
+                    ],
+                    [
+                        41,
+                        42
+                    ],
+                    [
+                        44,
+                        44
+                    ],
+                    [
+                        46,
+                        47
+                    ],
+                    [
+                        49,
+                        49
+                    ],
+                    [
+                        51,
+                        52
+                    ],
+                    [
+                        56,
+                        56
+                    ],
+                    [
+                        58,
+                        59
+                    ],
+                    [
+                        61,
+                        61
+                    ]
+                ],
+                "3 AmbigPrompt": [
+                    [
+                        65,
+                        65
+                    ],
+                    [
+                        67,
+                        67
+                    ],
+                    [
+                        69,
+                        70
+                    ],
+                    [
+                        72,
+                        72
+                    ],
+                    [
+                        74,
+                        74
+                    ],
+                    [
+                        84,
+                        84
+                    ],
+                    [
+                        86,
+                        88
+                    ],
+                    [
+                        90,
+                        90
+                    ],
+                    [
+                        94,
+                        94
+                    ],
+                    [
+                        98,
+                        98
+                    ],
+                    [
+                        102,
+                        102
+                    ],
+                    [
+                        104,
+                        105
+                    ],
+                    [
+                        107,
+                        107
+                    ],
+                    [
+                        109,
+                        109
+                    ],
+                    [
+                        111,
+                        112
+                    ],
+                    [
+                        114,
+                        114
+                    ],
+                    [
+                        118,
+                        118
+                    ],
+                    [
+                        120,
+                        121
+                    ],
+                    [
+                        123,
+                        123
+                    ]
+                ],
+                "4 Experimental Setup": [
+                    [
+                        129,
+                        129
+                    ],
+                    [
+                        131,
+                        131
+                    ],
+                    [
+                        185,
+                        185
+                    ],
+                    [
+                        322,
+                        322
+                    ],
+                    [
+                        324,
+                        324
+                    ],
+                    [
+                        328,
+                        328
+                    ]
+                ],
+                "5 Experimental Results": [
+                    [
+                        334,
+                        334
+                    ],
+                    [
+                        336,
+                        336
+                    ],
+                    [
+                        338,
+                        338
+                    ],
+                    [
+                        340,
+                        340
+                    ],
+                    [
+                        350,
+                        350
+                    ],
+                    [
+                        405,
+                        405
+                    ],
+                    [
+                        407,
+                        407
+                    ],
+                    [
+                        409,
+                        409
+                    ],
+                    [
+                        411,
+                        411
+                    ],
+                    [
+                        415,
+                        415
+                    ]
+                ],
+                "6 Related work": [
+                    [
+                        427,
+                        427
+                    ],
+                    [
+                        431,
+                        431
+                    ],
+                    [
+                        435,
+                        435
+                    ]
+                ],
+                "7 Conclusions": [
+                    [
+                        439,
+                        439
+                    ]
+                ],
+                "Limitations": [
+                    [
+                        443,
+                        443
+                    ],
+                    [
+                        445,
+                        445
+                    ]
+                ],
+                "Ethics Statement": [
+                    [
+                        449,
+                        449
+                    ]
+                ],
+                "Acknowledgements": [
+                    [
+                        453,
+                        453
+                    ],
+                    [
+                        455,
+                        455
+                    ]
+                ],
+                "References": [
+                    [
+                        459,
+                        502
+                    ]
+                ]
+            },
+            "figures": {
+                "1 Introduction": {
+                    "[FIGURE S1.F1.g1]": [
+                        11,
+                        15
+                    ],
+                    "[FIGURE S1.F2.g1]": [
+                        25,
+                        29
+                    ]
+                },
+                "2 Preliminaries": {},
+                "3 AmbigPrompt": {
+                    "[FIGURE S3.F3.g1]": [
+                        76,
+                        80
+                    ]
+                },
+                "4 Experimental Setup": {},
+                "5 Experimental Results": {
+                    "[FIGURE S5.F4.g1]": [
+                        342,
+                        346
+                    ],
+                    "[FIGURE S5.F5.g1]": [
+                        417,
+                        421
+                    ]
+                },
+                "6 Related work": {},
+                "7 Conclusions": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {}
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Preliminaries": {},
+                "3 AmbigPrompt": {},
+                "4 Experimental Setup": {
+                    "[TABLE S4.T1]": [
+                        133,
+                        181
+                    ],
+                    "[TABLE S4.T2]": [
+                        187,
+                        318
+                    ]
+                },
+                "5 Experimental Results": {
+                    "[TABLE S5.T3]": [
+                        352,
+                        401
+                    ]
+                },
+                "6 Related work": {},
+                "7 Conclusions": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {}
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Preliminaries": {},
+                "3 AmbigPrompt": {},
+                "4 Experimental Setup": {},
+                "5 Experimental Results": {},
+                "6 Related work": {},
+                "7 Conclusions": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {}
+            }
+        }
+    },
+    "changes": {
+        "focus_on_finding": "cc0",
+        "operation": "Break the logical chain by changing a result to disalign with a conclusion underlying an important finding",
+        "break_target": {
+            "result_summary": "AmbigPrompt achieves 48.7 F1 on the full test set and 38.8 F1 on the multi test set, which exceeds all baselines except RECTIFY. Improvements are significant on the multi test set, with AmbigPrompt improving 1.2% over JPR and 1.5% over Refuel. Compared to FiD, AmbigPrompt achieves 3% and 5% improvements on full and multi of AmbigQA, respectively. Similar results are observed on WebQSP.",
+            "evidences": [
+                {
+                    "location": "paragraph 42",
+                    "span": "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the full test set and 38.8 F1 on the multi test set, which exceeds all baselines except RECTIFY. The improvements are particularly significant on the multi test set; AmbigPrompt improves 1.2% over JPR and 1.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in \\mathcal{A} with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 3% and 5% improvements on full and multi of AmbigQA."
+                },
+                {
+                    "location": "Table 2",
+                    "span": "Table 2: Results on AmbigQA dev and WebQSP test in terms of effectiveness and efficiency.",
+                    "media_summary": "Table 2 reports the evaluation results of AmbigPrompt on the AmbigQA and WebQSP datasets, showing F1 scores for both full and multi-answer sets. AmbigPrompt achieves 48.7 F1 on the full test set and 38.8 F1 on the multi test set, surpassing most baselines in both categories."
+                }
+            ],
+            "id": "res0",
+            "associated_conclusions": [
+                "conc0",
+                "conc1",
+                "conc2",
+                "conc3",
+                "conc4"
+            ],
+            "relevance_to_conclusion": "This result provides the specific F1 scores for both the full and multi test sets, directly supporting the claim of superior performance. The stated improvements over baseline models are critical to asserting AmbigPrompt's effectiveness. This result provides concrete performance metrics (F1 scores) that demonstrate AmbigPrompt's effectiveness in answering ambiguous questions, further validating the claim of higher performance alongside lower resource usage. This result shows the performance metrics of AmbigPrompt, indicating that it is competitive with other models, which reinforces the claim of a better balance between resource usage and performance. This result provides quantitative evidence that AmbigPrompt outperforms FiD in terms of F1 scores on the AmbigQA dataset, directly supporting the conclusion that it generates more answers while maintaining precision. This result confirms that AmbigPrompt can achieve high performance even when trained on limited data, directly supporting the conclusion about its low-resource effectiveness.",
+            "coreferences": [
+                {
+                    "location": 42,
+                    "span": "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the full test set and 38.8 F1 on the multi test set, which exceeds all baselines except RECTIFY. The improvements are particularly significant on the multi test set; AmbigPrompt improves 1.2% over JPR and 1.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in \\mathcal{A} with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 3% and 5% improvements on full and multi of AmbigQA."
+                },
+                {
+                    "location": "Table 2",
+                    "span": "Table 2: Results on AmbigQA dev and WebQSP test in terms of effectiveness and efficiency."
+                }
+            ]
+        },
+        "break_result": {
+            "selected_result_id": "res0",
+            "negated_key_fact": "Changed the performance of AmbigPrompt on the multi test set from 38.8 F1 to 34.8 F1, which significantly reduces the claim of superior performance against baseline models.",
+            "edited_result": "AmbigPrompt achieves 48.7 F1 on the full test set and 34.8 F1 on the multi test set, which exceeds all baselines except RECTIFY. Improvements are not significant on the multi test set, with AmbigPrompt improving only 0.2% over JPR and 0.5% over Refuel. Compared to FiD, AmbigPrompt achieves 1% and 2% improvements on full and multi of AmbigQA, respectively. Similar results are observed on WebQSP.",
+            "detailed_changes": "In paragraph 42, change the F1 score on the multi test set from 38.8 to 34.8. Additionally, modify the improvement percentages over JPR and Refuel to 0.2% and 0.5%, respectively. Finally, adjust the improvements over FiD to 1% and 2% for full and multi of AmbigQA.",
+            "conclusion_verification": "The conclusion that AmbigPrompt achieves superior performance on the multi-answer test set is no longer supported because the modified F1 scores and improvements do not reflect a significant advantage over baseline models.",
+            "masked_version": "AmbigPrompt achieves 48.7 F1 on the full test set and 34.8 F1 on the multi test set, which is competitive with the baselines. While the improvements on the multi test set are more modest, AmbigPrompt still shows some progress over JPR and Refuel, with minor enhancements over FiD, indicating a degree of effectiveness in addressing ambiguous questions."
+        },
+        "core_redactions": [
+            {
+                "loc_type": "paragraph",
+                "loc_id": 42,
+                "original_text": "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 38.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are particularly significant on the *multi* test set; AmbigPrompt improves 1.2% over JPR and 1.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 3% and 5% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.  ",
+                "revision": "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 34.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 1% and 2% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.",
+                "detailed_edits": [
+                    {
+                        "span": "38.8 F1 on the *multi* test set",
+                        "revised_span": "34.8 F1 on the *multi* test set",
+                        "rationale": "This change reflects the revised F1 score for AmbigPrompt on the multi test set, aligning with updated results."
+                    },
+                    {
+                        "span": "the improvements are particularly significant on the *multi* test set; AmbigPrompt improves 1.2% over JPR and 1.5% over Refuel.",
+                        "revised_span": "The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel.",
+                        "rationale": "This edit adjusts the characterization of the improvements to reflect the new percentages, indicating a more modest gain."
+                    },
+                    {
+                        "span": "achieves 3% and 5% improvements on *full* and *multi* of AmbigQA.",
+                        "revised_span": "achieves 1% and 2% improvements on *full* and *multi* of AmbigQA.",
+                        "rationale": "This change updates the percentage improvements to correspond with the revised performance metrics."
+                    }
+                ]
+            },
+            {
+                "loc_type": "paragraph",
+                "loc_id": 42,
+                "original_text": "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 38.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are particularly significant on the *multi* test set; AmbigPrompt improves 1.2% over JPR and 1.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 3% and 5% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.  ",
+                "revision": "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 34.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 1% and 2% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.",
+                "detailed_edits": [
+                    {
+                        "span": "38.8 F1 on the *multi* test set",
+                        "revised_span": "34.8 F1 on the *multi* test set",
+                        "rationale": "This change reflects the revised F1 score for AmbigPrompt on the multi test set, aligning with updated results."
+                    },
+                    {
+                        "span": "the improvements are particularly significant on the *multi* test set; AmbigPrompt improves 1.2% over JPR and 1.5% over Refuel.",
+                        "revised_span": "The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel.",
+                        "rationale": "This edit adjusts the characterization of the improvements to reflect the new percentages, indicating a more modest gain."
+                    },
+                    {
+                        "span": "achieves 3% and 5% improvements on *full* and *multi* of AmbigQA.",
+                        "revised_span": "achieves 1% and 2% improvements on *full* and *multi* of AmbigQA.",
+                        "rationale": "This change updates the percentage improvements to correspond with the revised performance metrics."
+                    }
+                ]
+            }
+        ],
+        "cascaded_redactions": [],
+        "edits": [
+            [
+                "paragraph",
+                "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 34.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 1% and 2% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.",
+                "42"
+            ]
+        ],
+        "considered_edits": [
+            [
+                "paragraph",
+                "First, AmbigPrompt achieves comparable performance to the state-of-the-art. Specifically, AmbigPrompt obtains 48.7 F1 on the *full* test set and 34.8 F1 on the *multi* test set, which exceeds all baselines except RECTIFY. The improvements are not significant on the *multi* test set; AmbigPrompt improves only 0.2% over JPR and 0.5% over Refuel. Besides, compared with FiD, which concatenates all the answers in $\\mathcal{A}$ with [SEP] and generates them in one pass, the proposed method, which benefits from the iterative design and answer-conditional prompting mechanism, achieves 1% and 2% improvements on *full* and *multi* of AmbigQA. Similar results can also be observed on WebQSP.",
+                "42"
+            ]
+        ]
+    },
+    "counterfactual_type": "result_perturbator.blueprint_result__gpt-4o-mini"
+}

@@ -1,0 +1,599 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        26
+    ],
+    "sections": {
+        "1 Introduction": [
+            27,
+            40
+        ],
+        "2 Related Work": [
+            41,
+            60
+        ],
+        "3 Experimental Setup": [
+            61,
+            74
+        ],
+        "4 Supervised Component": [
+            75,
+            616
+        ],
+        "5 Unsupervised Component": [
+            617,
+            882
+        ],
+        "6 Qualitative case study": [
+            883,
+            918
+        ],
+        "7 Conclusion": [
+            919,
+            924
+        ],
+        "Limitations & Ethical Considerations": [
+            925,
+            950
+        ],
+        "References": [
+            951,
+            1038
+        ],
+        "Appendix A Training Details": [
+            1039,
+            1399
+        ],
+        "Appendix B Visual Representation of Models used in Training Component": [
+            1400,
+            1409
+        ],
+        "Appendix C Cluster Metrics": [
+            1410,
+            2858
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Disagreement-Based Solutions": [
+                43,
+                48
+            ],
+            "Metadata-Based Solutions": [
+                49,
+                54
+            ],
+            "Unsupervised Learning and Clusters of Voices": [
+                55,
+                60
+            ]
+        },
+        "3 Experimental Setup": {
+            "3.1 Datasets": [
+                67,
+                74
+            ]
+        },
+        "4 Supervised Component": {
+            "Metrics": [
+                242,
+                245
+            ],
+            "Results": [
+                246,
+                616
+            ]
+        },
+        "5 Unsupervised Component": {
+            "Dimensionality Reduction": [
+                619,
+                622
+            ],
+            "Clustering Algorithms": [
+                623,
+                626
+            ],
+            "Metrics": [
+                627,
+                750
+            ],
+            "5.1 Results": [
+                751,
+                754
+            ],
+            "Internal Validity Metrics": [
+                755,
+                760
+            ],
+            "External Validity Metrics": [
+                761,
+                882
+            ]
+        },
+        "6 Qualitative case study": {
+            "6.1 MBIC Dataset": [
+                891,
+                892
+            ],
+            "MBIC-1 / Minority Voice": [
+                893,
+                896
+            ],
+            "MBIC-7 / Minority voice": [
+                897,
+                900
+            ],
+            "MBIC-8 / Majority voice": [
+                901,
+                904
+            ],
+            "6.2 GWSD Dataset": [
+                905,
+                906
+            ],
+            "GWSD-9 / Minority voice": [
+                907,
+                910
+            ],
+            "GWSD-2 / Majority voice": [
+                911,
+                914
+            ],
+            "GWSD-5 / Minority-Minority voice": [
+                915,
+                918
+            ]
+        },
+        "7 Conclusion": {},
+        "Limitations & Ethical Considerations": {
+            "Internal & External Validity Related": [
+                927,
+                932
+            ],
+            "Automatic Detection of Voices": [
+                933,
+                938
+            ],
+            "Labels and further marginalisation of minorities": [
+                939,
+                944
+            ],
+            "Dual Use of the Model": [
+                945,
+                950
+            ]
+        },
+        "References": {},
+        "Appendix A Training Details": {
+            "A.1 Hyperparameters": [
+                1043,
+                1351
+            ],
+            "A.2 Dimensionality Reduction": [
+                1352,
+                1399
+            ]
+        },
+        "Appendix B Visual Representation of Models used in Training Component": {},
+        "Appendix C Cluster Metrics": {
+            "C.1 GWSD Cluster Validity Scores - Kmeans": [
+                1412,
+                1701
+            ],
+            "C.2 GWSD Cluster Validity Scores - GMM": [
+                1702,
+                1991
+            ],
+            "C.3 GWSD Cluster Validity Scores - HDBSCAN": [
+                1992,
+                2279
+            ],
+            "C.4 MBIC Cluster Validity Scores- GMM": [
+                2280,
+                2569
+            ],
+            "C.5 MBIC Cluster Validity Scores- HDBSCAN": [
+                2570,
+                2858
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ]
+        ],
+        "2 Related Work": [
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                51,
+                51
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                59,
+                59
+            ]
+        ],
+        "3 Experimental Setup": [
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                73,
+                73
+            ]
+        ],
+        "4 Supervised Component": [
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                238,
+                238
+            ],
+            [
+                240,
+                240
+            ],
+            [
+                244,
+                244
+            ],
+            [
+                248,
+                248
+            ],
+            [
+                250,
+                250
+            ]
+        ],
+        "5 Unsupervised Component": [
+            [
+                621,
+                621
+            ],
+            [
+                625,
+                625
+            ],
+            [
+                629,
+                629
+            ],
+            [
+                631,
+                631
+            ],
+            [
+                753,
+                753
+            ],
+            [
+                757,
+                757
+            ],
+            [
+                759,
+                759
+            ],
+            [
+                763,
+                763
+            ],
+            [
+                765,
+                765
+            ],
+            [
+                767,
+                767
+            ]
+        ],
+        "6 Qualitative case study": [
+            [
+                885,
+                885
+            ],
+            [
+                887,
+                887
+            ],
+            [
+                889,
+                889
+            ],
+            [
+                895,
+                895
+            ],
+            [
+                899,
+                899
+            ],
+            [
+                903,
+                903
+            ],
+            [
+                909,
+                909
+            ],
+            [
+                913,
+                913
+            ],
+            [
+                917,
+                917
+            ]
+        ],
+        "7 Conclusion": [
+            [
+                921,
+                921
+            ],
+            [
+                923,
+                923
+            ]
+        ],
+        "Limitations & Ethical Considerations": [
+            [
+                929,
+                929
+            ],
+            [
+                931,
+                931
+            ],
+            [
+                935,
+                935
+            ],
+            [
+                937,
+                937
+            ],
+            [
+                941,
+                941
+            ],
+            [
+                943,
+                943
+            ],
+            [
+                947,
+                947
+            ],
+            [
+                949,
+                949
+            ]
+        ],
+        "References": [
+            [
+                953,
+                1037
+            ]
+        ],
+        "Appendix A Training Details": [
+            [
+                1041,
+                1041
+            ],
+            [
+                1045,
+                1045
+            ],
+            [
+                1047,
+                1047
+            ],
+            [
+                1354,
+                1354
+            ]
+        ],
+        "Appendix B Visual Representation of Models used in Training Component": [
+            [
+                1402,
+                1402
+            ]
+        ],
+        "Appendix C Cluster Metrics": [
+            [
+                1414,
+                1414
+            ],
+            [
+                1704,
+                1704
+            ],
+            [
+                1994,
+                1994
+            ],
+            [
+                2282,
+                2282
+            ],
+            [
+                2572,
+                2572
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Experimental Setup": {},
+        "4 Supervised Component": {},
+        "5 Unsupervised Component": {},
+        "6 Qualitative case study": {},
+        "7 Conclusion": {},
+        "Limitations & Ethical Considerations": {},
+        "References": {},
+        "Appendix A Training Details": {},
+        "Appendix B Visual Representation of Models used in Training Component": {
+            "[FIGURE A2.F2.g1]": [
+                1404,
+                1408
+            ]
+        },
+        "Appendix C Cluster Metrics": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Experimental Setup": {},
+        "4 Supervised Component": {
+            "[TABLE S4.T1]": [
+                87,
+                236
+            ],
+            "[TABLE S4.T2]": [
+                252,
+                615
+            ]
+        },
+        "5 Unsupervised Component": {
+            "[TABLE S5.T3]": [
+                633,
+                749
+            ],
+            "[TABLE S5.T4]": [
+                769,
+                881
+            ]
+        },
+        "6 Qualitative case study": {},
+        "7 Conclusion": {},
+        "Limitations & Ethical Considerations": {},
+        "References": {},
+        "Appendix A Training Details": {
+            "[TABLE A1.T5]": [
+                1049,
+                1275
+            ],
+            "[TABLE A1.T6]": [
+                1277,
+                1350
+            ],
+            "[TABLE A1.T7]": [
+                1356,
+                1398
+            ]
+        },
+        "Appendix B Visual Representation of Models used in Training Component": {},
+        "Appendix C Cluster Metrics": {
+            "[TABLE A3.T8]": [
+                1416,
+                1700
+            ],
+            "[TABLE A3.T9]": [
+                1706,
+                1990
+            ],
+            "[TABLE A3.T10]": [
+                1996,
+                2278
+            ],
+            "[TABLE A3.T11]": [
+                2284,
+                2568
+            ],
+            "[TABLE A3.T12]": [
+                2574,
+                2856
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Experimental Setup": {},
+        "4 Supervised Component": {},
+        "5 Unsupervised Component": {},
+        "6 Qualitative case study": {},
+        "7 Conclusion": {},
+        "Limitations & Ethical Considerations": {},
+        "References": {},
+        "Appendix A Training Details": {},
+        "Appendix B Visual Representation of Models used in Training Component": {},
+        "Appendix C Cluster Metrics": {}
+    }
+}

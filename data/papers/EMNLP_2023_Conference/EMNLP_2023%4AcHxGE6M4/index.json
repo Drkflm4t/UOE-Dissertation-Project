@@ -1,0 +1,590 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            34
+        ],
+        "2 Related Works": [
+            35,
+            44
+        ],
+        "3 Methodology": [
+            45,
+            91
+        ],
+        "4 Dataset Construction and Statistics": [
+            92,
+            199
+        ],
+        "5 Experiments": [
+            200,
+            575
+        ],
+        "6 Conclusion": [
+            576,
+            579
+        ],
+        "Limitations": [
+            580,
+            583
+        ],
+        "Acknowledgements": [
+            584,
+            587
+        ],
+        "References": [
+            588,
+            626
+        ],
+        "Appendix A LLMs on Assembly Code": [
+            627,
+            636
+        ],
+        "Appendix B Preliminary Survey": [
+            637,
+            640
+        ],
+        "Appendix C Binary Projects": [
+            641,
+            816
+        ],
+        "Appendix D Dataset Statistics and Explanations": [
+            817,
+            1247
+        ],
+        "Appendix E Human Evaluation": [
+            1248,
+            1286
+        ],
+        "Appendix F Detailed Experimental Results": [
+            1287,
+            1293
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Works": {
+            "Function Name Prediction in Binary.": [
+                37,
+                40
+            ],
+            "Source Code Summarization.": [
+                41,
+                44
+            ]
+        },
+        "3 Methodology": {
+            "3.1 Overview": [
+                47,
+                50
+            ],
+            "3.2 Assembly Instruction Encoder": [
+                51,
+                61
+            ],
+            "3.3 BI-CFG Encoder": [
+                62,
+                70
+            ],
+            "3.4 Pseudo Code Encoder": [
+                71,
+                81
+            ],
+            "3.5 Summary Decoder": [
+                82,
+                91
+            ]
+        },
+        "4 Dataset Construction and Statistics": {
+            "4.1 Dataset Construction": [
+                94,
+                97
+            ],
+            "\u2460 Preliminary Survey.": [
+                98,
+                101
+            ],
+            "\u2461 Source Code Collection.": [
+                102,
+                105
+            ],
+            "\u2462 Compiled Source Code.": [
+                106,
+                115
+            ],
+            "\u2463 Summary Extraction.": [
+                116,
+                119
+            ],
+            "\u2464 Binary Stripping.": [
+                120,
+                123
+            ],
+            "\u2465 Binary Disassembling.": [
+                124,
+                127
+            ],
+            "\u2466 Making of Pairs.": [
+                128,
+                131
+            ],
+            "4.2 Dataset Statistics": [
+                132,
+                199
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Experimental Setup": [
+                202,
+                203
+            ],
+            "Out-of-Vocabulary.": [
+                204,
+                212
+            ],
+            "Metrics.": [
+                213,
+                216
+            ],
+            "Training Details.": [
+                217,
+                220
+            ],
+            "5.2 Main Results": [
+                221,
+                325
+            ],
+            "5.3 Baselines and Ablation Study": [
+                326,
+                391
+            ],
+            "Baselines.": [
+                392,
+                395
+            ],
+            "Ablation Study.": [
+                396,
+                399
+            ],
+            "5.4 Human Evaluation": [
+                400,
+                409
+            ],
+            "5.5 Study on the Model Structures": [
+                410,
+                501
+            ],
+            "5.6 Case Study of Refined Pseudo Code": [
+                502,
+                575
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A LLMs on Assembly Code": {},
+        "Appendix B Preliminary Survey": {},
+        "Appendix C Binary Projects": {},
+        "Appendix D Dataset Statistics and Explanations": {},
+        "Appendix E Human Evaluation": {},
+        "Appendix F Detailed Experimental Results": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                27
+            ]
+        ],
+        "2 Related Works": [
+            [
+                39,
+                39
+            ],
+            [
+                43,
+                43
+            ]
+        ],
+        "3 Methodology": [
+            [
+                49,
+                49
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                59,
+                60
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                69
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                80
+            ],
+            [
+                84,
+                84
+            ]
+        ],
+        "4 Dataset Construction and Statistics": [
+            [
+                96,
+                96
+            ],
+            [
+                100,
+                100
+            ],
+            [
+                104,
+                104
+            ],
+            [
+                108,
+                108
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                122,
+                122
+            ],
+            [
+                126,
+                126
+            ],
+            [
+                130,
+                130
+            ],
+            [
+                198,
+                198
+            ]
+        ],
+        "5 Experiments": [
+            [
+                206,
+                206
+            ],
+            [
+                208,
+                211
+            ],
+            [
+                215,
+                215
+            ],
+            [
+                219,
+                219
+            ],
+            [
+                324,
+                324
+            ],
+            [
+                394,
+                394
+            ],
+            [
+                398,
+                398
+            ],
+            [
+                408,
+                408
+            ],
+            [
+                412,
+                412
+            ],
+            [
+                500,
+                500
+            ],
+            [
+                574,
+                574
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                578,
+                578
+            ]
+        ],
+        "Limitations": [
+            [
+                582,
+                582
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                586,
+                586
+            ]
+        ],
+        "References": [
+            [
+                590,
+                625
+            ]
+        ],
+        "Appendix A LLMs on Assembly Code": [
+            [
+                629,
+                629
+            ]
+        ],
+        "Appendix B Preliminary Survey": [
+            [
+                639,
+                639
+            ]
+        ],
+        "Appendix C Binary Projects": [
+            [
+                643,
+                643
+            ]
+        ],
+        "Appendix D Dataset Statistics and Explanations": [
+            [
+                819,
+                819
+            ],
+            [
+                821,
+                821
+            ]
+        ],
+        "Appendix E Human Evaluation": [
+            [
+                1250,
+                1250
+            ],
+            [
+                1252,
+                1254
+            ],
+            [
+                1256,
+                1256
+            ]
+        ],
+        "Appendix F Detailed Experimental Results": [
+            [
+                1289,
+                1289
+            ],
+            [
+                1291,
+                1291
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                11,
+                15
+            ],
+            "[FIGURE S1.F2.g1]": [
+                29,
+                33
+            ]
+        },
+        "2 Related Works": {},
+        "3 Methodology": {
+            "[FIGURE S3.F3.g1]": [
+                86,
+                90
+            ]
+        },
+        "4 Dataset Construction and Statistics": {
+            "[FIGURE S4.F4.g1]": [
+                110,
+                114
+            ]
+        },
+        "5 Experiments": {
+            "[FIGURE S5.F5.g1]": [
+                402,
+                406
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A LLMs on Assembly Code": {
+            "[FIGURE A1.F6.g1]": [
+                631,
+                635
+            ]
+        },
+        "Appendix B Preliminary Survey": {},
+        "Appendix C Binary Projects": {},
+        "Appendix D Dataset Statistics and Explanations": {},
+        "Appendix E Human Evaluation": {},
+        "Appendix F Detailed Experimental Results": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Methodology": {},
+        "4 Dataset Construction and Statistics": {
+            "[TABLE S4.T1]": [
+                134,
+                196
+            ]
+        },
+        "5 Experiments": {
+            "[TABLE S5.T2]": [
+                223,
+                322
+            ],
+            "[TABLE S5.T3]": [
+                328,
+                390
+            ],
+            "[TABLE S5.T4]": [
+                414,
+                464
+            ],
+            "[TABLE S5.T5]": [
+                466,
+                498
+            ],
+            "[TABLE S5.T6]": [
+                504,
+                572
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A LLMs on Assembly Code": {},
+        "Appendix B Preliminary Survey": {},
+        "Appendix C Binary Projects": {
+            "[TABLE A3.T7]": [
+                645,
+                815
+            ]
+        },
+        "Appendix D Dataset Statistics and Explanations": {
+            "[TABLE A4.T8]": [
+                823,
+                885
+            ],
+            "[TABLE A4.T9]": [
+                887,
+                949
+            ],
+            "[TABLE A4.T10]": [
+                951,
+                1048
+            ],
+            "[TABLE A4.T11]": [
+                1050,
+                1147
+            ],
+            "[TABLE A4.T12]": [
+                1149,
+                1246
+            ]
+        },
+        "Appendix E Human Evaluation": {
+            "[TABLE A5.T13]": [
+                1258,
+                1285
+            ]
+        },
+        "Appendix F Detailed Experimental Results": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Methodology": {},
+        "4 Dataset Construction and Statistics": {},
+        "5 Experiments": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A LLMs on Assembly Code": {},
+        "Appendix B Preliminary Survey": {},
+        "Appendix C Binary Projects": {},
+        "Appendix D Dataset Statistics and Explanations": {},
+        "Appendix E Human Evaluation": {},
+        "Appendix F Detailed Experimental Results": {}
+    }
+}

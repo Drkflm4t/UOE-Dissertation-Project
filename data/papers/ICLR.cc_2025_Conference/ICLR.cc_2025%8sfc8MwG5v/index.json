@@ -1,0 +1,898 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            32
+        ],
+        "2 Concept Bottleneck Model under Distribution Shifts": [
+            33,
+            77
+        ],
+        "3 CONDA: Concept-based Dynamic Adaptation": [
+            78,
+            174
+        ],
+        "4 Experiments": [
+            175,
+            471
+        ],
+        "5 Conclusions and Future Work": [
+            472,
+            477
+        ],
+        "References": [
+            478,
+            529
+        ],
+        "Appendices": [
+            530,
+            800
+        ],
+        "Appendix A Expanded Related Work": [
+            801,
+            814
+        ],
+        "Appendix B Additional Method Details": [
+            815,
+            970
+        ],
+        "Appendix C Experimental Details": [
+            971,
+            1066
+        ],
+        "Appendix D Ablation Experiments": [
+            1067,
+            1295
+        ],
+        "Appendix E Additional Interpretability Analysis": [
+            1296,
+            1385
+        ],
+        "Appendix F Limitations and Future Work": [
+            1386,
+            1476
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Concept Bottleneck Model under Distribution Shifts": {
+            "2.1 Background: Foundation Models with a Concept Bottleneck": [
+                37,
+                47
+            ],
+            "2.2 Distribution Shifts in the Wild": [
+                48,
+                60
+            ],
+            "Definition 1": [
+                61,
+                69
+            ],
+            "2.3 Failure Modes of Concept Bottleneck for Foundation Models": [
+                70,
+                77
+            ]
+        },
+        "3 CONDA: Concept-based Dynamic Adaptation": {
+            "3.1 Concept Score Alignment": [
+                108,
+                137
+            ],
+            "3.2 Linear Probing Adaptation": [
+                138,
+                151
+            ],
+            "3.3 Residual Concept Bottleneck": [
+                152,
+                174
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Setup": [
+                183,
+                194
+            ],
+            "4.2 RQ1: Effectiveness of CONDA under real-world distribution shifts": [
+                195,
+                446
+            ],
+            "4.3 RQ2: Effectiveness of Individual Components of CONDA": [
+                447,
+                467
+            ],
+            "4.4 RQ3: Interpretability of CONDA": [
+                468,
+                471
+            ]
+        },
+        "5 Conclusions and Future Work": {},
+        "References": {},
+        "Appendices": {},
+        "Appendix A Expanded Related Work": {},
+        "Appendix B Additional Method Details": {
+            "B.1 Complexity Analysis of CONDA": [
+                819,
+                956
+            ],
+            "B.2 Automatically Annotating Concepts": [
+                957,
+                970
+            ]
+        },
+        "Appendix C Experimental Details": {
+            "C.1 Datasets": [
+                975,
+                990
+            ],
+            "C.2 Preparing The Concept Bottleneck": [
+                991,
+                1066
+            ]
+        },
+        "Appendix D Ablation Experiments": {},
+        "Appendix E Additional Interpretability Analysis": {
+            "E.1 Residual Concept Bottleneck Compensates for Prediction Errors": [
+                1300,
+                1352
+            ],
+            "E.2 Accuracy-Interpretability Tradeoff in Residual Concept Bottleneck": [
+                1353,
+                1379
+            ],
+            "E.3 Additional Interpretability Results": [
+                1380,
+                1385
+            ]
+        },
+        "Appendix F Limitations and Future Work": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                29
+            ],
+            [
+                31,
+                31
+            ]
+        ],
+        "2 Concept Bottleneck Model under Distribution Shifts": [
+            [
+                35,
+                35
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                44
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                52
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                59
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                76
+            ]
+        ],
+        "3 CONDA: Concept-based Dynamic Adaptation": [
+            [
+                80,
+                80
+            ],
+            [
+                82,
+                84
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                97,
+                100
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                104
+            ],
+            [
+                106,
+                106
+            ],
+            [
+                110,
+                110
+            ],
+            [
+                112,
+                113
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                117,
+                117
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                121,
+                124
+            ],
+            [
+                126,
+                126
+            ],
+            [
+                128,
+                129
+            ],
+            [
+                131,
+                131
+            ],
+            [
+                133,
+                134
+            ],
+            [
+                136,
+                136
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                143
+            ],
+            [
+                145,
+                145
+            ],
+            [
+                147,
+                148
+            ],
+            [
+                150,
+                150
+            ],
+            [
+                154,
+                154
+            ],
+            [
+                156,
+                157
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                161,
+                162
+            ],
+            [
+                164,
+                164
+            ],
+            [
+                166,
+                166
+            ],
+            [
+                168,
+                169
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                173,
+                173
+            ]
+        ],
+        "4 Experiments": [
+            [
+                177,
+                177
+            ],
+            [
+                179,
+                181
+            ],
+            [
+                185,
+                185
+            ],
+            [
+                187,
+                187
+            ],
+            [
+                189,
+                189
+            ],
+            [
+                191,
+                191
+            ],
+            [
+                193,
+                193
+            ],
+            [
+                443,
+                443
+            ],
+            [
+                445,
+                445
+            ],
+            [
+                449,
+                449
+            ],
+            [
+                458,
+                458
+            ],
+            [
+                460,
+                460
+            ],
+            [
+                470,
+                470
+            ]
+        ],
+        "5 Conclusions and Future Work": [
+            [
+                474,
+                474
+            ],
+            [
+                476,
+                476
+            ]
+        ],
+        "References": [
+            [
+                480,
+                528
+            ]
+        ],
+        "Appendices": [],
+        "Appendix A Expanded Related Work": [
+            [
+                803,
+                803
+            ],
+            [
+                805,
+                805
+            ],
+            [
+                807,
+                809
+            ],
+            [
+                811,
+                811
+            ],
+            [
+                813,
+                813
+            ]
+        ],
+        "Appendix B Additional Method Details": [
+            [
+                817,
+                817
+            ],
+            [
+                821,
+                821
+            ],
+            [
+                823,
+                828
+            ],
+            [
+                830,
+                830
+            ],
+            [
+                832,
+                832
+            ],
+            [
+                834,
+                834
+            ],
+            [
+                836,
+                836
+            ],
+            [
+                838,
+                838
+            ],
+            [
+                840,
+                840
+            ],
+            [
+                842,
+                843
+            ],
+            [
+                845,
+                845
+            ],
+            [
+                847,
+                847
+            ],
+            [
+                849,
+                849
+            ],
+            [
+                851,
+                851
+            ],
+            [
+                853,
+                853
+            ],
+            [
+                855,
+                856
+            ],
+            [
+                858,
+                858
+            ],
+            [
+                860,
+                860
+            ],
+            [
+                862,
+                862
+            ],
+            [
+                864,
+                864
+            ],
+            [
+                866,
+                866
+            ],
+            [
+                868,
+                868
+            ],
+            [
+                870,
+                873
+            ],
+            [
+                875,
+                875
+            ],
+            [
+                877,
+                877
+            ],
+            [
+                879,
+                879
+            ],
+            [
+                959,
+                959
+            ],
+            [
+                961,
+                961
+            ],
+            [
+                963,
+                963
+            ],
+            [
+                965,
+                967
+            ],
+            [
+                969,
+                969
+            ]
+        ],
+        "Appendix C Experimental Details": [
+            [
+                973,
+                973
+            ],
+            [
+                977,
+                977
+            ],
+            [
+                979,
+                979
+            ],
+            [
+                981,
+                981
+            ],
+            [
+                983,
+                983
+            ],
+            [
+                985,
+                985
+            ],
+            [
+                987,
+                987
+            ],
+            [
+                989,
+                989
+            ],
+            [
+                993,
+                993
+            ],
+            [
+                995,
+                995
+            ],
+            [
+                997,
+                997
+            ],
+            [
+                999,
+                999
+            ],
+            [
+                1001,
+                1001
+            ]
+        ],
+        "Appendix D Ablation Experiments": [
+            [
+                1069,
+                1069
+            ],
+            [
+                1077,
+                1077
+            ],
+            [
+                1079,
+                1079
+            ],
+            [
+                1081,
+                1081
+            ],
+            [
+                1083,
+                1083
+            ],
+            [
+                1085,
+                1085
+            ],
+            [
+                1087,
+                1087
+            ],
+            [
+                1089,
+                1089
+            ],
+            [
+                1091,
+                1091
+            ],
+            [
+                1093,
+                1093
+            ],
+            [
+                1095,
+                1095
+            ],
+            [
+                1174,
+                1174
+            ],
+            [
+                1176,
+                1176
+            ],
+            [
+                1178,
+                1178
+            ]
+        ],
+        "Appendix E Additional Interpretability Analysis": [
+            [
+                1298,
+                1298
+            ],
+            [
+                1302,
+                1302
+            ],
+            [
+                1310,
+                1310
+            ],
+            [
+                1312,
+                1312
+            ],
+            [
+                1355,
+                1355
+            ],
+            [
+                1357,
+                1357
+            ],
+            [
+                1359,
+                1359
+            ],
+            [
+                1361,
+                1362
+            ],
+            [
+                1364,
+                1364
+            ],
+            [
+                1372,
+                1372
+            ],
+            [
+                1382,
+                1382
+            ],
+            [
+                1384,
+                1384
+            ]
+        ],
+        "Appendix F Limitations and Future Work": [
+            [
+                1388,
+                1388
+            ],
+            [
+                1472,
+                1472
+            ],
+            [
+                1474,
+                1474
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                14,
+                21
+            ]
+        },
+        "2 Concept Bottleneck Model under Distribution Shifts": {},
+        "3 CONDA: Concept-based Dynamic Adaptation": {
+            "[FIGURE S3.F2.g1]": [
+                86,
+                93
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F3.g1]": [
+                451,
+                456
+            ],
+            "[FIGURE S4.F4.sf1.g1]": [
+                462,
+                466
+            ]
+        },
+        "5 Conclusions and Future Work": {},
+        "References": {},
+        "Appendices": {},
+        "Appendix A Expanded Related Work": {},
+        "Appendix B Additional Method Details": {},
+        "Appendix C Experimental Details": {},
+        "Appendix D Ablation Experiments": {
+            "[FIGURE A4.F5.sf1.g1]": [
+                1071,
+                1075
+            ]
+        },
+        "Appendix E Additional Interpretability Analysis": {
+            "[FIGURE A5.F6.sf1.g1]": [
+                1304,
+                1308
+            ],
+            "[FIGURE A5.F7.g1]": [
+                1366,
+                1370
+            ],
+            "[FIGURE A5.F8.sf1.g1]": [
+                1374,
+                1378
+            ]
+        },
+        "Appendix F Limitations and Future Work": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Concept Bottleneck Model under Distribution Shifts": {},
+        "3 CONDA: Concept-based Dynamic Adaptation": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                197,
+                441
+            ]
+        },
+        "5 Conclusions and Future Work": {},
+        "References": {},
+        "Appendices": {
+            "[TABLE Ax1.T2]": [
+                532,
+                731
+            ]
+        },
+        "Appendix A Expanded Related Work": {},
+        "Appendix B Additional Method Details": {
+            "[TABLE A2.T3]": [
+                881,
+                955
+            ]
+        },
+        "Appendix C Experimental Details": {
+            "[TABLE A3.T4]": [
+                1003,
+                1065
+            ]
+        },
+        "Appendix D Ablation Experiments": {
+            "[TABLE A4.T5]": [
+                1097,
+                1172
+            ],
+            "[TABLE A4.T6]": [
+                1180,
+                1294
+            ]
+        },
+        "Appendix E Additional Interpretability Analysis": {
+            "[TABLE A5.T7]": [
+                1314,
+                1351
+            ]
+        },
+        "Appendix F Limitations and Future Work": {
+            "[TABLE A6.T8]": [
+                1390,
+                1470
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Concept Bottleneck Model under Distribution Shifts": {},
+        "3 CONDA: Concept-based Dynamic Adaptation": {},
+        "4 Experiments": {},
+        "5 Conclusions and Future Work": {},
+        "References": {},
+        "Appendices": {
+            "[ALGORITHM alg1]": [
+                733,
+                799
+            ]
+        },
+        "Appendix A Expanded Related Work": {},
+        "Appendix B Additional Method Details": {},
+        "Appendix C Experimental Details": {},
+        "Appendix D Ablation Experiments": {},
+        "Appendix E Additional Interpretability Analysis": {},
+        "Appendix F Limitations and Future Work": {}
+    }
+}

@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2305.15334] Gorilla: Large Language Model Connected with Massive APIs</title><meta content="Large Language Models (LLMs) have seen an impressive wave of advances recently, with models now excelling in a variety of tasks, such as mathematical reasoning and program synthesis. However, their potential to effecti…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Gorilla: Large Language Model Connected with Massive APIs" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Gorilla: Large Language Model Connected with Massive APIs" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2305.15334" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2305.15334" rel="canonical" target="_blank"/>
+<!--Generated on Thu Feb 29 05:26:57 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Gorilla: Large Language Model Connected with Massive APIs</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id13.id1">Large Language Models (LLMs) have seen an impressive wave of advances recently, with models now excelling in a variety of tasks, such as mathematical reasoning and program synthesis. However, their potential to effectively use tools via API calls remains unfulfilled. This is a challenging task even for today’s state-of-the-art LLMs such as GPT-4, largely due to their inability to generate accurate input arguments and their tendency to hallucinate the wrong usage of an API call. We release Gorilla, a finetuned LLaMA-based model that surpasses the performance of GPT-4 on writing API calls. When combined with a document retriever, Gorilla demonstrates a strong capability to adapt to test-time document changes, enabling flexible user updates or version changes. It also substantially mitigates the issue of hallucination, commonly encountered when prompting LLMs directly. To evaluate the model’s ability, we introduce APIBench, a comprehensive dataset consisting of HuggingFace, TorchHub, and TensorHub APIs. The successful integration of the retrieval system with Gorilla demonstrates the potential for LLMs to use tools more accurately, keep up with frequently updated documentation, and consequently increase the reliability and applicability of their outputs.
+Gorilla’s code, model, data, and demo are available at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://gorilla.cs.berkeley.edu" target="_blank" title="">https://gorilla.cs.berkeley.edu</a></p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Recent advances in large language models (LLMs) <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib10" title="">10</a>, <a class="ltx_ref" href="#bib.bib5" title="">5</a>, <a class="ltx_ref" href="#bib.bib32" title="">32</a>, <a class="ltx_ref" href="#bib.bib6" title="">6</a>, <a class="ltx_ref" href="#bib.bib29" title="">29</a>, <a class="ltx_ref" href="#bib.bib30" title="">30</a>]</cite> have enabled significant new capabilities including natural dialogue, mathematical reasoning, and program synthesis.
+However, despite these advances, LLMs are still fundamentally limited by the information they can store in a fixed set of weights and the things they can compute using a static computation graph and limited context.
+Furthermore, as the world changes, LLMs require retraining to update their knowledge and reasoning capabilities.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">By empowering LLMs to use tools <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib33" title="">33</a>]</cite>, we can grant access to vastly larger and changing knowledge bases and accomplish complex computational tasks.
+By providing access to search technologies and databases, <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib26" title="">26</a>, <a class="ltx_ref" href="#bib.bib39" title="">39</a>, <a class="ltx_ref" href="#bib.bib37" title="">37</a>]</cite> demonstrated that we can augment LLMs to address a significantly larger and more dynamic knowledge space.
+Similarly, by providing access to computational tools, <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib39" title="">39</a>, <a class="ltx_ref" href="#bib.bib2" title="">2</a>]</cite> demonstrated that LLMs can accomplish complex computational tasks.
+Consequently, leading LLM providers<cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib29" title="">29</a>]</cite>, have started to integrate plugins to allow LLMs to invoke external tools through APIs.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">This transition from a small set of hand-coded tools, to the ability to invoke a vast space of changing cloud APIs could transform LLMs into the primary interface to computing infrastructure and the web.
+Tasks ranging from booking an entire vacation to hosting a conference, could become as simple as talking to an LLM that has access to the flight, car rental, hotel, catering, and entertainment web APIs.
+However, much of the prior work <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib35" title="">35</a>, <a class="ltx_ref" href="#bib.bib24" title="">24</a>]</cite> integrating tools into LLMs considered a small well documented set of APIs that can be easily injected into the prompt.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">Supporting a web scale collection of potentially millions of changing APIs requires rethinking our approach to how we integrate tools.
+It is not longer possible to describe the full set of APIs in a single context.
+Many of the APIs will have overlapping functionality with nuanced limitations and constraints.
+Simply evaluating LLMs in this new setting requires new benchmarks.</p>
+</div>
+<figure class="ltx_figure" id="S1.F1"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="197" id="S1.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 1: </span><span class="ltx_text ltx_font_bold" id="S1.F1.2.1" style="font-size:80%;">Examples of API calls<span class="ltx_text ltx_font_medium" id="S1.F1.2.1.1">. Example API calls generated by GPT-4 <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib29" title="">29</a>]</cite>, Claude <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib3" title="">3</a>]</cite>, and Gorilla for the given prompt. In this example, GPT-4 presents a model that doesn’t exist, and Claude picks an incorrect library. In contrast, our Gorilla model can identify the task correctly and suggest a fully-qualified API call.</span></span></figcaption>
+</figure>
+<div class="ltx_para" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1">In this paper, we explore the use of self-instruct fine-tuning and retrieval to enable LLMs to accurately select from a large, overlapping, and changing set tools expressed using their APIs and API documentation.
+We construct, APIBench, a large corpus of APIs with complex and often overlapping functionality by scraping ML APIs (models) from public model hubs.
+We choose three major model hubs for dataset construction: TorchHub, TensorHub and HuggingFace. We exhaustively include every API call in TorchHub (94 API calls) and TensorHub (696 API calls); For HuggingFace, since the models come in a large number and lots of the models don’t have a specification, we choose the most downloaded 20 models per task category (in a total of 925). We also generate 10 synthetic user question prompts per API using Self-Instruct <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib42" title="">42</a>]</cite>. Thus, each entry in the dataset becomes an instruction reference API pair. We adopt a common AST sub-tree matching technique to evaluate the functional correctness of the generated API. We first parse the generated code into an AST tree, then find a sub-tree whose root node is the API call that we care about (e.g., <span class="ltx_text ltx_font_typewriter" id="S1.p5.1.1">torch.hub.load</span>) and use it to index our dataset. We check the functional correctness and hallucination problem for the LLMs, reporting the corresponding accuracy.</p>
+</div>
+<div class="ltx_para" id="S1.p6">
+<p class="ltx_p" id="S1.p6.1">We then finetune Gorilla, a LLaMA-7B-based model with document retrieval using our dataset. We find that Gorilla significantly outperforms GPT-4 in terms of API functionality accuracy as well as reducing hallucination errors. We show an example output in Fig. <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">1</span></a>. Further, our retrieval-aware training of Gorilla enables the model to adapt to changes in the API documentation. Finally, we demonstrate Gorilla’s ability to understand and reason about constraints.</p>
+</div>
+<figure class="ltx_figure" id="S1.F2"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="109" id="S1.F2.g1" src="./media/x2.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 2: </span><span class="ltx_text ltx_font_bold" id="S1.F2.2.1" style="font-size:80%;">Accuracy (vs) hallucination<span class="ltx_text ltx_font_medium" id="S1.F2.2.1.1"> in four settings, that is, <em class="ltx_emph ltx_font_italic" id="S1.F2.2.1.1.1">zero-shot</em> (i.e., without any retriever), and <em class="ltx_emph ltx_font_italic" id="S1.F2.2.1.1.2">with retrievers</em>. <span class="ltx_text ltx_font_typewriter" id="S1.F2.2.1.1.3">BM25</span> and <span class="ltx_text ltx_font_typewriter" id="S1.F2.2.1.1.4">GPT</span> are commonly used retrievers and the <span class="ltx_text ltx_font_typewriter" id="S1.F2.2.1.1.5">oracle</span> retriever returns relevant documents at 100%, indicating an upper bound. Higher in the graph (higher accuracy) and to the left is better (lower hallucination). Across the entire dataset, our model, Gorilla, improves accuracy while reducing hallucination.</span></span></figcaption>
+</figure>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Related Work</h2>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Large Language Models</h5>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p1.1">Recent strides in the field of LLMs have renovated many downstream domains <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib10" title="">10</a>, <a class="ltx_ref" href="#bib.bib40" title="">40</a>, <a class="ltx_ref" href="#bib.bib48" title="">48</a>, <a class="ltx_ref" href="#bib.bib47" title="">47</a>]</cite>, not only in traditional natural language processing tasks but also in program synthesis. Many of these advances are achieved by augmenting pre-trained LLMs by prompting <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib44" title="">44</a>, <a class="ltx_ref" href="#bib.bib14" title="">14</a>]</cite> and instruction fine-tuning <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib11" title="">11</a>, <a class="ltx_ref" href="#bib.bib31" title="">31</a>, <a class="ltx_ref" href="#bib.bib43" title="">43</a>, <a class="ltx_ref" href="#bib.bib15" title="">15</a>]</cite>. Recent open-sourced models like
+LLaMa <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib40" title="">40</a>]</cite>, Alpaca <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib38" title="">38</a>]</cite>, and Vicuna <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib9" title="">9</a>]</cite> have furthered the understanding of LLMs and facilitated their experimentation. While our approach, Gorilla, incorporates techniques akin to those mentioned, its primary emphasis is on enhancing the LLMs’ ability to utilize millions of tools, as opposed to refining their conversational skills. Additionally, we pioneer the study of fine-tuning a base model by supplementing it with information retrieval - a first, to the best of our knowledge.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Tool Usage</h5>
+<div class="ltx_para" id="S2.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px2.p1.1">The discussion of tool usage within LLMs has seen an upsurge, with models like Toolformer taking the lead <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib33" title="">33</a>, <a class="ltx_ref" href="#bib.bib19" title="">19</a>, <a class="ltx_ref" href="#bib.bib21" title="">21</a>, <a class="ltx_ref" href="#bib.bib26" title="">26</a>]</cite>. Tools often incorporated include web-browsing <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib34" title="">34</a>]</cite>, calculators <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib12" title="">12</a>, <a class="ltx_ref" href="#bib.bib39" title="">39</a>]</cite>, translation systems <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib39" title="">39</a>]</cite>, and Python interpreters <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib14" title="">14</a>]</cite>.
+While these efforts can be seen as preliminary explorations of marrying LLMs with tool usage, they generally focus on specific tools. Our paper, in contrast, aims to explore a vast array of tools (i.e., API calls) in an open-ended fashion, potentially covering a wide range of applications.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="S2.SS0.SSS0.Px2.p2.1">With the recent launch of Toolformer <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib33" title="">33</a>]</cite> and GPT-4 <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib29" title="">29</a>]</cite>, the importance of API calls has been highlighted, encouraging many works in employing API calls as tooling
+ <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib35" title="">35</a>, <a class="ltx_ref" href="#bib.bib24" title="">24</a>]</cite>. Moreover, the application of API calls in robotics has been explored to some extent <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib41" title="">41</a>, <a class="ltx_ref" href="#bib.bib1" title="">1</a>]</cite>. However, these works primarily aim at showcasing the potential of “prompting” LLMs rather than establishing a systematic method for evaluation and training (including fine-tuning). Our work, on the other hand, concentrates on systematic evaluation and building a pipeline for future use.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">LLMs for Program Synthesis</h5>
+<div class="ltx_para" id="S2.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px3.p1.1">Harnessing LLMs for program synthesis has historically been a challenging task <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib23" title="">23</a>, <a class="ltx_ref" href="#bib.bib7" title="">7</a>, <a class="ltx_ref" href="#bib.bib45" title="">45</a>, <a class="ltx_ref" href="#bib.bib16" title="">16</a>, <a class="ltx_ref" href="#bib.bib13" title="">13</a>, <a class="ltx_ref" href="#bib.bib20" title="">20</a>]</cite>. Researchers have proposed an array of strategies to prompt LLMs to perform better in coding tasks, including in-context learning <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib44" title="">44</a>, <a class="ltx_ref" href="#bib.bib18" title="">18</a>, <a class="ltx_ref" href="#bib.bib7" title="">7</a>]</cite>, task decomposition <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib17" title="">17</a>, <a class="ltx_ref" href="#bib.bib46" title="">46</a>]</cite>, and self-debugging <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib8" title="">8</a>, <a class="ltx_ref" href="#bib.bib36" title="">36</a>]</cite>. Besides prompting, there have also been efforts to pretrain language models specifically for code generation <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib28" title="">28</a>, <a class="ltx_ref" href="#bib.bib22" title="">22</a>, <a class="ltx_ref" href="#bib.bib27" title="">27</a>]</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px3.p2">
+<p class="ltx_p" id="S2.SS0.SSS0.Px3.p2.1">However, these strategies focus on prompting large language models or pre-training them for general program synthesis. In our research, in contrast, we focus on a much restricted domain: the synthesis of linear programs using API calls. General program synthesis, not only is complex, but is also hard to verify and evaluate. API calls, on the other hand, function more like tool usage. This allows the LLM to significantly expand its capabilities without grappling with low-level implementation details.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Methodology</h2>
+<figure class="ltx_figure" id="S3.F3"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="287" id="S3.F3.g1" src="./media/x3.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 3: </span><span class="ltx_text ltx_font_bold" id="S3.F3.2.1" style="font-size:80%;">Gorilla: A system for enabling LLMs to interact with APIs.<span class="ltx_text ltx_font_medium" id="S3.F3.2.1.1"> The upper half represents the training procedure as described in Sec <a class="ltx_ref" href="#S3" title="3 Methodology ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">3</span></a>. This is the most exhaustive API data-set for ML to the best of our knowledge. During inference (lower half), Gorilla supports two modes - with retrieval, and zero-shot. In this example, it is able to suggest the right API call for generating the image from the user’s natural language query.</span></span></figcaption>
+</figure>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">In this section, we describe APIBench, a comprehensive benchmark constructed from TorchHub, TensorHub, and HuggingFace API Model Cards. We begin by outlining the process of collecting the API dataset and how we generated instruction-answer pairs. We then introduce Gorilla, a novel training paradigm with a information–retriever incorporated into the training and inference pipelines. Finally, we present our AST tree matching evaluation metric.</p>
+</div>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Dataset Collection</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">To collect the dataset, we meticulously recorded all online model cards for HuggingFace’s “The Model Hub”, PyTorch Hub, and TensorFlow Hub Models. Throughout the rest of the paper, we call these HuggingFace, Torch Hub, and TensorFlow Hub respectively for brevity.</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">API Documentation</h5>
+<div class="ltx_para" id="S3.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px1.p1.1">The HuggingFace platform hosts and servers about 203,681 models. However, many of them have poor documentation, lack dependencies, have no information in their model card, etc. To filter these out, we pick the top 20 models from each domain.
+We consider 7 domains in multimodal data, 8 in CV, 12 in NLP, 5 in Audio, 2 in tabular data, and 2 in reinforcement learning. Post filtering, we got a total of 925 models from HuggingFace. TensorFlow Hub is versioned into v1 and v2. The latest version (v2) has 801 models in total, and we process all of them. Post filtering out models, whose mode cards had little to no information, we are left with 626 models. Similar to TensorFlow Hub, we get 95 models from Torch Hub.
+We then converted the model cards for each of these 1,645 API calls into a json object with the following fields: {domain, framework, functionality, api_name, api_call, api_arguments, environment_requirements, example_code, performance, and description.}. We provide more information in the Appendix. These fields were chose to generalize beyond the API calls within ML domain, to other domains, includin RESTful API calls.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Instruction Generation</h5>
+<div class="ltx_para" id="S3.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px2.p1.1">Guided by the self-instruct paradigm <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib42" title="">42</a>]</cite>, we employed GPT-4 to generate synthetic instruction data.
+We provided three in-context examples, along with a reference API documentation, and tasked the model with generating real-world use cases that call upon the API. We specifically instructed the model to refrain from using any API names or hints when creating instructions. We constructed six examples (Instruction-API pairs) for each of the three model hubs. These 18 points, were the only hand-generated or modified data. For each of our 1,645 API datapoints, we sample 3 of 6 corresponding instruction examples to generate a total of 10 instruction-api pairs as demonstrated in Figure <a class="ltx_ref" href="#S3.F3" title="Figure 3 ‣ 3 Methodology ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">3</span></a>. We would like to highlight that we only need to employ GPT-4 to generate the instructions and this can be swapped with open-source alternatives such as LLaMA, Alpaca, etc.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Gorilla</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1">Our model Gorilla, is retrieve-aware finetuned LLaMA-7B model, specifically for API calls. As shown in Fig <a class="ltx_ref" href="#S3.F3" title="Figure 3 ‣ 3 Methodology ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">3</span></a>, we employ self-instruct to generate {instruction, API} pairs. To fine-tune LLaMA, we convert this to a user-agent chat-style conversation, where each data-point is a conversation with one round each for the user and the agent. We then perform standard instruction finetuning on the base LLaMA-7B model. For our experiments, we train Gorilla with and without the retriever.</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS2.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">API Call with Constraints</h5>
+<div class="ltx_para" id="S3.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS2.SSS0.Px1.p1.1">API calls often come with inherent constraints. These constraints necessitate that the LLM not only comprehend the functionality of the API call but also categorize the calls according to different constraint parameters.
+This requirement introduces an additional layer of complexity to the process, demanding a more nuanced understanding from the LLM.
+Specifically, for machine learning API calls, two common sets of constraints are: parameter size and a lower bound on accuracy. Consider, for instance, the following prompt: <span class="ltx_text ltx_font_typewriter" id="S3.SS2.SSS0.Px1.p1.1.1">‘‘Invoke an image classification model that uses less than 10M parameters, but maintains an ImageNet accuracy of at least 70%’’</span>. Such a prompt presents a substantial challenge for the LLM to accurately interpret and respond to. Not only must the LLM understand the user’s functional description, but it also needs to reason about the various constraints embedded within the request. This challenge underlines the intricate demands placed on LLMs in real-world API calls. It is not sufficient for the model to merely comprehend the basic functionality of an API call; it must also be capable of navigating the complex landscape of constraints that accompany such calls. These observations necessitate the need to fine-tune an LLM for APIs.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS2.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Retriever-Aware training</h5>
+<div class="ltx_para" id="S3.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS2.SSS0.Px2.p1.1">For training with retriever, the instruction-tuned dataset, also has an additional <span class="ltx_text ltx_font_typewriter" id="S3.SS2.SSS0.Px2.p1.1.1">"Use this API documentation for reference: &lt;retrieved_API_doc_JSON&gt;"</span> appended to the user prompt. Through this, we aim to teach the LLM to parse the second half of the question to answer the first half. We demonstrate that this a) makes the LLM adapt to test-time changes in API documentation, and b) improves performance from in-context learning, and finally c) show that it reduces hallucination error.</p>
+</div>
+<div class="ltx_para" id="S3.SS2.SSS0.Px2.p2">
+<p class="ltx_p" id="S3.SS2.SSS0.Px2.p2.1">Surprisingly, we find that augmenting a LLM with retrieval, does not always lead to improved performance, and can at-times hurt performance. We share more insights along with details in Sec <a class="ltx_ref" href="#S4" title="4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">4</span></a>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS2.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">Gorilla Inference</h5>
+<div class="ltx_para" id="S3.SS2.SSS0.Px3.p1">
+<p class="ltx_p" id="S3.SS2.SSS0.Px3.p1.1">During Inference, the user provides the prompt in natural language (Fig: <a class="ltx_ref" href="#S3.F3" title="Figure 3 ‣ 3 Methodology ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">3</span></a>). This can be for a simple task (e.g, <em class="ltx_emph ltx_font_italic" id="S3.SS2.SSS0.Px3.p1.1.1">“I would like to identify the objects in an image”</em>), or they can specify a vague goal, (.e.g, <em class="ltx_emph ltx_font_italic" id="S3.SS2.SSS0.Px3.p1.1.2">“I am going to the zoo, and would like to track animals”</em>). Gorilla, similar to training, can be used for inference in two modes: zero-shot and with retrieval. In zero-shot, this prompt (with NO further prompt tuning) is fed to the Gorilla LLM model when then returns the API call that will help in accomplishing the task and/or goal. In retrieval mode, the retriever (either of BM25 or GPT-Index) first retrieves the most up-to-date API documentation stored in the API Database. This is then concatenated to the user prompt along with the message <span class="ltx_text ltx_font_typewriter" id="S3.SS2.SSS0.Px3.p1.1.3">Use this API documentation for reference:</span> before feeding it to Gorilla. The output of Gorilla is an API to be invoked. Besides the concatenation as described, we do <em class="ltx_emph ltx_font_italic" id="S3.SS2.SSS0.Px3.p1.1.4">NO</em> further prompt tuning in our system. While we do have a system to execute these APIs, that is not a focus of this paper.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.3 </span>Verifying APIs</h3>
+<div class="ltx_para" id="S3.SS3.p1">
+<p class="ltx_p" id="S3.SS3.p1.1">Inductive program synthesis, where a program is synthesized to satisfy test cases, has found success in several avenues <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" href="#bib.bib4" title="">4</a>, <a class="ltx_ref" href="#bib.bib25" title="">25</a>]</cite>.
+However, test cases fall short when evaluating API calls, as it is often hard to verify the semantic correctness of the code. For example, consider the task of classifying an image.
+There are over 40 different models that can be used for the task. Even if we were to narrow down to a single family of Densenet, there are four different configurations possible. Hence, there exist multiple correct answers and it is hard to tell if the API being used is functionally equivalent to the reference API by unit tests. Thus, to evaluate the performance of our model, we compare their functional equivalence using the dataset we collected. To trace which API in the dataset is the LLM calling, we adopt the AST tree-matching strategy. Since we only consider one API call in this paper, checking if the AST of the candidate API call is a sub-tree of the reference API call reveals which API is being used in the dataset.</p>
+</div>
+<div class="ltx_para" id="S3.SS3.p2">
+<p class="ltx_p" id="S3.SS3.p2.1">Identifying and even defining hallucinations can be challenging.
+We use the AST matching process to directly identify the hallucinations.
+We define a hallucination as an API call that is not a sub-tree of any API in the database – invoking an entirely imagined tool.
+This form of hallucination is distinct from invoking an API incorrectly which we instead define as an error.</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS3.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">AST Sub-Tree Matching</h5>
+<div class="ltx_para" id="S3.SS3.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS3.SSS0.Px1.p1.1">We perform AST sub-tree matching to identify which API in our dataset is the LLM calling. Since each API call can have many arguments, we need to match on each of these arguments. Further, since, Python allows for default arguments, for each API, we define which arguments to match in our database. For example, we check <span class="ltx_text ltx_font_typewriter" id="S3.SS3.SSS0.Px1.p1.1.1">repo_or_dir</span> and <span class="ltx_text ltx_font_typewriter" id="S3.SS3.SSS0.Px1.p1.1.2">model</span> arguments in our function call. In this way, we can easily check if the argument matches the reference API or not. Please refer to Fig. <a class="ltx_ref" href="#S3.F4" title="Figure 4 ‣ AST Sub-Tree Matching ‣ 3.3 Verifying APIs ‣ 3 Methodology ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">4</span></a> for more details. In this example, Gorilla returns a torch API call. We first build the tree, and verify that it matches a subtree in our dataset along nodes <span class="ltx_text ltx_font_typewriter" id="S3.SS3.SSS0.Px1.p1.1.3">torch.hub.load</span>, <span class="ltx_text ltx_font_typewriter" id="S3.SS3.SSS0.Px1.p1.1.4">pytorch/vision</span>, and <span class="ltx_text ltx_font_typewriter" id="S3.SS3.SSS0.Px1.p1.1.5">densenet121</span>. But, we don’t check for match along leaf node <span class="ltx_text ltx_font_typewriter" id="S3.SS3.SSS0.Px1.p1.1.6">pretrained = True</span> since that is an optional python argument.</p>
+</div>
+<figure class="ltx_figure" id="S3.F4"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="190" id="S3.F4.g1" src="./media/x4.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 4: </span><span class="ltx_text ltx_font_bold" id="S3.F4.2.1" style="font-size:80%;">AST Sub-Tree Matching to evaluate API calls.<span class="ltx_text ltx_font_medium" id="S3.F4.2.1.1"> On the left is an API call returned by Gorilla. We first build the associated API tree. We then compare this to our dataset, to see if the API dataset has a subtree match. In the above example, the matching subtree is highlighted in brown, signifying that the API call is indeed correct. <span class="ltx_text ltx_font_typewriter" id="S3.F4.2.1.1.1">Pretrained=True</span> is an optional argument.</span></span></figcaption>
+</figure>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Evaluation</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">We carried out an array of experiments on our collected dataset, benchmarking our model Gorilla with other models, and exploring how different retrieval methods may impact the performance of the model in making API calls. We then demonstrate that Gorilla can easily adapt to test-time changes in API documentation. In addition, we assess Gorilla’s ability to reason about API calls under constraints. Lastly, we examined how integrating different retrieval methods during training influences the model’s final performance.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS0.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Baselines</h5>
+<div class="ltx_para" id="S4.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS0.SSS0.Px1.p1.1">Primarily, we compare Gorilla with state-of-the-art language models in a zero-shot setting. The models under consideration include: GPT-4 by OpenAI, we use the <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px1.p1.1.1">gpt-4-0314</span> checkpoint; GPT-3.5-turbo with the <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px1.p1.1.2">gpt-3.5-turbo-0301</span> checkpoint, both of which are RLHF-tuned model specifically designed for conversation; Claude with <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px1.p1.1.3">claude-v1</span> checkpoint, a language model by Anthropic, renowned for its lengthy context capabilities; LLaMA-7B, a large language model by Meta and the finest open-source model to date.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS0.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Retrievers</h5>
+<div class="ltx_para" id="S4.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS0.SSS0.Px2.p1.1">The term <em class="ltx_emph ltx_font_italic" id="S4.SS0.SSS0.Px2.p1.1.1">Zero-shot</em> (abbreviated as 0-shot in tables) refers to scenarios where no retriever is used. The sole input to the model is the user’s natural language prompt. For <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px2.p1.1.2">BM25</span>, we consider each API as a separate document. During retrieval, we use the user’s query to search the index and fetch the most relevant (top-1) API.
+This API is concatenated with the user’s prompt to query the LLMs. Similarly, GPT-Index refers to the retrieval model <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px2.p1.1.3">text-davinci-003</span> from OpenAI. Like BM25, each API call is indexed as an individual document, and the most relevant document, given a user query, is retrieved and appended to the user prompt. Lastly, we include an Oracle retriever, which serves two purposes: first, to identify the potential for performance improvement through more efficient retrievers, and second, to assist users who know which API to use but may need to help invoking it.
+In all cases, when a retriever is used, it is appended to the user’s prompt as follows: <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px2.p1.1.4">&lt;user_prompt&gt;</span> <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px2.p1.1.5">Use this API documentation for reference:</span> <span class="ltx_text ltx_font_typewriter" id="S4.SS0.SSS0.Px2.p1.1.6">&lt;retrieved_API_doc_JSON&gt;</span>.
+The dataset for these evaluations is detailed in Sec <a class="ltx_ref" href="#S3" title="3 Methodology ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">3</span></a>. We emphasize that we have maintained a holdout test set on which we report our findings. The holdout test set was created by dividing the self-instruct dataset’s instruction, API pairs into training and testing sets.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>AST Accuracy on API call</h3>
+<figure class="ltx_figure" id="S4.F5"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="121" id="S4.F5.g1" src="./media/x5.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 5: </span><span class="ltx_text ltx_font_bold" id="S4.F5.2.1" style="font-size:80%;">Accuracy with GPT-retriever.<span class="ltx_text ltx_font_medium" id="S4.F5.2.1.1">
+Gorilla outperforms on Torch Hub and Hugging-Face while matching performance on Tensorflow Hub for all existing SoTA LLMs - closed source, and open source. </span></span></figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">We first demonstrate the results for the AST accuracy for different models. We present the results in Tab. <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ Finetuning without Retrieval ‣ 4.1 AST Accuracy on API call ‣ 4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">1</span></a>. We test each model for different retriever settings defined above. We report the overall accuracy, the error by hallucination and the error by selecting wrong API call. Note that for TorchHub and TensorHub, we evaluate all the models using AST tree accuracy score. However, for HuggingFace, since the dataset is not exhaustive, for all the models except Gorilla, we only check if they can provide the correct domain names. So this problem reduces to picking one of the multiple choices.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Finetuning without Retrieval</h5>
+<div class="ltx_para" id="S4.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px1.p1.1">In Tab. <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ Finetuning without Retrieval ‣ 4.1 AST Accuracy on API call ‣ 4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">1</span></a> we show that lightly fine-tuned Gorilla gets the state-of-the-art performance zero-shot over all the models, 20.43% better than GPT-4 and 10.75% better than ChatGPT. When compared to other open-source models LLAMA, the improvement is as big as 83%. his suggests quantitatively, that finetuning is better than retrieval, at-least in our scope.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.SSS0.Px1.p2">
+<p class="ltx_p" id="S4.SS1.SSS0.Px1.p2.1">In addition, we found that finetuning without retriever and putting ground truth retriever in evaluation time rarely helps the performance: 0.88% worse in TensorHub and 0.97% better in HuggingFace. If we put BM25 or GPT-Index as retriever, results will be significantly dropped: 21.50% in Torch Hub and 47.57% in HuggingFace. The result illustrates that adding a non-optimal retriever at test time will sometime misguide the model and result in more errors. We will discuss an interesting ablation on how finetuning with the retriever will help the performance in the next paragraph.</p>
+</div>
+<figure class="ltx_table" id="S4.T1">
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 1: </span><span class="ltx_text ltx_font_bold" id="S4.T1.11.1" style="font-size:90%;">Evaluating LLMs on Torch Hub, HuggingFace, and Tensorflow Hub APIs</span></figcaption>
+<div class="ltx_inline-block ltx_transformed_outer" id="S4.T1.9" style="width:569.7pt;height:397pt;vertical-align:-1.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S4.T1.9.9"><span class="ltx_text" id="S4.T1.9.9.9">
+<span class="ltx_tabular ltx_align_middle" id="S4.T1.9.9.9.9">
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S4.T1.9.9.9.9.10.1">
+<span class="ltx_td ltx_align_left ltx_border_tt" id="S4.T1.9.9.9.9.10.1.1" style="padding-left:10.0pt;padding-right:10.0pt;">LLM (retriever)</span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_3" id="S4.T1.9.9.9.9.10.1.2" style="padding-left:10.0pt;padding-right:10.0pt;">TorchHub</span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_3" id="S4.T1.9.9.9.9.10.1.3" style="padding-left:10.0pt;padding-right:10.0pt;">HuggingFace</span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_3" id="S4.T1.9.9.9.9.10.1.4" style="padding-left:10.0pt;padding-right:10.0pt;">TensorFlow Hub</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.9">
+<span class="ltx_td" id="S4.T1.9.9.9.9.9.10" style="padding-left:10.0pt;padding-right:10.0pt;"></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.1.1.1.1.1.1" style="padding-left:10.0pt;padding-right:10.0pt;">overall <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.1.1.1.1.1.1.m1.1"><semantics id="S4.T1.1.1.1.1.1.1.m1.1a"><mo id="S4.T1.1.1.1.1.1.1.m1.1.1" stretchy="false" xref="S4.T1.1.1.1.1.1.1.m1.1.1.cmml">↑</mo><annotation-xml encoding="MathML-Content" id="S4.T1.1.1.1.1.1.1.m1.1b"><ci id="S4.T1.1.1.1.1.1.1.m1.1.1.cmml" xref="S4.T1.1.1.1.1.1.1.m1.1.1">↑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.1.1.1.1.1.1.m1.1c">\uparrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.2.2.2.2.2.2" style="padding-left:10.0pt;padding-right:10.0pt;">hallu <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T1.2.2.2.2.2.2.m1.1"><semantics id="S4.T1.2.2.2.2.2.2.m1.1a"><mo id="S4.T1.2.2.2.2.2.2.m1.1.1" stretchy="false" xref="S4.T1.2.2.2.2.2.2.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T1.2.2.2.2.2.2.m1.1b"><ci id="S4.T1.2.2.2.2.2.2.m1.1.1.cmml" xref="S4.T1.2.2.2.2.2.2.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.2.2.2.2.2.2.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.3.3.3.3.3.3" style="padding-left:10.0pt;padding-right:10.0pt;">err <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T1.3.3.3.3.3.3.m1.1"><semantics id="S4.T1.3.3.3.3.3.3.m1.1a"><mo id="S4.T1.3.3.3.3.3.3.m1.1.1" stretchy="false" xref="S4.T1.3.3.3.3.3.3.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T1.3.3.3.3.3.3.m1.1b"><ci id="S4.T1.3.3.3.3.3.3.m1.1.1.cmml" xref="S4.T1.3.3.3.3.3.3.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.3.3.3.3.3.3.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.4.4.4.4.4.4" style="padding-left:10.0pt;padding-right:10.0pt;">overall <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.4.4.4.4.4.4.m1.1"><semantics id="S4.T1.4.4.4.4.4.4.m1.1a"><mo id="S4.T1.4.4.4.4.4.4.m1.1.1" stretchy="false" xref="S4.T1.4.4.4.4.4.4.m1.1.1.cmml">↑</mo><annotation-xml encoding="MathML-Content" id="S4.T1.4.4.4.4.4.4.m1.1b"><ci id="S4.T1.4.4.4.4.4.4.m1.1.1.cmml" xref="S4.T1.4.4.4.4.4.4.m1.1.1">↑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.4.4.4.4.4.4.m1.1c">\uparrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.5.5.5.5.5.5" style="padding-left:10.0pt;padding-right:10.0pt;">hallu <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T1.5.5.5.5.5.5.m1.1"><semantics id="S4.T1.5.5.5.5.5.5.m1.1a"><mo id="S4.T1.5.5.5.5.5.5.m1.1.1" stretchy="false" xref="S4.T1.5.5.5.5.5.5.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T1.5.5.5.5.5.5.m1.1b"><ci id="S4.T1.5.5.5.5.5.5.m1.1.1.cmml" xref="S4.T1.5.5.5.5.5.5.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.5.5.5.5.5.5.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.6.6.6.6.6" style="padding-left:10.0pt;padding-right:10.0pt;">err <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T1.6.6.6.6.6.6.m1.1"><semantics id="S4.T1.6.6.6.6.6.6.m1.1a"><mo id="S4.T1.6.6.6.6.6.6.m1.1.1" stretchy="false" xref="S4.T1.6.6.6.6.6.6.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T1.6.6.6.6.6.6.m1.1b"><ci id="S4.T1.6.6.6.6.6.6.m1.1.1.cmml" xref="S4.T1.6.6.6.6.6.6.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.6.6.6.6.6.6.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.7.7.7.7.7.7" style="padding-left:10.0pt;padding-right:10.0pt;">overall <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.7.7.7.7.7.7.m1.1"><semantics id="S4.T1.7.7.7.7.7.7.m1.1a"><mo id="S4.T1.7.7.7.7.7.7.m1.1.1" stretchy="false" xref="S4.T1.7.7.7.7.7.7.m1.1.1.cmml">↑</mo><annotation-xml encoding="MathML-Content" id="S4.T1.7.7.7.7.7.7.m1.1b"><ci id="S4.T1.7.7.7.7.7.7.m1.1.1.cmml" xref="S4.T1.7.7.7.7.7.7.m1.1.1">↑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.7.7.7.7.7.7.m1.1c">\uparrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.8.8.8.8.8.8" style="padding-left:10.0pt;padding-right:10.0pt;">hallu <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T1.8.8.8.8.8.8.m1.1"><semantics id="S4.T1.8.8.8.8.8.8.m1.1a"><mo id="S4.T1.8.8.8.8.8.8.m1.1.1" stretchy="false" xref="S4.T1.8.8.8.8.8.8.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T1.8.8.8.8.8.8.m1.1b"><ci id="S4.T1.8.8.8.8.8.8.m1.1.1.cmml" xref="S4.T1.8.8.8.8.8.8.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.8.8.8.8.8.8.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.9.9" style="padding-left:10.0pt;padding-right:10.0pt;">err <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T1.9.9.9.9.9.9.m1.1"><semantics id="S4.T1.9.9.9.9.9.9.m1.1a"><mo id="S4.T1.9.9.9.9.9.9.m1.1.1" stretchy="false" xref="S4.T1.9.9.9.9.9.9.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T1.9.9.9.9.9.9.m1.1b"><ci id="S4.T1.9.9.9.9.9.9.m1.1.1.cmml" xref="S4.T1.9.9.9.9.9.9.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.9.9.9.9.9.9.m1.1c">\downarrow</annotation></semantics></math></span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.11.2">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.9.9.9.9.11.2.1" style="padding-left:10.0pt;padding-right:10.0pt;">LLAMA (0-shot)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.2" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.3" style="padding-left:10.0pt;padding-right:10.0pt;">100</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.11.2.4" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.5" style="padding-left:10.0pt;padding-right:10.0pt;">0.00</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.6" style="padding-left:10.0pt;padding-right:10.0pt;">97.57</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.11.2.7" style="padding-left:10.0pt;padding-right:10.0pt;">2.43</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.8" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.9" style="padding-left:10.0pt;padding-right:10.0pt;">100</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.11.2.10" style="padding-left:10.0pt;padding-right:10.0pt;">0</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.12.3">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.12.3.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-3.5 (0-shot)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.2" style="padding-left:10.0pt;padding-right:10.0pt;">48.38</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.3" style="padding-left:10.0pt;padding-right:10.0pt;">18.81</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.12.3.4" style="padding-left:10.0pt;padding-right:10.0pt;">32.79</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.5" style="padding-left:10.0pt;padding-right:10.0pt;">16.81</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.6" style="padding-left:10.0pt;padding-right:10.0pt;">35.73</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.12.3.7" style="padding-left:10.0pt;padding-right:10.0pt;">47.46</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.8" style="padding-left:10.0pt;padding-right:10.0pt;">41.75</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.9" style="padding-left:10.0pt;padding-right:10.0pt;">47.88</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.12.3.10" style="padding-left:10.0pt;padding-right:10.0pt;">10.36</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.13.4">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.13.4.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-4 (0-shot)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.2" style="padding-left:10.0pt;padding-right:10.0pt;">38.70</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.3" style="padding-left:10.0pt;padding-right:10.0pt;">36.55</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.13.4.4" style="padding-left:10.0pt;padding-right:10.0pt;">24.7</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.5" style="padding-left:10.0pt;padding-right:10.0pt;">19.80</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.6" style="padding-left:10.0pt;padding-right:10.0pt;">37.16</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.13.4.7" style="padding-left:10.0pt;padding-right:10.0pt;">43.03</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.8" style="padding-left:10.0pt;padding-right:10.0pt;">18.20</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.9" style="padding-left:10.0pt;padding-right:10.0pt;">78.65</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.13.4.10" style="padding-left:10.0pt;padding-right:10.0pt;">3.13</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.14.5">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.14.5.1" style="padding-left:10.0pt;padding-right:10.0pt;">Claude (0-shot)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.2" style="padding-left:10.0pt;padding-right:10.0pt;">18.81</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.3" style="padding-left:10.0pt;padding-right:10.0pt;">65.59</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.14.5.4" style="padding-left:10.0pt;padding-right:10.0pt;">15.59</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.5" style="padding-left:10.0pt;padding-right:10.0pt;">6.19</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.6" style="padding-left:10.0pt;padding-right:10.0pt;">77.65</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.14.5.7" style="padding-left:10.0pt;padding-right:10.0pt;">16.15</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.8" style="padding-left:10.0pt;padding-right:10.0pt;">9.19</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.9" style="padding-left:10.0pt;padding-right:10.0pt;">88.46</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.14.5.10" style="padding-left:10.0pt;padding-right:10.0pt;">2.33</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.15.6">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.15.6.1" style="padding-left:10.0pt;padding-right:10.0pt;">Gorilla (0-shot)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.2" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.15.6.2.1">59.13</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.3" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.15.6.3.1">6.98</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.15.6.4" style="padding-left:10.0pt;padding-right:10.0pt;">33.87</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.5" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.15.6.5.1">71.68</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.6" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.15.6.6.1">10.95</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.15.6.7" style="padding-left:10.0pt;padding-right:10.0pt;">17.36</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.8" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.15.6.8.1">83.79</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.9" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.15.6.9.1">5.40</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.15.6.10" style="padding-left:10.0pt;padding-right:10.0pt;">10.80</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.16.7">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.9.9.9.9.16.7.1" style="padding-left:10.0pt;padding-right:10.0pt;">LLAMA (BM-25)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.2" style="padding-left:10.0pt;padding-right:10.0pt;">8.60</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.3" style="padding-left:10.0pt;padding-right:10.0pt;">76.88</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.16.7.4" style="padding-left:10.0pt;padding-right:10.0pt;">14.51</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.5" style="padding-left:10.0pt;padding-right:10.0pt;">3.00</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.6" style="padding-left:10.0pt;padding-right:10.0pt;">77.99</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.16.7.7" style="padding-left:10.0pt;padding-right:10.0pt;">19.02</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.8" style="padding-left:10.0pt;padding-right:10.0pt;">8.90</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.9" style="padding-left:10.0pt;padding-right:10.0pt;">77.37</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.16.7.10" style="padding-left:10.0pt;padding-right:10.0pt;">13.72</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.17.8">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.17.8.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-3.5 (BM-25)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.2" style="padding-left:10.0pt;padding-right:10.0pt;">38.17</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.3" style="padding-left:10.0pt;padding-right:10.0pt;">6.98</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.17.8.4" style="padding-left:10.0pt;padding-right:10.0pt;">54.83</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.5" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.17.8.5.1">17.26</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.6" style="padding-left:10.0pt;padding-right:10.0pt;">8.30</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.17.8.7" style="padding-left:10.0pt;padding-right:10.0pt;">74.44</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.8" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.17.8.8.1">54.16</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.9" style="padding-left:10.0pt;padding-right:10.0pt;">3.64</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.17.8.10" style="padding-left:10.0pt;padding-right:10.0pt;">42.18</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.18.9">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.18.9.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-4 (BM-25)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.2" style="padding-left:10.0pt;padding-right:10.0pt;">35.48</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.3" style="padding-left:10.0pt;padding-right:10.0pt;">11.29</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.18.9.4" style="padding-left:10.0pt;padding-right:10.0pt;">53.22</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.5" style="padding-left:10.0pt;padding-right:10.0pt;">16.48</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.6" style="padding-left:10.0pt;padding-right:10.0pt;">15.93</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.18.9.7" style="padding-left:10.0pt;padding-right:10.0pt;">67.59</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.8" style="padding-left:10.0pt;padding-right:10.0pt;">34.01</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.9" style="padding-left:10.0pt;padding-right:10.0pt;">37.08</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.18.9.10" style="padding-left:10.0pt;padding-right:10.0pt;">28.90</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.19.10">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.19.10.1" style="padding-left:10.0pt;padding-right:10.0pt;">Claude (BM-25)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.2" style="padding-left:10.0pt;padding-right:10.0pt;">39.78</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.3" style="padding-left:10.0pt;padding-right:10.0pt;">5.37</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.19.10.4" style="padding-left:10.0pt;padding-right:10.0pt;">54.83</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.5" style="padding-left:10.0pt;padding-right:10.0pt;">14.60</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.6" style="padding-left:10.0pt;padding-right:10.0pt;">15.82</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.19.10.7" style="padding-left:10.0pt;padding-right:10.0pt;">69.58</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.8" style="padding-left:10.0pt;padding-right:10.0pt;">35.18</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.9" style="padding-left:10.0pt;padding-right:10.0pt;">21.16</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.19.10.10" style="padding-left:10.0pt;padding-right:10.0pt;">43.64</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.20.11">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.20.11.1" style="padding-left:10.0pt;padding-right:10.0pt;">Gorilla (BM-25)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.2" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.20.11.2.1">40.32</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.3" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.20.11.3.1">4.30</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.20.11.4" style="padding-left:10.0pt;padding-right:10.0pt;">55.37</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.5" style="padding-left:10.0pt;padding-right:10.0pt;">17.03</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.6" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.20.11.6.1">6.42</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.20.11.7" style="padding-left:10.0pt;padding-right:10.0pt;">76.55</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.8" style="padding-left:10.0pt;padding-right:10.0pt;">41.89</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.9" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.20.11.9.1">2.77</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.20.11.10" style="padding-left:10.0pt;padding-right:10.0pt;">55.32</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.21.12">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.9.9.9.9.21.12.1" style="padding-left:10.0pt;padding-right:10.0pt;">LLAMA (GPT-Index)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.2" style="padding-left:10.0pt;padding-right:10.0pt;">14.51</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.3" style="padding-left:10.0pt;padding-right:10.0pt;">75.8</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.21.12.4" style="padding-left:10.0pt;padding-right:10.0pt;">9.67</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.5" style="padding-left:10.0pt;padding-right:10.0pt;">10.18</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.6" style="padding-left:10.0pt;padding-right:10.0pt;">75.66</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.21.12.7" style="padding-left:10.0pt;padding-right:10.0pt;">14.20</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.8" style="padding-left:10.0pt;padding-right:10.0pt;">15.62</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.9" style="padding-left:10.0pt;padding-right:10.0pt;">77.66</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.21.12.10" style="padding-left:10.0pt;padding-right:10.0pt;">6.71</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.22.13">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.22.13.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-3.5 (GPT-Index)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.2" style="padding-left:10.0pt;padding-right:10.0pt;">60.21</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.3" style="padding-left:10.0pt;padding-right:10.0pt;">1.61</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.22.13.4" style="padding-left:10.0pt;padding-right:10.0pt;">38.17</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.5" style="padding-left:10.0pt;padding-right:10.0pt;">29.08</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.6" style="padding-left:10.0pt;padding-right:10.0pt;">7.85</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.22.13.7" style="padding-left:10.0pt;padding-right:10.0pt;">44.80</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.8" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.22.13.8.1">65.59</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.9" style="padding-left:10.0pt;padding-right:10.0pt;">3.79</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.22.13.10" style="padding-left:10.0pt;padding-right:10.0pt;">30.50</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.23.14">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.23.14.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-4 (GPT-Index)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.2" style="padding-left:10.0pt;padding-right:10.0pt;">59.13</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.3" style="padding-left:10.0pt;padding-right:10.0pt;">1.07</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.23.14.4" style="padding-left:10.0pt;padding-right:10.0pt;">39.78</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.5" style="padding-left:10.0pt;padding-right:10.0pt;">44.58</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.6" style="padding-left:10.0pt;padding-right:10.0pt;">11.18</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.23.14.7" style="padding-left:10.0pt;padding-right:10.0pt;">44.25</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.8" style="padding-left:10.0pt;padding-right:10.0pt;">43.94</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.9" style="padding-left:10.0pt;padding-right:10.0pt;">31.53</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.23.14.10" style="padding-left:10.0pt;padding-right:10.0pt;">24.52</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.24.15">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.24.15.1" style="padding-left:10.0pt;padding-right:10.0pt;">Claude (GPT-Index)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.2" style="padding-left:10.0pt;padding-right:10.0pt;">60.21</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.3" style="padding-left:10.0pt;padding-right:10.0pt;">3.76</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.24.15.4" style="padding-left:10.0pt;padding-right:10.0pt;">36.02</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.5" style="padding-left:10.0pt;padding-right:10.0pt;">41.37</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.6" style="padding-left:10.0pt;padding-right:10.0pt;">18.81</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.24.15.7" style="padding-left:10.0pt;padding-right:10.0pt;">39.82</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.8" style="padding-left:10.0pt;padding-right:10.0pt;">55.62</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.9" style="padding-left:10.0pt;padding-right:10.0pt;">16.20</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.24.15.10" style="padding-left:10.0pt;padding-right:10.0pt;">28.17</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.25.16">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.25.16.1" style="padding-left:10.0pt;padding-right:10.0pt;">Gorilla (GPT-Index)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.2" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.25.16.2.1">61.82</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.3" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.25.16.3.1">0</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.25.16.4" style="padding-left:10.0pt;padding-right:10.0pt;">38.17</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.5" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.25.16.5.1">47.46</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.6" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.25.16.6.1">8.19</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.25.16.7" style="padding-left:10.0pt;padding-right:10.0pt;">44.36</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.8" style="padding-left:10.0pt;padding-right:10.0pt;">64.96</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.9" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.25.16.9.1">2.33</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.25.16.10" style="padding-left:10.0pt;padding-right:10.0pt;">32.70</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.26.17">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.9.9.9.9.26.17.1" style="padding-left:10.0pt;padding-right:10.0pt;">LLAMA (Oracle)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.2" style="padding-left:10.0pt;padding-right:10.0pt;">16.12</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.3" style="padding-left:10.0pt;padding-right:10.0pt;">79.03</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.26.17.4" style="padding-left:10.0pt;padding-right:10.0pt;">4.83</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.5" style="padding-left:10.0pt;padding-right:10.0pt;">17.70</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.6" style="padding-left:10.0pt;padding-right:10.0pt;">77.10</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.9.9.9.9.26.17.7" style="padding-left:10.0pt;padding-right:10.0pt;">5.20</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.8" style="padding-left:10.0pt;padding-right:10.0pt;">12.55</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.9" style="padding-left:10.0pt;padding-right:10.0pt;">87.00</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.9.9.9.9.26.17.10" style="padding-left:10.0pt;padding-right:10.0pt;">0.43</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.27.18">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.27.18.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-3.5 (Oracle)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.2" style="padding-left:10.0pt;padding-right:10.0pt;">66.31</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.3" style="padding-left:10.0pt;padding-right:10.0pt;">1.60</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.27.18.4" style="padding-left:10.0pt;padding-right:10.0pt;">32.08</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.5" style="padding-left:10.0pt;padding-right:10.0pt;">89.71</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.6" style="padding-left:10.0pt;padding-right:10.0pt;">6.64</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.27.18.7" style="padding-left:10.0pt;padding-right:10.0pt;">3.65</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.8" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.27.18.8.1">95.03</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.9" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.27.18.9.1">0.29</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.27.18.10" style="padding-left:10.0pt;padding-right:10.0pt;">4.67</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.28.19">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.28.19.1" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-4 (Oracle)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.2" style="padding-left:10.0pt;padding-right:10.0pt;">66.12</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.3" style="padding-left:10.0pt;padding-right:10.0pt;">0.53</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.28.19.4" style="padding-left:10.0pt;padding-right:10.0pt;">33.33</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.5" style="padding-left:10.0pt;padding-right:10.0pt;">85.07</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.6" style="padding-left:10.0pt;padding-right:10.0pt;">10.62</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.28.19.7" style="padding-left:10.0pt;padding-right:10.0pt;">4.31</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.8" style="padding-left:10.0pt;padding-right:10.0pt;">55.91</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.9" style="padding-left:10.0pt;padding-right:10.0pt;">37.95</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.28.19.10" style="padding-left:10.0pt;padding-right:10.0pt;">6.13</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.29.20">
+<span class="ltx_td ltx_align_left" id="S4.T1.9.9.9.9.29.20.1" style="padding-left:10.0pt;padding-right:10.0pt;">Claude (Oracle)</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.2" style="padding-left:10.0pt;padding-right:10.0pt;">63.44</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.3" style="padding-left:10.0pt;padding-right:10.0pt;">3.76</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.29.20.4" style="padding-left:10.0pt;padding-right:10.0pt;">32.79</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.5" style="padding-left:10.0pt;padding-right:10.0pt;">77.21</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.6" style="padding-left:10.0pt;padding-right:10.0pt;">19.58</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.9.9.9.9.29.20.7" style="padding-left:10.0pt;padding-right:10.0pt;">3.21</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.8" style="padding-left:10.0pt;padding-right:10.0pt;">74.74</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.9" style="padding-left:10.0pt;padding-right:10.0pt;">21.60</span>
+<span class="ltx_td ltx_align_center" id="S4.T1.9.9.9.9.29.20.10" style="padding-left:10.0pt;padding-right:10.0pt;">3.64</span></span>
+<span class="ltx_tr" id="S4.T1.9.9.9.9.30.21">
+<span class="ltx_td ltx_align_left ltx_border_bb" id="S4.T1.9.9.9.9.30.21.1" style="padding-left:10.0pt;padding-right:10.0pt;">Gorilla (Oracle)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.2" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.30.21.2.1">67.20</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.3" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.30.21.3.1">0</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.9.9.9.9.30.21.4" style="padding-left:10.0pt;padding-right:10.0pt;">32.79</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.5" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.30.21.5.1">91.26</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.6" style="padding-left:10.0pt;padding-right:10.0pt;"><span class="ltx_text ltx_font_bold" id="S4.T1.9.9.9.9.30.21.6.1">7.08</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.9.9.9.9.30.21.7" style="padding-left:10.0pt;padding-right:10.0pt;">1.66</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.8" style="padding-left:10.0pt;padding-right:10.0pt;">94.16</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.9" style="padding-left:10.0pt;padding-right:10.0pt;">1.89</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.9.9.9.9.30.21.10" style="padding-left:10.0pt;padding-right:10.0pt;">3.94</span></span>
+</span>
+</span></span></p>
+</span></div>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Finetuning with Retrieval</h5>
+<div class="ltx_para" id="S4.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px2.p1.1">We now discuss an interesting experiment on how finetuning language with retriever incorporated is helping the performance. The settings for this experiment are finetuning the base LLAMA with the prompt (instruction generated), reference API document (from golden-truth oracle), and the example output generated by GPT-4. In Tab. <a class="ltx_ref" href="#S4.T2" title="Table 2 ‣ Finetuning with Retrieval ‣ 4.1 AST Accuracy on API call ‣ 4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">2</span></a>, we can see that incorporating ground truth retriever in the finetuning pipeline achieves significantly better results 12.37% better than training without retriever in Torch Hub and 23.46% better in HuggingFace. However, we found that at evaluation time, current retrievers still have a big gap between the ground truth retriever: using GPT-Index at evaluation results in 29.20% accuracy degradation, and using BM25 results in a 52.27% accuracy degradation. Nevertheless, we can still conclude that with a better retriever, finetuning with retriever is still a better method to adopt while in another scenario, when a good retriever is not available, zero-shot finetuning might be the preferred choice.</p>
+</div>
+<figure class="ltx_table" id="S4.T2">
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 2: </span><span class="ltx_text ltx_font_bold" id="S4.T2.8.1" style="font-size:90%;">Comparison of retrieval techniques<span class="ltx_text ltx_font_medium" id="S4.T2.8.1.1">
+</span></span></figcaption>
+<div class="ltx_inline-block ltx_transformed_outer" id="S4.T2.6" style="width:573.0pt;height:145pt;vertical-align:-1.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S4.T2.6.6"><span class="ltx_text" id="S4.T2.6.6.6">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S4.T2.6.6.6.6">
+<span class="ltx_thead">
+<span class="ltx_tr" id="S4.T2.6.6.6.6.7.1">
+<span class="ltx_td ltx_th ltx_th_column ltx_border_tt" id="S4.T2.6.6.6.6.7.1.1" style="padding-left:10.0pt;padding-right:10.0pt;"></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt ltx_colspan ltx_colspan_4" id="S4.T2.6.6.6.6.7.1.2" style="padding-left:10.0pt;padding-right:10.0pt;">Gorilla without Retriever</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt ltx_colspan ltx_colspan_4" id="S4.T2.6.6.6.6.7.1.3" style="padding-left:10.0pt;padding-right:10.0pt;">Gorilla with Oracle retriever</span></span>
+<span class="ltx_tr" id="S4.T2.6.6.6.6.8.2">
+<span class="ltx_td ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.1" style="padding-left:10.0pt;padding-right:10.0pt;"></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.2" style="padding-left:10.0pt;padding-right:10.0pt;">zero-shot</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.3" style="padding-left:10.0pt;padding-right:10.0pt;">BM25</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.4" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_t" id="S4.T2.6.6.6.6.8.2.5" style="padding-left:10.0pt;padding-right:10.0pt;">Oracle</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.6" style="padding-left:10.0pt;padding-right:10.0pt;">zero-shot</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.7" style="padding-left:10.0pt;padding-right:10.0pt;">BM25</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.8" style="padding-left:10.0pt;padding-right:10.0pt;">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S4.T2.6.6.6.6.8.2.9" style="padding-left:10.0pt;padding-right:10.0pt;">Oracle</span></span>
+</span>
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S4.T2.1.1.1.1.1">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T2.1.1.1.1.1.1" style="padding-left:10.0pt;padding-right:10.0pt;">Torch Hub (overall) <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.1.1.1.1.1.1.m1.1"><semantics id="S4.T2.1.1.1.1.1.1.m1.1a"><mo id="S4.T2.1.1.1.1.1.1.m1.1.1" stretchy="false" xref="S4.T2.1.1.1.1.1.1.m1.1.1.cmml">↑</mo><annotation-xml encoding="MathML-Content" id="S4.T2.1.1.1.1.1.1.m1.1b"><ci id="S4.T2.1.1.1.1.1.1.m1.1.1.cmml" xref="S4.T2.1.1.1.1.1.1.m1.1.1">↑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T2.1.1.1.1.1.1.m1.1c">\uparrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.2" style="padding-left:10.0pt;padding-right:10.0pt;">59.13</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.3" style="padding-left:10.0pt;padding-right:10.0pt;">37.63</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.4" style="padding-left:10.0pt;padding-right:10.0pt;">60.21</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T2.1.1.1.1.1.5" style="padding-left:10.0pt;padding-right:10.0pt;">54.83</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.6" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.7" style="padding-left:10.0pt;padding-right:10.0pt;">40.32</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.8" style="padding-left:10.0pt;padding-right:10.0pt;">61.82</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.1.1.1.1.1.9" style="padding-left:10.0pt;padding-right:10.0pt;">67.20</span></span>
+<span class="ltx_tr" id="S4.T2.2.2.2.2.2">
+<span class="ltx_td ltx_align_left" id="S4.T2.2.2.2.2.2.1" style="padding-left:10.0pt;padding-right:10.0pt;">HuggingFace (overall) <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.2.2.2.2.2.1.m1.1"><semantics id="S4.T2.2.2.2.2.2.1.m1.1a"><mo id="S4.T2.2.2.2.2.2.1.m1.1.1" stretchy="false" xref="S4.T2.2.2.2.2.2.1.m1.1.1.cmml">↑</mo><annotation-xml encoding="MathML-Content" id="S4.T2.2.2.2.2.2.1.m1.1b"><ci id="S4.T2.2.2.2.2.2.1.m1.1.1.cmml" xref="S4.T2.2.2.2.2.2.1.m1.1.1">↑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T2.2.2.2.2.2.1.m1.1c">\uparrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.2" style="padding-left:10.0pt;padding-right:10.0pt;">71.68</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.3" style="padding-left:10.0pt;padding-right:10.0pt;">11.28</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.4" style="padding-left:10.0pt;padding-right:10.0pt;">28.10</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.2.2.2.2.2.5" style="padding-left:10.0pt;padding-right:10.0pt;">45.58</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.6" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.7" style="padding-left:10.0pt;padding-right:10.0pt;">17.04</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.8" style="padding-left:10.0pt;padding-right:10.0pt;">47.46</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.2.2.2.2.2.9" style="padding-left:10.0pt;padding-right:10.0pt;">91.26</span></span>
+<span class="ltx_tr" id="S4.T2.3.3.3.3.3">
+<span class="ltx_td ltx_align_left" id="S4.T2.3.3.3.3.3.1" style="padding-left:10.0pt;padding-right:10.0pt;">TensorHub (overall) <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.3.3.3.3.3.1.m1.1"><semantics id="S4.T2.3.3.3.3.3.1.m1.1a"><mo id="S4.T2.3.3.3.3.3.1.m1.1.1" stretchy="false" xref="S4.T2.3.3.3.3.3.1.m1.1.1.cmml">↑</mo><annotation-xml encoding="MathML-Content" id="S4.T2.3.3.3.3.3.1.m1.1b"><ci id="S4.T2.3.3.3.3.3.1.m1.1.1.cmml" xref="S4.T2.3.3.3.3.3.1.m1.1.1">↑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T2.3.3.3.3.3.1.m1.1c">\uparrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.2" style="padding-left:10.0pt;padding-right:10.0pt;">83.79</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.3" style="padding-left:10.0pt;padding-right:10.0pt;">34.30</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.4" style="padding-left:10.0pt;padding-right:10.0pt;">52.40</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.3.3.3.3.3.5" style="padding-left:10.0pt;padding-right:10.0pt;">82.91</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.6" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.7" style="padding-left:10.0pt;padding-right:10.0pt;">41.89</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.8" style="padding-left:10.0pt;padding-right:10.0pt;">64.96</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.3.3.3.3.3.9" style="padding-left:10.0pt;padding-right:10.0pt;">94.16</span></span>
+<span class="ltx_tr" id="S4.T2.4.4.4.4.4">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T2.4.4.4.4.4.1" style="padding-left:10.0pt;padding-right:10.0pt;">Torch Hub (Hallu) <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T2.4.4.4.4.4.1.m1.1"><semantics id="S4.T2.4.4.4.4.4.1.m1.1a"><mo id="S4.T2.4.4.4.4.4.1.m1.1.1" stretchy="false" xref="S4.T2.4.4.4.4.4.1.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T2.4.4.4.4.4.1.m1.1b"><ci id="S4.T2.4.4.4.4.4.1.m1.1.1.cmml" xref="S4.T2.4.4.4.4.4.1.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T2.4.4.4.4.4.1.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.2" style="padding-left:10.0pt;padding-right:10.0pt;">6.98</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.3" style="padding-left:10.0pt;padding-right:10.0pt;">11.29</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.4" style="padding-left:10.0pt;padding-right:10.0pt;">4.30</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T2.4.4.4.4.4.5" style="padding-left:10.0pt;padding-right:10.0pt;">15.59</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.6" style="padding-left:10.0pt;padding-right:10.0pt;">100</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.7" style="padding-left:10.0pt;padding-right:10.0pt;">4.30</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.8" style="padding-left:10.0pt;padding-right:10.0pt;">0</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.4.4.4.4.9" style="padding-left:10.0pt;padding-right:10.0pt;">0</span></span>
+<span class="ltx_tr" id="S4.T2.5.5.5.5.5">
+<span class="ltx_td ltx_align_left" id="S4.T2.5.5.5.5.5.1" style="padding-left:10.0pt;padding-right:10.0pt;">HuggingFace (Hallu) <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T2.5.5.5.5.5.1.m1.1"><semantics id="S4.T2.5.5.5.5.5.1.m1.1a"><mo id="S4.T2.5.5.5.5.5.1.m1.1.1" stretchy="false" xref="S4.T2.5.5.5.5.5.1.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T2.5.5.5.5.5.1.m1.1b"><ci id="S4.T2.5.5.5.5.5.1.m1.1.1.cmml" xref="S4.T2.5.5.5.5.5.1.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T2.5.5.5.5.5.1.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.2" style="padding-left:10.0pt;padding-right:10.0pt;">10.95</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.3" style="padding-left:10.0pt;padding-right:10.0pt;">46.46</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.4" style="padding-left:10.0pt;padding-right:10.0pt;">41.48</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.5.5.5.5.5.5" style="padding-left:10.0pt;padding-right:10.0pt;">52.77</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.6" style="padding-left:10.0pt;padding-right:10.0pt;">99.67</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.7" style="padding-left:10.0pt;padding-right:10.0pt;">6.42</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.8" style="padding-left:10.0pt;padding-right:10.0pt;">8.19</span>
+<span class="ltx_td ltx_align_center" id="S4.T2.5.5.5.5.5.9" style="padding-left:10.0pt;padding-right:10.0pt;">7.08</span></span>
+<span class="ltx_tr" id="S4.T2.6.6.6.6.6">
+<span class="ltx_td ltx_align_left ltx_border_bb" id="S4.T2.6.6.6.6.6.1" style="padding-left:10.0pt;padding-right:10.0pt;">TensorHub (Hallu) <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T2.6.6.6.6.6.1.m1.1"><semantics id="S4.T2.6.6.6.6.6.1.m1.1a"><mo id="S4.T2.6.6.6.6.6.1.m1.1.1" stretchy="false" xref="S4.T2.6.6.6.6.6.1.m1.1.1.cmml">↓</mo><annotation-xml encoding="MathML-Content" id="S4.T2.6.6.6.6.6.1.m1.1b"><ci id="S4.T2.6.6.6.6.6.1.m1.1.1.cmml" xref="S4.T2.6.6.6.6.6.1.m1.1.1">↓</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T2.6.6.6.6.6.1.m1.1c">\downarrow</annotation></semantics></math></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.2" style="padding-left:10.0pt;padding-right:10.0pt;">5.40</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.3" style="padding-left:10.0pt;padding-right:10.0pt;">20.43</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.4" style="padding-left:10.0pt;padding-right:10.0pt;">19.70</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T2.6.6.6.6.6.5" style="padding-left:10.0pt;padding-right:10.0pt;">13.28</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.6" style="padding-left:10.0pt;padding-right:10.0pt;">100</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.7" style="padding-left:10.0pt;padding-right:10.0pt;">2.77</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.8" style="padding-left:10.0pt;padding-right:10.0pt;">2.33</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T2.6.6.6.6.6.9" style="padding-left:10.0pt;padding-right:10.0pt;">1.89</span></span>
+</span>
+</span></span></p>
+</span></div>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">Hallucination with LLM</h5>
+<div class="ltx_para" id="S4.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px3.p1.1">One phenomenon we observe is that zero-shot prompting with LLMs (GPT-4/GPT-3.5) to call APIs results in dire hallucination errors. These errors, while diverse, commonly manifest in erroneous behavior such as the model invoking the "AutoModel.from_pretrained(dir_name)" command with arbitrary GitHub repository names. Surprisingly, we also found that in TorchHub, HuggingFace and TensorFlow Hub, GPT-3.5 has less hallucination errors than GPT-4. This finding is also consistent for the settings when various retrieving methods are provided: 0-shot, BM25, GPT-Index and the oracle. This might suggest that RLHF plays a central role in turning the model to be truthful. Additional examples and discussion are in Appendix.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Test-Time Documentation Change</h3>
+<figure class="ltx_figure" id="S4.F6"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="107" id="S4.F6.g1" src="./media/x6.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 6: </span><span class="ltx_text ltx_font_bold" id="S4.F6.2.1" style="font-size:80%;">Gorilla’s retriever–aware training enables it to react to changes in the APIs.<span class="ltx_text ltx_font_medium" id="S4.F6.2.1.1"> The second column demonstrates changes in model  upgrading FCN’s ResNet–50 backbone to ResNet–101. The third column demonstrate changes in model registry from <span class="ltx_text ltx_font_typewriter" id="S4.F6.2.1.1.1">pytorch/vision</span> to <span class="ltx_text ltx_font_typewriter" id="S4.F6.2.1.1.2">NVIDIA/DeepLearningExamples:torchhub</span> </span></span></figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1">The rapidly evolving nature of API documentation presents a significant challenge for the application of LLMs in this field. These documents are often updated at a frequency that outpaces the re-training or fine-tuning schedule of LLMs, making these models particularly brittle to changes in the information they are designed to process. This mismatch in update frequency can lead to a decline in the utility and reliability of LLMs over time.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p2">
+<p class="ltx_p" id="S4.SS2.p2.1">However, with the introduction of Gorilla’s retriever-aware training, we can readily adapt to changes in API documentation. This novel approach allows the model to remain updated and relevant, even as the API documentation it relies on undergoes modifications. This is a pivotal advancement in the field, as it ensures that the LLM maintains its efficacy and accuracy over time, providing reliable outputs irrespective of changes in the underlying documentation.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p3">
+<p class="ltx_p" id="S4.SS2.p3.1">For instance, consider the scenario illustrated in Figure 6, where the training of Gorilla has allowed it to react effectively to changes in APIs. This includes alterations such as upgrading the FCN’s ResNet-50 backbone to ResNet-101, as demonstrated in the second column of the figure. This capability ensures that the LLM remains relevant and accurate even as the underlying models and systems undergo upgrades and improvements.
+Furthermore, the third column in Figure 6 shows how Gorilla adapts to changes in the model registry from <span class="ltx_text ltx_font_typewriter" id="S4.SS2.p3.1.1">pytorch/vision</span> to <span class="ltx_text ltx_font_typewriter" id="S4.SS2.p3.1.2">NVIDIA/DeepLearningExamples:torchhub</span>. This reflects the model’s ability to adjust to shifts in API sources, which is vital as organizations may change their preferred model registries over time.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p4">
+<p class="ltx_p" id="S4.SS2.p4.1">In summary, Gorilla’s ability to adapt to test-time changes in API documentation offers numerous benefits. It maintains its accuracy and relevance over time, adapts to the rapid pace of updates in API documentation, and adjusts to modifications in underlying models and systems. This makes it a robust and reliable tool for API calls, significantly enhancing its practical utility.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>API Call with Constraints</h3>
+<div class="ltx_para" id="S4.SS3.p1">
+<p class="ltx_p" id="S4.SS3.p1.1">We now focus on the language model’s capability of understanding constraints. For any given task, which API call to invoke is typically a tradeoff between a multitude of factors. In the case of RESTFul APIs, it could be the cost of each invocation ($), and the latency of response (ms), among others. Similarly, within the scope of ML APIs, it is desirable for Gorilla to respect constraints such as accuracy, number of learnable parameters in the model, the size on disk, peak memory consumption, FLOPS, etc. We present the underlying ablation study evaluating the ability of different models in zero-shot and with retrievers settings to respect a given accuracy constraint. This setting is best understood with an example. If the user were to ask for an Image classification model that achieves at least 80% top-1 accuracy on the Imagenet dataset, then while both are classification models hosted by Torch Hub, <span class="ltx_text ltx_font_typewriter" id="S4.SS3.p1.1.1">ResNeXt-101 32x16d</span> with a top-1 accuracy of 84.2% would be the right model whose API to call and not, say, <span class="ltx_text ltx_font_typewriter" id="S4.SS3.p1.1.2">MobileNetV2</span> which has a top-1 accuracy of 71.88%.</p>
+</div>
+<figure class="ltx_table" id="S4.T3">
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 3: </span><span class="ltx_text ltx_font_bold" id="S4.T3.2.1" style="font-size:90%;">Evaluating LLMs on constraint-aware API invocations<span class="ltx_text ltx_font_medium" id="S4.T3.2.1.1">
+</span></span></figcaption>
+<div class="ltx_inline-block ltx_transformed_outer" id="S4.T3.3" style="width:433.6pt;height:148pt;vertical-align:-0.7pt;"><span class="ltx_transformed_inner" style="transform:translate(-101.0pt,34.3pt) scale(0.68213,0.68213) ;">
+<p class="ltx_p" id="S4.T3.3.1"><span class="ltx_text" id="S4.T3.3.1.1">
+<span class="ltx_inline-block ltx_transformed_outer" id="S4.T3.3.1.1.1" style="width:635.7pt;height:217pt;vertical-align:-1.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<span class="ltx_p" id="S4.T3.3.1.1.1.1"><span class="ltx_text" id="S4.T3.3.1.1.1.1.1">
+<span class="ltx_tabular ltx_align_middle" id="S4.T3.3.1.1.1.1.1.1">
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.1.1">
+<span class="ltx_td ltx_border_tt" id="S4.T3.3.1.1.1.1.1.1.1.1.1"></span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_4" id="S4.T3.3.1.1.1.1.1.1.1.1.2">GPT-3.5</span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_4" id="S4.T3.3.1.1.1.1.1.1.1.1.3">GPT-4</span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_4" id="S4.T3.3.1.1.1.1.1.1.1.1.4">Gorilla</span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.2.2">
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.1"></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.2">0-shot</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.3">BM25</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.4">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.5">Oracle</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.6">0-shot</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.7">BM25</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.8">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.9">Oracle</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.10">0-shot</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.11">BM25</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.12">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.2.2.13">Oracle</span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.3.3">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.1">Torch Hub (overall)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.2"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.3.3.2.1">73.94</span></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.3">62.67</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.4">81.69</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.5">80.98</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.6">62.67</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.7">56.33</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.8">71.11</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.9">69.01</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.10">71.83</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.11">57.04</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.12">71.83</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.3.3.13">78.16</span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.4.4">
+<span class="ltx_td ltx_align_left" id="S4.T3.3.1.1.1.1.1.1.4.4.1">Torch Hub (Hallu)</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.2">19.01</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.3">30.98</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.4">14.78</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.4.4.5">14.08</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.6"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.4.4.6.1">15.49</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.7">27.46</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.8"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.4.4.8.1">14.08</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.4.4.9"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.4.4.9.1">9.15</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.10">19.71</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.11">39.43</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.12">26.05</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.4.4.13">16.90</span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.5.5">
+<span class="ltx_td ltx_align_left" id="S4.T3.3.1.1.1.1.1.1.5.5.1">Torch Hub (err)</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.2">7.04</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.3">6.33</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.4">3.52</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.5.5.5">4.92</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.6">21.83</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.7">16.19</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.8">14.78</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.5.5.9">21.83</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.10">8.45</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.11">3.52</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.12">2.11</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.5.5.13">4.92</span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.6.6">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.1">Accuracy const</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.2">43.66</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.3"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.6.6.3.1">33.80</span></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.4"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.6.6.4.1">33.09</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.5">69.01</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.6">43.66</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.7">29.57</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.8">29.57</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.9">59.15</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.10"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.6.6.10.1">47.88</span></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.11">30.28</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.12">26.76</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.6.6.13">67.60</span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.7.7">
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.7.7.1"></span>
+<span class="ltx_td ltx_align_center ltx_border_t ltx_colspan ltx_colspan_4" id="S4.T3.3.1.1.1.1.1.1.7.7.2">LLAMA</span>
+<span class="ltx_td ltx_align_center ltx_border_t ltx_colspan ltx_colspan_4" id="S4.T3.3.1.1.1.1.1.1.7.7.3">Claude</span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.7.7.4"></span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.7.7.5"></span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.7.7.6"></span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.7.7.7"></span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.8.8">
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.1"></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.2">0-shot</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.3">BM25</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.4">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.5">Oracle</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.6">0-shot</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.7">BM25</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.8">GPT-Index</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.9">Oracle</span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.10"></span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.11"></span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.12"></span>
+<span class="ltx_td ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.8.8.13"></span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.9.9">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.1">Torch Hub (overall)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.2">0</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.3">8.45</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.4">11.97</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.5">19.71</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.6">29.92</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.7"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.9.9.7.1">81.69</span></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.8"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.9.9.8.1">82.39</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.9.9.9"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.9.9.9.1">81.69</span></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.9.9.10"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.9.9.11"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.9.9.12"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.9.9.13"></span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.10.10">
+<span class="ltx_td ltx_align_left" id="S4.T3.3.1.1.1.1.1.1.10.10.1">Torch Hub (Hallu)</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.10.10.2">100</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.10.10.3">91.54</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.10.10.4">88.02</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.10.10.5">78.87</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.10.10.6">67.25</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.10.10.7"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.10.10.7.1">16.19</span></span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.10.10.8">15.49</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.10.10.9">13.38</span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.10.10.10"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.10.10.11"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.10.10.12"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.10.10.13"></span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.11.11">
+<span class="ltx_td ltx_align_left" id="S4.T3.3.1.1.1.1.1.1.11.11.1">Torch Hub (err)</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.11.11.2">0</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.11.11.3">0</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.11.11.4">0</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.11.11.5">1.4</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.11.11.6">2.81</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.11.11.7">2.11</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.3.1.1.1.1.1.1.11.11.8">2.11</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.3.1.1.1.1.1.1.11.11.9">4.92</span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.11.11.10"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.11.11.11"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.11.11.12"></span>
+<span class="ltx_td" id="S4.T3.3.1.1.1.1.1.1.11.11.13"></span></span>
+<span class="ltx_tr" id="S4.T3.3.1.1.1.1.1.1.12.12">
+<span class="ltx_td ltx_align_left ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.1">Accuracy const</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.2">0</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.3">6.33</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.4">3.52</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.5">17.60</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.6">17.25</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.7">29.57</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.8">31.69</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r ltx_border_t" id="S4.T3.3.1.1.1.1.1.1.12.12.9"><span class="ltx_text ltx_font_bold" id="S4.T3.3.1.1.1.1.1.1.12.12.9.1">69.71</span></span>
+<span class="ltx_td ltx_border_bb" id="S4.T3.3.1.1.1.1.1.1.12.12.10"></span>
+<span class="ltx_td ltx_border_bb" id="S4.T3.3.1.1.1.1.1.1.12.12.11"></span>
+<span class="ltx_td ltx_border_bb" id="S4.T3.3.1.1.1.1.1.1.12.12.12"></span>
+<span class="ltx_td ltx_border_bb" id="S4.T3.3.1.1.1.1.1.1.12.12.13"></span></span>
+</span>
+</span></span></span>
+</span></span></span></p>
+</span></div>
+</figure>
+<div class="ltx_para" id="S4.SS3.p2">
+<p class="ltx_p" id="S4.SS3.p2.1">For Table <a class="ltx_ref" href="#S4.T3" title="Table 3 ‣ 4.3 API Call with Constraints ‣ 4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">3</span></a>, we filtered a subset of the Torch Hub dataset that had accuracy defined for at least one-dataset in its model card (65.26% of TorchHub dataset in Table <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ Finetuning without Retrieval ‣ 4.1 AST Accuracy on API call ‣ 4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">1</span></a>). We notice that with constraints, understandably, the accuracy drops across all models, with and without a retriever. Gorilla is able to match performance with the best-performing model GPT-3.5 when using retrievals (BM25, GPT-Index) and has the highest accuracy in the Zero-shot case. This highlights Gorilla’s ability to navigate APIs while considering the trade-offs between different constraints.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Conclusion</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">LLMs are swiftly gaining popularity across diverse domains. In our study, we spotlight techniques designed to enhance the LLM’s ability to accurately identify the appropriate API for a specific task—a significant but often overlooked aspect in the advancement of this technology. Since APIs function as a universal language enabling diverse systems to communicate effectively, their correct usage can boost the ability of LLMs to interact with tools in the wider world.
+In this paper, we propose Gorilla, a new novel pipeline for finetuning LLMs to call APIs. The finetuned model’s performance surpasses prompting the state-of-the-art LLM (GPT-4) in three massive datasets we collected. Gorilla generates reliable API calls to ML models without hallucination, demonstrates an impressive capability to adapt to test-time API usage changes, and can satisfy constraints while picking APIs.</p>
+</div>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Limitations &amp; Social Impacts</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">With the goal of wanting to have a challenging dataset, we chose ML APIs, given their functional similarity. The potential downside to APIs that focus on the ML domain, is their propensity to produce biased predictions if trained on skewed data, potentially disadvantaging certain sub-groups. To counter this concern and foster a deeper understanding of these APIs, we are releasing our extensive dataset, consisting of over 11,000 instruction-API pairs. This resource will serve the wider community as a valuable tool for studying and benchmarking existing APIs, contributing to a more fair and optimized usage of machine learning.</p>
+</div>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>Acknowledgement</h2>
+<div class="ltx_para" id="S7.p1">
+<p class="ltx_p" id="S7.p1.1">This research is supported in part by gifts to UC Berkley Sky Computing Lab from Astronomer, Google, IBM, Intel, Lacework, Microsoft, Nexla, Samsung SDS, Uber, and VMware.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ahn et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Ahn, M., Brohan, A., Brown, N., Chebotar, Y., Cortes, O., David, B., Finn, C.,
+Gopalakrishnan, K., Hausman, K., Herzog, A., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Do as i can, not as i say: Grounding language in robotic affordances.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib1.1.1">arXiv preprint arXiv:2204.01691</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Andor et al.,  [2019]</span>
+<span class="ltx_bibblock">
+Andor, D., He, L., Lee, K., and Pitler, E. (2019).
+
+</span>
+<span class="ltx_bibblock">Giving bert a calculator: Finding operations and arguments with
+reading comprehension.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib2.1.1">arXiv preprint arXiv:1909.00109</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Anthropic,  [2022]</span>
+<span class="ltx_bibblock">
+Anthropic, h.-c. (2022).
+
+</span>
+<span class="ltx_bibblock">Claude.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bavishi et al.,  [2019]</span>
+<span class="ltx_bibblock">
+Bavishi, R., Lemieux, C., Fox, R., Sen, K., and Stoica, I. (2019).
+
+</span>
+<span class="ltx_bibblock">Autopandas: neural-backed generators for program synthesis.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib4.1.1">Proceedings of the ACM on Programming Languages</span>,
+3(OOPSLA):1–27.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Brown et al.,  [2020]</span>
+<span class="ltx_bibblock">
+Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P.,
+Neelakantan, A., Shyam, P., Sastry, G., Askell, A., et al. (2020).
+
+</span>
+<span class="ltx_bibblock">Language models are few-shot learners.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib5.1.1">Advances in neural information processing systems</span>,
+33:1877–1901.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bubeck et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Bubeck, S., Chandrasekaran, V., Eldan, R., Gehrke, J., Horvitz, E., Kamar, E.,
+Lee, P., Lee, Y. T., Li, Y., Lundberg, S., et al. (2023).
+
+</span>
+<span class="ltx_bibblock">Sparks of artificial general intelligence: Early experiments with
+gpt-4.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib6.1.1">arXiv preprint arXiv:2303.12712</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chen et al.,  [2021]</span>
+<span class="ltx_bibblock">
+Chen, M., Tworek, J., Jun, H., Yuan, Q., Pinto, H. P. d. O., Kaplan, J.,
+Edwards, H., Burda, Y., Joseph, N., Brockman, G., et al. (2021).
+
+</span>
+<span class="ltx_bibblock">Evaluating large language models trained on code.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib7.1.1">arXiv preprint arXiv:2107.03374</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chen et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Chen, X., Lin, M., Schärli, N., and Zhou, D. (2023).
+
+</span>
+<span class="ltx_bibblock">Teaching large language models to self-debug.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib8.1.1">arXiv preprint arXiv:2304.05128</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chiang et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Chiang, W.-L., Li, Z., Lin, Z., Sheng, Y., Wu, Z., Zhang, H., Zheng, L.,
+Zhuang, S., Zhuang, Y., Gonzalez, J. E., Stoica, I., and Xing, E. P. (2023).
+
+</span>
+<span class="ltx_bibblock">Vicuna: An open-source chatbot impressing gpt-4 with 90%* chatgpt
+quality.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chowdhery et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Chowdhery, A., Narang, S., Devlin, J., Bosma, M., Mishra, G., Roberts, A.,
+Barham, P., Chung, H. W., Sutton, C., Gehrmann, S., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Palm: Scaling language modeling with pathways.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib10.1.1">arXiv preprint arXiv:2204.02311</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chung et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Chung, H. W., Hou, L., Longpre, S., Zoph, B., Tay, Y., Fedus, W., Li, E., Wang,
+X., Dehghani, M., Brahma, S., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Scaling instruction-finetuned language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib11.1.1">arXiv preprint arXiv:2210.11416</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Cobbe et al.,  [2021]</span>
+<span class="ltx_bibblock">
+Cobbe, K., Kosaraju, V., Bavarian, M., Chen, M., Jun, H., Kaiser, L., Plappert,
+M., Tworek, J., Hilton, J., Nakano, R., et al. (2021).
+
+</span>
+<span class="ltx_bibblock">Training verifiers to solve math word problems.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib12.1.1">arXiv preprint arXiv:2110.14168</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Devlin et al.,  [2017]</span>
+<span class="ltx_bibblock">
+Devlin, J., Uesato, J., Bhupatiraju, S., Singh, R., Mohamed, A.-r., and Kohli,
+P. (2017).
+
+</span>
+<span class="ltx_bibblock">Robustfill: Neural program learning under noisy i/o.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib13.1.1">International conference on machine learning</span>, pages
+990–998. PMLR.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Gao, L., Madaan, A., Zhou, S., Alon, U., Liu, P., Yang, Y., Callan, J., and
+Neubig, G. (2022).
+
+</span>
+<span class="ltx_bibblock">Pal: Program-aided language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib14.1.1">arXiv preprint arXiv:2211.10435</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Iyer et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Iyer, S., Lin, X. V., Pasunuru, R., Mihaylov, T., Simig, D., Yu, P., Shuster,
+K., Wang, T., Liu, Q., Koura, P. S., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Opt-iml: Scaling language model instruction meta learning through the
+lens of generalization.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib15.1.1">arXiv preprint arXiv:2212.12017</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Jain et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Jain, N., Vaidyanath, S., Iyer, A., Natarajan, N., Parthasarathy, S., Rajamani,
+S., and Sharma, R. (2022).
+
+</span>
+<span class="ltx_bibblock">Jigsaw: Large language models meet program synthesis.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib16.1.1">Proceedings of the 44th International Conference on Software
+Engineering</span>, pages 1219–1231.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kim et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Kim, G., Baldi, P., and McAleer, S. (2023).
+
+</span>
+<span class="ltx_bibblock">Language models can solve computer tasks.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib17.1.1">arXiv preprint arXiv:2303.17491</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kojima et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Kojima, T., Gu, S. S., Reid, M., Matsuo, Y., and Iwasawa, Y. (2022).
+
+</span>
+<span class="ltx_bibblock">Large language models are zero-shot reasoners.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib18.1.1">arXiv preprint arXiv:2205.11916</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Komeili et al.,  [2021]</span>
+<span class="ltx_bibblock">
+Komeili, M., Shuster, K., and Weston, J. (2021).
+
+</span>
+<span class="ltx_bibblock">Internet-augmented dialogue generation.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib19.1.1">arXiv preprint arXiv:2107.07566</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lachaux et al.,  [2020]</span>
+<span class="ltx_bibblock">
+Lachaux, M.-A., Roziere, B., Chanussot, L., and Lample, G. (2020).
+
+</span>
+<span class="ltx_bibblock">Unsupervised translation of programming languages.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib20.1.1">arXiv preprint arXiv:2006.03511</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lazaridou et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Lazaridou, A., Gribovskaya, E., Stokowiec, W., and Grigorev, N. (2022).
+
+</span>
+<span class="ltx_bibblock">Internet-augmented language models through few-shot prompting for
+open-domain question answering.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib21.1.1">arXiv preprint arXiv:2203.05115</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Li, R., Allal, L. B., Zi, Y., Muennighoff, N., Kocetkov, D., Mou, C., Marone,
+M., Akiki, C., Li, J., Chim, J., et al. (2023).
+
+</span>
+<span class="ltx_bibblock">Starcoder: may the source be with you!
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib22.1.1">arXiv preprint arXiv:2305.06161</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Li, Y., Choi, D., Chung, J., Kushman, N., Schrittwieser, J., Leblond, R.,
+Eccles, T., Keeling, J., Gimeno, F., Dal Lago, A., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Competition-level code generation with alphacode.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib23.1.1">Science</span>, 378(6624):1092–1097.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liang et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Liang, Y., Wu, C., Song, T., Wu, W., Xia, Y., Liu, Y., Ou, Y., Lu, S., Ji, L.,
+Mao, S., et al. (2023).
+
+</span>
+<span class="ltx_bibblock">Taskmatrix. ai: Completing tasks by connecting foundation models with
+millions of apis.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib24.1.1">arXiv preprint arXiv:2303.16434</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Menon et al.,  [2013]</span>
+<span class="ltx_bibblock">
+Menon, A., Tamuz, O., Gulwani, S., Lampson, B., and Kalai, A. (2013).
+
+</span>
+<span class="ltx_bibblock">A machine learning framework for programming by example.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib25.1.1">International Conference on Machine Learning</span>, pages
+187–195. PMLR.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nakano et al.,  [2021]</span>
+<span class="ltx_bibblock">
+Nakano, R., Hilton, J., Balaji, S., Wu, J., Ouyang, L., Kim, C., Hesse, C.,
+Jain, S., Kosaraju, V., Saunders, W., et al. (2021).
+
+</span>
+<span class="ltx_bibblock">Webgpt: Browser-assisted question-answering with human feedback.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib26.1.1">arXiv preprint arXiv:2112.09332</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nijkamp et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Nijkamp, E., Hayashi, H., Xiong, C., Savarese, S., and Zhou, Y. (2023).
+
+</span>
+<span class="ltx_bibblock">Codegen2: Lessons for training llms on programming and natural
+languages.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib27.1.1">arXiv preprint arXiv:2305.02309</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nijkamp et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Nijkamp, E., Pang, B., Hayashi, H., Tu, L., Wang, H., Zhou, Y., Savarese, S.,
+and Xiong, C. (2022).
+
+</span>
+<span class="ltx_bibblock">Codegen: An open large language model for code with multi-turn
+program synthesis.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib28.1.1">arXiv preprint arXiv:2203.13474</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">OpenAI,  [2023]</span>
+<span class="ltx_bibblock">
+OpenAI (2023).
+
+</span>
+<span class="ltx_bibblock">Gpt-4 technical report.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">OpenAI and https://openai.com/blog/chatgpt,  [2022]</span>
+<span class="ltx_bibblock">
+OpenAI and https://openai.com/blog/chatgpt (2022).
+
+</span>
+<span class="ltx_bibblock">Chatgpt.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sanh et al.,  [2021]</span>
+<span class="ltx_bibblock">
+Sanh, V., Webson, A., Raffel, C., Bach, S. H., Sutawika, L., Alyafeai, Z.,
+Chaffin, A., Stiegler, A., Scao, T. L., Raja, A., et al. (2021).
+
+</span>
+<span class="ltx_bibblock">Multitask prompted training enables zero-shot task generalization.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib31.1.1">arXiv preprint arXiv:2110.08207</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Scao et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Scao, T. L., Fan, A., Akiki, C., Pavlick, E., Ilić, S., Hesslow, D.,
+Castagné, R., Luccioni, A. S., Yvon, F., Gallé, M., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Bloom: A 176b-parameter open-access multilingual language model.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib32.1.1">arXiv preprint arXiv:2211.05100</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Schick et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Schick, T., Dwivedi-Yu, J., Dessì, R., Raileanu, R., Lomeli, M.,
+Zettlemoyer, L., Cancedda, N., and Scialom, T. (2023).
+
+</span>
+<span class="ltx_bibblock">Toolformer: Language models can teach themselves to use tools.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib33.1.1">arXiv preprint arXiv:2302.04761</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Schick and Schütze,  [2020]</span>
+<span class="ltx_bibblock">
+Schick, T. and Schütze, H. (2020).
+
+</span>
+<span class="ltx_bibblock">Exploiting cloze questions for few shot text classification and
+natural language inference.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib34.1.1">arXiv preprint arXiv:2001.07676</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shen et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Shen, Y., Song, K., Tan, X., Li, D., Lu, W., and Zhuang, Y. (2023).
+
+</span>
+<span class="ltx_bibblock">Hugginggpt: Solving ai tasks with chatgpt and its friends in
+huggingface.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib35.1.1">arXiv preprint arXiv:2303.17580</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shinn et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Shinn, N., Labash, B., and Gopinath, A. (2023).
+
+</span>
+<span class="ltx_bibblock">Reflexion: an autonomous agent with dynamic memory and
+self-reflection.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib36.1.1">arXiv preprint arXiv:2303.11366</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shuster et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Shuster, K., Xu, J., Komeili, M., Ju, D., Smith, E. M., Roller, S., Ung, M.,
+Chen, M., Arora, K., Lane, J., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Blenderbot 3: a deployed conversational agent that continually learns
+to responsibly engage.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib37.1.1">arXiv preprint arXiv:2208.03188</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Taori et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Taori, R., Gulrajani, I., Zhang, T., Dubois, Y., Li, X., Guestrin, C., Liang,
+P., and Hashimoto, T. B. (2023).
+
+</span>
+<span class="ltx_bibblock">Stanford alpaca: An instruction-following llama model.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/tatsu-lab/stanford_alpaca" target="_blank" title="">https://github.com/tatsu-lab/stanford_alpaca</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Thoppilan et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Thoppilan, R., De Freitas, D., Hall, J., Shazeer, N., Kulshreshtha, A., Cheng,
+H.-T., Jin, A., Bos, T., Baker, L., Du, Y., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Lamda: Language models for dialog applications.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib39.1.1">arXiv preprint arXiv:2201.08239</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Touvron et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Touvron, H., Lavril, T., Izacard, G., Martinet, X., Lachaux, M.-A., Lacroix,
+T., Rozière, B., Goyal, N., Hambro, E., Azhar, F., et al. (2023).
+
+</span>
+<span class="ltx_bibblock">Llama: Open and efficient foundation language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib40.1.1">arXiv preprint arXiv:2302.13971</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Vemprala et al.,  [2023]</span>
+<span class="ltx_bibblock">
+Vemprala, S., Bonatti, R., Bucker, A., and Kapoor, A. (2023).
+
+</span>
+<span class="ltx_bibblock">Chatgpt for robotics: Design principles and model abilities.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib41.1.1">2023</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">[42]</span>
+<span class="ltx_bibblock">
+Wang, Y., Kordi, Y., Mishra, S., Liu, A., Smith, N. A., Khashabi, D., and
+Hajishirzi, H. (2022a).
+
+</span>
+<span class="ltx_bibblock">Self-instruct: Aligning language model with self generated
+instructions.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib42.1.1">arXiv preprint arXiv:2212.10560</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">[43]</span>
+<span class="ltx_bibblock">
+Wang, Y., Mishra, S., Alipoormolabashi, P., Kordi, Y., Mirzaei, A., Naik, A.,
+Ashok, A., Dhanasekaran, A. S., Arunkumar, A., Stap, D., et al. (2022b).
+
+</span>
+<span class="ltx_bibblock">Super-naturalinstructions: Generalization via declarative
+instructions on 1600+ nlp tasks.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib43.1.1">Proceedings of the 2022 Conference on Empirical Methods in
+Natural Language Processing</span>, pages 5085–5109.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wei et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Wei, J., Wang, X., Schuurmans, D., Bosma, M., Chi, E., Le, Q., and Zhou, D.
+(2022).
+
+</span>
+<span class="ltx_bibblock">Chain of thought prompting elicits reasoning in large language
+models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib44.1.1">arXiv preprint arXiv:2201.11903</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib45">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xu et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Xu, F. F., Alon, U., Neubig, G., and Hellendoorn, V. J. (2022).
+
+</span>
+<span class="ltx_bibblock">A systematic evaluation of large language models of code.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib45.1.1">Proceedings of the 6th ACM SIGPLAN International Symposium on
+Machine Programming</span>, pages 1–10.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib46">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yao et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., and Cao, Y.
+(2022).
+
+</span>
+<span class="ltx_bibblock">React: Synergizing reasoning and acting in language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib46.1.1">arXiv preprint arXiv:2210.03629</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib47">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zeng et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Zeng, A., Liu, X., Du, Z., Wang, Z., Lai, H., Ding, M., Yang, Z., Xu, Y.,
+Zheng, W., Xia, X., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Glm-130b: An open bilingual pre-trained model.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib47.1.1">arXiv preprint arXiv:2210.02414</span>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib48">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al.,  [2022]</span>
+<span class="ltx_bibblock">
+Zhang, S., Roller, S., Goyal, N., Artetxe, M., Chen, M., Chen, S., Dewan, C.,
+Diab, M., Li, X., Lin, X. V., et al. (2022).
+
+</span>
+<span class="ltx_bibblock">Opt: Open pre-trained transformer language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib48.1.1">arXiv preprint arXiv:2205.01068</span>.
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+<div class="ltx_pagination ltx_role_newpage"></div>
+<section class="ltx_section" id="S8">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">8 </span>Appendix</h2>
+<section class="ltx_subsection" id="S8.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">8.1 </span>Dataset Details</h3>
+<div class="ltx_para" id="S8.SS1.p1">
+<p class="ltx_p" id="S8.SS1.p1.1">Our dataset is multi-faceted, comprising three distinct domains: Torch Hub, Tensor Hub, and HuggingFace. Each entry within this dataset is rich in detail, carrying critical pieces of information that further illuminate the nature of the data. Delving deeper into the specifics of each domain, Torch Hub provides 95 APIs. The second domain, Tensor Hub, is more expansive with a total of 696 APIs. Finally, the most extensive of them all, HuggingFace, comprises 925 APIs.</p>
+</div>
+<div class="ltx_para" id="S8.SS1.p2">
+<p class="ltx_p" id="S8.SS1.p2.1">To enhance the value and utility of our dataset, we’ve undertaken an additional initiative. With each API, we have generated a set of 10 unique instructions. These instructions, carefully crafted and meticulously tailored, serve as a guide for both training and evaluation. This initiative ensures that every API is not just represented in our dataset, but is also comprehensively understood and effectively utilizable.</p>
+</div>
+<div class="ltx_para" id="S8.SS1.p3">
+<p class="ltx_p" id="S8.SS1.p3.1">In essence, our dataset is more than just a collection of APIs across three domains. It is a comprehensive resource, carefully structured and enriched with added layers of guidance and evaluation parameters.</p>
+</div>
+<section class="ltx_paragraph" id="S8.SS1.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Domain Classification</h5>
+<div class="ltx_para" id="S8.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S8.SS1.SSS0.Px1.p1.1">The unique domain names encompassed within our dataset are illustrated in Figure <a class="ltx_ref" href="#S8.F7" title="Figure 7 ‣ Code ‣ 8.1 Dataset Details ‣ 8 Appendix ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">7</span></a>. The dataset consists of three sources with a diverse range of domains: Torch Hub houses 6 domains, Tensor Hub accommodates a much broader selection with 57 domains, while HuggingFace incorporates 37 domains. To exemplify the structure and nature of our dataset, we invite you to refer to the domain names represented in Figure <a class="ltx_ref" href="#S8.F8" title="Figure 8 ‣ Code ‣ 8.1 Dataset Details ‣ 8 Appendix ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">8</span></a>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S8.SS1.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">API Call Task</h5>
+<div class="ltx_para" id="S8.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S8.SS1.SSS0.Px2.p1.1">In this task, we test the model’s capability to generate a single line of code, either in a zero-shot fashion or by leveraging an API reference. Primarily designed for evaluation purposes, this task effectively gauges the model’s proficiency in identifying and utilizing the appropriate API call.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S8.SS1.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">API Provider Component</h5>
+<div class="ltx_para" id="S8.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="S8.SS1.SSS0.Px3.p1.1">This facet relates to the provision of the programming language. In this context, the API provider plays a vital role as it serves as a foundation upon which APIs are built and executed.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S8.SS1.SSS0.Px4">
+<h5 class="ltx_title ltx_title_paragraph">Explanation Element</h5>
+<div class="ltx_para" id="S8.SS1.SSS0.Px4.p1">
+<p class="ltx_p" id="S8.SS1.SSS0.Px4.p1.1">This component offers valuable insights into the rationale behind the usage of a particular API, detailing how it aligns with the prescribed requirements. Furthermore, when certain constraints are imposed, this segment also incorporates those limitations. Thus, the explanation element serves a dual purpose, offering a deep understanding of API selection, as well as the constraints that might influence such a selection. This balanced approach ensures a comprehensive understanding of the API usage within the given context.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S8.SS1.SSS0.Px5">
+<h5 class="ltx_title ltx_title_paragraph">Code</h5>
+<div class="ltx_para" id="S8.SS1.SSS0.Px5.p1">
+<p class="ltx_p" id="S8.SS1.SSS0.Px5.p1.1">Example code for accomplishing the task. We de-prioritize this as we haven’t tested the execution result of the code. We leave this for future works, but make this data available in-case others want to build on it.</p>
+</div>
+<figure class="ltx_figure" id="S8.F7">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="56.46" id="S8.F7.pic1" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,56.46) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 50.56 C 0 53.82 2.64 56.46 5.91 56.46 L 594.09 56.46 C 597.36 56.46 600 53.82 600 50.56 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 50.56 C 1.97 52.73 3.73 54.49 5.91 54.49 L 594.09 54.49 C 596.27 54.49 598.03 52.73 598.03 50.56 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="28.9" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F7.pic1.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F7.pic1.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S8.F7.pic1.1.1.1.1.1.1.1">Torch Hub domain names</span>: Classification, Semantic Segmentation, Object Detection, Audio Separation, Video Classification, Text-to-Speech</span>
+</span></foreignobject></g></g></svg></div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="219.45" id="S8.F7.pic2" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,219.45) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 213.54 C 0 216.8 2.64 219.45 5.91 219.45 L 594.09 219.45 C 597.36 219.45 600 216.8 600 213.54 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 213.54 C 1.97 215.72 3.73 217.48 5.91 217.48 L 594.09 217.48 C 596.27 217.48 598.03 215.72 598.03 213.54 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="191.89" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F7.pic2.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F7.pic2.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S8.F7.pic2.1.1.1.1.1.1.1">Tensor Hub domain names</span>: text-sequence-alignment, text-embedding, text-language-model, text-preprocessing, text-classification, text-generation, text-question-answering, text-retrieval-question-answering, text-segmentation, text-to-mel, image-classification, image-feature-vector, image-object-detection, image-segmentation, image-generator, image-pose-detection, image-rnn-agent, image-augmentation, image-classifier, image-style-transfer, image-aesthetic-quality, image-depth-estimation, image-super-resolution, image-deblurring, image-extrapolation, image-text-recognition, image-dehazing, image-deraining, image-enhancemenmt, image-classification-logits, image-frame-interpolation, image-text-detection, image-denoising, image-others, video-classification, video-feature-extraction, video-generation, video-audio-text, video-text, audio-embedding, audio-event-classification, audio-command-detection, audio-paralinguists-classification, audio-speech-to-text, audio-speech-synthesis, audio-synthesis, audio-pitch-extraction</span>
+</span></foreignobject></g></g></svg></div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="302.84" id="S8.F7.pic3" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,302.84) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 296.93 C 0 300.19 2.64 302.84 5.91 302.84 L 594.09 302.84 C 597.36 302.84 600 300.19 600 296.93 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 296.93 C 1.97 299.11 3.73 300.87 5.91 300.87 L 594.09 300.87 C 596.27 300.87 598.03 299.11 598.03 296.93 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="275.28" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F7.pic3.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F7.pic3.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S8.F7.pic3.1.1.1.1.1.1.1">HuggingFace domain names</span>: Multimodal Feature Extraction, Multimodal Text-to-Image, Multimodal Image-to-Text, Multimodal Text-to-Video, Multimodal Visual Question Answering, Multimodal Document Question Answer, Multimodal Graph Machine Learning, Computer Vision Depth Estimation, Computer Vision Image Classification, Computer Vision Object Detection, Computer Vision Image Segmentation, Computer Vision Image-to-Image, Computer Vision Unconditional Image Generation, Computer Vision Video Classification, Computer Vision Zero-Shor Image Classification, Natural Language Processing Text Classification, Natural Language Processing Token Classification, Natural Language Processing Table Question Answering, Natural Language Processing Question Answering, Natural Language Processing Zero-Shot Classification, Natural Language Processing Translation, Natural Language Processing Summarization, Natural Language Processing Conversational, Natural Language Processing Text Generation, Natural Language Processing Fill-Mask, Natural Language Processing Text2Text Generation, Natural Language Processing Sentence Similarity, Audio Text-to-Speech, Audio Automatic Speech Recognition, Audio Audio-to-Audio, Audio Audio Classification, Audio Voice Activity Detection, Tabular Tabular Classification, Tabular Tabular Regression, Reinforcement Learning Reinforcement Learning, Reinforcement Learning Robotics</span>
+</span></foreignobject></g></g></svg></div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 7: </span><span class="ltx_text ltx_font_bold" id="S8.F7.2.1">Domain names</span>: Domain names with the three dataset. Tensor Hub is the smallest dataset while the other two hubs contain many more models.</figcaption>
+</figure>
+<figure class="ltx_figure" id="S8.F8">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="240.65" id="S8.F8.pic1" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,240.65) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 234.74 C 0 238 2.64 240.65 5.91 240.65 L 594.09 240.65 C 597.36 240.65 600 238 600 234.74 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 234.74 C 1.97 236.92 3.73 238.68 5.91 238.68 L 594.09 238.68 C 596.27 238.68 598.03 236.92 598.03 234.74 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="213.09" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F8.pic1.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F8.pic1.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.1.1">### User</span>: Our customer is a zoo and we want to help them detect movement of different animals. Write a python program in 1 to 2 lines to call API in TensorFlowHub.</span>
+<span class="ltx_p" id="S8.F8.pic1.1.1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.2.1">### Assistant</span>:</span>
+<span class="ltx_p" id="S8.F8.pic1.1.1.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.3.1">&lt;domain&gt;</span>: image-object-detection,</span>
+<span class="ltx_p" id="S8.F8.pic1.1.1.1.1.1.4"><span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.4.1">&lt;api_call&gt;</span>: detector = hub.load(’https://tfhub.dev/google/openimages_v4/ssd_mobilenet_v2/1’),
+<span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.4.2">&lt;api_provider&gt;</span>: TensorFlow Hub,</span>
+<span class="ltx_p" id="S8.F8.pic1.1.1.1.1.1.5"><span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.5.1">&lt;explanation&gt;</span>: This API call loads the pre-trained Single Shot Detector (SSD) MobileNet V2 model from TensorFlow Hub, which has been trained on the Open Images v4 dataset. This model is used for object detection in images. Once loaded, you can pass an image (and an optional score threshold for detection confidence) to the detector to get back the detected objects along with their bounding boxes, class labels, and associated confidence scores.</span>
+<span class="ltx_p" id="S8.F8.pic1.1.1.1.1.1.6"><span class="ltx_text ltx_font_bold" id="S8.F8.pic1.1.1.1.1.1.6.1">&lt;code&gt;</span>: import tensorflow as tf; import tensorflow_hub as hub; # Load the SSD MobileNet V2 model; detector = hub.load(’https://tfhub.dev/google/openimages_v4/ssd_mobilenet_v2/1’); # Use the model to detect objects in an image (assuming ’image’ is a TensorFlow tensor representing your image); result = detector(image, score_threshold=0.5)</span>
+</span></foreignobject></g></g></svg></div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="338.89" id="S8.F8.pic2" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,338.89) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 332.99 C 0 336.25 2.64 338.89 5.91 338.89 L 594.09 338.89 C 597.36 338.89 600 336.25 600 332.99 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 332.99 C 1.97 335.16 3.73 336.92 5.91 336.92 L 594.09 336.92 C 596.27 336.92 598.03 335.16 598.03 332.99 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="311.33" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F8.pic2.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.1.1">### User</span>: I am an engineer at Uber and I need to find a API that can classify pedestrians, cars, etc. from an image of the scene. Write a python program in 1 to 2 lines to call API in TorchHub.</span>
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.2.1">&lt;Reference API&gt;</span>: {domain: Object Detection, framework: PyTorch, functionality: Traffic Object Detection, Drivable Area Segmentation, Lane Detection, api_name: HybridNets, api_call: torch.hub.load(repo_or_dir=’datvuthanh/hybridnets’, model=’hybridnets’, pretrained=True), api_arguments: repo_or_dir, model, pretrained, python_environment_requirements: Python&gt;=3.7, PyTorch&gt;=1.10, example_code: ’import torch; model = torch.hub.load(’datvuthanh/hybridnets’, ’hybridnets’, pretrained=True); img = torch.randn(1,3,640,384); features, regression, classification, anchors, segmentation = model(img), performance: dataset: [name: BDD100K, accuracy: Traffic Object Detection: Recall (%): 92.8, mAP@0.5 (%): 77.3, Drivable Area Segmentation: Drivable mIoU (%): 90.5, Lane Line Detection: Accuracy (%): 85.4, Lane Line IoU (%): 31.6], description: HybridNets is an end2end perception network for multi-tasks. Our work focused on traffic object detection, drivable area segmentation and lane detection. HybridNets can run real-time on embedded systems, and obtains SOTA Object Detection, Lane Detection on BDD100K Dataset.}</span>
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.3.1">### Assistant</span>:</span>
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.4"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.4.1">&lt;domain&gt;</span>: Object Detection, <span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.4.2">&lt;api_call&gt;</span>: model = torch.hub.load(’datvuthanh/hybridnets’, ’hybridnets’, pretrained=True),</span>
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.5"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.5.1">&lt;api_provider&gt;</span>: PyTorch,</span>
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.6"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.6.1">&lt;explanation&gt;</span>: Load the pretrained HybridNets model for object detection from PyTorch Hub to classify pedestrians, cars, etc. in an image of the scene,</span>
+<span class="ltx_p" id="S8.F8.pic2.1.1.1.1.1.7"><span class="ltx_text ltx_font_bold" id="S8.F8.pic2.1.1.1.1.1.7.1">&lt;code&gt;</span>: import torch; model = torch.hub.load(’datvuthanh/hybridnets’, ’hybridnets’, pretrained=True)</span>
+</span></foreignobject></g></g></svg></div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 8: </span><span class="ltx_text ltx_font_bold" id="S8.F8.2.1">Example of the Dataset</span>: Two examples of the dataset, the above one is zero-shot (without information retrievers) and the bottom one is with information retriever. </figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_subsection" id="S8.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">8.2 </span>Gorilla Details</h3>
+<div class="ltx_para" id="S8.SS2.p1">
+<p class="ltx_p" id="S8.SS2.p1.1">We provide all the training details for Gorilla in this section. This includes how we divide up the training, evaluation dataset, training hyperparameters for Gorilla.</p>
+</div>
+<section class="ltx_paragraph" id="S8.SS2.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Data</h5>
+<div class="ltx_para" id="S8.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S8.SS2.SSS0.Px1.p1.1">For HuggingFace, we devise the entire dataset into 90% training and 10% evaluation. For Torch Hub and Tensor Hub, we devise the data in to 80% training and 20% testing.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S8.SS2.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Training</h5>
+<div class="ltx_para" id="S8.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S8.SS2.SSS0.Px2.p1.1">We train Gorillafor 5 epochs with the 2e-5 learning rate with cosine decay. The details are provide in Tab. <a class="ltx_ref" href="#S8.T4" title="Table 4 ‣ Training ‣ 8.2 Gorilla Details ‣ 8 Appendix ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">4</span></a>. We finetune it on 8xA100 with 40G memory each.</p>
+</div>
+<figure class="ltx_table" id="S8.T4">
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 4: </span>Hyperparameters for training Gorilla </figcaption>
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S8.T4.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S8.T4.1.1.1">
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt" id="S8.T4.1.1.1.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.1.1.1.1">
+<span class="ltx_p" id="S8.T4.1.1.1.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.1.1.1.1.1.1" style="font-size:80%;">Hyperparameter Name</span></span>
+</span>
+</th>
+<th class="ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt" id="S8.T4.1.1.1.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.1.1.2.1">
+<span class="ltx_p" id="S8.T4.1.1.1.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.1.1.2.1.1.1" style="font-size:80%;">Value</span></span>
+</span>
+</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S8.T4.1.2.1">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S8.T4.1.2.1.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.2.1.1.1">
+<span class="ltx_p" id="S8.T4.1.2.1.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.2.1.1.1.1.1" style="font-size:80%;">learning rate</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S8.T4.1.2.1.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.2.1.2.1">
+<span class="ltx_p" id="S8.T4.1.2.1.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.2.1.2.1.1.1" style="font-size:80%;">2e-5</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S8.T4.1.3.2">
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.3.2.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.3.2.1.1">
+<span class="ltx_p" id="S8.T4.1.3.2.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.3.2.1.1.1.1" style="font-size:80%;">batch size</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.3.2.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.3.2.2.1">
+<span class="ltx_p" id="S8.T4.1.3.2.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.3.2.2.1.1.1" style="font-size:80%;">64</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S8.T4.1.4.3">
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.4.3.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.4.3.1.1">
+<span class="ltx_p" id="S8.T4.1.4.3.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.4.3.1.1.1.1" style="font-size:80%;">epochs</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.4.3.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.4.3.2.1">
+<span class="ltx_p" id="S8.T4.1.4.3.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.4.3.2.1.1.1" style="font-size:80%;">5</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S8.T4.1.5.4">
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.5.4.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.5.4.1.1">
+<span class="ltx_p" id="S8.T4.1.5.4.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.5.4.1.1.1.1" style="font-size:80%;">warmup ratio</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.5.4.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.5.4.2.1">
+<span class="ltx_p" id="S8.T4.1.5.4.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.5.4.2.1.1.1" style="font-size:80%;">0.03</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S8.T4.1.6.5">
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.6.5.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.6.5.1.1">
+<span class="ltx_p" id="S8.T4.1.6.5.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.6.5.1.1.1.1" style="font-size:80%;">weight decay</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S8.T4.1.6.5.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.6.5.2.1">
+<span class="ltx_p" id="S8.T4.1.6.5.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.6.5.2.1.1.1" style="font-size:80%;">0</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S8.T4.1.7.6">
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S8.T4.1.7.6.1" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.7.6.1.1">
+<span class="ltx_p" id="S8.T4.1.7.6.1.1.1" style="width:142.3pt;"><span class="ltx_text" id="S8.T4.1.7.6.1.1.1.1" style="font-size:80%;">max seq length</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S8.T4.1.7.6.2" style="padding-left:3.5pt;padding-right:3.5pt;">
+<span class="ltx_inline-block ltx_align_top" id="S8.T4.1.7.6.2.1">
+<span class="ltx_p" id="S8.T4.1.7.6.2.1.1" style="width:85.4pt;"><span class="ltx_text" id="S8.T4.1.7.6.2.1.1.1" style="font-size:80%;">2048</span></span>
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+</figure>
+</section>
+</section>
+<section class="ltx_subsection" id="S8.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">8.3 </span>Performance Comparison</h3>
+<div class="ltx_para" id="S8.SS3.p1">
+<p class="ltx_p" id="S8.SS3.p1.1">We provide a full comparison of each model’s performance in this section. In Fig <a class="ltx_ref" href="#S8.F10" title="Figure 10 ‣ 8.3.2 Hallucination ‣ 8.3 Performance Comparison ‣ 8 Appendix ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">10</span></a> and Fig. <a class="ltx_ref" href="#S8.F11" title="Figure 11 ‣ 8.3.2 Hallucination ‣ 8.3 Performance Comparison ‣ 8 Appendix ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">11</span></a>, the full set of comparisons is provided. We see that especially in zero-shot case, Gorilla surpasses the GPT-4 and GPT-3.5 by a large margin. The GPT-4 and GPT-3.5 gets around 40% accuracy in Torch Hub and Tensor Hub, which are two structured API calls. Compared to that, HuggingFace is a more flexible and diverse Hub, as a result, the performance on HuggingFace is not as competitive.</p>
+</div>
+<section class="ltx_subsubsection" id="S8.SS3.SSS1">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">8.3.1 </span>Evaluation</h4>
+<div class="ltx_para" id="S8.SS3.SSS1.p1">
+<p class="ltx_p" id="S8.SS3.SSS1.p1.1">For ease of evaluation, we manually cleaned up the dataset to make sure each API call domain only contains the valid call in the form of:</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S8.SS3.SSS1.p2">
+<svg class="ltx_picture" height="41.4" id="S8.SS3.SSS1.p2.pic1" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,41.4) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 35.49 C 0 38.75 2.64 41.4 5.91 41.4 L 594.09 41.4 C 597.36 41.4 600 38.75 600 35.49 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 35.49 C 1.97 37.66 3.73 39.43 5.91 39.43 L 594.09 39.43 C 596.27 39.43 598.03 37.66 598.03 35.49 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3" style="width:402.3pt;">
+<span class="ltx_p" id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3">API_name(API_<math alttext="\mathrm{arg_{1}}" class="ltx_Math" display="inline" id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1"><semantics id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1a"><msub id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.cmml"><mi id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.2" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.2.cmml">arg</mi><mn id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.3" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.3.cmml">1</mn></msub><annotation-xml encoding="MathML-Content" id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1b"><apply id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.cmml" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1"><csymbol cd="ambiguous" id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.1.cmml" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1">subscript</csymbol><ci id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.2.cmml" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.2">arg</ci><cn id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.3.cmml" type="integer" xref="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.3">1</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S8.SS3.SSS1.p2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1c">\mathrm{arg_{1}}</annotation></semantics></math>, API_<math alttext="\mathrm{arg_{2}}" class="ltx_Math" display="inline" id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1"><semantics id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1a"><msub id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.cmml"><mi id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.2" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.2.cmml">arg</mi><mn id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.3" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.3.cmml">2</mn></msub><annotation-xml encoding="MathML-Content" id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1b"><apply id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.cmml" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1"><csymbol cd="ambiguous" id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.1.cmml" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1">subscript</csymbol><ci id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.2.cmml" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.2">arg</ci><cn id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.3.cmml" type="integer" xref="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1.1.3">2</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S8.SS3.SSS1.p2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.m2.1c">\mathrm{arg_{2}}</annotation></semantics></math>, …, API_<math alttext="\mathrm{arg_{k}}" class="ltx_Math" display="inline" id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1"><semantics id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1a"><msub id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.cmml"><mi id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.2" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.2.cmml">arg</mi><mi id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.3" mathvariant="normal" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.3.cmml">k</mi></msub><annotation-xml encoding="MathML-Content" id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1b"><apply id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.cmml" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1"><csymbol cd="ambiguous" id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.1.cmml" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1">subscript</csymbol><ci id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.2.cmml" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.2">arg</ci><ci id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.3.cmml" xref="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1.1.3">k</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S8.SS3.SSS1.p2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.m3.1c">\mathrm{arg_{k}}</annotation></semantics></math>)</span>
+</span></foreignobject></g></g></svg>
+</div>
+<div class="ltx_para" id="S8.SS3.SSS1.p3">
+<p class="ltx_p" id="S8.SS3.SSS1.p3.1">Our framework allows the user to define any combination of the arguments to check. For Torch Hub, we check for the API name <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.1">torch.hub.load</span> with arguments <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.2">repo_or_dir</span> and <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.3">model</span>. For Tensor Hub, we check API name <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.4">hub.KerasLayer</span> and <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.5">hub.load</span> with argument <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.6">handle</span>. For HuggingFace, since there are many API function names, we don’t list all of them here. One specific note is that we require the <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.7">pretrained_model_name_or_path</span> argument for all the calls except for <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.8">pipeline</span>. For <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.9">pipeline</span>, we don’t require the <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.10">pretrained_model_name_or_path</span> argument since it automatically select a model for you once <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS1.p3.1.11">task</span> is specified.</p>
+</div>
+</section>
+<section class="ltx_subsubsection" id="S8.SS3.SSS2">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">8.3.2 </span>Hallucination</h4>
+<div class="ltx_para" id="S8.SS3.SSS2.p1">
+<p class="ltx_p" id="S8.SS3.SSS2.p1.1">We found especially in HuggingFace, the GPT-4 model incurs serious hallucination problems. It would sometimes put a GitHub name that is not associated with the HuggingFace repository in to the domain of <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS2.p1.1.1">pretrained_model_name_or_path</span>. Fig. <a class="ltx_ref" href="#S8.F9" title="Figure 9 ‣ 8.3.2 Hallucination ‣ 8.3 Performance Comparison ‣ 8 Appendix ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">9</span></a> demonstrates some examples and we also observe that GPT-4 sometimes assumes the user have a local path to the model like <span class="ltx_text ltx_font_typewriter" id="S8.SS3.SSS2.p1.1.2">your_model_name</span>. This is greatly reduced by Gorilla as we see the hallucination error comparison in Tab. <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ Finetuning without Retrieval ‣ 4.1 AST Accuracy on API call ‣ 4 Evaluation ‣ Gorilla: Large Language Model Connected with Massive APIs"><span class="ltx_text ltx_ref_tag">1</span></a>.</p>
+</div>
+<figure class="ltx_figure" id="S8.F9">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="41.4" id="S8.F9.pic1" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,41.4) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 35.49 C 0 38.75 2.64 41.4 5.91 41.4 L 594.09 41.4 C 597.36 41.4 600 38.75 600 35.49 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 35.49 C 1.97 37.66 3.73 39.43 5.91 39.43 L 594.09 39.43 C 596.27 39.43 598.03 37.66 598.03 35.49 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F9.pic1.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F9.pic1.1.1.1.1.1.1">generate_video = pipeline("text-to-video", model="your_model_name")</span>
+</span></foreignobject></g></g></svg></div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="58" id="S8.F9.pic2" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,58) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 52.09 C 0 55.36 2.64 58 5.91 58 L 594.09 58 C 597.36 58 600 55.36 600 52.09 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 52.09 C 1.97 54.27 3.73 56.03 5.91 56.03 L 594.09 56.03 C 596.27 56.03 598.03 54.27 598.03 52.09 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="30.44" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F9.pic2.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F9.pic2.1.1.1.1.1.1">vqa = pipeline("visual-question-answering", model="microsoft/clip-vqa-base", tokenizer="microsoft/clip-vqa-base")</span>
+</span></foreignobject></g></g></svg></div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1"><svg class="ltx_picture ltx_figure_panel" height="58" id="S8.F9.pic3" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,58) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 52.09 C 0 55.36 2.64 58 5.91 58 L 594.09 58 C 597.36 58 600 55.36 600 52.09 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 52.09 C 1.97 54.27 3.73 56.03 5.91 56.03 L 594.09 56.03 C 596.27 56.03 598.03 54.27 598.03 52.09 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="30.44" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S8.F9.pic3.1.1.1.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S8.F9.pic3.1.1.1.1.1.1">depth_estimator = pipeline("depth-estimation", model="intel-isl/MiDaS", tokenizer="intel-isl/MiDaS")</span>
+</span></foreignobject></g></g></svg></div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 9: </span><span class="ltx_text ltx_font_bold" id="S8.F9.2.1">Hallucination Examples</span>: GPT-4 incurs serious hallucination errors in HuggingFace. We show a couple of examples in the figure.</figcaption>
+</figure>
+<figure class="ltx_figure" id="S8.F10"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="341" id="S8.F10.g1" src="./media/x7.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 10: </span><span class="ltx_text ltx_font_bold" id="S8.F10.2.1" style="font-size:80%;"> Performance<span class="ltx_text ltx_font_medium" id="S8.F10.2.1.1">: We plot each model’s performance on different configurations. We see that Gorilla performs extremely well in the zero-shot setting. While even when the oracle answer is given, Gorilla is still the best.</span></span></figcaption>
+</figure>
+<figure class="ltx_figure" id="S8.F11"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="341" id="S8.F11.g1" src="./media/x8.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 11: </span><span class="ltx_text ltx_font_bold" id="S8.F11.2.1" style="font-size:80%;"> Accuracy vs Hallucination<span class="ltx_text ltx_font_medium" id="S8.F11.2.1.1">: We plot each model’s performance on different configurations. We found that in the zero-shot setting, Gorilla has the most accuracy gain while maintaining good factual capability. When prompting with different retrievers, Gorilla is still capable to avoid the hallucination errors.</span></span></figcaption>
+</figure>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</section>
+</section>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2305.15333">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-ok" href="/log/2305.15334">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2305.15334" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2305.15334">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2305.15335">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Thu Feb 29 05:26:57 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

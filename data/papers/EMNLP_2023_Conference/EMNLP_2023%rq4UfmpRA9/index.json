@@ -1,0 +1,656 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            31
+        ],
+        "2 Related Work": [
+            32,
+            56
+        ],
+        "3 Method": [
+            57,
+            152
+        ],
+        "4 Experiments": [
+            153,
+            357
+        ],
+        "5 Analysis": [
+            358,
+            875
+        ],
+        "6 Conclusion": [
+            876,
+            879
+        ],
+        "Limitations": [
+            880,
+            888
+        ],
+        "Ethics Statement": [
+            889,
+            898
+        ],
+        "Acknowledgements": [
+            899,
+            902
+        ],
+        "References": [
+            903,
+            960
+        ],
+        "Appendix A Implementation Details": [
+            961,
+            1121
+        ],
+        "Appendix B Generalization Results": [
+            1122,
+            1125
+        ],
+        "Appendix C Case Study": [
+            1126,
+            1977
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Emergence in LLM": [
+                34,
+                37
+            ],
+            "CoT Prompting": [
+                38,
+                41
+            ],
+            "Distilling Knowledge from LLM": [
+                42,
+                56
+            ]
+        },
+        "3 Method": {
+            "3.1 Undertaking an Exam": [
+                61,
+                74
+            ],
+            "3.2 Student\u2019s Feedback to LLM": [
+                75,
+                86
+            ],
+            "3.3 Tailored Learning": [
+                87,
+                90
+            ],
+            "Learning from Self-Reflection": [
+                91,
+                99
+            ],
+            "Learning from Customized Feedback": [
+                100,
+                108
+            ],
+            "Joint Learning": [
+                109,
+                146
+            ],
+            "3.4 Multi-round Learning": [
+                147,
+                152
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Tasks & Datasets": [
+                314,
+                315
+            ],
+            "Mathematical Task": [
+                316,
+                319
+            ],
+            "Commonsense Task": [
+                320,
+                323
+            ],
+            "4.2 Models & Baselines": [
+                324,
+                325
+            ],
+            "Models": [
+                326,
+                329
+            ],
+            "Baselines": [
+                330,
+                333
+            ],
+            "4.3 Experimental Setup": [
+                334,
+                337
+            ],
+            "4.4 Main Results": [
+                338,
+                341
+            ],
+            "Effect of Distillation": [
+                342,
+                345
+            ],
+            "Importance of Rationales": [
+                346,
+                349
+            ],
+            "Comparison with Concurrent Works": [
+                350,
+                353
+            ],
+            "Effect of Multi-round & Self-reflection": [
+                354,
+                357
+            ]
+        },
+        "5 Analysis": {
+            "5.1 Contribution of Student\u2019s Feedback": [
+                360,
+                567
+            ],
+            "5.2 Effect of Self-Reflection": [
+                568,
+                587
+            ],
+            "5.3 Analysis of Multi-round Learning": [
+                588,
+                871
+            ],
+            "5.4 Feasibility Study": [
+                872,
+                875
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {
+            "Risk in using closed-source LLMs": [
+                891,
+                894
+            ],
+            "Social Impact": [
+                895,
+                898
+            ]
+        },
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Implementation Details": {
+            "A.1 Data Preparation": [
+                965,
+                968
+            ],
+            "A.2 Training & Evaluation": [
+                969,
+                970
+            ],
+            "Hyperparameter": [
+                971,
+                974
+            ],
+            "Demonstration": [
+                975,
+                1112
+            ],
+            "Evaluation": [
+                1113,
+                1121
+            ]
+        },
+        "Appendix B Generalization Results": {},
+        "Appendix C Case Study": {
+            "Contribution of Student\u2019s Feedback": [
+                1128,
+                1131
+            ],
+            "Multi-round Learning": [
+                1132,
+                1977
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                18,
+                18
+            ],
+            [
+                20,
+                20
+            ],
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ],
+            [
+                26,
+                26
+            ],
+            [
+                28,
+                30
+            ]
+        ],
+        "2 Related Work": [
+            [
+                36,
+                36
+            ],
+            [
+                40,
+                40
+            ],
+            [
+                44,
+                44
+            ]
+        ],
+        "3 Method": [
+            [
+                59,
+                59
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                67,
+                68
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                73
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                89,
+                89
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                95,
+                96
+            ],
+            [
+                98,
+                98
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                105
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                114
+            ],
+            [
+                116,
+                116
+            ],
+            [
+                149,
+                149
+            ],
+            [
+                151,
+                151
+            ]
+        ],
+        "4 Experiments": [
+            [
+                318,
+                318
+            ],
+            [
+                322,
+                322
+            ],
+            [
+                328,
+                328
+            ],
+            [
+                332,
+                332
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                340,
+                340
+            ],
+            [
+                344,
+                344
+            ],
+            [
+                348,
+                348
+            ],
+            [
+                352,
+                352
+            ],
+            [
+                356,
+                356
+            ]
+        ],
+        "5 Analysis": [
+            [
+                560,
+                560
+            ],
+            [
+                570,
+                570
+            ],
+            [
+                578,
+                578
+            ],
+            [
+                580,
+                580
+            ],
+            [
+                590,
+                590
+            ],
+            [
+                592,
+                592
+            ],
+            [
+                874,
+                874
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                878,
+                878
+            ]
+        ],
+        "Limitations": [
+            [
+                882,
+                882
+            ],
+            [
+                884,
+                887
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                893,
+                893
+            ],
+            [
+                897,
+                897
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                901,
+                901
+            ]
+        ],
+        "References": [
+            [
+                905,
+                959
+            ]
+        ],
+        "Appendix A Implementation Details": [
+            [
+                963,
+                963
+            ],
+            [
+                967,
+                967
+            ],
+            [
+                973,
+                973
+            ],
+            [
+                977,
+                977
+            ],
+            [
+                1111,
+                1111
+            ],
+            [
+                1115,
+                1115
+            ],
+            [
+                1117,
+                1118
+            ],
+            [
+                1120,
+                1120
+            ]
+        ],
+        "Appendix B Generalization Results": [
+            [
+                1124,
+                1124
+            ]
+        ],
+        "Appendix C Case Study": [
+            [
+                1130,
+                1130
+            ],
+            [
+                1134,
+                1134
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                12,
+                16
+            ]
+        },
+        "2 Related Work": {
+            "[FIGURE S2.F2.g1]": [
+                46,
+                55
+            ]
+        },
+        "3 Method": {
+            "[FIGURE S3.F3.g1]": [
+                77,
+                81
+            ]
+        },
+        "4 Experiments": {},
+        "5 Analysis": {
+            "[FIGURE S5.F4.g1]": [
+                562,
+                566
+            ],
+            "[FIGURE S5.F5.g1]": [
+                572,
+                576
+            ],
+            "[FIGURE S5.F6.g1]": [
+                582,
+                586
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Implementation Details": {},
+        "Appendix B Generalization Results": {},
+        "Appendix C Case Study": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                155,
+                312
+            ]
+        },
+        "5 Analysis": {
+            "[TABLE S5.T2]": [
+                362,
+                462
+            ],
+            "[TABLE S5.T3]": [
+                464,
+                520
+            ],
+            "[TABLE S5.T4]": [
+                522,
+                558
+            ],
+            "[TABLE S5.T5]": [
+                594,
+                682
+            ],
+            "[TABLE S5.T6]": [
+                684,
+                770
+            ],
+            "[TABLE S5.T7]": [
+                772,
+                870
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Implementation Details": {
+            "[TABLE A1.T8]": [
+                979,
+                1029
+            ],
+            "[TABLE A1.T9]": [
+                1031,
+                1067
+            ],
+            "[TABLE A1.T10]": [
+                1069,
+                1109
+            ]
+        },
+        "Appendix B Generalization Results": {},
+        "Appendix C Case Study": {
+            "[TABLE A3.T11]": [
+                1136,
+                1251
+            ],
+            "[TABLE A3.T12]": [
+                1253,
+                1399
+            ],
+            "[TABLE A3.T13]": [
+                1401,
+                1595
+            ],
+            "[TABLE A3.T14]": [
+                1597,
+                1765
+            ],
+            "[TABLE A3.T15]": [
+                1767,
+                1975
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {
+            "[ALGORITHM alg1]": [
+                118,
+                145
+            ]
+        },
+        "4 Experiments": {},
+        "5 Analysis": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Implementation Details": {},
+        "Appendix B Generalization Results": {},
+        "Appendix C Case Study": {}
+    }
+}

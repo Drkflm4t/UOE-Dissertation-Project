@@ -1,0 +1,901 @@
+
+# An AMR-based Link Prediction Approach for Document-level Event Argument Extraction
+
+###### Abstract
+
+Recent works have introduced Abstract Meaning Representation (AMR) for Document-level Event Argument Extraction (Doc-level EAE), since AMR provides a useful interpretation of complex semantic structures and helps to capture long-distance dependency. However, in these works AMR is used only implicitly, for instance, as additional features or training signals. Motivated by the fact that all event structures can be inferred from AMR, this work reformulates EAE as a link prediction problem on AMR graphs.  
+
+Since AMR is a generic structure and does not perfectly suit EAE, we propose a novel graph structure, Tailored AMR Graph (TAG), which compresses less informative subgraphs and edge types, integrates span information, and highlights surrounding events in the same document. With TAG, we further propose a novel method using graph neural networks as a link prediction model to find event arguments.  
+
+Our extensive experiments on WikiEvents and RAMS show that this simpler approach outperforms the state-of-the-art models by 3.63pt and 2.33pt F1, respectively, and do so with reduced 56% inference time. The code is availabel at <https://github.com/ayyyq/TARA>.  
+
+## 1 Introduction
+
+Event Argument Extraction (EAE) is a long-standing information extraction task to extract event structures composed of arguments from unstructured text (Xiang and Wang, [2019](#bib.bib23)). Event structures can serve as an intermediate semantic representation and be further used for improving downstream tasks, including machine reading comprehension (Han et al., [2021](#bib.bib10)), question answering (Costa et al., [2020](#bib.bib3)), dialog system (Zhang et al., [2020](#bib.bib29)), and recommendation system (Li et al., [2020](#bib.bib12)). Despite the large performance boost by Pre-trained Language Models (PLMs), extracting complex event structures across sentences is still challenging (Ebner et al., [2020](#bib.bib7)).  
+
+[FIGURE S1.F1.g1]
+![Figure S1.F1.g1](./media/x1.png)
+
+Figure 1: Treating EAE as a link prediction problem, where the green box means the event trigger and blue circles are non-trigger nodes. The highlighted text means they are captured by the graph. We parse the document to a tailored AMR graph and apply a GNN model to predict edges between the trigger and other nodes. In this example, the model predicts one argument, “Zabiullah Mujahid”, with the role of “Communicator”.
+[/FIGURE]
+
+In real-world text, event structures are usually distributed in multiple sentences (Li et al., [2021](#bib.bib13)). To capture cross-sentence and multi-hop structures, Xu et al. ([2022](#bib.bib25)) introduces Abstract Meaning Representation (AMR) graphs to assist the model in understanding the document. Their main idea is to take AMR as additional features to enrich span representations. Xu and Huang ([2022](#bib.bib26)) and Wang et al. ([2021](#bib.bib20)) utilize AMR graphs to provide training signals via self-training and contrastive learning, respectively. These methods exemplify that introducing AMR information facilitates the model’s understanding of complex event structures. However, previous works implicitly use AMR information by enriching neural sequential models rather than making explicit use of discrete structures. Intuitively, discrete AMR structures can force the model to better focus on predicate-argument structures and the content most related to EAE, therefore having stronger effect than implicit AMR.  
+
+We aim to exploit the potentials of explicit AMR for improving EAE by formulating EAE as a link prediction task, and Figure [1](#S1.F1 "Figure 1 ‣ 1 Introduction ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") illustrates the framework. We parse the input document to a graph structure and adopt a link prediction model to find event arguments. We determine if a node is an argument by whether it is connected to the trigger node or not. The advantages of formulating EAE as a link prediction problem are three-fold: 1) AMR graph is typically more compact than raw text (see Sec-[2.2](#S2.SS2 "2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction")), so processing AMR to find arguments would be simple and efficient. 2) Dependencies among multiple arguments and events are explicitly captured, while previous works (Liao and Grishman, [2010](#bib.bib14); Du et al., [2022](#bib.bib6)) have pointed out the importance of these dependencies which are only implicitly considered in the feature space. 3) The simpler model architecture and sparse graphs can lead to improvement over efficiency, as our experiments show (up to 56% inference time saving).  
+
+The proposed method assumes that AMR graphs contain all necessary information for EAE. However, the original AMR graphs generated by off-the-shelf AMR parsers do not meet this assumption. First, they cover only 72.2% event arguments in WikiEvents, impeding the performance of EAE models directly on the parsed AMR graphs. The primary problem is that AMR graphs are defined at word-level, but an event argument could be a text span. Second, the Smatch score of SOTA AMR parsers is around 85 (Bai et al., [2022](#bib.bib2)), which causes information loss as well. To address the above issue, we propose a novel Tailored AMR Graph (TAG), which compresses information irrelevant to EAE, merges words into text spans via a span proposal module, and highlights the surrounding events in the same document to encourage their communication. Particularly, the number of nodes in TAG equals around 47% of words in WikiEvents, which is a significant reduction. Since too much distracting information is a major challenge of document-level tasks, we also expect performance gains from focusing on TAG, which is evidenced by our experiment results. TAG can cover all EAE samples if the span proposal module adds enough text spans, and we will discuss the trade-off between the recall of spans and model efficiency in Appendix-[A.3](#A1.SS3 "A.3 The choice of 𝑘 ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction").  
+
+Although there is a large design space for the link prediction model, we choose a simple architecture that stacks GNN layers on top of pre-trained text encoders. The whole model is called TARA for Tailored AMR-based Argument Extraction. We conduct extensive experiments on latest document-level EAE datasets, WikiEvents (Li et al., [2021](#bib.bib13)) and RAMS (Ebner et al., [2020](#bib.bib7)). TARA achieves 3.63pt and 2.33pt improvements of F1 against the SOTA, respectively. Since interactions in GNN are sparse, the computation cost of our model is also lower, saving up to 56% inference time.   
+
+To our knowledge, we are the first to formulate EAE as a link prediction problem on AMR graphs.  
+
+## 2 Methodology
+
+In this section, we first explain how to formulate EAE as a link prediction problem and discuss the benefits of doing so (Sec-[2.1](#S2.SS1 "2.1 EAE as Link Prediction ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction")). To make AMR graphs better suit the EAE task and ensure the reformulation is lossless, we provide a series of modifications for AMR graphs, resulting in a compact and informative graph, named Tailored AMR Graph (TAG) (Sec-[2.2](#S2.SS2 "2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction")).  
+
+### 2.1 EAE as Link Prediction
+
+Formally, given a document $\mathbf{D}$ and an event trigger $\tau$ with its event type $e$, the goal of Doc-level EAE is to extract a set of event arguments $\mathbf{A}$ related to $\tau$. We formulate EAE as a link prediction problem, which is defined on TAG. Suppose all nodes in TAG are aligned with text spans in the input sequence, triggers and arguments are captured in the graph, and the node corresponding to the event trigger is marked (we will discuss how to satisfy these in Sec-[2.2](#S2.SS2 "2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction")).  
+
+Thus, we apply a link prediction model to the tailored AMR graph $\mathcal{G}_{t}$ of the document $\mathbf{D}$. If the model predicts there is an edge connecting a node $u$ and the event trigger $\tau$ with the type $r$, we say the corresponding text span of $u$ is an argument, and it plays the role $r$ in the event with trigger $\tau$. We illustrate this procedure in Figure [1](#S1.F1 "Figure 1 ‣ 1 Introduction ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), and it also shows the tailored AMR graph removes a large amount of distracting information in the input text. Note that the removed text participates in constructing initial node representations, so the model can still access their information as context. Detailed implementation is shown in Sec-[2.3](#S2.SS3 "2.3 Implementation ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction").  
+
+### 2.2 Tailored AMR Graph for EAE
+
+TAG can be built on vanilla AMR graphs generated by an off-the-shelf AMR parser (Bai et al., [2022](#bib.bib2); Astudillo et al., [2020](#bib.bib1)), which also provides the alignment information between nodes and words. As mentioned above, vanilla AMR graphs are insufficient to solve EAE, so we clean the graph by compressing bloated subgraphs, enrich the graph with span boundary information derived by a span proposal module, and highlight the surrounding events to encourage interactions among multiple events.  
+
+#### Coalescing edges
+
+We follow previous works (Zhang and Ji, [2021](#bib.bib30); Xu et al., [2022](#bib.bib25)) and cluster the fine-grained AMR edge types into main categories as shown in Table [1](#S2.T1 "Table 1 ‣ Coalescing edges ‣ 2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") and parse the document sentence by sentence before fully connecting the root nodes of all the sentences.  
+
+[FIGURE S2.F2.g1]
+![Figure S2.F2.g1](./media/x2.png)
+
+Figure 2: An example of the compression process in Tailored AMR Graph. A subgraph will be replaced by a node with the merged content.
+[/FIGURE]
+
+[TABLE S2.T1]
+
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Categories</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">AMR edge types</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Spatial</td>
+<td class="ltx_td ltx_align_center ltx_border_t">location, destination, path</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Temporal</td>
+<td class="ltx_td ltx_align_center ltx_border_t">year, time, duration, decade, weekday</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Means</td>
+<td class="ltx_td ltx_align_center ltx_border_t">instrument, manner, topic, medium</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Modifiers</td>
+<td class="ltx_td ltx_align_center ltx_border_t">mod, poss</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Operators</td>
+<td class="ltx_td ltx_align_center ltx_border_t">op-X</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Prepositions</td>
+<td class="ltx_td ltx_align_center ltx_border_t">prep-X</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Core Roles</td>
+<td class="ltx_td ltx_align_center ltx_border_t">ARG0, ARG1, ARG2, ARG3, ARG4</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t">Others</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t"><span class="ltx_text ltx_font_italic">Other AMR edge types</span></td>
+</tr>
+</tbody>
+</table>
+
+Table 1: Coalescing edge types of TAG, where each ARGx is treated as an individual cluster.
+[/TABLE]
+
+#### Compressing Subgraphs
+
+AMR is rigorous and tries to reflect all details as much as possible. For example, Figure [2](#S2.F2 "Figure 2 ‣ Coalescing edges ‣ 2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") shows that a vanilla AMR graph uses five nodes to represent an entity “Los Angeles”. Since EAE does not require such detailed information, we can compress the subgraph to a single node. We find that about 36% of nodes and 37% of edges can be removed by compression. Note that all incoming and outgoing edges of the subgraph to be compressed will be inherited, so that the compression does not affect the rest of the graph. A streamlined graph not only improves efficiency and saves memory but also promotes the training of GNN since a larger graph often requires a deeper GNN. The compression procedure only relies on the vanilla AMR graph, so it is a one-time overhead for each sample. The detailed compression rules are described in Appendix-[B](#A2 "Appendix B Subgraph Compression ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction").  
+
+[FIGURE S2.F3.g1]
+![Figure S2.F3.g1](./media/x3.png)
+
+Figure 3: Overview of our method TARA. We adopt an AMR paser and aligner to parse the input document for AMR information, and it is combined with spans generated by a span proposal module to form the Tailored AMR Graph. This graph also contains task-relevant information, which is detailed in Sec-[2.2](#S2.SS2 "2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). We further apply a link prediction model on top of the graph to find event arguments.
+[/FIGURE]
+
+#### Missing Spans
+
+The vanilla AMR graph fails to cover span-form arguments since it is defined at the word level, harming the performance on more than 20% of EAE samples. To overcome this issue, we add the span information $\mathbf{S}$, which is generated by a span proposal module, to $\mathcal{G}_{t}$ as shown in Figure [3](#S2.F3 "Figure 3 ‣ Compressing Subgraphs ‣ 2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). We follow the idea introduced in Zhang and Ji ([2021](#bib.bib30)) to merge the generated spans with existing AMR nodes. If a generated span perfectly matches a node’s position in the text sequence according to the alignment information, we add a special node-type embedding to the node’s initial representation so that the model can know the span proposal module announces this node. If a generated span partially matches a node, we add a new node to represent this span and inherit connectives from the partially matched node. We also add a special edge between this node and the new node to indicate their overlap. If a generated span fails to match any existing nodes, we add a new node and connect it to the nearest nodes to its left and right with a special edge.  
+
+#### Surrounding Events
+
+Events in a document are not isolated. A recent work (Du et al., [2022](#bib.bib6)) augments the input with the text that contains other events, but the utilization of AMR graphs offers a simpler solution. We add node-type embeddings to indicate that a node is the current trigger or surrounding event triggers in the same document. This modification encourages communication between multiple event structures, and the consistency between event structures can help to extract as many correct arguments as possible. For example, the Victim of an Attack event is likely to be the Victim of a Die event, while less likely to be the Defendant of an ChargeIndict event in the same document.  
+
+### 2.3 Implementation
+
+We propose a novel model to find event arguments based on TAG, and Figure [3](#S2.F3 "Figure 3 ‣ Compressing Subgraphs ‣ 2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") gives an overview of our method. We first parse the input document with an AMR parser and aligner to obtain the vanilla AMR graph, and coalesce edges and compress subgraphs to preprocess it as described in Sec-[2.2](#S2.SS2 "2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). We then enrich the graph with spans generated by a span proposal module. Next, we use token-level features output by a pre-trained text encoder to initialize node representation according to the alignment information. Finally, a GNN-based link prediction model is applied to predict event arguments.  
+
+#### Encoder Module
+
+Given an input document $\mathbf{D}=\{w_{1},w_{2},\dots,w_{n}\}$, we first obtain the contextual representation $\mathbf{h}_{i}$ for each word $w_{i}$ using a pre-trained language model such as BERT or RoBERTa:  
+
+|  | $$\mathbf{H}=[\mathbf{h}_{1},\mathbf{h}_{2},\dots,\mathbf{h}_{n}]=\mathrm{PLM}([w_{1},w_{2}\dots,w_{n}]).$$ |  |
+| --- | --- | --- |
+
+For a text span $s_{ij}$ ranging from $w_{i}$ to $w_{j}$, we follow Xu et al. ([2022](#bib.bib25)) to calculate its contextual representation $\mathbf{x}_{s_{ij}}$ by concatenating the start representation $\mathbf{h}_{i}$, the end representation $\mathbf{h}_{j}$, and the average pooling of hidden states of the span, which would inject span boundary information. Formally,  
+
+|  | $$\mathbf{x}_{s_{ij}}=\mathbf{W}_{0}\left[\mathbf{W}_{1}\mathbf{h}_{i};\mathbf{W}_{2}\mathbf{h}_{j};\frac{1}{j-i+1}\sum_{t=i}^{j}\mathbf{h}_{t}\right],$$ |  |
+| --- | --- | --- |
+
+where $\mathbf{W}_{0},\mathbf{W}_{1},\mathbf{W}_{2}$ are trainable parameters.  
+
+#### Span Proposal Module
+
+To find arguments as many as possible, we enumerate all spans up to length $m$. Following Zaporojets et al. ([2022](#bib.bib27)), we apply a simple span proposal step to keep only the top-$k$ spans based on the span score $\Phi(s)$ from a feed-forward neural net (FFNN):  
+
+|  | $$\Phi(s)=\mathrm{FFNN}(\mathbf{x}_{s}).$$ |  |
+| --- | --- | --- |
+
+Then the generated $k$ candidate spans, tipped as argument spans most likely, will insert to the AMR graph $\mathcal{G}$ to construct our proposed tailored AMR graph $\mathcal{G}_{t}$. We analyze the influence of the choice of $k$ in Appendix-[A.3](#A1.SS3 "A.3 The choice of 𝑘 ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") on the recall and efficiency.  
+
+We also minimize the following binary cross entropy loss to train the argument identification:  
+
+|  | $$\mathcal{L}_{span}=-(y\log(\Phi(\mathbf{x}))+(1-y)\log(1-\Phi(\mathbf{x}))),$$ |  |
+| --- | --- | --- |
+
+where $y$ is assigned the true label when the offsets of corresponding span match the golden-standard argument span, otherwise, the false label.  
+
+#### AMR Graph Module
+
+As introduced in Sec-[2.2](#S2.SS2 "2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), the embedding of each node $u_{s}$ in $\mathcal{G}_{t}$ is initialized by the aligned span representation $\mathbf{x}_{s}$ and its type embedding:  
+
+|  | $$\mathbf{g}^{0}_{u_{s}}=\mathrm{LayerNorm}(\mathbf{x}_{s}+\mathcal{T}_{node}(u_{s})),$$ |  |
+| --- | --- | --- |
+
+where $\mathcal{T}_{node}$ refers to the lookup table about node types, composed of {trigger, surrounding trigger, candidate span, others} four types. The newly inserted nodes are connected to their neighbor nodes, which are close in the text sequence, with a new edge type context.  
+
+We use $L$-layer stacked R-GCN (Schlichtkrull et al., [2018](#bib.bib19)) to model the interactions among different nodes through edges with different relation types. The hidden states of nodes in $(l+1)^{th}$ layer can be formulated as:  
+
+|  | $$\mathbf{g}_{u}^{l+1}\!=\!\mathrm{ReLU}(\mathbf{W}_{0}^{(l)}\mathbf{g}_{u}^{(l)}\!+\!\sum_{r\in R}\!\sum_{v\in N_{u}^{r}}\!\frac{1}{c_{u,r}}\!\mathbf{W}_{r}^{(l)}\mathbf{g}_{v}^{(l)}),$$ |  |
+| --- | --- | --- |
+
+where $R$ is the clusters of AMR relation types in Table [1](#S2.T1 "Table 1 ‣ Coalescing edges ‣ 2.2 Tailored AMR Graph for EAE ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), $N_{u}^{r}$ denotes the set of neighbor nodes of node $u$ under relation $r\in R$ and $c_{u,r}$ is a normalization constant. $\mathbf{W}_{0}^{(l)},\mathbf{W}_{r}^{(l)}$ are trainable parameters.  
+
+We concatenate hidden states of all layers and derive the final node representation $\mathbf{g}_{u}=\mathbf{W}_{g}[g^{0}_{u};g^{1}_{u};\dots,g^{L}_{u}]$.  
+
+#### Classification Module
+
+We perform multi-class classification to predict what role a candidate span plays, or it does not serve as an argument. As mentioned in Sec-[2.1](#S2.SS1 "2.1 EAE as Link Prediction ‣ 2 Methodology ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), we take the node representation $\mathbf{g}_{u_{s}}$ and $\mathbf{g}_{u_{\tau}}$ which denote the aligned candidate span $s$ and trigger $\tau$, respectively. Following Xu et al. ([2022](#bib.bib25)), we also concatenate the event type embedding. The final classification representation can be formulated as:  
+
+|  | $$\mathbf{z}_{s}=[\mathbf{g}_{u_{s}};\mathbf{g}_{u_{\tau}};\mathcal{T}_{event}(e)].$$ |  |
+| --- | --- | --- |
+
+We adopt the cross entropy loss function:  
+
+|  | $$\mathcal{L}_{c}=-\sum_{s}y_{s}\log P(\hat{r}_{s}=r_{s}),$$ |  |
+| --- | --- | --- |
+
+where $\hat{r}_{s}$ is logits obtained by a FFNN on $\mathbf{z}_{s}$, and $r_{s}$ is the gold argument role of span $s$.  
+
+We train the model using the multi-task loss function $\mathcal{L}=\mathcal{L}_{c}+\lambda\mathcal{L}_{s}$ with hyperparameter $\lambda$. As a result, argument classification can be positively affected by argument identification.  
+
+## 3 Experiments
+
+### 3.1 Datasets and Evaluation Metrics
+
+We evaluate our model on two commonly used document-level event argument extraction datasets, WikiEvents (Li et al., [2021](#bib.bib13)) and RAMS (Ebner et al., [2020](#bib.bib7)). WikiEvents contains more than 3.9k samples, with 50 event types and 59 argument roles. RAMS is a benchmark that emphasizes the cross-sentence events, which has 9124 annotated events, containing 139 event types and 65 kinds of argument roles. We follow the official train/dev/test split for WikiEvents and RAMS, and leave the detailed data statistics in Appendix-[A.1](#A1.SS1 "A.1 Statistics of Datasets ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction").  
+
+For WikiEvents, we evaluate two subtasks of event argument extraction. Arg Identification: An argument span is correctly identified if the predicted span boundary match the golden one. Arg Classification: If the argument role also matches, we consider the argument is correctly classified. Following Li et al. ([2021](#bib.bib13)), we report two metrics, Head F1 and Coref F1. Head F1 measures the correctness of the head word of an argument span, the word that has the smallest arc distance to the root in the dependency tree. For Coref F1, the model is given full credit if the extracted argument is coreferential with the reference as used in Ji and Grishman ([2008](#bib.bib11)). In addition, for RAMS dataset, we mainly concern Arg Classification and report the Span F1 and Head F1. For a sufficient comparison, We follow Ma et al. ([2022](#bib.bib18)) and additionally evaluate Span F1 for Arg Identification on the test set.  
+
+[TABLE S3.T2]
+
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Model</span></th>
+<td class="ltx_td ltx_align_center ltx_border_tt"><span class="ltx_text ltx_font_bold">Arg Identification</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt"><span class="ltx_text ltx_font_bold">Arg Classification</span></td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Head F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Coref F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Head F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Coref F1</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t"><span class="ltx_text ltx_font_italic">BERT-base</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BERT-CRF</th>
+<td class="ltx_td ltx_align_center">69.83</td>
+<td class="ltx_td ltx_align_center">72.24</td>
+<td class="ltx_td ltx_align_center">54.48</td>
+<td class="ltx_td ltx_align_center">56.72</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BERT-QA</th>
+<td class="ltx_td ltx_align_center">61.05</td>
+<td class="ltx_td ltx_align_center">64.59</td>
+<td class="ltx_td ltx_align_center">56.16</td>
+<td class="ltx_td ltx_align_center">59.36</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BERT-QA-Doc</th>
+<td class="ltx_td ltx_align_center">39.15</td>
+<td class="ltx_td ltx_align_center">51.25</td>
+<td class="ltx_td ltx_align_center">34.77</td>
+<td class="ltx_td ltx_align_center">45.96</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">EEQA</th>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">56.9</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">TSAR</th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">75.52</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">73.17</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">68.11</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">66.31</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row"><span class="ltx_text">TARA</span></th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">76.49</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">74.44</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">70.52</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">68.47</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row"><span class="ltx_text">TARA<math class="ltx_Math"><semantics><msub><mi></mi><mtext>compress</mtext></msub><annotation-xml><apply><ci><mtext>compress</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{compress}}</annotation></semantics></math></span></th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">76.76</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">74.88</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">70.18</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">68.67</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_italic">BART-large</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BART-Gen</th>
+<td class="ltx_td ltx_align_center">71.75</td>
+<td class="ltx_td ltx_align_center">72.29</td>
+<td class="ltx_td ltx_align_center">64.57</td>
+<td class="ltx_td ltx_align_center">65.11</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">PAIE</th>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">68.4</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">EA<sup class="ltx_sup">2</sup>E</th>
+<td class="ltx_td ltx_align_center">74.62</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">75.77</span></td>
+<td class="ltx_td ltx_align_center">68.61</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">69.70</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t"><span class="ltx_text ltx_font_italic">RoBERTa-large</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">EEQA</th>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">59.3</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">TSAR</th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">76.62</span></td>
+<td class="ltx_td ltx_align_center">75.52</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">69.70</span></td>
+<td class="ltx_td ltx_align_center">68.79</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row"><span class="ltx_text">TARA</span></th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">78.64<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.16</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">76.40<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.23</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">72.89<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.27</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">70.95<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.23</span></sub></span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb"><span class="ltx_text">TARA<math class="ltx_Math"><semantics><msub><mi></mi><mtext>compress</mtext></msub><annotation-xml><apply><ci><mtext>compress</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{compress}}</annotation></semantics></math></span></th>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text">78.50<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.34</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">76.71<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.14</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">73.33<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.41</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">71.55<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.25</span></sub></span></td>
+</tr>
+</tbody>
+</table>
+</span></div>
+
+Table 2: Main results on the WikiEvents test set. Rows in gray are results of our proposed models that perform best on the development set, and subscripts denote the standard deviation computed from 3 runs. Models under the double line are based on large models with similar model sizes. The best results are in bold and the previous best results are underlined.
+[/TABLE]
+
+### 3.2 Settings
+
+We adopt the transition-based AMR parser proposed by Astudillo et al. ([2020](#bib.bib1)) to obtain the AMR graph with node-to-text alignment information, which can achieve satisfactory results for downstream tasks. We also show the performance using another state-of-the-art AMR parser, AMRBART (Bai et al., [2022](#bib.bib2)), in Appendix-[A.4](#A1.SS4 "A.4 AMR parsers ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). Besides, we use BERT${}_{\textrm{base}}$ and RoBERTa${}_{\textrm{large}}$ provided by huggingface111https://huggingface.co/ as the backbone. The models are trained with same hyper-parameters as Xu et al. ([2022](#bib.bib25)), details listed in Appendix-[A.2](#A1.SS2 "A.2 Hyperparameters ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). Experiments based on base models are conducted on a single Tesla T4 GPU, and large models on 4 distributed Tesla T4 GPU in parallel.  
+
+### 3.3 Main Results
+
+[TABLE S3.T3]
+
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Model</span></th>
+<td class="ltx_td ltx_align_center ltx_border_tt"><span class="ltx_text ltx_font_bold">Dev</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt"><span class="ltx_text ltx_font_bold">Test</span></td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_t">Span F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Head F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Span F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Head F1</td>
+<td class="ltx_td ltx_align_center ltx_border_t">Arg-I</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t"><span class="ltx_text ltx_font_italic">BERT-base</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BERT-CRF</th>
+<td class="ltx_td ltx_align_center">38.1</td>
+<td class="ltx_td ltx_align_center">45.7</td>
+<td class="ltx_td ltx_align_center">39.3</td>
+<td class="ltx_td ltx_align_center">47.1</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BERT-CRF<math class="ltx_Math"><semantics><msub><mi></mi><mtext>TCD</mtext></msub><annotation-xml><apply><ci><mtext>TCD</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{TCD}}</annotation></semantics></math>
+</th>
+<td class="ltx_td ltx_align_center">39.2</td>
+<td class="ltx_td ltx_align_center">46.7</td>
+<td class="ltx_td ltx_align_center">40.5</td>
+<td class="ltx_td ltx_align_center">48.0</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">Two-Step</th>
+<td class="ltx_td ltx_align_center">38.9</td>
+<td class="ltx_td ltx_align_center">46.4</td>
+<td class="ltx_td ltx_align_center">40.1</td>
+<td class="ltx_td ltx_align_center">47.7</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">Two-Step<math class="ltx_Math"><semantics><msub><mi></mi><mtext>TCD</mtext></msub><annotation-xml><apply><ci><mtext>TCD</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{TCD}}</annotation></semantics></math>
+</th>
+<td class="ltx_td ltx_align_center">40.3</td>
+<td class="ltx_td ltx_align_center">48.0</td>
+<td class="ltx_td ltx_align_center">41.8</td>
+<td class="ltx_td ltx_align_center">49.7</td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">FEAE</th>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">47.40</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold ltx_framed ltx_framed_underline">53.49</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">TSAR</th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">45.23</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">51.70</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold ltx_framed ltx_framed_underline">48.06</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">55.04</span></td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row"><span class="ltx_text">TARA</span></th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">45.81</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">53.22</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">48.06</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">55.23</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">52.82</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row"><span class="ltx_text">TARA<math class="ltx_Math"><semantics><msub><mi></mi><mtext>compress</mtext></msub><annotation-xml><apply><ci><mtext>compress</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{compress}}</annotation></semantics></math></span></th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">45.89</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">53.15</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">47.43</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">55.24</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">52.34</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_italic">BART-large</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">BART-Gen</th>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">48.64</td>
+<td class="ltx_td ltx_align_center">57.32</td>
+<td class="ltx_td ltx_align_center">51.2*</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">PAIE</th>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">52.2</span></td>
+<td class="ltx_td ltx_align_center">-</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">56.8</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t"><span class="ltx_text ltx_font_italic">RoBERTa-large</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">TSAR</th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">49.23</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">56.76</span></td>
+<td class="ltx_td ltx_align_center">51.18</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_framed ltx_framed_underline">58.53</span></td>
+<td class="ltx_td ltx_align_center">-</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row"><span class="ltx_text">TARA</span></th>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">50.01<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.20</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text">58.17<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.16</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">52.51<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.05</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">60.86<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.12</span></sub></span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">57.11<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.10</span></sub></span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb"><span class="ltx_text">TARA<math class="ltx_Math"><semantics><msub><mi></mi><mtext>compress</mtext></msub><annotation-xml><apply><ci><mtext>compress</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{compress}}</annotation></semantics></math></span></th>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">50.33<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.17</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">58.49<sub class="ltx_sub"><span class="ltx_text ltx_font_medium ltx_font_italic">0.30</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text">52.28<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.15</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text">60.73<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.10</span></sub></span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text">56.91<sub class="ltx_sub"><span class="ltx_text ltx_font_italic">0.17</span></sub></span></td>
+</tr>
+</tbody>
+</table>
+</span></div>
+
+Table 3: Main results on the RAMS dataset. Arg-I denotes Span F1 for the Arg Identification subtask, and other metrics are for the Arg Classification subtask. \* indicates results reported by Ma et al. ([2022](#bib.bib18)).
+[/TABLE]
+
+We compare our model with several baselines and the following previous state-of-the-art models. (1) QA-based models: EEQA (Du and Cardie, [2020b](#bib.bib5)) and FEAE (Wei et al., [2021](#bib.bib21)). (2) Generation-based models: BART-gen (Li et al., [2021](#bib.bib13)), PAIE (Ma et al., [2022](#bib.bib18)), and EA2E (Zeng et al., [2022](#bib.bib28)). (3) Span-based models: TSAR (Xu et al., [2022](#bib.bib25)). TSAR is the first and sole work utilizing AMR for Doc-level EAE.  
+
+Table [2](#S3.T2 "Table 2 ‣ 3.1 Datasets and Evaluation Metrics ‣ 3 Experiments ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") illustrates the results on the WikiEvents test set. As is shown, our proposed methods consistently outperform previous works with different sized backbone models. TARA${}_{\textrm{compress}}$ achieves comparable results with TARA, with more than 30% nodes and edges being pruned, which suggests that the compression process is effective. We compare the better one with other models in the following analysis.  
+
+More than 4pt Head F1 for Arg Classification against approaches that do not use AMR indicates the value of deep semantic information. TSAR is the only work to introduce AMR to document-level EAE tasks, but utilizes AMR graphs in an implicit way of decomposing the node representations to contextual representations. The 3.63pt performance gain compared to TSAR shows that our method, which explicitly leverages AMR graphs to perform link prediction, can make better use of rich semantic structures provided by AMR. Besides, EA2E learns event-event relations by augmenting the context with arguments of neighboring events, which may bring noises in the inference iteration, while we simply mark nodes of other event triggers in the graph and yields an improvement of 4.72pt Head F1.  
+
+Comparing the identification and classification scores, we find that the performance gain of the latter is always higher, which indicates that our method not only helps the model find more correct arguments but also increases the accuracy of classifying argument roles. Another finding is that our method contributes more to Head F1 instead of Coref F1 in most cases. The main difference between the two metrics is boundary correctness. The result suggests that although our method helps less in identifying the span boundary, it enhances the capability of finding arguments. Our model is less powerful in span boundary identification is reasonable since the span proposal module only takes the textual information, and we will consider upgrading the span proposal module with AMR information in future work.  
+
+Similar conclusion can be drawn from Table [3](#S3.T3 "Table 3 ‣ 3.3 Main Results ‣ 3 Experiments ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction")222We did not mark surrounding events for RAMS due to the lack of annotations., which compares our method with previous works in both dev and test sets of RAMS. Our method achieves new state-of-the-art results using the large model with 2.33pt Head F1 improvement on the test set compared with TSAR, and yields comparable results based on BERT${}_{\textrm{base}}$. PAIE manually creates a set of prompts containing event descriptions for each event type, providing additional knowledge which benefits most for classification with numerous classes. In contrast, our method improves up to 0.31/0.31pt Span F1 for Arg Identification/Classification with the help of explicit AMR information.  
+
+## 4 Analysis
+
+### 4.1 Ablation Study
+
+[TABLE S4.T4]
+
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Model</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Arg Identification</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Arg Classification</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Head F1</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Coref F1</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Head F1</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Coref F1</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t"><span class="ltx_text ltx_font_bold">TARA</span></th>
+<td class="ltx_td ltx_align_center ltx_border_t"><span class="ltx_text ltx_font_bold">78.64</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t"><span class="ltx_text ltx_font_bold">76.40</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t"><span class="ltx_text ltx_font_bold">72.89</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t"><span class="ltx_text ltx_font_bold">70.95</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">(a) wo AMR</th>
+<td class="ltx_td ltx_align_center">75.04</td>
+<td class="ltx_td ltx_align_center">73.79</td>
+<td class="ltx_td ltx_align_center">68.94</td>
+<td class="ltx_td ltx_align_center">68.04</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">(b) implicit AMR</th>
+<td class="ltx_td ltx_align_center">76.34</td>
+<td class="ltx_td ltx_align_center">73.98</td>
+<td class="ltx_td ltx_align_center">70.00</td>
+<td class="ltx_td ltx_align_center">68.36</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">(c) wo span proposal</th>
+<td class="ltx_td ltx_align_center">70.84</td>
+<td class="ltx_td ltx_align_center">67.71</td>
+<td class="ltx_td ltx_align_center">64.38</td>
+<td class="ltx_td ltx_align_center">61.84</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">(d) wo surrounding events</th>
+<td class="ltx_td ltx_align_center">77.15</td>
+<td class="ltx_td ltx_align_center">75.76</td>
+<td class="ltx_td ltx_align_center">71.48</td>
+<td class="ltx_td ltx_align_center">70.27</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">(e) homogeneous graph</th>
+<td class="ltx_td ltx_align_center">77.87</td>
+<td class="ltx_td ltx_align_center">75.88</td>
+<td class="ltx_td ltx_align_center">71.54</td>
+<td class="ltx_td ltx_align_center">69.74</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb">(f) fully-connected graph</th>
+<td class="ltx_td ltx_align_center ltx_border_bb">76.95</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">75.30</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">70.52</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">69.42</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+
+Table 4: Ablation study on the WikiEvents test set based on RoBERTa${}_{\textrm{large}}$. “wo” denotes “without”.
+[/TABLE]
+
+We perform ablation study to explore the effectiveness of different modules in our proposed model. Table [4](#S4.T4 "Table 4 ‣ 4.1 Ablation Study ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") provides results on the WikiEvents test set based on RoBERTa${}_{\textrm{large}}$ when excluding various modules at a time, which helps us answer the following three crucial questions:  
+
+#### What is the effect of explicit AMR graphs?
+
+(a): When we throw away the whole AMR graph and depend solely on the contextual representations from PLM to extract arguments, the Head F1 of Arg Classification decreases by a large margin of 3.95pt, due to the lack of deep semantic information provided by AMR. Besides, (b): implicitly utilizing AMR by taking AMR edge classification as an auxiliary task, leads to a performance drop by 2.89pt. It suggests that explicitly using AMR graphs is more practical for document understanding and argument extraction.  
+
+#### What is the effect of tailored AMR graphs for EAE?
+
+(c): Once we drop spans that are not aligned with an AMR node, there is a sharp decrease up to 8.51pt Head F1, demonstrating the necessity of span proposal. (d): If we do not mark surrounding event triggers in the AMR graph, the Head F1 gains a rise by 2.54pt compared to (a), but drops by 1.41pt compared to TARA using the unabridged tailored AMR graph, which shows that barely indicating surrounding events benefits to make full use of event-event relations.  
+
+#### What is the effect of heterogeneous graph structures?
+
+(e): The removal of different edge types in the AMR graph, causes a slight performance drop by 1.35pt, illustrating the effectiveness of various edge types. In addition, (f): when we further remove the edge relations and replace the graph structure with a fully-connected layer, the performance decreases by 2.37pt. It suggests that the edge relations are also useful. Moreover, we find that (f) outperforms (a) with an improvement of 1.58pt Head F1, which indicates that the node-level representations are more expressive than word-level representations.  
+
+### 4.2 Efficiency
+
+[TABLE S4.T5]
+
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Model</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Training Time</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Inference Time</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t">TSAR</th>
+<td class="ltx_td ltx_align_center ltx_border_t">603.52</td>
+<td class="ltx_td ltx_align_center ltx_border_t">33.43</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">TARA</th>
+<td class="ltx_td ltx_align_center">319.63</td>
+<td class="ltx_td ltx_align_center">15.56</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb">TARA<math class="ltx_Math"><semantics><msub><mi></mi><mtext>compress</mtext></msub><annotation-xml><apply><ci><mtext>compress</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{compress}}</annotation></semantics></math>
+</th>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">281.92</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">14.70</span></td>
+</tr>
+</tbody>
+</table>
+
+Table 5: Time cost (in seconds) of different AMR-guided models based on RoBERTa${}_{\textrm{large}}$ on the test set of WikiEvents. Experiments are run for one epoch on 4 same Tesla T4 GPUs.
+[/TABLE]
+
+[FIGURE S4.F4.g1]
+![Figure S4.F4.g1](./media/x4.png)
+
+Figure 4: Case study for TAG. The left are excerpted text sequences, with triggers in bold, arguments underlined, and event types and argument roles as subscripts. The right are corresponding AMR graphs.
+[/FIGURE]
+
+Table [5](#S4.T5 "Table 5 ‣ 4.2 Efficiency ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") reports the efficiency of different models using AMR graphs. TSAR encodes the input document from local and global perspectives and obtains AMR-enhanced representations by fusing contextual and node representations, while TARA directly utilize AMR graphs to perform link prediction. Though the two models share similar model sizes, TARA runs approximately 2 times faster than TSAR and saves up to 53% inference time. When compressing the AMR graph in the pre-processing stage, with more than 30% nodes and edges omitted, TARA${}_{\textrm{compress}}$ speeds up further, resulting in 56% inference time saving.  
+
+### 4.3 Error Analysis
+
+[TABLE S4.T6]
+
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Model</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Missing Head</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Overpred Head</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Wrong Role</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Wrong Span</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t">Baseline</th>
+<td class="ltx_td ltx_align_center ltx_border_t">137</td>
+<td class="ltx_td ltx_align_center ltx_border_t">110</td>
+<td class="ltx_td ltx_align_center ltx_border_t">37</td>
+<td class="ltx_td ltx_align_center ltx_border_t">18</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">TSAR</th>
+<td class="ltx_td ltx_align_center">136</td>
+<td class="ltx_td ltx_align_center">104</td>
+<td class="ltx_td ltx_align_center">34</td>
+<td class="ltx_td ltx_align_center">20</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb">TARA</th>
+<td class="ltx_td ltx_align_center ltx_border_bb">120</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">98</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">33</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">19</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+
+Table 6: Error analysis on the WikiEvents test set based on RoBERTa${}_{\textrm{large}}$.
+[/TABLE]
+
+To compare different models in greater detail, we explore four specific error types listed in Table [6](#S4.T6 "Table 6 ‣ 4.3 Error Analysis ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). Missing Head refers to the number of missing arguments, those the model dose not predict that they are arguments, and we only consider the head word to relax the boundary constraint. Overpred Head denotes the number of spans that the model falsely assumes that they play a role. Besides, even though the model succeeds to identify the head word of a golden span, it can still assign wrong argument role to it, which we call Wrong Role; or it cannot predict the true start and end position of the span, named Wrong Span. We suppose extracting coreferential arguments is reasonable. Baseline refers to (a) in Sec-[4.1](#S4.SS1 "4.1 Ablation Study ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), which performs worse than TSAR and TARA.  
+
+As shown in Table [6](#S4.T6 "Table 6 ‣ 4.3 Error Analysis ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), TARA misses fewer argument spans compared to TSAR. In addition, while finding more correct argument spans, TARA dose not predict more wrong roles, that is, it will improve more on the Arg Classification subtask. The first three error types are usually attributed to the severe class imbalance problem. With few examples of one label, the model cannot successfully learn the meaning of it and thus is hard to assign it to the true arguments. Moreover, our proposed model does not do better in recognizing correct span boundary considering Wrong Span. We observe that most Wrong Span errors result from the inconsistency of the annotation in the dataset, e.g., whether articles (such as the and a), adjectives and quantifiers before a noun should be included to a span.  
+
+### 4.4 Case Study for TAG
+
+In this section, we look into specific examples to explore how tailored AMR graphs work. Firstly, the top part of Figure [4](#S4.F4 "Figure 4 ‣ 4.2 Efficiency ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") illustrates the effect of adding missing spans to AMR graphs. Though AMR compresses the text sequence to a deep semantic structure, it may have a different focus from event structures. For instance, “$10 billion”, which plays an argument role of Money for event BorrowLend, is left out by the vanilla AMR graph. In contrast, TAG will add the span and successfully serve for link prediction. Additionally, as shown in the bottom part of the figure, there are two events share the same argument “Baghdad”, and Baseline can not correctly identify the argument for the further event “died” while TARA does both right. That is because when indicating surrounding event triggers in the graph, the event “died” would pay attention to the subgraph of the event “explode” and identify the implicit argument through a closer path in the graph than in the text sequence.  
+
+## 5 Related Work
+
+Doc-level EAE is a frontier direction of Event Extraction and has received broad attention from industry and academia in recent years. Unlike the well-developed sentence-level event extraction (Xi et al., [2021](#bib.bib22); Ma et al., [2020](#bib.bib17)), the Doc-level EAE faces more challenges. Li et al. ([2021](#bib.bib13)) proposes an end-to-end generation-based approach for Doc-level EAE. Fan et al. ([2022](#bib.bib8)) and Xu et al. ([2021](#bib.bib24)) construct an entity-based graph to model dependencies among the document. Du and Cardie ([2020a](#bib.bib4)) chooses the hierarchical method to aggregate information from different granularity.  
+
+Recently, there has been a rising trend of utilizing AMR information to assist event extraction. Xu et al. ([2022](#bib.bib25)) employs node representations derived by AMR graphs. Lin et al. ([2022](#bib.bib15)) and Xu and Huang ([2022](#bib.bib26)) introduce AMR path information as training signals to correct argument predictions. Wang et al. ([2021](#bib.bib20)) pre-trains the EAE model with a contrastive loss built on AMR graphs. However, previous works have only treated AMR as an auxiliary feature or supervised signal and has not fully exploited the correlation between AMR and EAE. As the scheme of the AMR graph is very similar to the event structure (predicate-arguments vs. trigger-arguments), EAE can be reformulated as an AMR-based problem. With TAG, we can define EAE as a task only related to graphs and conditionally independent of documents, thus achieving a simpler and more efficient model.  
+
+Previous works also explore the ways of enriching AMR graphs to suit information extraction tasks. Fan et al. ([2022](#bib.bib8)) trains a learnable module to add nodes and edges to the AMR graph. Zhang and Ji ([2021](#bib.bib30)) discusses different ways to integrate missing words with the AMR graph. While these methods tend to enlarge AMR graphs, causing a larger graph size and increasing the training difficulty, our method compresses the irrelevant information in AMR to improve efficiency and help the model to be concentrated.  
+
+## 6 Conclusion
+
+We propose to reformulate document-level event argument extraction as a link prediction problem on our proposed tailored AMR graphs. With adding missing spans, marking surrounding events, and removing noises, AMR graphs are tailored to EAE tasks. We also introduce a link prediction model based on TAG to implement EAE. Elaborate experiments show that explicitly using AMR graphs is beneficial for argument extraction.  
+
+## Limitations
+
+Firstly, as analyzed in Sec-[4.3](#S4.SS3 "4.3 Error Analysis ‣ 4 Analysis ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), our proposed method fails to make a significant improvement on span boundary identification. For one thing, the annotation inconsistency in the dataset hinders the model’s understanding. For another, our span proposal module leverages the contextual information alone with implicit training signals for span boundary information. We will consider enhancing the span proposal module with AMR information in the future. Secondly, though TARA saves up to 56% inference time compared to the previous AMR-guided work, its entire training requires more than 7h on 4 Tesla T4 GPUs. The bottleneck is the incongruity of pre-trained language models and non-pre-trained GNNs. We leave the problem for future work. Finally, arguments on Wikievents and RAMS are still relatively close to its event trigger (e.g., RAMS limits the scope of arguments in a 5-sentence window), and thus connecting sentence-level AMR graphs is enough to model the long-distance dependency. Otherwise, document-level AMR graphs with coreference resolution are in demand.  
+
+## Ethics Statement
+
+Our work complies with the ACL Ethics Policy. As document-level event argument extraction is a standard task in NLP, we do not see any critical ethical considerations. We confirm that the scientific artifacts used in this paper comply with their license and intended use. Licenses are listed in Table [7](#A1.T7 "Table 7 ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction").  
+
+## Acknowledgement
+
+We would like to express our sincere gratitude to the reviewers for their thoughtful and valuable feedback. This work was supported by the National Key Research and Development Program of China (No.2020AAA0106700) and National Natural Science Foundation of China (No.62022027).  
+
+## References
+
+* Astudillo et al. (2020)  Ramón Fernandez Astudillo, Miguel Ballesteros, Tahira Naseem, Austin Blodgett, and Radu Florian. 2020.   Transition-based parsing with stack-transformers.   In *EMNLP (Findings)*, volume EMNLP 2020 of *Findings of ACL*, pages 1001–1007. Association for Computational Linguistics. 
+* Bai et al. (2022)  Xuefeng Bai, Yulong Chen, and Yue Zhang. 2022.   Graph pre-training for AMR parsing and generation.   In *ACL (1)*, pages 6001–6015. Association for Computational Linguistics. 
+* Costa et al. (2020)  Tarcísio Souza Costa, Simon Gottschalk, and Elena Demidova. 2020.   Event-qa: A dataset for event-centric question answering over knowledge graphs.   In *CIKM*, pages 3157–3164. ACM. 
+* Du and Cardie (2020a)  Xinya Du and Claire Cardie. 2020a.   Document-level event role filler extraction using multi-granularity contextualized encoding.   In *ACL*, pages 8010–8020. Association for Computational Linguistics. 
+* Du and Cardie (2020b)  Xinya Du and Claire Cardie. 2020b.   [Event extraction by answering (almost) natural questions](https://doi.org/10.18653/v1/2020.emnlp-main.49).   In *Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, EMNLP 2020, Online, November 16-20, 2020*, pages 671–683. Association for Computational Linguistics. 
+* Du et al. (2022)  Xinya Du, Sha Li, and Heng Ji. 2022.   Dynamic global memory for document-level argument extraction.   In *ACL (1)*, pages 5264–5275. Association for Computational Linguistics. 
+* Ebner et al. (2020)  Seth Ebner, Patrick Xia, Ryan Culkin, Kyle Rawlins, and Benjamin Van Durme. 2020.   Multi-sentence argument linking.   In *ACL*, pages 8057–8077. Association for Computational Linguistics. 
+* Fan et al. (2022)  Siqi Fan, Yequan Wang, Jing Li, Zheng Zhang, Shuo Shang, and Peng Han. 2022.   Interactive information extraction by semantic information graph.   In *IJCAI*, pages 4100–4106. ijcai.org. 
+* Goyal et al. (2017)  Priya Goyal, Piotr Dollár, Ross B. Girshick, Pieter Noordhuis, Lukasz Wesolowski, Aapo Kyrola, Andrew Tulloch, Yangqing Jia, and Kaiming He. 2017.   [Accurate, large minibatch SGD: training imagenet in 1 hour](http://arxiv.org/abs/1706.02677).   *CoRR*, abs/1706.02677. 
+* Han et al. (2021)  Rujun Han, I-Hung Hsu, Jiao Sun, Julia Baylon, Qiang Ning, Dan Roth, and Nanyun Peng. 2021.   ESTER: A machine reading comprehension dataset for reasoning about event semantic relations.   In *EMNLP (1)*, pages 7543–7559. Association for Computational Linguistics. 
+* Ji and Grishman (2008)  Heng Ji and Ralph Grishman. 2008.   [Refining event extraction through cross-document inference](https://aclanthology.org/P08-1030/).   In *ACL 2008, Proceedings of the 46th Annual Meeting of the Association for Computational Linguistics, June 15-20, 2008, Columbus, Ohio, USA*, pages 254–262. The Association for Computer Linguistics. 
+* Li et al. (2020)  Manling Li, Alireza Zareian, Ying Lin, Xiaoman Pan, Spencer Whitehead, Brian Chen, Bo Wu, Heng Ji, Shih-Fu Chang, Clare R. Voss, Daniel Napierski, and Marjorie Freedman. 2020.   GAIA: A fine-grained multimedia knowledge extraction system.   In *ACL (demo)*, pages 77–86. Association for Computational Linguistics. 
+* Li et al. (2021)  Sha Li, Heng Ji, and Jiawei Han. 2021.   Document-level event argument extraction by conditional generation.   In *NAACL-HLT*, pages 894–908. Association for Computational Linguistics. 
+* Liao and Grishman (2010)  Shasha Liao and Ralph Grishman. 2010.   Using document level cross-event inference to improve event extraction.   In *ACL*, pages 789–797. The Association for Computer Linguistics. 
+* Lin et al. (2022)  Jiaju Lin, Qin Chen, Jie Zhou, Jian Jin, and Liang He. 2022.   [CUP: curriculum learning based prompt tuning for implicit event argument extraction](https://doi.org/10.24963/ijcai.2022/589).   In *Proceedings of the Thirty-First International Joint Conference on Artificial Intelligence, IJCAI 2022, Vienna, Austria, 23-29 July 2022*, pages 4245–4251. ijcai.org. 
+* Loshchilov and Hutter (2019)  Ilya Loshchilov and Frank Hutter. 2019.   [Decoupled weight decay regularization](https://openreview.net/forum?id=Bkg6RiCqY7).   In *7th International Conference on Learning Representations, ICLR 2019, New Orleans, LA, USA, May 6-9, 2019*. OpenReview.net. 
+* Ma et al. (2020)  Jie Ma, Shuai Wang, Rishita Anubhai, Miguel Ballesteros, and Yaser Al-Onaizan. 2020.   Resource-enhanced neural model for event argument extraction.   In *EMNLP (Findings)*, volume EMNLP 2020 of *Findings of ACL*, pages 3554–3559. Association for Computational Linguistics. 
+* Ma et al. (2022)  Yubo Ma, Zehao Wang, Yixin Cao, Mukai Li, Meiqi Chen, Kun Wang, and Jing Shao. 2022.   [Prompt for extraction? PAIE: prompting argument interaction for event argument extraction](https://doi.org/10.18653/v1/2022.acl-long.466).   In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), ACL 2022, Dublin, Ireland, May 22-27, 2022*, pages 6759–6774. Association for Computational Linguistics. 
+* Schlichtkrull et al. (2018)  Michael Sejr Schlichtkrull, Thomas N. Kipf, Peter Bloem, Rianne van den Berg, Ivan Titov, and Max Welling. 2018.   Modeling relational data with graph convolutional networks.   In *ESWC*, volume 10843 of *Lecture Notes in Computer Science*, pages 593–607. Springer. 
+* Wang et al. (2021)  Ziqi Wang, Xiaozhi Wang, Xu Han, Yankai Lin, Lei Hou, Zhiyuan Liu, Peng Li, Juanzi Li, and Jie Zhou. 2021.   CLEVE: contrastive pre-training for event extraction.   In *ACL/IJCNLP (1)*, pages 6283–6297. Association for Computational Linguistics. 
+* Wei et al. (2021)  Kaiwen Wei, Xian Sun, Zequn Zhang, Jingyuan Zhang, Zhi Guo, and Li Jin. 2021.   [Trigger is not sufficient: Exploiting frame-aware knowledge for implicit event argument extraction](https://doi.org/10.18653/v1/2021.acl-long.360).   In *Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing, ACL/IJCNLP 2021, (Volume 1: Long Papers), Virtual Event, August 1-6, 2021*, pages 4672–4682. Association for Computational Linguistics. 
+* Xi et al. (2021)  Xiangyu Xi, Wei Ye, Shikun Zhang, Quanxiu Wang, Huixing Jiang, and Wei Wu. 2021.   Capturing event argument interaction via A bi-directional entity-level recurrent decoder.   In *ACL/IJCNLP (1)*, pages 210–219. Association for Computational Linguistics. 
+* Xiang and Wang (2019)  Wei Xiang and Bang Wang. 2019.   A survey of event extraction from text.   *IEEE Access*, 7:173111–173137. 
+* Xu et al. (2021)  Runxin Xu, Tianyu Liu, Lei Li, and Baobao Chang. 2021.   Document-level event extraction via heterogeneous graph-based interaction model with a tracker.   In *ACL/IJCNLP (1)*, pages 3533–3546. Association for Computational Linguistics. 
+* Xu et al. (2022)  Runxin Xu, Peiyi Wang, Tianyu Liu, Shuang Zeng, Baobao Chang, and Zhifang Sui. 2022.   A two-stream amr-enhanced model for document-level event argument extraction.   In *NAACL-HLT*, pages 5025–5036. Association for Computational Linguistics. 
+* Xu and Huang (2022)  Zhiyang Xu and Lifu Huang. 2022.   Improve event extraction via self-training with gradient guidance.   *CoRR*, abs/2205.12490. 
+* Zaporojets et al. (2022)  Klim Zaporojets, Johannes Deleu, Yiwei Jiang, Thomas Demeester, and Chris Develder. 2022.   [Towards consistent document-level entity linking: Joint models for entity linking and coreference resolution](https://doi.org/10.18653/v1/2022.acl-short.88).   In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers), ACL 2022, Dublin, Ireland, May 22-27, 2022*, pages 778–784. Association for Computational Linguistics. 
+* Zeng et al. (2022)  Qi Zeng, Qiusi Zhan, and Heng Ji. 2022.   [Ea2e: Improving consistency with event awareness for document-level argument extraction](https://doi.org/10.18653/v1/2022.findings-naacl.202).   In *Findings of the Association for Computational Linguistics: NAACL 2022, Seattle, WA, United States, July 10-15, 2022*, pages 2649–2655. Association for Computational Linguistics. 
+* Zhang et al. (2020)  Tianran Zhang, Muhao Chen, and Alex A. T. Bui. 2020.   Diagnostic prediction with sequence-of-sets representation learning for clinical events.   In *AIME*, volume 12299 of *Lecture Notes in Computer Science*, pages 348–358. Springer. 
+* Zhang and Ji (2021)  Zixuan Zhang and Heng Ji. 2021.   Abstract meaning representation guided graph encoding and decoding for joint information extraction.   In *NAACL-HLT*, pages 39–49. Association for Computational Linguistics. 
+
+## Appendix A Appendix
+
+[TABLE A1.T7]
+
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Scientific Artifact</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">License</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t">WikiEvents</th>
+<td class="ltx_td ltx_align_center ltx_border_t">MIT License</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">RAMS</th>
+<td class="ltx_td ltx_align_center">Apache License 2.0</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">bert-base-uncased</th>
+<td class="ltx_td ltx_align_center">Apache License 2.0</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb">roberta-large</th>
+<td class="ltx_td ltx_align_center ltx_border_bb">MIT License</td>
+</tr>
+</tbody>
+</table>
+
+Table 7: Licenses of scientific artifacts used in this paper.
+[/TABLE]
+
+### A.1 Statistics of Datasets
+
+[TABLE A1.T8]
+
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Dataset</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Split</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">#Docs</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">#Events</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">#Arguments</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t"><span class="ltx_text">WikiEvents</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t">Train</th>
+<td class="ltx_td ltx_align_center ltx_border_t">206</td>
+<td class="ltx_td ltx_align_center ltx_border_t">3,241</td>
+<td class="ltx_td ltx_align_center ltx_border_t">4,542</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row">Dev</th>
+<td class="ltx_td ltx_align_center">20</td>
+<td class="ltx_td ltx_align_center">345</td>
+<td class="ltx_td ltx_align_center">428</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row">Test</th>
+<td class="ltx_td ltx_align_center">20</td>
+<td class="ltx_td ltx_align_center">365</td>
+<td class="ltx_td ltx_align_center">566</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb ltx_border_t"><span class="ltx_text">RAMS</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t">Train</th>
+<td class="ltx_td ltx_align_center ltx_border_t">3,194</td>
+<td class="ltx_td ltx_align_center ltx_border_t">7,329</td>
+<td class="ltx_td ltx_align_center ltx_border_t">17,026</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row">Dev</th>
+<td class="ltx_td ltx_align_center">399</td>
+<td class="ltx_td ltx_align_center">924</td>
+<td class="ltx_td ltx_align_center">2,188</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_bb">Test</th>
+<td class="ltx_td ltx_align_center ltx_border_bb">400</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">871</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">2,023</td>
+</tr>
+</tbody>
+</table>
+
+Table 8: Statistics of WikiEvents and RAMS datasets.
+[/TABLE]
+
+The details of statistics of WikiEvents and RAMS datasets are listed in Table [8](#A1.T8 "Table 8 ‣ A.1 Statistics of Datasets ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction").  
+
+### A.2 Hyperparameters
+
+We set batch size to 8, and train the model using AdamW (Loshchilov and Hutter, [2019](#bib.bib16)) optimizer and a linearly decaying scheduler (Goyal et al., [2017](#bib.bib9)) with 3e-5 learning rate for pre-trained language encoders and 1e-4 for other modules. For Wikievents, we train the model for 100 epochs, and set $\lambda$ to 1.0 and $L$ to 3. For RAMS, we train the model for 50 epochs, and set $\lambda$ to 0.05 and $L$ to 4.  
+
+### A.3 The choice of $k$
+
+[FIGURE A1.F5.g1]
+![Figure A1.F5.g1](./media/x5.png)
+
+Figure 5: Recall and Training Time with respect to the choice of $k$. Experiments are run for one epoch on a single Tesla T4 GPU.
+[/FIGURE]
+
+[TABLE A1.T9]
+
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle">
+<thead class="ltx_thead">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt"><span class="ltx_text ltx_font_bold">Model</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">AMR 2.0</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Arg Identification</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt"><span class="ltx_text ltx_font_bold">Arg Classification</span></th>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Smatch</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Head F1</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Coref F1</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Head F1</th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t">Coref F1</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t">transition-AMR</th>
+<td class="ltx_td ltx_align_center ltx_border_t">81.3</td>
+<td class="ltx_td ltx_align_center ltx_border_t"><span class="ltx_text ltx_font_bold">78.64</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t">76.40</td>
+<td class="ltx_td ltx_align_center ltx_border_t">72.89</td>
+<td class="ltx_td ltx_align_center ltx_border_t">70.95</td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row">transition-AMR<math class="ltx_Math"><semantics><msub><mi></mi><mtext>compress</mtext></msub><annotation-xml><apply><ci><mtext>compress</mtext></ci></apply></annotation-xml><annotation>{}_{\textrm{compress}}</annotation></semantics></math>
+</th>
+<td class="ltx_td ltx_align_center">81.3</td>
+<td class="ltx_td ltx_align_center">78.50</td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">76.71</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">73.33</span></td>
+<td class="ltx_td ltx_align_center"><span class="ltx_text ltx_font_bold">71.55</span></td>
+</tr>
+<tr class="ltx_tr">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb">AMRBART</th>
+<td class="ltx_td ltx_align_center ltx_border_bb"><span class="ltx_text ltx_font_bold">85.4</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb">78.35</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">76.29</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">73.07</td>
+<td class="ltx_td ltx_align_center ltx_border_bb">70.83</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+
+Table 9: Comparison between transition-based AMR parser (abbrev. transition-AMR) and AMRBART on WikiEvents test set based on RoBERTa${}_{\textrm{large}}$.
+[/TABLE]
+
+Span proposal module is of great importance to construct the tailored AMR graph, and intuitively, selecting different number of spans as candidates for Arg Classification will exert an influence on performance and efficiency. Therefore, we present visually the trend of recall and inference time when ranging $k$, which denotes the number of proposed spans. As illustrated in Figure [5](#A1.F5 "Figure 5 ‣ A.3 The choice of 𝑘 ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), as $k$ becomes larger, recall is higher, while inference is lower. Moreover, when recall of span proposal is low, a number of positive examples for Arg Classification would be dropped, which impedes the model to learn argument roles. On the other hand, too many candidate spans aggravate the problem of class imbalance. As a consequence, we make a trade-off to set $k=50$.  
+
+### A.4 AMR parsers
+
+TARA, as the name implies, relies on automatic AMR parsers to build signals of message passing. To explore the effect of different AMR parsing performance, we compare test results of TARA using transition-based AMR parser and a latest state-of-the-art parser AMRBART (Bai et al., [2022](#bib.bib2)) in Table [9](#A1.T9 "Table 9 ‣ A.3 The choice of 𝑘 ‣ Appendix A Appendix ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"). We implement a simple node-to-text aligner and compress the obtained AMR graph as described in Sec-[B](#A2 "Appendix B Subgraph Compression ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") for AMRBART. As shown in the table, though AMRBART brings better AMR parsing performance, it dose not gain more improvements for EAE. It demonstrates that there is still a gap between AMR graphs and event structures. Nonetheless, TARA equipped with AMRBART consistently outperforms previous models, which indicates the robustness of our proposed model.  
+
+## Appendix B Subgraph Compression
+
+[FIGURE A2.F6.g1]
+![Figure A2.F6.g1](./media/app_1.png)
+
+Figure 6: Compression rules. See text for details.
+[/FIGURE]
+
+As mentioned in the main text, we compress the subgraph to make the graph compact. Figure [6](#A2.F6 "Figure 6 ‣ Appendix B Subgraph Compression ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction") illustrates how we compress a subgraph. Firstly, we will find a subgraph that has an AMR label in pre-defined entity types. The type list is induced from the AMR parser configurations, and we also give the list here, Country, Quantity, Organization, Date-attrs, Nationality, Location, Entity, Misc, Ordinal-entity, Ideology, Religion, State-or-province, Cause-of-death, Title, Date, Number, Handle, Score-entity, Duration, Ordinal, Money, Criminal-charge, Person, Thing, State, Date-entity, Name, Publication, Province, Government-organization, City-district, City, Criminal-organization, Group, Religious-group, String-entity, Political-party, World-region, Country-region, String-name, URL-entity, Festival, Company, Broadcast-program. If such a node has a child node with the label “name” and outgoing edges like “op1”, “op2”, we will compress this subgraph. The compression merges labels of all nodes connected with “op1”, “op2”, “op3” edges as a phrase according to the ascending order of edges. The text alignment information of the merged node becomes the range from the most left position to the most right position of nodes in the subgraph, which means there is a little chance to enlarge the corresponding text span if the original positions are discontinuous. The compression will preserve all incoming and outgoing edges except the edge “:wiki”. As shown in the Figure [6](#A2.F6 "Figure 6 ‣ Appendix B Subgraph Compression ‣ An AMR-based Link Prediction Approach for Document-level Event Argument Extraction"), we keep the “:quant” edge but remove the “:wiki” edge.  
+

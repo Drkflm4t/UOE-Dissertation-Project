@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2211.07830] Prompting Language Models for Linguistic Structure</title><meta content="Although pretrained language models (PLMs) can be prompted to perform a wide range of language tasks, it remains an open question how much this ability comes from generalizable linguistic understanding versus surface-l…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Prompting Language Models for Linguistic Structure" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Prompting Language Models for Linguistic Structure" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2211.07830" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2211.07830" rel="canonical" target="_blank"/>
+<!--Generated on Thu Mar 14 05:48:06 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Prompting Language Models for Linguistic Structure</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id2.id1">Although pretrained language models (PLMs) can be prompted to perform a wide range of language tasks, it remains an open question how much this ability comes from generalizable linguistic understanding versus surface-level lexical patterns. To test this, we present a <span class="ltx_text ltx_font_italic" id="id2.id1.1">structured prompting</span> approach for linguistic structured prediction tasks, allowing us to perform zero- and few-shot sequence tagging with autoregressive PLMs. We evaluate this approach on part-of-speech tagging, named entity recognition, and sentence chunking, demonstrating strong few-shot performance in all cases. We also find that while PLMs contain significant prior knowledge of task labels due to task leakage into the pretraining corpus, structured prompting can also retrieve linguistic structure with arbitrary labels. These findings indicate that the in-context learning ability and linguistic knowledge of PLMs generalizes beyond memorization of their training data.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">The rapid increase in the scale of pretrained language models (PLMs) has led to a new paradigm of NLP modeling: in-context learning, or prompting <cite class="ltx_cite ltx_citemacro_cite">(e.g., Brown et al., <a class="ltx_ref" href="#bib.bib8" title="">2020</a>; Raffel et al., <a class="ltx_ref" href="#bib.bib30" title="">2020</a>)</cite>. In this setting, the model is used to perform a task directly via the predictions of the LM head without additional finetuning on the target task, often with a few demonstrations of the desired behavior provided within the input. This setup has led to impressive few-shot performance on various tasks ranging from classification to summarization and generation <cite class="ltx_cite ltx_citemacro_cite">Liu et al. (<a class="ltx_ref" href="#bib.bib20" title="">2021a</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Due to their broad success on tasks requiring language understanding, we hypothesize that these models also contain significant linguistic knowledge. However, we are not aware of existing prompting methods that can directly test this hypothesis on autoregressive PLMs.
+Behavioral analysis of PLMs <cite class="ltx_cite ltx_citemacro_cite">Belinkov et al. (<a class="ltx_ref" href="#bib.bib3" title="">2020</a>)</cite> uses methods similar to prompting to measure knowledge stored in language models <cite class="ltx_cite ltx_citemacro_cite">Gulordava et al. (<a class="ltx_ref" href="#bib.bib16" title="">2018</a>); Petroni et al. (<a class="ltx_ref" href="#bib.bib28" title="">2019</a>)</cite>, but this technique is difficult to generalize to tasks that predict more complex structures. Additionally, current approaches for applying PLMs to linguistic structured prediction tasks finetune on the downstream task <cite class="ltx_cite ltx_citemacro_cite">(e.g., Ma et al., <a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite>, which confounds measuring underlying model knowledge.</p>
+</div>
+<figure class="ltx_figure" id="S1.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="322" id="S1.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>Sequence tagging via structured prompting. Each predicted label is appended to the context along with the next word to iteratively tag the full sentence.</figcaption>
+</figure>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.3">We propose a new approach, <span class="ltx_text ltx_font_italic" id="S1.p3.3.1">structured prompting</span>, that iteratively prompts autoregressive PLMs to probe for word- and span-level linguistics framed as sequence tagging tasks (Section <a class="ltx_ref" href="#S2" title="2 Structured Prompting of Pretrained Language Models ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">2</span></a>). At timestep <math alttext="t" class="ltx_Math" display="inline" id="S1.p3.1.m1.1"><semantics id="S1.p3.1.m1.1a"><mi id="S1.p3.1.m1.1.1" xref="S1.p3.1.m1.1.1.cmml">t</mi><annotation-xml encoding="MathML-Content" id="S1.p3.1.m1.1b"><ci id="S1.p3.1.m1.1.1.cmml" xref="S1.p3.1.m1.1.1">𝑡</ci></annotation-xml><annotation encoding="application/x-tex" id="S1.p3.1.m1.1c">t</annotation></semantics></math>, a label for the <math alttext="t" class="ltx_Math" display="inline" id="S1.p3.2.m2.1"><semantics id="S1.p3.2.m2.1a"><mi id="S1.p3.2.m2.1.1" xref="S1.p3.2.m2.1.1.cmml">t</mi><annotation-xml encoding="MathML-Content" id="S1.p3.2.m2.1b"><ci id="S1.p3.2.m2.1.1.cmml" xref="S1.p3.2.m2.1.1">𝑡</ci></annotation-xml><annotation encoding="application/x-tex" id="S1.p3.2.m2.1c">t</annotation></semantics></math>-th word in the sequence is decoded from the LM; the model prediction is then fed back into the model along with the next word to progress to timestep <math alttext="t+1" class="ltx_Math" display="inline" id="S1.p3.3.m3.1"><semantics id="S1.p3.3.m3.1a"><mrow id="S1.p3.3.m3.1.1" xref="S1.p3.3.m3.1.1.cmml"><mi id="S1.p3.3.m3.1.1.2" xref="S1.p3.3.m3.1.1.2.cmml">t</mi><mo id="S1.p3.3.m3.1.1.1" xref="S1.p3.3.m3.1.1.1.cmml">+</mo><mn id="S1.p3.3.m3.1.1.3" xref="S1.p3.3.m3.1.1.3.cmml">1</mn></mrow><annotation-xml encoding="MathML-Content" id="S1.p3.3.m3.1b"><apply id="S1.p3.3.m3.1.1.cmml" xref="S1.p3.3.m3.1.1"><plus id="S1.p3.3.m3.1.1.1.cmml" xref="S1.p3.3.m3.1.1.1"></plus><ci id="S1.p3.3.m3.1.1.2.cmml" xref="S1.p3.3.m3.1.1.2">𝑡</ci><cn id="S1.p3.3.m3.1.1.3.cmml" type="integer" xref="S1.p3.3.m3.1.1.3">1</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S1.p3.3.m3.1c">t+1</annotation></semantics></math>. We evaluate our approach on three sequence tagging tasks: POS tagging, sentence chunking, and NER. Our experiments show that PLMs can perform effective few-shot sequence tagging in the structured prompting setup, and that performance increases with the demonstration set size and model size, consistent with other prompting methods (Section <a class="ltx_ref" href="#S4" title="4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4</span></a>).</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">We further analyze structured prompting by examining how the model generalizes to various representations for labels (Section <a class="ltx_ref" href="#S5" title="5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">5</span></a>) as well as by analyzing the presence of task data in the pretraining corpus and how this affects model performance (Section <a class="ltx_ref" href="#S6" title="6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6</span></a>). These experiments show that structured prompting can recover linguistic information from the model without using standard task labels, indicating that PLMs contain this knowledge in a general manner beyond memorization of the task from pretraining data. Interestingly, while PLMs perform best with meaningful labels (such as original task labels or full class names in English), the model can also in-context learn from arbitrary labels. Additionally, the model exhibits strong prior knowledge of the task labels’ mapping onto the underlying classes, likely due to the prevalence of task data in the pretraining corpus.</p>
+</div>
+<div class="ltx_para" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1">The contributions of this work are therefore threefold: (1) we introduce a new paradigm, <span class="ltx_text ltx_font_italic" id="S1.p5.1.1">structured prompting</span>, that probes PLMs for sequence knowledge without further training, (2) we find that this approach recovers linguistic structure from PLMs in a few-shot manner, and (3) we present an analysis to quantify the effect of label form and pretraining data on in-context learning performance.
+Overall, our findings provide insight into both the linguistic generalizations learned by PLMs and how in-context learning works in general.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Structured Prompting of Pretrained Language Models</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">We propose a sequential method for performing sequence tagging with PLMs via in-context learning, which we refer to as <span class="ltx_text ltx_font_italic" id="S2.p1.1.1">structured prompting</span> (Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">1</span></a>).
+The model is given <math alttext="k" class="ltx_Math" display="inline" id="S2.p1.1.m1.1"><semantics id="S2.p1.1.m1.1a"><mi id="S2.p1.1.m1.1.1" xref="S2.p1.1.m1.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S2.p1.1.m1.1b"><ci id="S2.p1.1.m1.1.1.cmml" xref="S2.p1.1.m1.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p1.1.m1.1c">k</annotation></semantics></math> (context, tagged sequence) pairs as the task demonstration and the example sentence to be labeled. The model then iteratively tags the words in the example with constrained decoding over a fixed set of labels.</p>
+</div>
+<div class="ltx_para" id="S2.p2">
+<p class="ltx_p" id="S2.p2.16">More specifically, given a set of labels <math alttext="L" class="ltx_Math" display="inline" id="S2.p2.1.m1.1"><semantics id="S2.p2.1.m1.1a"><mi id="S2.p2.1.m1.1.1" xref="S2.p2.1.m1.1.1.cmml">L</mi><annotation-xml encoding="MathML-Content" id="S2.p2.1.m1.1b"><ci id="S2.p2.1.m1.1.1.cmml" xref="S2.p2.1.m1.1.1">𝐿</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.1.m1.1c">L</annotation></semantics></math> and an input sequence <math alttext="c" class="ltx_Math" display="inline" id="S2.p2.2.m2.1"><semantics id="S2.p2.2.m2.1a"><mi id="S2.p2.2.m2.1.1" xref="S2.p2.2.m2.1.1.cmml">c</mi><annotation-xml encoding="MathML-Content" id="S2.p2.2.m2.1b"><ci id="S2.p2.2.m2.1.1.cmml" xref="S2.p2.2.m2.1.1">𝑐</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.2.m2.1c">c</annotation></semantics></math> containing <math alttext="k" class="ltx_Math" display="inline" id="S2.p2.3.m3.1"><semantics id="S2.p2.3.m3.1a"><mi id="S2.p2.3.m3.1.1" xref="S2.p2.3.m3.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S2.p2.3.m3.1b"><ci id="S2.p2.3.m3.1.1.cmml" xref="S2.p2.3.m3.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.3.m3.1c">k</annotation></semantics></math> demonstration pairs as well as the full text of the example sentence <math alttext="S=s_{0},...,s_{n}" class="ltx_Math" display="inline" id="S2.p2.4.m4.3"><semantics id="S2.p2.4.m4.3a"><mrow id="S2.p2.4.m4.3.3" xref="S2.p2.4.m4.3.3.cmml"><mi id="S2.p2.4.m4.3.3.4" xref="S2.p2.4.m4.3.3.4.cmml">S</mi><mo id="S2.p2.4.m4.3.3.3" xref="S2.p2.4.m4.3.3.3.cmml">=</mo><mrow id="S2.p2.4.m4.3.3.2.2" xref="S2.p2.4.m4.3.3.2.3.cmml"><msub id="S2.p2.4.m4.2.2.1.1.1" xref="S2.p2.4.m4.2.2.1.1.1.cmml"><mi id="S2.p2.4.m4.2.2.1.1.1.2" xref="S2.p2.4.m4.2.2.1.1.1.2.cmml">s</mi><mn id="S2.p2.4.m4.2.2.1.1.1.3" xref="S2.p2.4.m4.2.2.1.1.1.3.cmml">0</mn></msub><mo id="S2.p2.4.m4.3.3.2.2.3" xref="S2.p2.4.m4.3.3.2.3.cmml">,</mo><mi id="S2.p2.4.m4.1.1" mathvariant="normal" xref="S2.p2.4.m4.1.1.cmml">…</mi><mo id="S2.p2.4.m4.3.3.2.2.4" xref="S2.p2.4.m4.3.3.2.3.cmml">,</mo><msub id="S2.p2.4.m4.3.3.2.2.2" xref="S2.p2.4.m4.3.3.2.2.2.cmml"><mi id="S2.p2.4.m4.3.3.2.2.2.2" xref="S2.p2.4.m4.3.3.2.2.2.2.cmml">s</mi><mi id="S2.p2.4.m4.3.3.2.2.2.3" xref="S2.p2.4.m4.3.3.2.2.2.3.cmml">n</mi></msub></mrow></mrow><annotation-xml encoding="MathML-Content" id="S2.p2.4.m4.3b"><apply id="S2.p2.4.m4.3.3.cmml" xref="S2.p2.4.m4.3.3"><eq id="S2.p2.4.m4.3.3.3.cmml" xref="S2.p2.4.m4.3.3.3"></eq><ci id="S2.p2.4.m4.3.3.4.cmml" xref="S2.p2.4.m4.3.3.4">𝑆</ci><list id="S2.p2.4.m4.3.3.2.3.cmml" xref="S2.p2.4.m4.3.3.2.2"><apply id="S2.p2.4.m4.2.2.1.1.1.cmml" xref="S2.p2.4.m4.2.2.1.1.1"><csymbol cd="ambiguous" id="S2.p2.4.m4.2.2.1.1.1.1.cmml" xref="S2.p2.4.m4.2.2.1.1.1">subscript</csymbol><ci id="S2.p2.4.m4.2.2.1.1.1.2.cmml" xref="S2.p2.4.m4.2.2.1.1.1.2">𝑠</ci><cn id="S2.p2.4.m4.2.2.1.1.1.3.cmml" type="integer" xref="S2.p2.4.m4.2.2.1.1.1.3">0</cn></apply><ci id="S2.p2.4.m4.1.1.cmml" xref="S2.p2.4.m4.1.1">…</ci><apply id="S2.p2.4.m4.3.3.2.2.2.cmml" xref="S2.p2.4.m4.3.3.2.2.2"><csymbol cd="ambiguous" id="S2.p2.4.m4.3.3.2.2.2.1.cmml" xref="S2.p2.4.m4.3.3.2.2.2">subscript</csymbol><ci id="S2.p2.4.m4.3.3.2.2.2.2.cmml" xref="S2.p2.4.m4.3.3.2.2.2.2">𝑠</ci><ci id="S2.p2.4.m4.3.3.2.2.2.3.cmml" xref="S2.p2.4.m4.3.3.2.2.2.3">𝑛</ci></apply></list></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.4.m4.3c">S=s_{0},...,s_{n}</annotation></semantics></math>, at each time step <math alttext="t" class="ltx_Math" display="inline" id="S2.p2.5.m5.1"><semantics id="S2.p2.5.m5.1a"><mi id="S2.p2.5.m5.1.1" xref="S2.p2.5.m5.1.1.cmml">t</mi><annotation-xml encoding="MathML-Content" id="S2.p2.5.m5.1b"><ci id="S2.p2.5.m5.1.1.cmml" xref="S2.p2.5.m5.1.1">𝑡</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.5.m5.1c">t</annotation></semantics></math> the language model <math alttext="M" class="ltx_Math" display="inline" id="S2.p2.6.m6.1"><semantics id="S2.p2.6.m6.1a"><mi id="S2.p2.6.m6.1.1" xref="S2.p2.6.m6.1.1.cmml">M</mi><annotation-xml encoding="MathML-Content" id="S2.p2.6.m6.1b"><ci id="S2.p2.6.m6.1.1.cmml" xref="S2.p2.6.m6.1.1">𝑀</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.6.m6.1c">M</annotation></semantics></math> encodes [<math alttext="c;s_{t}" class="ltx_Math" display="inline" id="S2.p2.7.m7.2"><semantics id="S2.p2.7.m7.2a"><mrow id="S2.p2.7.m7.2.2.1" xref="S2.p2.7.m7.2.2.2.cmml"><mi id="S2.p2.7.m7.1.1" xref="S2.p2.7.m7.1.1.cmml">c</mi><mo id="S2.p2.7.m7.2.2.1.2" xref="S2.p2.7.m7.2.2.2.cmml">;</mo><msub id="S2.p2.7.m7.2.2.1.1" xref="S2.p2.7.m7.2.2.1.1.cmml"><mi id="S2.p2.7.m7.2.2.1.1.2" xref="S2.p2.7.m7.2.2.1.1.2.cmml">s</mi><mi id="S2.p2.7.m7.2.2.1.1.3" xref="S2.p2.7.m7.2.2.1.1.3.cmml">t</mi></msub></mrow><annotation-xml encoding="MathML-Content" id="S2.p2.7.m7.2b"><list id="S2.p2.7.m7.2.2.2.cmml" xref="S2.p2.7.m7.2.2.1"><ci id="S2.p2.7.m7.1.1.cmml" xref="S2.p2.7.m7.1.1">𝑐</ci><apply id="S2.p2.7.m7.2.2.1.1.cmml" xref="S2.p2.7.m7.2.2.1.1"><csymbol cd="ambiguous" id="S2.p2.7.m7.2.2.1.1.1.cmml" xref="S2.p2.7.m7.2.2.1.1">subscript</csymbol><ci id="S2.p2.7.m7.2.2.1.1.2.cmml" xref="S2.p2.7.m7.2.2.1.1.2">𝑠</ci><ci id="S2.p2.7.m7.2.2.1.1.3.cmml" xref="S2.p2.7.m7.2.2.1.1.3">𝑡</ci></apply></list></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.7.m7.2c">c;s_{t}</annotation></semantics></math>] and labels <math alttext="s_{t}" class="ltx_Math" display="inline" id="S2.p2.8.m8.1"><semantics id="S2.p2.8.m8.1a"><msub id="S2.p2.8.m8.1.1" xref="S2.p2.8.m8.1.1.cmml"><mi id="S2.p2.8.m8.1.1.2" xref="S2.p2.8.m8.1.1.2.cmml">s</mi><mi id="S2.p2.8.m8.1.1.3" xref="S2.p2.8.m8.1.1.3.cmml">t</mi></msub><annotation-xml encoding="MathML-Content" id="S2.p2.8.m8.1b"><apply id="S2.p2.8.m8.1.1.cmml" xref="S2.p2.8.m8.1.1"><csymbol cd="ambiguous" id="S2.p2.8.m8.1.1.1.cmml" xref="S2.p2.8.m8.1.1">subscript</csymbol><ci id="S2.p2.8.m8.1.1.2.cmml" xref="S2.p2.8.m8.1.1.2">𝑠</ci><ci id="S2.p2.8.m8.1.1.3.cmml" xref="S2.p2.8.m8.1.1.3">𝑡</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.8.m8.1c">s_{t}</annotation></semantics></math> with <math alttext="\hat{\ell}_{t}=\operatorname*{argmax}\limits_{\ell\in L}P_{M}(\ell|c,s_{t})" class="ltx_Math" display="inline" id="S2.p2.9.m9.2"><semantics id="S2.p2.9.m9.2a"><mrow id="S2.p2.9.m9.2.2" xref="S2.p2.9.m9.2.2.cmml"><msub id="S2.p2.9.m9.2.2.3" xref="S2.p2.9.m9.2.2.3.cmml"><mover accent="true" id="S2.p2.9.m9.2.2.3.2" xref="S2.p2.9.m9.2.2.3.2.cmml"><mi id="S2.p2.9.m9.2.2.3.2.2" mathvariant="normal" xref="S2.p2.9.m9.2.2.3.2.2.cmml">ℓ</mi><mo id="S2.p2.9.m9.2.2.3.2.1" xref="S2.p2.9.m9.2.2.3.2.1.cmml">^</mo></mover><mi id="S2.p2.9.m9.2.2.3.3" xref="S2.p2.9.m9.2.2.3.3.cmml">t</mi></msub><mo id="S2.p2.9.m9.2.2.2" rspace="0.1389em" xref="S2.p2.9.m9.2.2.2.cmml">=</mo><mrow id="S2.p2.9.m9.2.2.1" xref="S2.p2.9.m9.2.2.1.cmml"><mrow id="S2.p2.9.m9.2.2.1.3" xref="S2.p2.9.m9.2.2.1.3.cmml"><munder id="S2.p2.9.m9.2.2.1.3.1" xref="S2.p2.9.m9.2.2.1.3.1.cmml"><mo id="S2.p2.9.m9.2.2.1.3.1.2" lspace="0.1389em" rspace="0.167em" xref="S2.p2.9.m9.2.2.1.3.1.2.cmml">argmax</mo><mrow id="S2.p2.9.m9.2.2.1.3.1.3" xref="S2.p2.9.m9.2.2.1.3.1.3.cmml"><mi id="S2.p2.9.m9.2.2.1.3.1.3.2" mathvariant="normal" xref="S2.p2.9.m9.2.2.1.3.1.3.2.cmml">ℓ</mi><mo id="S2.p2.9.m9.2.2.1.3.1.3.1" xref="S2.p2.9.m9.2.2.1.3.1.3.1.cmml">∈</mo><mi id="S2.p2.9.m9.2.2.1.3.1.3.3" xref="S2.p2.9.m9.2.2.1.3.1.3.3.cmml">L</mi></mrow></munder><msub id="S2.p2.9.m9.2.2.1.3.2" xref="S2.p2.9.m9.2.2.1.3.2.cmml"><mi id="S2.p2.9.m9.2.2.1.3.2.2" xref="S2.p2.9.m9.2.2.1.3.2.2.cmml">P</mi><mi id="S2.p2.9.m9.2.2.1.3.2.3" xref="S2.p2.9.m9.2.2.1.3.2.3.cmml">M</mi></msub></mrow><mo id="S2.p2.9.m9.2.2.1.2" lspace="0em" rspace="0em" xref="S2.p2.9.m9.2.2.1.2.cmml">​</mo><mrow id="S2.p2.9.m9.2.2.1.1.1" xref="S2.p2.9.m9.2.2.1.1.1.1.cmml"><mo id="S2.p2.9.m9.2.2.1.1.1.2" stretchy="false" xref="S2.p2.9.m9.2.2.1.1.1.1.cmml">(</mo><mrow id="S2.p2.9.m9.2.2.1.1.1.1" xref="S2.p2.9.m9.2.2.1.1.1.1.cmml"><mi id="S2.p2.9.m9.2.2.1.1.1.1.3" mathvariant="normal" xref="S2.p2.9.m9.2.2.1.1.1.1.3.cmml">ℓ</mi><mo fence="false" id="S2.p2.9.m9.2.2.1.1.1.1.2" xref="S2.p2.9.m9.2.2.1.1.1.1.2.cmml">|</mo><mrow id="S2.p2.9.m9.2.2.1.1.1.1.1.1" xref="S2.p2.9.m9.2.2.1.1.1.1.1.2.cmml"><mi id="S2.p2.9.m9.1.1" xref="S2.p2.9.m9.1.1.cmml">c</mi><mo id="S2.p2.9.m9.2.2.1.1.1.1.1.1.2" xref="S2.p2.9.m9.2.2.1.1.1.1.1.2.cmml">,</mo><msub id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.cmml"><mi id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.2" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.2.cmml">s</mi><mi id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.3" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.3.cmml">t</mi></msub></mrow></mrow><mo id="S2.p2.9.m9.2.2.1.1.1.3" stretchy="false" xref="S2.p2.9.m9.2.2.1.1.1.1.cmml">)</mo></mrow></mrow></mrow><annotation-xml encoding="MathML-Content" id="S2.p2.9.m9.2b"><apply id="S2.p2.9.m9.2.2.cmml" xref="S2.p2.9.m9.2.2"><eq id="S2.p2.9.m9.2.2.2.cmml" xref="S2.p2.9.m9.2.2.2"></eq><apply id="S2.p2.9.m9.2.2.3.cmml" xref="S2.p2.9.m9.2.2.3"><csymbol cd="ambiguous" id="S2.p2.9.m9.2.2.3.1.cmml" xref="S2.p2.9.m9.2.2.3">subscript</csymbol><apply id="S2.p2.9.m9.2.2.3.2.cmml" xref="S2.p2.9.m9.2.2.3.2"><ci id="S2.p2.9.m9.2.2.3.2.1.cmml" xref="S2.p2.9.m9.2.2.3.2.1">^</ci><ci id="S2.p2.9.m9.2.2.3.2.2.cmml" xref="S2.p2.9.m9.2.2.3.2.2">ℓ</ci></apply><ci id="S2.p2.9.m9.2.2.3.3.cmml" xref="S2.p2.9.m9.2.2.3.3">𝑡</ci></apply><apply id="S2.p2.9.m9.2.2.1.cmml" xref="S2.p2.9.m9.2.2.1"><times id="S2.p2.9.m9.2.2.1.2.cmml" xref="S2.p2.9.m9.2.2.1.2"></times><apply id="S2.p2.9.m9.2.2.1.3.cmml" xref="S2.p2.9.m9.2.2.1.3"><apply id="S2.p2.9.m9.2.2.1.3.1.cmml" xref="S2.p2.9.m9.2.2.1.3.1"><csymbol cd="ambiguous" id="S2.p2.9.m9.2.2.1.3.1.1.cmml" xref="S2.p2.9.m9.2.2.1.3.1">subscript</csymbol><ci id="S2.p2.9.m9.2.2.1.3.1.2.cmml" xref="S2.p2.9.m9.2.2.1.3.1.2">argmax</ci><apply id="S2.p2.9.m9.2.2.1.3.1.3.cmml" xref="S2.p2.9.m9.2.2.1.3.1.3"><in id="S2.p2.9.m9.2.2.1.3.1.3.1.cmml" xref="S2.p2.9.m9.2.2.1.3.1.3.1"></in><ci id="S2.p2.9.m9.2.2.1.3.1.3.2.cmml" xref="S2.p2.9.m9.2.2.1.3.1.3.2">ℓ</ci><ci id="S2.p2.9.m9.2.2.1.3.1.3.3.cmml" xref="S2.p2.9.m9.2.2.1.3.1.3.3">𝐿</ci></apply></apply><apply id="S2.p2.9.m9.2.2.1.3.2.cmml" xref="S2.p2.9.m9.2.2.1.3.2"><csymbol cd="ambiguous" id="S2.p2.9.m9.2.2.1.3.2.1.cmml" xref="S2.p2.9.m9.2.2.1.3.2">subscript</csymbol><ci id="S2.p2.9.m9.2.2.1.3.2.2.cmml" xref="S2.p2.9.m9.2.2.1.3.2.2">𝑃</ci><ci id="S2.p2.9.m9.2.2.1.3.2.3.cmml" xref="S2.p2.9.m9.2.2.1.3.2.3">𝑀</ci></apply></apply><apply id="S2.p2.9.m9.2.2.1.1.1.1.cmml" xref="S2.p2.9.m9.2.2.1.1.1"><csymbol cd="latexml" id="S2.p2.9.m9.2.2.1.1.1.1.2.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.2">conditional</csymbol><ci id="S2.p2.9.m9.2.2.1.1.1.1.3.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.3">ℓ</ci><list id="S2.p2.9.m9.2.2.1.1.1.1.1.2.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1"><ci id="S2.p2.9.m9.1.1.cmml" xref="S2.p2.9.m9.1.1">𝑐</ci><apply id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.1.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1">subscript</csymbol><ci id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.2.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.2">𝑠</ci><ci id="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.3.cmml" xref="S2.p2.9.m9.2.2.1.1.1.1.1.1.1.3">𝑡</ci></apply></list></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.9.m9.2c">\hat{\ell}_{t}=\operatorname*{argmax}\limits_{\ell\in L}P_{M}(\ell|c,s_{t})</annotation></semantics></math>. We then update the input sequence by appending the current word <math alttext="s_{t}" class="ltx_Math" display="inline" id="S2.p2.10.m10.1"><semantics id="S2.p2.10.m10.1a"><msub id="S2.p2.10.m10.1.1" xref="S2.p2.10.m10.1.1.cmml"><mi id="S2.p2.10.m10.1.1.2" xref="S2.p2.10.m10.1.1.2.cmml">s</mi><mi id="S2.p2.10.m10.1.1.3" xref="S2.p2.10.m10.1.1.3.cmml">t</mi></msub><annotation-xml encoding="MathML-Content" id="S2.p2.10.m10.1b"><apply id="S2.p2.10.m10.1.1.cmml" xref="S2.p2.10.m10.1.1"><csymbol cd="ambiguous" id="S2.p2.10.m10.1.1.1.cmml" xref="S2.p2.10.m10.1.1">subscript</csymbol><ci id="S2.p2.10.m10.1.1.2.cmml" xref="S2.p2.10.m10.1.1.2">𝑠</ci><ci id="S2.p2.10.m10.1.1.3.cmml" xref="S2.p2.10.m10.1.1.3">𝑡</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.10.m10.1c">s_{t}</annotation></semantics></math> and the predicted label <math alttext="\hat{\ell}_{t}" class="ltx_Math" display="inline" id="S2.p2.11.m11.1"><semantics id="S2.p2.11.m11.1a"><msub id="S2.p2.11.m11.1.1" xref="S2.p2.11.m11.1.1.cmml"><mover accent="true" id="S2.p2.11.m11.1.1.2" xref="S2.p2.11.m11.1.1.2.cmml"><mi id="S2.p2.11.m11.1.1.2.2" mathvariant="normal" xref="S2.p2.11.m11.1.1.2.2.cmml">ℓ</mi><mo id="S2.p2.11.m11.1.1.2.1" xref="S2.p2.11.m11.1.1.2.1.cmml">^</mo></mover><mi id="S2.p2.11.m11.1.1.3" xref="S2.p2.11.m11.1.1.3.cmml">t</mi></msub><annotation-xml encoding="MathML-Content" id="S2.p2.11.m11.1b"><apply id="S2.p2.11.m11.1.1.cmml" xref="S2.p2.11.m11.1.1"><csymbol cd="ambiguous" id="S2.p2.11.m11.1.1.1.cmml" xref="S2.p2.11.m11.1.1">subscript</csymbol><apply id="S2.p2.11.m11.1.1.2.cmml" xref="S2.p2.11.m11.1.1.2"><ci id="S2.p2.11.m11.1.1.2.1.cmml" xref="S2.p2.11.m11.1.1.2.1">^</ci><ci id="S2.p2.11.m11.1.1.2.2.cmml" xref="S2.p2.11.m11.1.1.2.2">ℓ</ci></apply><ci id="S2.p2.11.m11.1.1.3.cmml" xref="S2.p2.11.m11.1.1.3">𝑡</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.11.m11.1c">\hat{\ell}_{t}</annotation></semantics></math> to the end of <math alttext="c" class="ltx_Math" display="inline" id="S2.p2.12.m12.1"><semantics id="S2.p2.12.m12.1a"><mi id="S2.p2.12.m12.1.1" xref="S2.p2.12.m12.1.1.cmml">c</mi><annotation-xml encoding="MathML-Content" id="S2.p2.12.m12.1b"><ci id="S2.p2.12.m12.1.1.cmml" xref="S2.p2.12.m12.1.1">𝑐</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.12.m12.1c">c</annotation></semantics></math>. Multi-token labels are scored with the average log-likelihood over all tokens <math alttext="P_{M}(\ell|c)=\frac{1}{|\ell|}\sum_{i=0}^{|\ell|}P_{M}(y_{i}|c,y_{0},...,y_{i-1})" class="ltx_Math" display="inline" id="S2.p2.13.m13.6"><semantics id="S2.p2.13.m13.6a"><mrow id="S2.p2.13.m13.6.6" xref="S2.p2.13.m13.6.6.cmml"><mrow id="S2.p2.13.m13.5.5.1" xref="S2.p2.13.m13.5.5.1.cmml"><msub id="S2.p2.13.m13.5.5.1.3" xref="S2.p2.13.m13.5.5.1.3.cmml"><mi id="S2.p2.13.m13.5.5.1.3.2" xref="S2.p2.13.m13.5.5.1.3.2.cmml">P</mi><mi id="S2.p2.13.m13.5.5.1.3.3" xref="S2.p2.13.m13.5.5.1.3.3.cmml">M</mi></msub><mo id="S2.p2.13.m13.5.5.1.2" lspace="0em" rspace="0em" xref="S2.p2.13.m13.5.5.1.2.cmml">​</mo><mrow id="S2.p2.13.m13.5.5.1.1.1" xref="S2.p2.13.m13.5.5.1.1.1.1.cmml"><mo id="S2.p2.13.m13.5.5.1.1.1.2" stretchy="false" xref="S2.p2.13.m13.5.5.1.1.1.1.cmml">(</mo><mrow id="S2.p2.13.m13.5.5.1.1.1.1" xref="S2.p2.13.m13.5.5.1.1.1.1.cmml"><mi id="S2.p2.13.m13.5.5.1.1.1.1.2" mathvariant="normal" xref="S2.p2.13.m13.5.5.1.1.1.1.2.cmml">ℓ</mi><mo fence="false" id="S2.p2.13.m13.5.5.1.1.1.1.1" xref="S2.p2.13.m13.5.5.1.1.1.1.1.cmml">|</mo><mi id="S2.p2.13.m13.5.5.1.1.1.1.3" xref="S2.p2.13.m13.5.5.1.1.1.1.3.cmml">c</mi></mrow><mo id="S2.p2.13.m13.5.5.1.1.1.3" stretchy="false" xref="S2.p2.13.m13.5.5.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S2.p2.13.m13.6.6.3" xref="S2.p2.13.m13.6.6.3.cmml">=</mo><mrow id="S2.p2.13.m13.6.6.2" xref="S2.p2.13.m13.6.6.2.cmml"><mfrac id="S2.p2.13.m13.1.1" xref="S2.p2.13.m13.1.1.cmml"><mn id="S2.p2.13.m13.1.1.3" xref="S2.p2.13.m13.1.1.3.cmml">1</mn><mrow id="S2.p2.13.m13.1.1.1.3" xref="S2.p2.13.m13.1.1.1.2.cmml"><mo id="S2.p2.13.m13.1.1.1.3.1" stretchy="false" xref="S2.p2.13.m13.1.1.1.2.1.cmml">|</mo><mi id="S2.p2.13.m13.1.1.1.1" mathvariant="normal" xref="S2.p2.13.m13.1.1.1.1.cmml">ℓ</mi><mo id="S2.p2.13.m13.1.1.1.3.2" stretchy="false" xref="S2.p2.13.m13.1.1.1.2.1.cmml">|</mo></mrow></mfrac><mo id="S2.p2.13.m13.6.6.2.2" lspace="0em" rspace="0em" xref="S2.p2.13.m13.6.6.2.2.cmml">​</mo><mrow id="S2.p2.13.m13.6.6.2.1" xref="S2.p2.13.m13.6.6.2.1.cmml"><msubsup id="S2.p2.13.m13.6.6.2.1.2" xref="S2.p2.13.m13.6.6.2.1.2.cmml"><mo id="S2.p2.13.m13.6.6.2.1.2.2.2" xref="S2.p2.13.m13.6.6.2.1.2.2.2.cmml">∑</mo><mrow id="S2.p2.13.m13.6.6.2.1.2.2.3" xref="S2.p2.13.m13.6.6.2.1.2.2.3.cmml"><mi id="S2.p2.13.m13.6.6.2.1.2.2.3.2" xref="S2.p2.13.m13.6.6.2.1.2.2.3.2.cmml">i</mi><mo id="S2.p2.13.m13.6.6.2.1.2.2.3.1" xref="S2.p2.13.m13.6.6.2.1.2.2.3.1.cmml">=</mo><mn id="S2.p2.13.m13.6.6.2.1.2.2.3.3" xref="S2.p2.13.m13.6.6.2.1.2.2.3.3.cmml">0</mn></mrow><mrow id="S2.p2.13.m13.2.2.1.3" xref="S2.p2.13.m13.2.2.1.2.cmml"><mo id="S2.p2.13.m13.2.2.1.3.1" stretchy="false" xref="S2.p2.13.m13.2.2.1.2.1.cmml">|</mo><mi id="S2.p2.13.m13.2.2.1.1" mathvariant="normal" xref="S2.p2.13.m13.2.2.1.1.cmml">ℓ</mi><mo id="S2.p2.13.m13.2.2.1.3.2" stretchy="false" xref="S2.p2.13.m13.2.2.1.2.1.cmml">|</mo></mrow></msubsup><mrow id="S2.p2.13.m13.6.6.2.1.1" xref="S2.p2.13.m13.6.6.2.1.1.cmml"><msub id="S2.p2.13.m13.6.6.2.1.1.3" xref="S2.p2.13.m13.6.6.2.1.1.3.cmml"><mi id="S2.p2.13.m13.6.6.2.1.1.3.2" xref="S2.p2.13.m13.6.6.2.1.1.3.2.cmml">P</mi><mi id="S2.p2.13.m13.6.6.2.1.1.3.3" xref="S2.p2.13.m13.6.6.2.1.1.3.3.cmml">M</mi></msub><mo id="S2.p2.13.m13.6.6.2.1.1.2" lspace="0em" rspace="0em" xref="S2.p2.13.m13.6.6.2.1.1.2.cmml">​</mo><mrow id="S2.p2.13.m13.6.6.2.1.1.1.1" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.cmml"><mo id="S2.p2.13.m13.6.6.2.1.1.1.1.2" stretchy="false" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.cmml">(</mo><mrow id="S2.p2.13.m13.6.6.2.1.1.1.1.1" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.cmml"><msub id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.cmml"><mi id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.2" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.2.cmml">y</mi><mi id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.3" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.3.cmml">i</mi></msub><mo fence="false" id="S2.p2.13.m13.6.6.2.1.1.1.1.1.3" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.3.cmml">|</mo><mrow id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.3.cmml"><mi id="S2.p2.13.m13.3.3" xref="S2.p2.13.m13.3.3.cmml">c</mi><mo id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.3" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.3.cmml">,</mo><msub id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.cmml"><mi id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.2" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.2.cmml">y</mi><mn id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.3" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.3.cmml">0</mn></msub><mo id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.4" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.3.cmml">,</mo><mi id="S2.p2.13.m13.4.4" mathvariant="normal" xref="S2.p2.13.m13.4.4.cmml">…</mi><mo id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.5" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.3.cmml">,</mo><msub id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.cmml"><mi id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.2" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.2.cmml">y</mi><mrow id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.cmml"><mi id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.2" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.2.cmml">i</mi><mo id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.1" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.1.cmml">−</mo><mn id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.3" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.3.cmml">1</mn></mrow></msub></mrow></mrow><mo id="S2.p2.13.m13.6.6.2.1.1.1.1.3" stretchy="false" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.cmml">)</mo></mrow></mrow></mrow></mrow></mrow><annotation-xml encoding="MathML-Content" id="S2.p2.13.m13.6b"><apply id="S2.p2.13.m13.6.6.cmml" xref="S2.p2.13.m13.6.6"><eq id="S2.p2.13.m13.6.6.3.cmml" xref="S2.p2.13.m13.6.6.3"></eq><apply id="S2.p2.13.m13.5.5.1.cmml" xref="S2.p2.13.m13.5.5.1"><times id="S2.p2.13.m13.5.5.1.2.cmml" xref="S2.p2.13.m13.5.5.1.2"></times><apply id="S2.p2.13.m13.5.5.1.3.cmml" xref="S2.p2.13.m13.5.5.1.3"><csymbol cd="ambiguous" id="S2.p2.13.m13.5.5.1.3.1.cmml" xref="S2.p2.13.m13.5.5.1.3">subscript</csymbol><ci id="S2.p2.13.m13.5.5.1.3.2.cmml" xref="S2.p2.13.m13.5.5.1.3.2">𝑃</ci><ci id="S2.p2.13.m13.5.5.1.3.3.cmml" xref="S2.p2.13.m13.5.5.1.3.3">𝑀</ci></apply><apply id="S2.p2.13.m13.5.5.1.1.1.1.cmml" xref="S2.p2.13.m13.5.5.1.1.1"><csymbol cd="latexml" id="S2.p2.13.m13.5.5.1.1.1.1.1.cmml" xref="S2.p2.13.m13.5.5.1.1.1.1.1">conditional</csymbol><ci id="S2.p2.13.m13.5.5.1.1.1.1.2.cmml" xref="S2.p2.13.m13.5.5.1.1.1.1.2">ℓ</ci><ci id="S2.p2.13.m13.5.5.1.1.1.1.3.cmml" xref="S2.p2.13.m13.5.5.1.1.1.1.3">𝑐</ci></apply></apply><apply id="S2.p2.13.m13.6.6.2.cmml" xref="S2.p2.13.m13.6.6.2"><times id="S2.p2.13.m13.6.6.2.2.cmml" xref="S2.p2.13.m13.6.6.2.2"></times><apply id="S2.p2.13.m13.1.1.cmml" xref="S2.p2.13.m13.1.1"><divide id="S2.p2.13.m13.1.1.2.cmml" xref="S2.p2.13.m13.1.1"></divide><cn id="S2.p2.13.m13.1.1.3.cmml" type="integer" xref="S2.p2.13.m13.1.1.3">1</cn><apply id="S2.p2.13.m13.1.1.1.2.cmml" xref="S2.p2.13.m13.1.1.1.3"><abs id="S2.p2.13.m13.1.1.1.2.1.cmml" xref="S2.p2.13.m13.1.1.1.3.1"></abs><ci id="S2.p2.13.m13.1.1.1.1.cmml" xref="S2.p2.13.m13.1.1.1.1">ℓ</ci></apply></apply><apply id="S2.p2.13.m13.6.6.2.1.cmml" xref="S2.p2.13.m13.6.6.2.1"><apply id="S2.p2.13.m13.6.6.2.1.2.cmml" xref="S2.p2.13.m13.6.6.2.1.2"><csymbol cd="ambiguous" id="S2.p2.13.m13.6.6.2.1.2.1.cmml" xref="S2.p2.13.m13.6.6.2.1.2">superscript</csymbol><apply id="S2.p2.13.m13.6.6.2.1.2.2.cmml" xref="S2.p2.13.m13.6.6.2.1.2"><csymbol cd="ambiguous" id="S2.p2.13.m13.6.6.2.1.2.2.1.cmml" xref="S2.p2.13.m13.6.6.2.1.2">subscript</csymbol><sum id="S2.p2.13.m13.6.6.2.1.2.2.2.cmml" xref="S2.p2.13.m13.6.6.2.1.2.2.2"></sum><apply id="S2.p2.13.m13.6.6.2.1.2.2.3.cmml" xref="S2.p2.13.m13.6.6.2.1.2.2.3"><eq id="S2.p2.13.m13.6.6.2.1.2.2.3.1.cmml" xref="S2.p2.13.m13.6.6.2.1.2.2.3.1"></eq><ci id="S2.p2.13.m13.6.6.2.1.2.2.3.2.cmml" xref="S2.p2.13.m13.6.6.2.1.2.2.3.2">𝑖</ci><cn id="S2.p2.13.m13.6.6.2.1.2.2.3.3.cmml" type="integer" xref="S2.p2.13.m13.6.6.2.1.2.2.3.3">0</cn></apply></apply><apply id="S2.p2.13.m13.2.2.1.2.cmml" xref="S2.p2.13.m13.2.2.1.3"><abs id="S2.p2.13.m13.2.2.1.2.1.cmml" xref="S2.p2.13.m13.2.2.1.3.1"></abs><ci id="S2.p2.13.m13.2.2.1.1.cmml" xref="S2.p2.13.m13.2.2.1.1">ℓ</ci></apply></apply><apply id="S2.p2.13.m13.6.6.2.1.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1"><times id="S2.p2.13.m13.6.6.2.1.1.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.2"></times><apply id="S2.p2.13.m13.6.6.2.1.1.3.cmml" xref="S2.p2.13.m13.6.6.2.1.1.3"><csymbol cd="ambiguous" id="S2.p2.13.m13.6.6.2.1.1.3.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.3">subscript</csymbol><ci id="S2.p2.13.m13.6.6.2.1.1.3.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.3.2">𝑃</ci><ci id="S2.p2.13.m13.6.6.2.1.1.3.3.cmml" xref="S2.p2.13.m13.6.6.2.1.1.3.3">𝑀</ci></apply><apply id="S2.p2.13.m13.6.6.2.1.1.1.1.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1"><csymbol cd="latexml" id="S2.p2.13.m13.6.6.2.1.1.1.1.1.3.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.3">conditional</csymbol><apply id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4"><csymbol cd="ambiguous" id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4">subscript</csymbol><ci id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.2">𝑦</ci><ci id="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.3.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.4.3">𝑖</ci></apply><list id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.3.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2"><ci id="S2.p2.13.m13.3.3.cmml" xref="S2.p2.13.m13.3.3">𝑐</ci><apply id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1">subscript</csymbol><ci id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.2">𝑦</ci><cn id="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.3.cmml" type="integer" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.1.1.1.3">0</cn></apply><ci id="S2.p2.13.m13.4.4.cmml" xref="S2.p2.13.m13.4.4">…</ci><apply id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2"><csymbol cd="ambiguous" id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2">subscript</csymbol><ci id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.2">𝑦</ci><apply id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3"><minus id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.1.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.1"></minus><ci id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.2.cmml" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.2">𝑖</ci><cn id="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.3.cmml" type="integer" xref="S2.p2.13.m13.6.6.2.1.1.1.1.1.2.2.2.3.3">1</cn></apply></apply></list></apply></apply></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.13.m13.6c">P_{M}(\ell|c)=\frac{1}{|\ell|}\sum_{i=0}^{|\ell|}P_{M}(y_{i}|c,y_{0},...,y_{i-1})</annotation></semantics></math>, where <math alttext="y_{j}" class="ltx_Math" display="inline" id="S2.p2.14.m14.1"><semantics id="S2.p2.14.m14.1a"><msub id="S2.p2.14.m14.1.1" xref="S2.p2.14.m14.1.1.cmml"><mi id="S2.p2.14.m14.1.1.2" xref="S2.p2.14.m14.1.1.2.cmml">y</mi><mi id="S2.p2.14.m14.1.1.3" xref="S2.p2.14.m14.1.1.3.cmml">j</mi></msub><annotation-xml encoding="MathML-Content" id="S2.p2.14.m14.1b"><apply id="S2.p2.14.m14.1.1.cmml" xref="S2.p2.14.m14.1.1"><csymbol cd="ambiguous" id="S2.p2.14.m14.1.1.1.cmml" xref="S2.p2.14.m14.1.1">subscript</csymbol><ci id="S2.p2.14.m14.1.1.2.cmml" xref="S2.p2.14.m14.1.1.2">𝑦</ci><ci id="S2.p2.14.m14.1.1.3.cmml" xref="S2.p2.14.m14.1.1.3">𝑗</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.14.m14.1c">y_{j}</annotation></semantics></math> is the <math alttext="j" class="ltx_Math" display="inline" id="S2.p2.15.m15.1"><semantics id="S2.p2.15.m15.1a"><mi id="S2.p2.15.m15.1.1" xref="S2.p2.15.m15.1.1.cmml">j</mi><annotation-xml encoding="MathML-Content" id="S2.p2.15.m15.1b"><ci id="S2.p2.15.m15.1.1.cmml" xref="S2.p2.15.m15.1.1">𝑗</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.15.m15.1c">j</annotation></semantics></math>th subword token in <math alttext="\ell" class="ltx_Math" display="inline" id="S2.p2.16.m16.1"><semantics id="S2.p2.16.m16.1a"><mi id="S2.p2.16.m16.1.1" mathvariant="normal" xref="S2.p2.16.m16.1.1.cmml">ℓ</mi><annotation-xml encoding="MathML-Content" id="S2.p2.16.m16.1b"><ci id="S2.p2.16.m16.1.1.cmml" xref="S2.p2.16.m16.1.1">ℓ</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.p2.16.m16.1c">\ell</annotation></semantics></math>.</p>
+</div>
+<div class="ltx_para" id="S2.p3">
+<p class="ltx_p" id="S2.p3.1">This approach to in-context learning tags an entire sequence with a single pass over the context. It also allows the model to condition on past predictions while labeling the current word.
+As we demonstrate in Section <a class="ltx_ref" href="#S4" title="4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4</span></a>, these features allow us to apply large autoregressive language models to a broad class of core NLP tasks in a few-shot manner.</p>
+</div>
+<figure class="ltx_figure" id="S2.F2">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S2.F2.sf1"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="S2.F2.sf1.g1" src="./media/x2.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(a) </span></figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S2.F2.sf2"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="S2.F2.sf2.g1" src="./media/x3.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(b) </span></figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S2.F2.sf3"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="S2.F2.sf3.g1" src="./media/x4.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(c) </span></figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>Results of the structured prompting evaluation. POS is evaluated on accuracy; the other tasks are evaluated with F1. (a) Results of GPT-NeoX (20B parameters) compared to task baselines. (b) Performance across different model sizes. (c) Performance of GPT-NeoX across different quantities of <math alttext="k" class="ltx_Math" display="inline" id="S2.F2.2.m1.1"><semantics id="S2.F2.2.m1.1b"><mi id="S2.F2.2.m1.1.1" xref="S2.F2.2.m1.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S2.F2.2.m1.1c"><ci id="S2.F2.2.m1.1.1.cmml" xref="S2.F2.2.m1.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S2.F2.2.m1.1d">k</annotation></semantics></math> demonstrations.</figcaption>
+</figure>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Experimental Setup</h2>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Prompt Formatting</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">We use a lightweight prompt format with limited natural language guidance about the task provided to the model as shown in Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">1</span></a>; the letters “C” and “T” in the figure represent the inputs “Context” and “Tagged” respectively. For each task, we represent each tag with the token or sequence of tokens corresponding to the surface form of the label provided by the dataset.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p2">
+<p class="ltx_p" id="S3.SS1.p2.1">In general, our preliminary experiments with varied prompt formats had little effect on performance. Specifically, performance was stable across the choice of delimiter and other minor formatting differences. However, we note that including the word in the “Tagged” sequence is important; on GPT-J, performance degrades by 84% on POS and 79% on NER when decoding the label sequence without repeating the word (i.e., “Tagged: DET NOUN…”).</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Sequence Tagging Tasks</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.3">We consider the following English tasks framed as sequence tagging problems in evaluating the proposed structured prompting method. For tasks involving tagging spans of text, we label each token in the span using the <span class="ltx_text ltx_font_italic" id="S3.SS2.p1.3.1">BIO label format</span>: given a span of <span class="ltx_text ltx_font_italic" id="S3.SS2.p1.3.2">m</span> tokens labeled <math alttext="\ell" class="ltx_Math" display="inline" id="S3.SS2.p1.1.m1.1"><semantics id="S3.SS2.p1.1.m1.1a"><mi id="S3.SS2.p1.1.m1.1.1" mathvariant="normal" xref="S3.SS2.p1.1.m1.1.1.cmml">ℓ</mi><annotation-xml encoding="MathML-Content" id="S3.SS2.p1.1.m1.1b"><ci id="S3.SS2.p1.1.m1.1.1.cmml" xref="S3.SS2.p1.1.m1.1.1">ℓ</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p1.1.m1.1c">\ell</annotation></semantics></math>, the first token is labeled as the beginning of the span with “B-<math alttext="\ell" class="ltx_Math" display="inline" id="S3.SS2.p1.2.m2.1"><semantics id="S3.SS2.p1.2.m2.1a"><mi id="S3.SS2.p1.2.m2.1.1" mathvariant="normal" xref="S3.SS2.p1.2.m2.1.1.cmml">ℓ</mi><annotation-xml encoding="MathML-Content" id="S3.SS2.p1.2.m2.1b"><ci id="S3.SS2.p1.2.m2.1.1.cmml" xref="S3.SS2.p1.2.m2.1.1">ℓ</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p1.2.m2.1c">\ell</annotation></semantics></math>”, the remaining <span class="ltx_text ltx_font_italic" id="S3.SS2.p1.3.3">m</span>-1 tokens are labeled as inside the span with “I-<math alttext="\ell" class="ltx_Math" display="inline" id="S3.SS2.p1.3.m3.1"><semantics id="S3.SS2.p1.3.m3.1a"><mi id="S3.SS2.p1.3.m3.1.1" mathvariant="normal" xref="S3.SS2.p1.3.m3.1.1.cmml">ℓ</mi><annotation-xml encoding="MathML-Content" id="S3.SS2.p1.3.m3.1b"><ci id="S3.SS2.p1.3.m3.1.1.cmml" xref="S3.SS2.p1.3.m3.1.1">ℓ</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p1.3.m3.1c">\ell</annotation></semantics></math>”, and tokens not included in the span are labeled as outside the span or “O”).</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Part-of-Speech (POS) Tagging</h4>
+<div class="ltx_para" id="S3.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS2.SSS0.Px1.p1.1">We evaluate POS tagging performance on English Universal Dependencies (UD) with the UPOS tagset <cite class="ltx_cite ltx_citemacro_cite">Nivre et al. (<a class="ltx_ref" href="#bib.bib27" title="">2020</a>)</cite>. Specifically, we use the treebank annotated on the GUM corpus <cite class="ltx_cite ltx_citemacro_cite">Zeldes (<a class="ltx_ref" href="#bib.bib41" title="">2017</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Sentence Chunking</h4>
+<div class="ltx_para" id="S3.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS2.SSS0.Px2.p1.1">Chunking, or shallow parsing, partitions the words in a sentence into non-overlapping spans of syntactic meaning. We evaluate PLMs on chunking with the CONLL2000 dataset from <cite class="ltx_cite ltx_citemacro_citet">Sang and Buchholz (<a class="ltx_ref" href="#bib.bib32" title="">2000</a>)</cite>, which frames chunking as a BIO tagging task.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS2.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Named Entity Recognition (NER)</h4>
+<div class="ltx_para" id="S3.SS2.SSS0.Px3.p1">
+<p class="ltx_p" id="S3.SS2.SSS0.Px3.p1.1">We evaluate the ability of structured prompting to extract named entities from PLMs with NER. This is measured as a BIO tagging task on the CONLL2003 dataset <cite class="ltx_cite ltx_citemacro_cite">Sang and De Meulder (<a class="ltx_ref" href="#bib.bib33" title="">2003</a>)</cite>.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.3 </span>Models</h3>
+<div class="ltx_para" id="S3.SS3.p1">
+<p class="ltx_p" id="S3.SS3.p1.1">We report performance on seven language models, ranging from 125 million to 175 billion parameters.</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS3.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">GPT-Neo</h4>
+<div class="ltx_para" id="S3.SS3.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS3.SSS0.Px1.p1.1">This set of PLMs contains models trained on the Pile <cite class="ltx_cite ltx_citemacro_cite">Gao et al. (<a class="ltx_ref" href="#bib.bib14" title="">2020</a>)</cite> that from 125 million to 2.7 billion parameters <cite class="ltx_cite ltx_citemacro_cite">Gao et al. (<a class="ltx_ref" href="#bib.bib14" title="">2020</a>)</cite>, 6.7 billion parameters <cite class="ltx_cite ltx_citemacro_cite">Wang and Komatsuzaki (<a class="ltx_ref" href="#bib.bib39" title="">2021</a>)</cite>, and 20 billion parameters <cite class="ltx_cite ltx_citemacro_cite">Black et al. (<a class="ltx_ref" href="#bib.bib5" title="">2022</a>)</cite>. We use the GPT-Neo models available through Huggingface <cite class="ltx_cite ltx_citemacro_cite">Wolf et al. (<a class="ltx_ref" href="#bib.bib40" title="">2019</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS3.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">GPT-3</h4>
+<div class="ltx_para" id="S3.SS3.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS3.SSS0.Px2.p1.2">We also perform structured prompting with the GPT-3 models <cite class="ltx_cite ltx_citemacro_cite">Brown et al. (<a class="ltx_ref" href="#bib.bib8" title="">2020</a>)</cite> via the OpenAI API. We use the base GPT-Curie (<math alttext="\sim" class="ltx_Math" display="inline" id="S3.SS3.SSS0.Px2.p1.1.m1.1"><semantics id="S3.SS3.SSS0.Px2.p1.1.m1.1a"><mo id="S3.SS3.SSS0.Px2.p1.1.m1.1.1" xref="S3.SS3.SSS0.Px2.p1.1.m1.1.1.cmml">∼</mo><annotation-xml encoding="MathML-Content" id="S3.SS3.SSS0.Px2.p1.1.m1.1b"><csymbol cd="latexml" id="S3.SS3.SSS0.Px2.p1.1.m1.1.1.cmml" xref="S3.SS3.SSS0.Px2.p1.1.m1.1.1">similar-to</csymbol></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.SSS0.Px2.p1.1.m1.1c">\sim</annotation></semantics></math>6B parameters) and GPT-Davinci (<math alttext="\sim" class="ltx_Math" display="inline" id="S3.SS3.SSS0.Px2.p1.2.m2.1"><semantics id="S3.SS3.SSS0.Px2.p1.2.m2.1a"><mo id="S3.SS3.SSS0.Px2.p1.2.m2.1.1" xref="S3.SS3.SSS0.Px2.p1.2.m2.1.1.cmml">∼</mo><annotation-xml encoding="MathML-Content" id="S3.SS3.SSS0.Px2.p1.2.m2.1b"><csymbol cd="latexml" id="S3.SS3.SSS0.Px2.p1.2.m2.1.1.cmml" xref="S3.SS3.SSS0.Px2.p1.2.m2.1.1">similar-to</csymbol></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.SSS0.Px2.p1.2.m2.1c">\sim</annotation></semantics></math>175B parameters) models that have undergone no additional instruction finetuning on POS tagging. Due to the cost of running these models through the API, we generate the GPT-Davinci output with unconstrained top-1 sampling rather than the constrained decoding setup described in Section <a class="ltx_ref" href="#S2" title="2 Structured Prompting of Pretrained Language Models ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">2</span></a>.
+<br class="ltx_break"/></p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS3.SSS0.Px2.p2">
+<p class="ltx_p" id="S3.SS3.SSS0.Px2.p2.1">In preliminary experiments, we also tested structured prompting on several OPT models <cite class="ltx_cite ltx_citemacro_cite">Zhang et al. (<a class="ltx_ref" href="#bib.bib43" title="">2022</a>)</cite>. We found their performance was significantly worse and did not scale with model size (up to 66B parameters) on POS tagging and NER. We leave a more thorough examination of this behavior discrepancy for future work.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S3.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.4 </span>Additional Experimental Details</h3>
+<div class="ltx_para" id="S3.SS4.p1">
+<p class="ltx_p" id="S3.SS4.p1.5">We report the mean and standard error across <math alttext="m" class="ltx_Math" display="inline" id="S3.SS4.p1.1.m1.1"><semantics id="S3.SS4.p1.1.m1.1a"><mi id="S3.SS4.p1.1.m1.1.1" xref="S3.SS4.p1.1.m1.1.1.cmml">m</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.1.m1.1b"><ci id="S3.SS4.p1.1.m1.1.1.cmml" xref="S3.SS4.p1.1.m1.1.1">𝑚</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.1.m1.1c">m</annotation></semantics></math> runs for each experiment. For each of these runs, <math alttext="k" class="ltx_Math" display="inline" id="S3.SS4.p1.2.m2.1"><semantics id="S3.SS4.p1.2.m2.1a"><mi id="S3.SS4.p1.2.m2.1.1" xref="S3.SS4.p1.2.m2.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.2.m2.1b"><ci id="S3.SS4.p1.2.m2.1.1.cmml" xref="S3.SS4.p1.2.m2.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.2.m2.1c">k</annotation></semantics></math> demonstrations are sampled from the training dataset at random, with the condition that the <math alttext="k" class="ltx_Math" display="inline" id="S3.SS4.p1.3.m3.1"><semantics id="S3.SS4.p1.3.m3.1a"><mi id="S3.SS4.p1.3.m3.1.1" xref="S3.SS4.p1.3.m3.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.3.m3.1b"><ci id="S3.SS4.p1.3.m3.1.1.cmml" xref="S3.SS4.p1.3.m3.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.3.m3.1c">k</annotation></semantics></math> demonstrations cover the label space of the task if possible. We use <math alttext="k=10" class="ltx_Math" display="inline" id="S3.SS4.p1.4.m4.1"><semantics id="S3.SS4.p1.4.m4.1a"><mrow id="S3.SS4.p1.4.m4.1.1" xref="S3.SS4.p1.4.m4.1.1.cmml"><mi id="S3.SS4.p1.4.m4.1.1.2" xref="S3.SS4.p1.4.m4.1.1.2.cmml">k</mi><mo id="S3.SS4.p1.4.m4.1.1.1" xref="S3.SS4.p1.4.m4.1.1.1.cmml">=</mo><mn id="S3.SS4.p1.4.m4.1.1.3" xref="S3.SS4.p1.4.m4.1.1.3.cmml">10</mn></mrow><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.4.m4.1b"><apply id="S3.SS4.p1.4.m4.1.1.cmml" xref="S3.SS4.p1.4.m4.1.1"><eq id="S3.SS4.p1.4.m4.1.1.1.cmml" xref="S3.SS4.p1.4.m4.1.1.1"></eq><ci id="S3.SS4.p1.4.m4.1.1.2.cmml" xref="S3.SS4.p1.4.m4.1.1.2">𝑘</ci><cn id="S3.SS4.p1.4.m4.1.1.3.cmml" type="integer" xref="S3.SS4.p1.4.m4.1.1.3">10</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.4.m4.1c">k=10</annotation></semantics></math> sentences as demonstrations and perform <math alttext="m=5" class="ltx_Math" display="inline" id="S3.SS4.p1.5.m5.1"><semantics id="S3.SS4.p1.5.m5.1a"><mrow id="S3.SS4.p1.5.m5.1.1" xref="S3.SS4.p1.5.m5.1.1.cmml"><mi id="S3.SS4.p1.5.m5.1.1.2" xref="S3.SS4.p1.5.m5.1.1.2.cmml">m</mi><mo id="S3.SS4.p1.5.m5.1.1.1" xref="S3.SS4.p1.5.m5.1.1.1.cmml">=</mo><mn id="S3.SS4.p1.5.m5.1.1.3" xref="S3.SS4.p1.5.m5.1.1.3.cmml">5</mn></mrow><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.5.m5.1b"><apply id="S3.SS4.p1.5.m5.1.1.cmml" xref="S3.SS4.p1.5.m5.1.1"><eq id="S3.SS4.p1.5.m5.1.1.1.cmml" xref="S3.SS4.p1.5.m5.1.1.1"></eq><ci id="S3.SS4.p1.5.m5.1.1.2.cmml" xref="S3.SS4.p1.5.m5.1.1.2">𝑚</ci><cn id="S3.SS4.p1.5.m5.1.1.3.cmml" type="integer" xref="S3.SS4.p1.5.m5.1.1.3">5</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.5.m5.1c">m=5</annotation></semantics></math> runs per experiment unless otherwise stated.</p>
+</div>
+<div class="ltx_para" id="S3.SS4.p2">
+<p class="ltx_p" id="S3.SS4.p2.1">Each model is evaluated on 1000 examples randomly sampled from the task test set (see Appendix <a class="ltx_ref" href="#A1.SS1" title="A.1 Choice of evaluation set ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">A.1</span></a> for a discussion on how this choice affects performance estimates). The evaluation subset is held fixed across all five runs, and the evaluation data and selection of demonstrations for each run are fixed across models for each task.</p>
+</div>
+<div class="ltx_para" id="S3.SS4.p3">
+<p class="ltx_p" id="S3.SS4.p3.1">To obtain the tag sequence for each example, we greedily take the top-1 label (with the highest log likelihood) for each word. We also enforce hard constraints for the span-labeling tasks involving BIO tagging (chunking, NER) to ensure a valid BIO tag sequence (e.g., I-X tags can only follow a previous B-X or I-X tag). Empirically, we find that enforcing BIO constraints makes little difference in the method’s overall performance; however, we use them as they ensure valid output sequences. Appendix <a class="ltx_ref" href="#A1.SS2" title="A.2 Ablating BIO Constraints ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">A.2</span></a> compares model performance with and without BIO constraints.</p>
+</div>
+<figure class="ltx_figure" id="S3.F3">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F3.sf1"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="S3.F3.sf1.g1" src="./media/x5.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(a) </span></figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F3.sf2"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="S3.F3.sf2.g1" src="./media/x6.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(b) </span></figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F3.sf3"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="S3.F3.sf3.g1" src="./media/x7.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(c) </span></figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>Error analysis of structured prompting for GPT-Neo series. (a) POS performance on different sets of 10-shot demonstrations. (b) Confusion matrix for GPT-NeoX on NER and (c) POS tagging, aggregated across runs.</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Structured Prompting Results</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">We measure the performance of <span class="ltx_text ltx_font_italic" id="S4.p1.1.1">structured prompting</span> on three sequence tagging tasks. This evaluation aims to (1) validate that structured prompting follows prior prompting setups in terms of model and k-shot scaling trends and (2) investigate the extent to which the approach extracts these structures from the model. We then quantify the types of errors made with structured prompting.</p>
+</div>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Overall Results</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2 Structured Prompting of Pretrained Language Models ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">2</span></a> presents the results of our primary structured prompting evaluation. We consider the performance of GPT-NeoX <cite class="ltx_cite ltx_citemacro_cite">Black et al. (<a class="ltx_ref" href="#bib.bib5" title="">2022</a>)</cite> compared to task baselines: <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.1">overall majority</span>, in which each word is labeled with the most frequent tag in the training set, and <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.2">per-word majority</span>, where each word is labeled with the tag it most commonly appeared within the training data (left panel).<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span>For BIO tasks, the majority labels correspond to “O” (NER) and “I-NP” (chunking). The CONLL evaluation script only scores labeled spans, giving an overall majority F1 of 0.</span></span></span> All baselines are calculated on the full training set and so use more labeled data than the PLM; the per-word majority is a particularly strong baseline as words frequently occur with the same tag.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Structured prompting performs effective few-shot sequence tagging</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px1.p1.1">We find that GPT-NeoX significantly outperforms each baseline on POS tagging and NER, and the model slightly underperforms the per-word majority baseline on sentence chunking by 4.2 points. Overall, the approach performs worse for the BIO span-labeling tasks than for word-level POS tagging. We hypothesize that the former tasks are more complex, as they require the model to determine spans and more detailed linguistic knowledge.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Structured prompting scales with model and demonstration size</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px2.p1.1">We observe that the performance of structured prompting improves with scale across GPT-Neo models (center panel). Model performance also improves with additional demonstrations (right panel); both of these trends are consistent with prior prompting results <cite class="ltx_cite ltx_citemacro_cite">(e.g., Black et al., <a class="ltx_ref" href="#bib.bib5" title="">2022</a>)</cite>. However, the extent to which additional demonstrations help varies: NER improves more with larger sizes of <math alttext="k" class="ltx_Math" display="inline" id="S4.SS1.SSS0.Px2.p1.1.m1.1"><semantics id="S4.SS1.SSS0.Px2.p1.1.m1.1a"><mi id="S4.SS1.SSS0.Px2.p1.1.m1.1.1" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1.cmml">k</mi><annotation-xml encoding="MathML-Content" id="S4.SS1.SSS0.Px2.p1.1.m1.1b"><ci id="S4.SS1.SSS0.Px2.p1.1.m1.1.1.cmml" xref="S4.SS1.SSS0.Px2.p1.1.m1.1.1">𝑘</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.SS1.SSS0.Px2.p1.1.m1.1c">k</annotation></semantics></math> than POS and chunking, likely because labeled spans are more sparse in NER. Notably, in the zero-shot case the model achieves around 17% accuracy on POS tagging when randomly predicting labels would yield 5.8%.</p>
+</div>
+<figure class="ltx_table" id="S4.T1">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="S4.T1.5">
+<tr class="ltx_tr" id="S4.T1.5.6">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T1.5.6.1"><span class="ltx_text ltx_font_bold" id="S4.T1.5.6.1.1">Size</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T1.5.6.2"><span class="ltx_text ltx_font_bold" id="S4.T1.5.6.2.1">Model</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T1.5.6.3"><span class="ltx_text ltx_font_bold" id="S4.T1.5.6.3.1">k</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="S4.T1.5.6.4"><span class="ltx_text ltx_font_bold" id="S4.T1.5.6.4.1">Acc.</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="S4.T1.5.6.5"><span class="ltx_text ltx_font_bold" id="S4.T1.5.6.5.1">SE</span></td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.2.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.1.1.1" rowspan="2"><span class="ltx_text" id="S4.T1.1.1.1.1"><math alttext="\sim" class="ltx_Math" display="inline" id="S4.T1.1.1.1.1.m1.1"><semantics id="S4.T1.1.1.1.1.m1.1a"><mo id="S4.T1.1.1.1.1.m1.1.1" xref="S4.T1.1.1.1.1.m1.1.1.cmml">∼</mo><annotation-xml encoding="MathML-Content" id="S4.T1.1.1.1.1.m1.1b"><csymbol cd="latexml" id="S4.T1.1.1.1.1.m1.1.1.cmml" xref="S4.T1.1.1.1.1.m1.1.1">similar-to</csymbol></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.1.1.1.1.m1.1c">\sim</annotation></semantics></math>6B</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.2.2.2">GPT-J<sup class="ltx_sup" id="S4.T1.2.2.2.1"><span class="ltx_text ltx_font_italic" id="S4.T1.2.2.2.1.1">∗</span></sup>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.2.2.3">5</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S4.T1.2.2.4">79.01</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S4.T1.2.2.5">2.95</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.5.7">
+<td class="ltx_td ltx_align_center" id="S4.T1.5.7.1">GPT-Curie</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.5.7.2">5</td>
+<td class="ltx_td ltx_align_right" id="S4.T1.5.7.3">66.27</td>
+<td class="ltx_td ltx_align_right" id="S4.T1.5.7.4">0.46</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.4.4">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T1.3.3.1" rowspan="2"><span class="ltx_text" id="S4.T1.3.3.1.1"><math alttext="\sim" class="ltx_Math" display="inline" id="S4.T1.3.3.1.1.m1.1"><semantics id="S4.T1.3.3.1.1.m1.1a"><mo id="S4.T1.3.3.1.1.m1.1.1" xref="S4.T1.3.3.1.1.m1.1.1.cmml">∼</mo><annotation-xml encoding="MathML-Content" id="S4.T1.3.3.1.1.m1.1b"><csymbol cd="latexml" id="S4.T1.3.3.1.1.m1.1.1.cmml" xref="S4.T1.3.3.1.1.m1.1.1">similar-to</csymbol></annotation-xml><annotation encoding="application/x-tex" id="S4.T1.3.3.1.1.m1.1c">\sim</annotation></semantics></math>175B</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.4.4.2">GPT-Davinci<sup class="ltx_sup" id="S4.T1.4.4.2.1"><span class="ltx_text ltx_font_italic" id="S4.T1.4.4.2.1.1">†</span></sup>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.4.4.3">5</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S4.T1.4.4.4">59.65</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S4.T1.4.4.5">2.84</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.5.5">
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.5.5.1">GPT-Davinci<sup class="ltx_sup" id="S4.T1.5.5.1.1"><span class="ltx_text ltx_font_italic" id="S4.T1.5.5.1.1.1">†</span></sup>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.5.5.2">10</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S4.T1.5.5.3">65.90</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S4.T1.5.5.4">1.34</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span>Structured Prompting results on POS tagging for GPT-Curie and GPT-Davinci. SE is standard error. <sup class="ltx_sup" id="S4.T1.12.1"><span class="ltx_text ltx_font_italic" id="S4.T1.12.1.1">∗</span></sup>: model from GPT-Neo series of a similar size to Curie; <sup class="ltx_sup" id="S4.T1.13.2"><span class="ltx_text ltx_font_italic" id="S4.T1.13.2.1">†</span></sup>: evaluated with greedy unconstrained decoding.</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S4.SS1.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Structured prompting with GPT-3</h4>
+<div class="ltx_para" id="S4.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="S4.SS1.SSS0.Px3.p1.1">Table <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ Structured prompting scales with model and demonstration size ‣ 4.1 Overall Results ‣ 4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">1</span></a> compares two GPT-3 models to the GPT-Neo series on POS tagging.<span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span>Each experiment reported in this section is repeated across three runs rather than five.</span></span></span> We first compare the 6B parameter GPT-Curie <cite class="ltx_cite ltx_citemacro_cite">Gao (<a class="ltx_ref" href="#bib.bib13" title="">2021</a>)</cite> to the similarly sized GPT-J model in a 5-shot setting. We find that GPT-Curie underperforms GPT-J by 12.7 points; both models also underperform the per-word majority baseline in this setting.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.SSS0.Px3.p2">
+<p class="ltx_p" id="S4.SS1.SSS0.Px3.p2.1">We then evaluate the largest GPT-3 model, GPT-Davinci, on POS tagging with greedy unconstrained decoding of the entire output sequence. Davinci performs reasonably well and scores similarly to Curie despite the more difficult decoding setting; many errors arise from format errors in the generated output for longer sentences. If we only evaluate examples that occur prior to these format errors, performance on that subset of the evaluation data is 72.85 ± 1.3 at k=5 and 78.04 ± 0.8 at k=10.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Error Analysis</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1">Figure <a class="ltx_ref" href="#S3.F3" title="Figure 3 ‣ 3.4 Additional Experimental Details ‣ 3 Experimental Setup ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">3</span></a> presents an error analysis of structured prompting; complete analyses for other tasks are provided in Appendix <a class="ltx_ref" href="#A1.SS3" title="A.3 Full Results of Error Analysis ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">A.3</span></a>. We first break out performance across runs and evaluate how the choice of in-context examples affects performance (left panel). For POS tagging, the choice of demonstrations makes a difference, with some sets performing better than others across models and a performance gap of 4.8 accuracy points between the best and worst run on the 20B parameter model. NER exhibits similar results to POS; however, chunking performance of different demonstration sets is much more varied and inconsistent across models.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p2">
+<p class="ltx_p" id="S4.SS2.p2.1">Next, we examine common error types in structured prompting with confusion matrices (center and right panel). We zero out the diagonal (representing correct predictions) and normalize the matrices for clarity. Many of the mistakes made by the 20B parameter model on POS tagging are for syntactically similar roles, such as confusing proper nouns for nouns and labeling auxiliary verbs as verbs. However, for BIO tagging the models are not always well-calibrated: on NER, the model most often mislabels “O” tokens, indicating that the model overpredicts named entities.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p3">
+<p class="ltx_p" id="S4.SS2.p3.3">Given that the choice of demonstrations affects PLM performance, another consideration is: how consistent are the error types across runs? To investigate this, we calculate the pairwise Spearman correlations between the confusion matrices of each run. These correlations are very high for the 20B parameter model, indicating the model makes similar types of error across runs: on average <math alttext="\rho=0.77" class="ltx_Math" display="inline" id="S4.SS2.p3.1.m1.1"><semantics id="S4.SS2.p3.1.m1.1a"><mrow id="S4.SS2.p3.1.m1.1.1" xref="S4.SS2.p3.1.m1.1.1.cmml"><mi id="S4.SS2.p3.1.m1.1.1.2" xref="S4.SS2.p3.1.m1.1.1.2.cmml">ρ</mi><mo id="S4.SS2.p3.1.m1.1.1.1" xref="S4.SS2.p3.1.m1.1.1.1.cmml">=</mo><mn id="S4.SS2.p3.1.m1.1.1.3" xref="S4.SS2.p3.1.m1.1.1.3.cmml">0.77</mn></mrow><annotation-xml encoding="MathML-Content" id="S4.SS2.p3.1.m1.1b"><apply id="S4.SS2.p3.1.m1.1.1.cmml" xref="S4.SS2.p3.1.m1.1.1"><eq id="S4.SS2.p3.1.m1.1.1.1.cmml" xref="S4.SS2.p3.1.m1.1.1.1"></eq><ci id="S4.SS2.p3.1.m1.1.1.2.cmml" xref="S4.SS2.p3.1.m1.1.1.2">𝜌</ci><cn id="S4.SS2.p3.1.m1.1.1.3.cmml" type="float" xref="S4.SS2.p3.1.m1.1.1.3">0.77</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS2.p3.1.m1.1c">\rho=0.77</annotation></semantics></math> for POS tagging, 0.83 for NER, and 0.88 for chunking; all pairwise correlations have p-values <math alttext="&lt;&lt;0.001" class="ltx_Math" display="inline" id="S4.SS2.p3.2.m2.1"><semantics id="S4.SS2.p3.2.m2.1a"><mrow id="S4.SS2.p3.2.m2.1.1" xref="S4.SS2.p3.2.m2.1.1.cmml"><mi id="S4.SS2.p3.2.m2.1.1.2" xref="S4.SS2.p3.2.m2.1.1.2.cmml"></mi><mo id="S4.SS2.p3.2.m2.1.1.1" xref="S4.SS2.p3.2.m2.1.1.1.cmml">&lt;&lt;</mo><mn id="S4.SS2.p3.2.m2.1.1.3" xref="S4.SS2.p3.2.m2.1.1.3.cmml">0.001</mn></mrow><annotation-xml encoding="MathML-Content" id="S4.SS2.p3.2.m2.1b"><apply id="S4.SS2.p3.2.m2.1.1.cmml" xref="S4.SS2.p3.2.m2.1.1"><csymbol cd="latexml" id="S4.SS2.p3.2.m2.1.1.1.cmml" xref="S4.SS2.p3.2.m2.1.1.1">much-less-than</csymbol><csymbol cd="latexml" id="S4.SS2.p3.2.m2.1.1.2.cmml" xref="S4.SS2.p3.2.m2.1.1.2">absent</csymbol><cn id="S4.SS2.p3.2.m2.1.1.3.cmml" type="float" xref="S4.SS2.p3.2.m2.1.1.3">0.001</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS2.p3.2.m2.1c">&lt;&lt;0.001</annotation></semantics></math>. Additionally, the models seem to become more robust across demonstration sets at scale; confusion matrix correlations for the 2.7B model are lower (<math alttext="\rho=0.71,0.64,0.66" class="ltx_Math" display="inline" id="S4.SS2.p3.3.m3.3"><semantics id="S4.SS2.p3.3.m3.3a"><mrow id="S4.SS2.p3.3.m3.3.4" xref="S4.SS2.p3.3.m3.3.4.cmml"><mi id="S4.SS2.p3.3.m3.3.4.2" xref="S4.SS2.p3.3.m3.3.4.2.cmml">ρ</mi><mo id="S4.SS2.p3.3.m3.3.4.1" xref="S4.SS2.p3.3.m3.3.4.1.cmml">=</mo><mrow id="S4.SS2.p3.3.m3.3.4.3.2" xref="S4.SS2.p3.3.m3.3.4.3.1.cmml"><mn id="S4.SS2.p3.3.m3.1.1" xref="S4.SS2.p3.3.m3.1.1.cmml">0.71</mn><mo id="S4.SS2.p3.3.m3.3.4.3.2.1" xref="S4.SS2.p3.3.m3.3.4.3.1.cmml">,</mo><mn id="S4.SS2.p3.3.m3.2.2" xref="S4.SS2.p3.3.m3.2.2.cmml">0.64</mn><mo id="S4.SS2.p3.3.m3.3.4.3.2.2" xref="S4.SS2.p3.3.m3.3.4.3.1.cmml">,</mo><mn id="S4.SS2.p3.3.m3.3.3" xref="S4.SS2.p3.3.m3.3.3.cmml">0.66</mn></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.SS2.p3.3.m3.3b"><apply id="S4.SS2.p3.3.m3.3.4.cmml" xref="S4.SS2.p3.3.m3.3.4"><eq id="S4.SS2.p3.3.m3.3.4.1.cmml" xref="S4.SS2.p3.3.m3.3.4.1"></eq><ci id="S4.SS2.p3.3.m3.3.4.2.cmml" xref="S4.SS2.p3.3.m3.3.4.2">𝜌</ci><list id="S4.SS2.p3.3.m3.3.4.3.1.cmml" xref="S4.SS2.p3.3.m3.3.4.3.2"><cn id="S4.SS2.p3.3.m3.1.1.cmml" type="float" xref="S4.SS2.p3.3.m3.1.1">0.71</cn><cn id="S4.SS2.p3.3.m3.2.2.cmml" type="float" xref="S4.SS2.p3.3.m3.2.2">0.64</cn><cn id="S4.SS2.p3.3.m3.3.3.cmml" type="float" xref="S4.SS2.p3.3.m3.3.3">0.66</cn></list></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS2.p3.3.m3.3c">\rho=0.71,0.64,0.66</annotation></semantics></math> for POS, NER, and chunking, respectively).</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>When Does Structured Prompting Work?</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">We now investigate how structured prompting surfaces linguistic structure from PLMs, using the behavior of GPT-NeoX on POS tagging and NER as a case study.
+We find that (1) in some cases, the model generalizes to labels not seen in the demonstration, and (2) the label form has a large effect on performance.
+Specifically, the model can learn in context when arbitrary labels represent classes but will ignore label mappings in the demonstration that contradict its prior task knowledge.</p>
+</div>
+<figure class="ltx_figure" id="S5.F4"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_portrait" height="452" id="S5.F4.g1" src="./media/x8.png" width="322"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span>Performance of GPT-NeoX when the labels are seen vs. not seen in the demonstration. <span class="ltx_text ltx_font_italic" id="S5.F4.2.1">Partial</span> labels are those only seen as B-&lt;label&gt; tags in BIO tagging.</figcaption>
+</figure>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Effect of Seen Labels</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<p class="ltx_p" id="S5.SS1.p1.1">In Section <a class="ltx_ref" href="#S4.SS1" title="4.1 Overall Results ‣ 4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4.1</span></a>, we see that the model obtains above random chance accuracy on zero-shot POS tagging, suggesting that the model does not need to observe the label to associate it with the correct class. To analyze this, we compare the model’s performance when the label is and is not seen in the demonstration, averaged across k-shot runs.</p>
+</div>
+<div class="ltx_para" id="S5.SS1.p2">
+<p class="ltx_p" id="S5.SS1.p2.1">Model performance on unseen tags, and the gain in performance after observing the tag, varies greatly by label class (Figure <a class="ltx_ref" href="#S5.F4" title="Figure 4 ‣ 5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4</span></a>). For some classes in POS tagging, such as ADJ and PUNCT, the model obtains around 50% accuracy without seeing the label. However, unseen performance on AUX in POS tagging and MISC in NER is close to 0%. Furthermore, while observing tags like LOC in NER greatly improves performance, other tags like ADJ and MISC improve much less when seen.</p>
+</div>
+<figure class="ltx_figure" id="S5.F5"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_square" height="456" id="S5.F5.g1" src="./media/x9.png" width="415"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 5: </span>Results of ablating the surface form of the labels for structured prompting. </figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S5.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.2 </span>Effect of Label Form</h3>
+<div class="ltx_para" id="S5.SS2.p1">
+<p class="ltx_p" id="S5.SS2.p1.1">We hypothesize that the behavior observed in Section <a class="ltx_ref" href="#S5.SS1" title="5.1 Effect of Seen Labels ‣ 5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">5.1</span></a> depends on how informative the label form is for the class. Therefore, we compare the model performance on (1) the <span class="ltx_text ltx_font_italic" id="S5.SS2.p1.1.1">original</span> task labels; (2) <span class="ltx_text ltx_font_italic" id="S5.SS2.p1.1.2">shuffled</span> task labels, where we shuffle the label surface forms but maintain underlying class correspondences to words; and (3) <span class="ltx_text ltx_font_italic" id="S5.SS2.p1.1.3">proxy</span> labels, where we represent the classes with arbitrary tokens – here, consecutive integers ranging from 11 to 27 (POS) and from 11 to 14 (NER). (Figure <a class="ltx_ref" href="#S5.F5" title="Figure 5 ‣ 5.1 Effect of Seen Labels ‣ 5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">5</span></a>).</p>
+</div>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Label shuffling confuses GPT-NeoX</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px1.p1.1">Shuffling the labels greatly hurts overall model performance, with POS scores decreasing overall by 50.5%, and NER by 65.9%. Some classes are more robust to the shuffled labels than others: the AUX and DET parts-of-speech score within the standard error of the original class performance, whereas ADJ accuracy drops by 96.2% to near zero.</p>
+</div>
+<div class="ltx_para" id="S5.SS2.SSS0.Px1.p2">
+<p class="ltx_p" id="S5.SS2.SSS0.Px1.p2.1">Interestingly, most mistakes made in the <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px1.p2.1.1">shuffled</span> setting (61.4%) result from the model predicting the true class label rather than the shuffled one from the demonstration. This occurs more frequently for classes whose performance severely degrades when shuffled: 93.9% of errors on the NOUN class are due to this phenomenon, and across classes, there is a strong correlation between performance degradation and the percent of errors predicting the true label (<math alttext="\rho=0.69,p&lt;0.05" class="ltx_Math" display="inline" id="S5.SS2.SSS0.Px1.p2.1.m1.2"><semantics id="S5.SS2.SSS0.Px1.p2.1.m1.2a"><mrow id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.3.cmml"><mrow id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.cmml"><mi id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.2" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.2.cmml">ρ</mi><mo id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.1" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.1.cmml">=</mo><mn id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.3" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.3.cmml">0.69</mn></mrow><mo id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.3" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.3a.cmml">,</mo><mrow id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.cmml"><mi id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.2" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.2.cmml">p</mi><mo id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.1" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.1.cmml">&lt;</mo><mn id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.3" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.3.cmml">0.05</mn></mrow></mrow><annotation-xml encoding="MathML-Content" id="S5.SS2.SSS0.Px1.p2.1.m1.2b"><apply id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.3.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2"><csymbol cd="ambiguous" id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.3a.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.3">formulae-sequence</csymbol><apply id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1"><eq id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.1.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.1"></eq><ci id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.2.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.2">𝜌</ci><cn id="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.3.cmml" type="float" xref="S5.SS2.SSS0.Px1.p2.1.m1.1.1.1.1.3">0.69</cn></apply><apply id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2"><lt id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.1.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.1"></lt><ci id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.2.cmml" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.2">𝑝</ci><cn id="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.3.cmml" type="float" xref="S5.SS2.SSS0.Px1.p2.1.m1.2.2.2.2.3">0.05</cn></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.SS2.SSS0.Px1.p2.1.m1.2c">\rho=0.69,p&lt;0.05</annotation></semantics></math>).
+This result suggests that PLMs ignore in-context label mappings when the model already associates the label with a specific class, similar to findings in <cite class="ltx_cite ltx_citemacro_citet">Min et al. (<a class="ltx_ref" href="#bib.bib26" title="">2022</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">GPT-NeoX in-context learns with arbitrary proxy labels</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px2.p1.1">Model behavior with the proxy labels is closer to the original labels, with performance decreasing by 25.8% on POS and 30.5% on NER. Indeed, on many labels that significantly degrade with label shuffling, the model performs significantly better on the proxy labels (NOUN and CCONJ in POS tagging, PER in NER). These results demonstrate that the model is able to perform in-context learning to extract linguistic structure, even when the tags are uninformative.</p>
+</div>
+<figure class="ltx_table" id="S5.T2">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="S5.T2.1">
+<tr class="ltx_tr" id="S5.T2.1.1">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_tt" id="S5.T2.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.1.1">Label</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="S5.T2.1.1.2"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.2.1">Freq.</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_tt" id="S5.T2.1.1.3"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.3.1">Task Stats</span></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S5.T2.1.1.4"><span class="ltx_text ltx_font_bold" id="S5.T2.1.1.4.1">Example Contexts</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.2">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="2" id="S5.T2.1.2.1"><span class="ltx_text ltx_font_bold" id="S5.T2.1.2.1.1">POS Tagging</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_tt" id="S5.T2.1.2.2"><span class="ltx_text ltx_font_bold" id="S5.T2.1.2.2.1">UD Format</span></td>
+<td class="ltx_td ltx_border_tt" id="S5.T2.1.2.3"></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.3">
+<td class="ltx_td ltx_border_r ltx_border_t" id="S5.T2.1.3.1"></td>
+<td class="ltx_td ltx_border_t" id="S5.T2.1.3.2"></td>
+<td class="ltx_td ltx_border_r ltx_border_t" id="S5.T2.1.3.3"></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S5.T2.1.3.4"><span class="ltx_text" id="S5.T2.1.3.4.1" style="background-color:#D3D3D3;">The 10 most frequent relations where parent and child node agree in ‘Polarity‘:</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.4" style="background-color:#D3D3D3;">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S5.T2.1.4.1"><span class="ltx_text" id="S5.T2.1.4.1.1" style="background-color:#D3D3D3;">NOUN</span></td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.4.2"><span class="ltx_text" id="S5.T2.1.4.2.1" style="background-color:#D3D3D3;">360k</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T2.1.4.3"><span class="ltx_text" id="S5.T2.1.4.3.1" style="background-color:#D3D3D3;">9.29%</span></td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.4.4"><span class="ltx_text" id="S5.T2.1.4.4.1" style="background-color:#D3D3D3;">&lt;tt&gt;<span class="ltx_text ltx_font_bold" id="S5.T2.1.4.4.1.1">NOUN</span> —-&gt; ADJ&lt;/tt&gt; (2; 100%) (GitHub)</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.5">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S5.T2.1.5.1">CCONJ</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.5.2">22k</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T2.1.5.3">23.48%</td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.5.4">13 \t und \t und \t <span class="ltx_text ltx_font_bold" id="S5.T2.1.5.4.1">CCONJ</span> \t KON \t _ \t 14 \t cc (GitHub)</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.6" style="background-color:#D3D3D3;">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S5.T2.1.6.1"><span class="ltx_text" id="S5.T2.1.6.1.1" style="background-color:#D3D3D3;">DET</span></td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.6.2"><span class="ltx_text" id="S5.T2.1.6.2.1" style="background-color:#D3D3D3;">1.53M</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T2.1.6.3"><span class="ltx_text" id="S5.T2.1.6.3.1" style="background-color:#D3D3D3;">0.72%</span></td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.6.4"><span class="ltx_text ltx_font_bold" id="S5.T2.1.6.4.1" style="background-color:#D3D3D3;">DET<span class="ltx_text ltx_font_medium" id="S5.T2.1.6.4.1.1">: determiner, e.g. a, an, the \n INTJ: interjection, e.g. psst… (StackExchange)</span></span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.7">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="2" id="S5.T2.1.7.1"><span class="ltx_text ltx_font_bold" id="S5.T2.1.7.1.1">NER</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_tt" id="S5.T2.1.7.2"><span class="ltx_text ltx_font_bold" id="S5.T2.1.7.2.1">Relevant?</span></td>
+<td class="ltx_td ltx_border_tt" id="S5.T2.1.7.3"></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.8">
+<td class="ltx_td ltx_border_r ltx_border_t" id="S5.T2.1.8.1"></td>
+<td class="ltx_td ltx_border_t" id="S5.T2.1.8.2"></td>
+<td class="ltx_td ltx_border_r ltx_border_t" id="S5.T2.1.8.3"></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S5.T2.1.8.4"><span class="ltx_text" id="S5.T2.1.8.4.1" style="background-color:#D3D3D3;">Bacterial pellets were lysed in 10 ml <span class="ltx_text ltx_font_bold" id="S5.T2.1.8.4.1.1">B-PER</span> Bacterial Protein Extraction</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.9" style="background-color:#D3D3D3;">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S5.T2.1.9.1"><span class="ltx_text" id="S5.T2.1.9.1.1" style="background-color:#D3D3D3;">B-PER</span></td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.9.2"><span class="ltx_text" id="S5.T2.1.9.2.1" style="background-color:#D3D3D3;">5,655</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T2.1.9.3"><span class="ltx_text" id="S5.T2.1.9.3.1" style="background-color:#D3D3D3;">26/100</span></td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.9.4"><span class="ltx_text" id="S5.T2.1.9.4.1" style="background-color:#D3D3D3;">Reagent… (PubMed)</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.10">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S5.T2.1.10.1">I-LOC</td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.10.2">2,197</td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T2.1.10.3">43/100</td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.10.4">y = np.asarray("B-PER O O B-LOC <span class="ltx_text ltx_font_bold" id="S5.T2.1.10.4.1">I-LOC</span> O B-ORG".split()) (StackExchange)</td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.11">
+<td class="ltx_td ltx_border_r" id="S5.T2.1.11.1"></td>
+<td class="ltx_td" id="S5.T2.1.11.2"></td>
+<td class="ltx_td ltx_border_r" id="S5.T2.1.11.3"></td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.11.4"><span class="ltx_text" id="S5.T2.1.11.4.1" style="background-color:#D3D3D3;">*I-PER* label usually follows *B-PER* and *I-PER*, but it cannot follow</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.12" style="background-color:#D3D3D3;">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S5.T2.1.12.1"><span class="ltx_text" id="S5.T2.1.12.1.1" style="background-color:#D3D3D3;">B-ORG</span></td>
+<td class="ltx_td ltx_align_right" id="S5.T2.1.12.2"><span class="ltx_text" id="S5.T2.1.12.2.1" style="background-color:#D3D3D3;">2603</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="S5.T2.1.12.3"><span class="ltx_text" id="S5.T2.1.12.3.1" style="background-color:#D3D3D3;">80/100</span></td>
+<td class="ltx_td ltx_align_left" id="S5.T2.1.12.4"><span class="ltx_text" id="S5.T2.1.12.4.1" style="background-color:#D3D3D3;">*<span class="ltx_text ltx_font_bold" id="S5.T2.1.12.4.1.1">B-ORG</span>* or *I-ORG*. (Arxiv)</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T2.1.13">
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_r" id="S5.T2.1.13.1">I-MISC</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S5.T2.1.13.2">907</td>
+<td class="ltx_td ltx_align_right ltx_border_bb ltx_border_r" id="S5.T2.1.13.3">76/100</td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S5.T2.1.13.4">My(O) favorite(O) book(O) is(O) harry(B-MISC) potter(<span class="ltx_text ltx_font_bold" id="S5.T2.1.13.4.1">I-MISC</span>)… (StackExchange)</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 2: </span>Analysis of the Pile for labels from UD POS tagset and CONLL03 NER tagset. <span class="ltx_text ltx_font_italic" id="S5.T2.3.1">Task Stats</span> document the percentage of occurrences that are in the UD format for POS tagging and the proportion of sampled documents relevant to NER. Some examples are slightly edited for readability.</figcaption>
+</figure>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Sources of Linguistic Knowledge in Pretraining Corpus</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">The results in Section <a class="ltx_ref" href="#S5" title="5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">5</span></a> demonstrate that the choice of label form can greatly affect structured prompting performance and implies that the model contains prior task knowledge. We analyze contexts in which the labels for POS tagging and NER appear in the Pile <cite class="ltx_cite ltx_citemacro_cite">Gao et al. (<a class="ltx_ref" href="#bib.bib14" title="">2020</a>)</cite> to better understand what, if any, task information GPT-NeoX learns from pretraining.</p>
+</div>
+<div class="ltx_para" id="S6.p2">
+<p class="ltx_p" id="S6.p2.1">Our analysis shows that task information occurs in the pretraining data, both as labeled examples (Section <a class="ltx_ref" href="#S6.SS1" title="6.1 Task Data Contamination ‣ 6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6.1</span></a>) and in other related contexts (Section <a class="ltx_ref" href="#S6.SS2" title="6.2 Labels in Other Contexts ‣ 6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6.2</span></a>). However, we find no evidence of test data leakage. Given these findings, we evaluate the model in a new setting that substitutes an English description of each class (e.g., “adjective”, “person”) for the label in order to control for label leakage while still providing meaningful labels (Section <a class="ltx_ref" href="#S6.SS3" title="6.3 Relationship Between Labels and Classes ‣ 6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6.3</span></a>).</p>
+</div>
+<section class="ltx_subsection" id="S6.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.1 </span>Task Data Contamination</h3>
+<div class="ltx_para" id="S6.SS1.p1">
+<p class="ltx_p" id="S6.SS1.p1.1">A likely location for task labels to occur is leaked task examples from pretraining data sources. To test this, we search the Pile for instances of labeled POS and NER data (Table <a class="ltx_ref" href="#S5.T2" title="Table 2 ‣ GPT-NeoX in-context learns with arbitrary proxy labels ‣ 5.2 Effect of Label Form ‣ 5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">2</span></a>, the full results are given in Appendix <a class="ltx_ref" href="#A1.SS4" title="A.4 Full Results of Pretraining Data Analysis ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">A.4</span></a>).</p>
+</div>
+<section class="ltx_paragraph" id="S6.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">POS Tagging</h4>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p1.1">Since the POS data is obtained from UD treebanks, we search the Pile for each label as it would appear in the treebank (with tab whitespace on either side of it, see CCONJ example context). We find a significant amount of UD data formatted in this manner: up to 33,000 occurrences for an individual label (NOUN). This is unsurprising given that Github – where UD treebanks are hosted – is a data source for the Pile. However, we find no evidence of test data leakage across any of the POS label occurrences when compared to the GUM treebank <cite class="ltx_cite ltx_citemacro_cite">Zeldes (<a class="ltx_ref" href="#bib.bib41" title="">2017</a>)</cite>.<span class="ltx_note ltx_role_footnote" id="footnote3"><sup class="ltx_note_mark">3</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">3</sup><span class="ltx_tag ltx_tag_note">3</span>We also compare the test set against the Pile via other methods (exact document match and searching for individual lines); none of these match any test data against the Pile.</span></span></span></p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p2">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p2.1">We also perform a closer analysis of the CCONJ label: we compare each occurrence against all nine English treebanks in UD and manually examine it.
+We find that many CCONJ occurrences can be found in the English Web Treebank <cite class="ltx_cite ltx_citemacro_cite">(EWT; Silveira et al., <a class="ltx_ref" href="#bib.bib38" title="">2014</a>)</cite> (1052/118/155 from the train/dev/test splits); others match with Parallel Universal Dependencies <cite class="ltx_cite ltx_citemacro_cite">(PUD; Zeman et al., <a class="ltx_ref" href="#bib.bib42" title="">2017</a>)</cite> (10 occurrences from test set) and ParaTUT <cite class="ltx_cite ltx_citemacro_cite">Sanguinetti and Bosco (<a class="ltx_ref" href="#bib.bib34" title="">2014</a>)</cite> (1 occurrence from development set).</p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p3">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p3.1">Our manual analysis finds that most of the CCONJ occurrences are in non-English documents (77%); other languages whose treebanks we see include Finnish, German, and Arabic, among many others.<span class="ltx_note ltx_role_footnote" id="footnote4"><sup class="ltx_note_mark">4</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">4</sup><span class="ltx_tag ltx_tag_note">4</span>This is unsurprising: though the Pile is characterized as an ”English text corpus” <cite class="ltx_cite ltx_citemacro_cite">Gao et al. (<a class="ltx_ref" href="#bib.bib14" title="">2020</a>)</cite>, prior work has found similar corpora derived from the web contain significant amounts of non-English text <cite class="ltx_cite ltx_citemacro_cite">Blevins and Zettlemoyer (<a class="ltx_ref" href="#bib.bib7" title="">2022</a>)</cite>.</span></span></span> We also observe that every tab-separated instance of CCONJ occurs in the UD treebank format, indicating that this automatic filter is a reasonable estimate of UD data leakage across labels.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">NER</h4>
+<div class="ltx_para" id="S6.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS1.SSS0.Px2.p1.1">Task data leakage for NER is much more limited than POS: the most frequent label occurs 5,655 times in the Pile (other than “O” which occurs very frequently in many contexts). Since the CONLL format separates the tags with spaces instead of tabs, it is more difficult to filter for data leakage. Instead, we manually evaluate 100 examples for the BIO labels and give the proportion of the sample that is relevant for NER.</p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px2.p2">
+<p class="ltx_p" id="S6.SS1.SSS0.Px2.p2.1">Only a subset of relevant occurrences includes labeled data – our analysis found that labeled data is not common, and most cases are single example sentences annotated in various ways that do not necessarily follow the CONLL format (see I-MISC example context). Similar to POS tagging, we also find labeled examples in non-English languages; notably, some of the examples observed are incorrectly labeled.<span class="ltx_note ltx_role_footnote" id="footnote5"><sup class="ltx_note_mark">5</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">5</sup><span class="ltx_tag ltx_tag_note">5</span>For example, the phrase “l’entreprise/O SpaceX/O…” occurs in a WebText2 document; however, SpaceX is a named entity that should be labeled as B-ORG.</span></span></span> This highlights that while the model sees task data during pretraining, the quality and accuracy of that data are unverified.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S6.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.2 </span>Labels in Other Contexts</h3>
+<div class="ltx_para" id="S6.SS2.p1">
+<p class="ltx_p" id="S6.SS2.p1.1">During the data analysis, we also observe tags from our tasks in settings other than labeled data. Other relevant contexts are task documentation or descriptions (see NOUN, DET, and B-ORG example contexts) and code related to the task (I-LOC example context). These contexts are particularly interesting, as they provide information that may help the model learn by explaining the task in natural language or code, rather than via input/output pairs.</p>
+</div>
+<div class="ltx_para" id="S6.SS2.p2">
+<p class="ltx_p" id="S6.SS2.p2.1">We also observe instances of labels that are unrelated to the task. This is more common for the POS tags; whereas, for NER labels, up to 80% of the sampled contexts are related to the task. The topic of these unrelated contexts varies widely across labels, from biomedical and legal texts (see B-PER example context) to unrelated source code and news articles.</p>
+</div>
+<figure class="ltx_table" id="S6.T3">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="S6.T3.4">
+<tr class="ltx_tr" id="S6.T3.4.5">
+<td class="ltx_td ltx_border_tt" id="S6.T3.4.5.1"></td>
+<td class="ltx_td ltx_border_r ltx_border_tt" id="S6.T3.4.5.2"></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="4" id="S6.T3.4.5.3"><span class="ltx_text ltx_font_bold" id="S6.T3.4.5.3.1">Label Sets</span></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.6">
+<td class="ltx_td" id="S6.T3.4.6.1"></td>
+<td class="ltx_td ltx_border_r" id="S6.T3.4.6.2"></td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.6.3">Origin.</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.6.4">Shuffle</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.6.5">Proxy</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.6.6">Words</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.7">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="5" id="S6.T3.4.7.1"><span class="ltx_text ltx_font_bold" id="S6.T3.4.7.1.1">POS Tagging</span></td>
+<td class="ltx_td ltx_border_tt" id="S6.T3.4.7.2"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.1.1">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.1.1.1" rowspan="4"><span class="ltx_text" id="S6.T3.1.1.1.1"><span class="ltx_text" id="S6.T3.1.1.1.1.2"></span> <span class="ltx_text" id="S6.T3.1.1.1.1.1">
+<span class="ltx_tabular ltx_align_middle" id="S6.T3.1.1.1.1.1.1">
+<span class="ltx_tr" id="S6.T3.1.1.1.1.1.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S6.T3.1.1.1.1.1.1.1.1"><math alttext="\Delta" class="ltx_Math" display="inline" id="S6.T3.1.1.1.1.1.1.1.1.m1.1"><semantics id="S6.T3.1.1.1.1.1.1.1.1.m1.1a"><mi id="S6.T3.1.1.1.1.1.1.1.1.m1.1.1" mathvariant="normal" xref="S6.T3.1.1.1.1.1.1.1.1.m1.1.1.cmml">Δ</mi><annotation-xml encoding="MathML-Content" id="S6.T3.1.1.1.1.1.1.1.1.m1.1b"><ci id="S6.T3.1.1.1.1.1.1.1.1.m1.1.1.cmml" xref="S6.T3.1.1.1.1.1.1.1.1.m1.1.1">Δ</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.1.1.1.1.1.1.1.1.m1.1c">\Delta</annotation></semantics></math></span></span>
+<span class="ltx_tr" id="S6.T3.1.1.1.1.1.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S6.T3.1.1.1.1.1.1.2.1">Acc.</span></span>
+</span></span> <span class="ltx_text" id="S6.T3.1.1.1.1.3"></span></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S6.T3.1.1.2">Origin.</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S6.T3.1.1.3" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.1.1.3.1" style="background-color:#9EC0A3;">83.55</span></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.1.1.4"></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.1.1.5"></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.1.1.6"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.8">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.8.1">Shuffle</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.8.2">-42.11</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.8.3" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.4.8.3.1" style="background-color:#9EC0A3;">41.44</span></td>
+<td class="ltx_td" id="S6.T3.4.8.4"></td>
+<td class="ltx_td" id="S6.T3.4.8.5"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.9">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.9.1">Proxy</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.9.2">-21.57</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.9.3">20.54</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.9.4" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.4.9.4.1" style="background-color:#9EC0A3;">61.98</span></td>
+<td class="ltx_td" id="S6.T3.4.9.5"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.10">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.10.1">Words</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.10.2">-5.43</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.10.3">36.67</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.10.4">16.13</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.10.5" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.4.10.5.1" style="background-color:#9EC0A3;">78.11</span></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.2.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.2.2.1" rowspan="4"><span class="ltx_text" id="S6.T3.2.2.1.1"><math alttext="\rho" class="ltx_Math" display="inline" id="S6.T3.2.2.1.1.m1.1"><semantics id="S6.T3.2.2.1.1.m1.1a"><mi id="S6.T3.2.2.1.1.m1.1.1" xref="S6.T3.2.2.1.1.m1.1.1.cmml">ρ</mi><annotation-xml encoding="MathML-Content" id="S6.T3.2.2.1.1.m1.1b"><ci id="S6.T3.2.2.1.1.m1.1.1.cmml" xref="S6.T3.2.2.1.1.m1.1.1">𝜌</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.2.2.1.1.m1.1c">\rho</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S6.T3.2.2.2">Origin.</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S6.T3.2.2.3">1</td>
+<td class="ltx_td ltx_border_t" id="S6.T3.2.2.4"></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.2.2.5"></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.2.2.6"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.11">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.11.1">Shuffle</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.11.2">0.676</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.11.3">1</td>
+<td class="ltx_td" id="S6.T3.4.11.4"></td>
+<td class="ltx_td" id="S6.T3.4.11.5"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.12">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.12.1">Proxy</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.12.2" style="background-color:#E3A3B4;"><span class="ltx_text" id="S6.T3.4.12.2.1" style="background-color:#E3A3B4;">0.934*</span></td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.12.3">0.718</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.12.4">1</td>
+<td class="ltx_td" id="S6.T3.4.12.5"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.13">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.13.1">Words</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.13.2" style="background-color:#E3A3B4;"><span class="ltx_text" id="S6.T3.4.13.2.1" style="background-color:#E3A3B4;">0.924*</span></td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.13.3">0.667</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.13.4" style="background-color:#E3A3B4;"><span class="ltx_text" id="S6.T3.4.13.4.1" style="background-color:#E3A3B4;">0.909*</span></td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.13.5">1</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.14">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="5" id="S6.T3.4.14.1"><span class="ltx_text ltx_font_bold" id="S6.T3.4.14.1.1">NER</span></td>
+<td class="ltx_td ltx_border_tt" id="S6.T3.4.14.2"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.3.3">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S6.T3.3.3.1" rowspan="4"><span class="ltx_text" id="S6.T3.3.3.1.1"><span class="ltx_text" id="S6.T3.3.3.1.1.2"></span> <span class="ltx_text" id="S6.T3.3.3.1.1.1">
+<span class="ltx_tabular ltx_align_middle" id="S6.T3.3.3.1.1.1.1">
+<span class="ltx_tr" id="S6.T3.3.3.1.1.1.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S6.T3.3.3.1.1.1.1.1.1"><math alttext="\Delta" class="ltx_Math" display="inline" id="S6.T3.3.3.1.1.1.1.1.1.m1.1"><semantics id="S6.T3.3.3.1.1.1.1.1.1.m1.1a"><mi id="S6.T3.3.3.1.1.1.1.1.1.m1.1.1" mathvariant="normal" xref="S6.T3.3.3.1.1.1.1.1.1.m1.1.1.cmml">Δ</mi><annotation-xml encoding="MathML-Content" id="S6.T3.3.3.1.1.1.1.1.1.m1.1b"><ci id="S6.T3.3.3.1.1.1.1.1.1.m1.1.1.cmml" xref="S6.T3.3.3.1.1.1.1.1.1.m1.1.1">Δ</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.3.3.1.1.1.1.1.1.m1.1c">\Delta</annotation></semantics></math></span></span>
+<span class="ltx_tr" id="S6.T3.3.3.1.1.1.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S6.T3.3.3.1.1.1.1.2.1">F1</span></span>
+</span></span> <span class="ltx_text" id="S6.T3.3.3.1.1.3"></span></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S6.T3.3.3.2">Origin.</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S6.T3.3.3.3" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.3.3.3.1" style="background-color:#9EC0A3;">58.05</span></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.3.3.4"></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.3.3.5"></td>
+<td class="ltx_td ltx_border_t" id="S6.T3.3.3.6"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.15">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.15.1">Shuffle</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.15.2">-38.28</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.15.3" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.4.15.3.1" style="background-color:#9EC0A3;">19.77</span></td>
+<td class="ltx_td" id="S6.T3.4.15.4"></td>
+<td class="ltx_td" id="S6.T3.4.15.5"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.16">
+<td class="ltx_td ltx_align_center ltx_border_r" id="S6.T3.4.16.1">Proxy</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.16.2">-17.65</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.16.3">20.63</td>
+<td class="ltx_td ltx_align_right" id="S6.T3.4.16.4" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.4.16.4.1" style="background-color:#9EC0A3;">40.40</span></td>
+<td class="ltx_td" id="S6.T3.4.16.5"></td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.4.4">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S6.T3.4.4.2">Words</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S6.T3.4.4.1">-1.17<sup class="ltx_sup" id="S6.T3.4.4.1.1"><span class="ltx_text ltx_font_italic" id="S6.T3.4.4.1.1.1">†</span></sup>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S6.T3.4.4.3">37.11</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S6.T3.4.4.4">-16.48</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S6.T3.4.4.5" style="background-color:#9EC0A3;"><span class="ltx_text" id="S6.T3.4.4.5.1" style="background-color:#9EC0A3;">56.88</span></td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 3: </span>Performance deltas (<math alttext="\Delta" class="ltx_Math" display="inline" id="S6.T3.9.m1.1"><semantics id="S6.T3.9.m1.1b"><mi id="S6.T3.9.m1.1.1" mathvariant="normal" xref="S6.T3.9.m1.1.1.cmml">Δ</mi><annotation-xml encoding="MathML-Content" id="S6.T3.9.m1.1c"><ci id="S6.T3.9.m1.1.1.cmml" xref="S6.T3.9.m1.1.1">Δ</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.9.m1.1d">\Delta</annotation></semantics></math>, column - row) and spearman correlations (<math alttext="\rho" class="ltx_Math" display="inline" id="S6.T3.10.m2.1"><semantics id="S6.T3.10.m2.1b"><mi id="S6.T3.10.m2.1.1" xref="S6.T3.10.m2.1.1.cmml">ρ</mi><annotation-xml encoding="MathML-Content" id="S6.T3.10.m2.1c"><ci id="S6.T3.10.m2.1.1.cmml" xref="S6.T3.10.m2.1.1">𝜌</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.10.m2.1d">\rho</annotation></semantics></math>) of classes between label sets. <span class="ltx_text" id="S6.T3.11.1" style="background-color:#9EC0A3;"><math alttext="\Delta" class="ltx_Math" display="inline" id="S6.T3.11.1.m1.1"><semantics id="S6.T3.11.1.m1.1b"><mi id="S6.T3.11.1.m1.1.1" mathbackground="#9EC0A3" mathvariant="normal" xref="S6.T3.11.1.m1.1.1.cmml">Δ</mi><annotation-xml encoding="MathML-Content" id="S6.T3.11.1.m1.1c"><ci id="S6.T3.11.1.m1.1.1.cmml" xref="S6.T3.11.1.m1.1.1">Δ</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.11.1.m1.1d">\Delta</annotation></semantics></math> diagonals</span> report performance with that set. <math alttext="\dagger" class="ltx_Math" display="inline" id="S6.T3.12.m3.1"><semantics id="S6.T3.12.m3.1b"><mo id="S6.T3.12.m3.1.1" xref="S6.T3.12.m3.1.1.cmml">†</mo><annotation-xml encoding="MathML-Content" id="S6.T3.12.m3.1c"><ci id="S6.T3.12.m3.1.1.cmml" xref="S6.T3.12.m3.1.1">†</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.T3.12.m3.1d">\dagger</annotation></semantics></math>: delta is within standard error; <span class="ltx_text" id="S6.T3.14.2" style="background-color:#E3A3B4;">*: p &lt;&lt; 0.001.</span></figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S6.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.3 </span>Relationship Between Labels and Classes</h3>
+<div class="ltx_para" id="S6.SS3.p1">
+<p class="ltx_p" id="S6.SS3.p1.1">Due to the quantity of task data uncovered in the Pile, we would like to control for the effect of pretraining on labeled data. To this end, we evaluate GPT-NeoX on semantically meaningful labels not previously seen in labeled contexts; specifically, we replace the task labels with the English name for each class (e.g., adjective, B-location), which we refer to as the <span class="ltx_text ltx_font_italic" id="S6.SS3.p1.1.1">words</span> label set. The model achieves an accuracy of 78.11 ± 1.46 on POS tagging and an F1 score of 56.88 ± 0.86 for NER in this setting.</p>
+</div>
+<div class="ltx_para" id="S6.SS3.p2">
+<p class="ltx_p" id="S6.SS3.p2.1">In Table <a class="ltx_ref" href="#S6.T3" title="Table 3 ‣ 6.2 Labels in Other Contexts ‣ 6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">3</span></a>, we compare the performance between these label sets and evaluate how correlated individual class performances are across these sets. We observe an identical ranking across label sets in POS tagging and NER. On NER, the difference in model performance between the <span class="ltx_text ltx_font_italic" id="S6.SS3.p2.1.1">true</span> labels and <span class="ltx_text ltx_font_italic" id="S6.SS3.p2.1.2">words</span> as labels is within standard error. However, on POS there is a small but significant decrease of 5.4 points between the two; this drop in performance likely quantifies the benefit of observing the POS task data in the Pile.</p>
+</div>
+<div class="ltx_para" id="S6.SS3.p3">
+<p class="ltx_p" id="S6.SS3.p3.1">The correlation study shows that performance across classes on the <span class="ltx_text ltx_font_italic" id="S6.SS3.p3.1.1">original</span>, <span class="ltx_text ltx_font_italic" id="S6.SS3.p3.1.2">proxy</span>, and <span class="ltx_text ltx_font_italic" id="S6.SS3.p3.1.3">words</span> label sets for POS tagging are all strongly correlated (<math alttext="\rho" class="ltx_Math" display="inline" id="S6.SS3.p3.1.m1.1"><semantics id="S6.SS3.p3.1.m1.1a"><mi id="S6.SS3.p3.1.m1.1.1" xref="S6.SS3.p3.1.m1.1.1.cmml">ρ</mi><annotation-xml encoding="MathML-Content" id="S6.SS3.p3.1.m1.1b"><ci id="S6.SS3.p3.1.m1.1.1.cmml" xref="S6.SS3.p3.1.m1.1.1">𝜌</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.SS3.p3.1.m1.1c">\rho</annotation></semantics></math> &gt; 0.9). However, their correlations with the <span class="ltx_text ltx_font_italic" id="S6.SS3.p3.1.4">shuffled</span> labels are less significant; this difference is likely due to the prior task knowledge GPT-NeoX has for UD labels leading to predicting the actual label of the class rather than the shuffled one, as seen in Section <a class="ltx_ref" href="#S5.SS2" title="5.2 Effect of Label Form ‣ 5 When Does Structured Prompting Work? ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">5.2</span></a>.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>Related Work</h2>
+<section class="ltx_paragraph" id="S7.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Prompting PLMs for Sequence Information</h4>
+<div class="ltx_para" id="S7.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S7.SS0.SSS0.Px1.p1.1">Recent work has applied various prompting approaches to sequence tagging tasks, primarily focusing on NER <cite class="ltx_cite ltx_citemacro_cite">Cui et al. (<a class="ltx_ref" href="#bib.bib11" title="">2021</a>); Ma et al. (<a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite>. However, these approaches also require further training, most often by learning new prompt embeddings for the task <cite class="ltx_cite ltx_citemacro_cite">Li et al. (<a class="ltx_ref" href="#bib.bib17" title="">2022</a>); Liu et al. (<a class="ltx_ref" href="#bib.bib22" title="">2022b</a>); Chen et al. (<a class="ltx_ref" href="#bib.bib9" title="">2022</a>)</cite>. Other work has finetuned language models to apply them to sequence tagging tasks <cite class="ltx_cite ltx_citemacro_cite">Liu et al. (<a class="ltx_ref" href="#bib.bib21" title="">2022a</a>)</cite>. In contrast, our approach requires no additional parameters to be learned. More similar to our work is the sequence tagging method in <cite class="ltx_cite ltx_citemacro_citet">Shliazhko et al. (<a class="ltx_ref" href="#bib.bib37" title="">2022</a>)</cite>, though their approach prompts the model separately for each word in the sentence.
+Additionally, similar approaches to prompting have been proposed for other tasks; these methods decompose a target task and repeatedly prompt the model on subtasks, building on the model’s outputs to generate the final prediction <cite class="ltx_cite ltx_citemacro_cite">Zhou et al. (<a class="ltx_ref" href="#bib.bib44" title="">2022</a>); Press et al. (<a class="ltx_ref" href="#bib.bib29" title="">2022</a>)</cite>.
+However, these approaches solve a different subset of NLP tasks and use the outputs from the intermediate prompting steps differently (i.e., by conditioning on them in future prompting steps, whereas in structured prompting each output is a predicted label).</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S7.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Probing Pretrained Models</h4>
+<div class="ltx_para" id="S7.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S7.SS0.SSS0.Px2.p1.1">There is extensive work on probing models for their underlying knowledge <cite class="ltx_cite ltx_citemacro_cite">(Belinkov et al., <a class="ltx_ref" href="#bib.bib4" title="">2017</a>; Blevins et al., <a class="ltx_ref" href="#bib.bib6" title="">2018</a>; Gulordava et al., <a class="ltx_ref" href="#bib.bib16" title="">2018</a>, inter alia.)</cite>. The approach has become particularly popular for analyzing masked PLMs <cite class="ltx_cite ltx_citemacro_cite">(e.g., Liu et al., <a class="ltx_ref" href="#bib.bib19" title="">2019</a>, <a class="ltx_ref" href="#bib.bib23" title="">2021b</a>)</cite>, with behavioral probes <cite class="ltx_cite ltx_citemacro_cite">(e.g. Petroni et al., <a class="ltx_ref" href="#bib.bib28" title="">2019</a>; Balasubramanian et al., <a class="ltx_ref" href="#bib.bib2" title="">2020</a>)</cite> in particular using the LM setup to elicit knowledge from the model.</p>
+</div>
+<div class="ltx_para" id="S7.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="S7.SS0.SSS0.Px2.p2.1">However, prompting autoregressive PLMs <cite class="ltx_cite ltx_citemacro_cite">Brown et al. (<a class="ltx_ref" href="#bib.bib8" title="">2020</a>); Schick and Schütze (<a class="ltx_ref" href="#bib.bib35" title="">2021</a>); Gao et al. (<a class="ltx_ref" href="#bib.bib15" title="">2021</a>)</cite>, though technically similar to behavioral probing, is usually not framed as probing the underlying model for knowledge. Some exceptions are <cite class="ltx_cite ltx_citemacro_citet">Alivanistos et al. (<a class="ltx_ref" href="#bib.bib1" title="">2022</a>)</cite>, which uses prompting techniques to probe the LM for knowledge base relations, and <cite class="ltx_cite ltx_citemacro_citet">Li et al. (<a class="ltx_ref" href="#bib.bib17" title="">2022</a>)</cite>, which replaces diagnostic probes with trained prompt embeddings for model analysis. We extend this framing by applying structured prompting as a behavioral probe for linguistic structure.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S7.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Analysis of Prompting Methods</h4>
+<div class="ltx_para" id="S7.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S7.SS0.SSS0.Px3.p1.1">The results of the structured prompting setup ablations are consistent with prior work. Specifically, our observation of the model’s prior label knowledge is similar to <cite class="ltx_cite ltx_citemacro_citet">Min et al. (<a class="ltx_ref" href="#bib.bib26" title="">2022</a>)</cite>. We expand on their findings by showing that the model can still perform in-context learning with proxy labels where the model has no prior mapping for the task.</p>
+</div>
+<div class="ltx_para" id="S7.SS0.SSS0.Px3.p2">
+<p class="ltx_p" id="S7.SS0.SSS0.Px3.p2.1">Other work has also documented the presence of task data in common pretraining corpora <cite class="ltx_cite ltx_citemacro_cite">Dodge et al. (<a class="ltx_ref" href="#bib.bib12" title="">2021</a>)</cite>, shown the effect of pretraining term frequencies on in-context performance <cite class="ltx_cite ltx_citemacro_cite">Razeghi et al. (<a class="ltx_ref" href="#bib.bib31" title="">2022</a>)</cite>, and demonstrated the ability of LMs to learn from task data during pretraining <cite class="ltx_cite ltx_citemacro_cite">Magar and Schwartz (<a class="ltx_ref" href="#bib.bib25" title="">2022</a>)</cite>. Similarly, we document the presence of task data and labels in the Pile and find that this signal can help task performance due to the model prior over the labels.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S8">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">8 </span>Conclusion</h2>
+<div class="ltx_para" id="S8.p1">
+<p class="ltx_p" id="S8.p1.1">We propose <span class="ltx_text ltx_font_italic" id="S8.p1.1.1">structured prompting</span>, a general paradigm for sequence tagging with autoregressive PLMs. Our experiments show structured prompting performs well on three few-shot sequence tagging tasks. Further analysis shows that (1) the approach can elicit linguistic structure in many settings, including when the labels are unrelated to the task, and (2) while labeled task data is present in the pretraining corpora, using informative labels not found in task data gives similar performance to using the task labels. These findings indicate that the model’s knowledge of linguistic structure is more general than the memorization of the task data. More generally, our approach provides a method to probe PLMs for sequence knowledge without training new or existing parameters.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitatons</h2>
+<section class="ltx_paragraph" id="Sx1.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Data Leakage</h4>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px1.p1.1">As discussed in Section <a class="ltx_ref" href="#S6.SS1" title="6.1 Task Data Contamination ‣ 6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6.1</span></a>, we find evidence of labeled task data for POS tagging and (to a more limited extent) NER in the Pile. We attempt to control for this leakage by evaluating with class names as labels rather than the original tag set; however, due to the cost of training recent PLMs and their large pretraining corpora, it is impossible to control for data leakage when prompting existing models completely.</p>
+</div>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px1.p2">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px1.p2.1">Both <cite class="ltx_cite ltx_citemacro_citet">Brown et al. (<a class="ltx_ref" href="#bib.bib8" title="">2020</a>)</cite> and <cite class="ltx_cite ltx_citemacro_citet">Chowdhery et al. (<a class="ltx_ref" href="#bib.bib10" title="">2022</a>)</cite> discuss the presence of task data in their pretraining corpora when training PLMs and the difficulty of controlling for it in their evaluations. For downstream users, this issue is further compounded in cases where the pretraining data is unavailable, as it is impossible to even check for contamination in those cases (such as our GPT-3 experiments).</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="Sx1.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Experimental Limitations with GPT-3</h4>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px2.p1.1">We only perform a subset of our evaluations of structured prompting on GPT-3, due to the cost of running the models in the API; this also means we do not run comprehensive prompt ablations to better tailor the setup for these models. Additionally, the results (i.e., lower performance than comparable GPT-Neo models) are difficult to interpret due to the black box nature of the GPT-3 models – it may be due to pretraining data differences (as mentioned in the previous limitation), the lack of prompt engineering for the models, or some other discrepancy.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="Sx1.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">English-only Experiments</h4>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px3.p1.1">The experiments in this paper focus on English sequence tagging tasks, and it is unclear how well the proposed method generalizes to other languages. We find evidence of task-relevant data in pretraining corpora in non-English languages, which suggests there is signal for the approach to work in other languages. However, prior work shows that PLMs behave much worse when prompted outside of English <cite class="ltx_cite ltx_citemacro_cite">Lin et al. (<a class="ltx_ref" href="#bib.bib18" title="">2022</a>); Shi et al. (<a class="ltx_ref" href="#bib.bib36" title="">2022</a>)</cite> but does not address the effect of pretraining data on this phenomenon.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">We would like to thank Sewon Min and Ari Holtzman for their helpful conversations about the work.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Alivanistos et al. (2022)</span>
+<span class="ltx_bibblock">
+Dimitrios Alivanistos, Selene Báez Santamaría, Michael Cochez,
+Jan-Christoph Kalo, Emile van Krieken, and Thiviyan Thanapalasingam. 2022.
+
+</span>
+<span class="ltx_bibblock">Prompting as probing: Using language models for knowledge base
+construction.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib1.1.1">LM-KBC 22: Knowledge Base Construction from Pre-trained
+Language Models</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Balasubramanian et al. (2020)</span>
+<span class="ltx_bibblock">
+Sriram Balasubramanian, Naman Jain, Gaurav Jindal, Abhijeet Awasthi, and Sunita
+Sarawagi. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.repl4nlp-1.24" target="_blank" title="">What’s in a
+name? are BERT named entity representations just as good for any other
+name?</a>
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib2.1.1">Proceedings of the 5th Workshop on Representation Learning
+for NLP</em>, pages 205–214, Online. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Belinkov et al. (2020)</span>
+<span class="ltx_bibblock">
+Yonatan Belinkov, Sebastian Gehrmann, and Ellie Pavlick. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.acl-tutorials.1" target="_blank" title="">Interpretability and analysis in neural NLP</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib3.1.1">Proceedings of the 58th Annual Meeting of the Association
+for Computational Linguistics: Tutorial Abstracts</em>, pages 1–5, Online.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Belinkov et al. (2017)</span>
+<span class="ltx_bibblock">
+Yonatan Belinkov, Lluís Màrquez, Hassan Sajjad, Nadir Durrani, Fahim
+Dalvi, and James Glass. 2017.
+
+</span>
+<span class="ltx_bibblock">Evaluating layers of representation in neural machine translation on
+part-of-speech and semantic tagging tasks.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">Proceedings of the Eighth International Joint Conference on
+Natural Language Processing (Volume 1: Long Papers)</em>, pages 1–10.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Black et al. (2022)</span>
+<span class="ltx_bibblock">
+Sid Black, Stella Biderman, Eric Hallahan, Quentin Anthony, Leo Gao, Laurence
+Golding, Horace He, Connor Leahy, Kyle McDonell, Jason Phang, Michael Pieler,
+USVSN Sai Prashanth, Shivanshu Purohit, Laria Reynolds, Jonathan Tow, Ben
+Wang, and Samuel Weinbach. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://arxiv.org/abs/2204.06745" target="_blank" title="">GPT-NeoX-20B: An
+open-source autoregressive language model</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">Proceedings of the ACL Workshop on Challenges &amp;
+Perspectives in Creating Large Language Models</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Blevins et al. (2018)</span>
+<span class="ltx_bibblock">
+Terra Blevins, Omer Levy, and Luke Zettlemoyer. 2018.
+
+</span>
+<span class="ltx_bibblock">Deep RNNs encode soft hierarchical syntax.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Proceedings of the 56th Annual Meeting of the Association
+for Computational Linguistics (Volume 2: Short Papers)</em>, pages 14–19.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Blevins and Zettlemoyer (2022)</span>
+<span class="ltx_bibblock">
+Terra Blevins and Luke Zettlemoyer. 2022.
+
+</span>
+<span class="ltx_bibblock">Language contamination helps explain the cross-lingual capabilities
+of English pretrained models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">Proceedings of the 2022 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Brown et al. (2020)</span>
+<span class="ltx_bibblock">
+Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla
+Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell,
+et al. 2020.
+
+</span>
+<span class="ltx_bibblock">Language models are few-shot learners.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">Advances in neural information processing systems</em>,
+33:1877–1901.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chen et al. (2022)</span>
+<span class="ltx_bibblock">
+Xiang Chen, Lei Li, Shumin Deng, Chuanqi Tan, Changliang Xu, Fei Huang, Luo Si,
+Huajun Chen, and Ningyu Zhang. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://aclanthology.org/2022.coling-1.209" target="_blank" title="">LightNER: A
+lightweight tuning paradigm for low-resource NER via pluggable prompting</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">Proceedings of the 29th International Conference on
+Computational Linguistics</em>, pages 2374–2387, Gyeongju, Republic of Korea.
+International Committee on Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chowdhery et al. (2022)</span>
+<span class="ltx_bibblock">
+Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra,
+Adam Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian
+Gehrmann, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Palm: Scaling language modeling with pathways.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">arXiv preprint arXiv:2204.02311</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Cui et al. (2021)</span>
+<span class="ltx_bibblock">
+Leyang Cui, Yu Wu, Jian Liu, Sen Yang, and Yue Zhang. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.findings-acl.161" target="_blank" title="">Template-based named entity recognition using BART</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">Findings of the Association for Computational Linguistics:
+ACL-IJCNLP 2021</em>, pages 1835–1845, Online. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dodge et al. (2021)</span>
+<span class="ltx_bibblock">
+Jesse Dodge, Maarten Sap, Ana Marasović, William Agnew, Gabriel Ilharco,
+Dirk Groeneveld, Margaret Mitchell, and Matt Gardner. 2021.
+
+</span>
+<span class="ltx_bibblock">Documenting large webtext corpora: A case study on the colossal clean
+crawled corpus.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">Proceedings of the 2021 Conference on Empirical Methods in
+Natural Language Processing</em>, pages 1286–1305.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao (2021)</span>
+<span class="ltx_bibblock">
+Leo Gao. 2021.
+
+</span>
+<span class="ltx_bibblock">On the sizes of openai api models.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://blog.eleuther.ai/gpt3-model-sizes/" target="_blank" title="">https://blog.eleuther.ai/gpt3-model-sizes/</a>.
+
+</span>
+<span class="ltx_bibblock">Accessed: 2022-10-27.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao et al. (2020)</span>
+<span class="ltx_bibblock">
+Leo Gao, Stella Biderman, Sid Black, Laurence Golding, Travis Hoppe, Charles
+Foster, Jason Phang, Horace He, Anish Thite, Noa Nabeshima, et al. 2020.
+
+</span>
+<span class="ltx_bibblock">The pile: An 800gb dataset of diverse text for language modeling.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">arXiv preprint arXiv:2101.00027</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao et al. (2021)</span>
+<span class="ltx_bibblock">
+Tianyu Gao, Adam Fisch, and Danqi Chen. 2021.
+
+</span>
+<span class="ltx_bibblock">Making pre-trained language models better few-shot learners.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">Proceedings of the 59th Annual Meeting of the Association
+for Computational Linguistics and the 11th International Joint Conference on
+Natural Language Processing (Volume 1: Long Papers)</em>, pages 3816–3830.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gulordava et al. (2018)</span>
+<span class="ltx_bibblock">
+Kristina Gulordava, Piotr Bojanowski, Édouard Grave, Tal Linzen, and Marco
+Baroni. 2018.
+
+</span>
+<span class="ltx_bibblock">Colorless green recurrent networks dream hierarchically.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">Proceedings of the 2018 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long Papers)</em>, pages 1195–1205.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al. (2022)</span>
+<span class="ltx_bibblock">
+Jiaoda Li, Ryan Cotterell, and Mrinmaya Sachan. 2022.
+
+</span>
+<span class="ltx_bibblock">Probing via prompting.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">Proceedings of the 2022 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies</em>, pages 1144–1157.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin et al. (2022)</span>
+<span class="ltx_bibblock">
+Xi Victoria Lin, Todor Mihaylov, Mikel Artetxe, Tianlu Wang, Shuohui Chen,
+Daniel Simig, Myle Ott, Naman Goyal, Shruti Bhosale, Jingfei Du, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Few-shot learning with multilingual language models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">Proceedings of the 2022 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2019)</span>
+<span class="ltx_bibblock">
+Nelson F. Liu, Matt Gardner, Yonatan Belinkov, Matthew E. Peters, and Noah A.
+Smith. 2019.
+
+</span>
+<span class="ltx_bibblock">Linguistic knowledge and transferability of contextual
+representations.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">Proceedings of the Conference of the North American Chapter
+of the Association for Computational Linguistics: Human Language
+Technologies</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2021a)</span>
+<span class="ltx_bibblock">
+Pengfei Liu, Weizhe Yuan, Jinlan Fu, Zhengbao Jiang, Hiroaki Hayashi, and
+Graham Neubig. 2021a.
+
+</span>
+<span class="ltx_bibblock">Pre-train, prompt, and predict: A systematic survey of prompting
+methods in natural language processing.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">arXiv preprint arXiv:2107.13586</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2022a)</span>
+<span class="ltx_bibblock">
+Tianyu Liu, Yuchen Jiang, Nicholas Monath, Ryan Cotterell, and Mrinmaya Sachan.
+2022a.
+
+</span>
+<span class="ltx_bibblock">Autoregressive structured prediction with language models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">Proceedings of the 2022 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2022b)</span>
+<span class="ltx_bibblock">
+Xiao Liu, Kaixuan Ji, Yicheng Fu, Weng Tam, Zhengxiao Du, Zhilin Yang, and Jie
+Tang. 2022b.
+
+</span>
+<span class="ltx_bibblock">P-tuning: Prompt tuning can be comparable to fine-tuning across
+scales and tasks.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">Proceedings of the 60th Annual Meeting of the Association
+for Computational Linguistics (Volume 2: Short Papers)</em>, pages 61–68.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2021b)</span>
+<span class="ltx_bibblock">
+Zeyu Liu, Yizhong Wang, Jungo Kasai, Hannaneh Hajishirzi, and Noah A Smith.
+2021b.
+
+</span>
+<span class="ltx_bibblock">Probing across time: What does roberta know and when?
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">Findings of the Association for Computational Linguistics:
+EMNLP 2021</em>, pages 820–842.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2022)</span>
+<span class="ltx_bibblock">
+Ruotian Ma, Xin Zhou, Tao Gui, Yiding Tan, Qi Zhang, and Xuanjing Huang. 2022.
+
+</span>
+<span class="ltx_bibblock">Template-free prompt tuning for few-shot ner.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">Proceedings of the 2022 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Magar and Schwartz (2022)</span>
+<span class="ltx_bibblock">
+Inbal Magar and Roy Schwartz. 2022.
+
+</span>
+<span class="ltx_bibblock">Data contamination: From memorization to exploitation.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib25.1.1">Proceedings of the 60th Annual Meeting of the Association
+for Computational Linguistics (Volume 2: Short Papers)</em>, pages 157–165.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Min et al. (2022)</span>
+<span class="ltx_bibblock">
+Sewon Min, Xinxi Lyu, Ari Holtzman, Mikel Artetxe, Mike Lewis, Hannaneh
+Hajishirzi, and Luke Zettlemoyer. 2022.
+
+</span>
+<span class="ltx_bibblock">Rethinking the role of demonstrations: What makes in-context learning
+work?
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">Proceedings of the 2022 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nivre et al. (2020)</span>
+<span class="ltx_bibblock">
+Joakim Nivre, Marie-Catherine de Marneffe, Filip Ginter, Jan Hajic,
+Christopher D Manning, Sampo Pyysalo, Sebastian Schuster, Francis Tyers, and
+Daniel Zeman. 2020.
+
+</span>
+<span class="ltx_bibblock">Universal dependencies v2: An evergrowing multilingual treebank
+collection.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">Proceedings of the 12th Language Resources and Evaluation
+Conference</em>, pages 4034–4043.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Petroni et al. (2019)</span>
+<span class="ltx_bibblock">
+Fabio Petroni, Tim Rocktäschel, Sebastian Riedel, Patrick Lewis, Anton
+Bakhtin, Yuxiang Wu, and Alexander Miller. 2019.
+
+</span>
+<span class="ltx_bibblock">Language models as knowledge bases?
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib28.1.1">Proceedings of the 2019 Conference on Empirical Methods in
+Natural Language Processing and the 9th International Joint Conference on
+Natural Language Processing (EMNLP-IJCNLP)</em>, pages 2463–2473.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Press et al. (2022)</span>
+<span class="ltx_bibblock">
+Ofir Press, Muru Zhang, Sewon Min, Ludwig Schmidt, Noah A Smith, and Mike
+Lewis. 2022.
+
+</span>
+<span class="ltx_bibblock">Measuring and narrowing the compositionality gap in language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">arXiv preprint arXiv:2210.03350</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Raffel et al. (2020)</span>
+<span class="ltx_bibblock">
+Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael
+Matena, Yanqi Zhou, Wei Li, Peter J Liu, et al. 2020.
+
+</span>
+<span class="ltx_bibblock">Exploring the limits of transfer learning with a unified text-to-text
+transformer.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">J. Mach. Learn. Res.</em>, 21(140):1–67.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Razeghi et al. (2022)</span>
+<span class="ltx_bibblock">
+Yasaman Razeghi, Robert L Logan IV, Matt Gardner, and Sameer Singh. 2022.
+
+</span>
+<span class="ltx_bibblock">Impact of pretraining term frequencies on few-shot reasoning.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib31.1.1">arXiv preprint arXiv:2202.07206</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sang and Buchholz (2000)</span>
+<span class="ltx_bibblock">
+Erik Tjong Kim Sang and Sabine Buchholz. 2000.
+
+</span>
+<span class="ltx_bibblock">Introduction to the conll-2000 shared task chunking.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">Fourth Conference on Computational Natural Language Learning
+and the Second Learning Language in Logic Workshop</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sang and De Meulder (2003)</span>
+<span class="ltx_bibblock">
+Erik Tjong Kim Sang and Fien De Meulder. 2003.
+
+</span>
+<span class="ltx_bibblock">Introduction to the conll-2003 shared task: Language-independent
+named entity recognition.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib33.1.1">Proceedings of the Seventh Conference on Natural Language
+Learning at HLT-NAACL 2003</em>, pages 142–147.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sanguinetti and Bosco (2014)</span>
+<span class="ltx_bibblock">
+Manuela Sanguinetti and Cristina Bosco. 2014.
+
+</span>
+<span class="ltx_bibblock">Converting the parallel treebank partut in universal stanford
+dependencies.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib34.1.1">Converting the parallel treebank ParTUT in Universal Stanford
+Dependencies</em>, pages 316–321.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Schick and Schütze (2021)</span>
+<span class="ltx_bibblock">
+Timo Schick and Hinrich Schütze. 2021.
+
+</span>
+<span class="ltx_bibblock">It’s not just size that matters: Small language models are also
+few-shot learners.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib35.1.1">Proceedings of the 2021 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies</em>, pages 2339–2352.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shi et al. (2022)</span>
+<span class="ltx_bibblock">
+Freda Shi, Mirac Suzgun, Markus Freitag, Xuezhi Wang, Suraj Srivats, Soroush
+Vosoughi, Hyung Won Chung, Yi Tay, Sebastian Ruder, Denny Zhou, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Language models are multilingual chain-of-thought reasoners.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">arXiv preprint arXiv:2210.03057</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shliazhko et al. (2022)</span>
+<span class="ltx_bibblock">
+Oleh Shliazhko, Alena Fenogenova, Maria Tikhonova, Vladislav Mikhailov,
+Anastasia Kozlova, and Tatiana Shavrina. 2022.
+
+</span>
+<span class="ltx_bibblock">mgpt: Few-shot learners go multilingual.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">arXiv preprint arXiv:2204.07580</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Silveira et al. (2014)</span>
+<span class="ltx_bibblock">
+Natalia Silveira, Timothy Dozat, Marie-Catherine de Marneffe, Samuel Bowman,
+Miriam Connor, John Bauer, and Christopher D. Manning. 2014.
+
+</span>
+<span class="ltx_bibblock">A gold standard dependency corpus for English.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">Proceedings of the Ninth International Conference on
+Language Resources and Evaluation (LREC-2014)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang and Komatsuzaki (2021)</span>
+<span class="ltx_bibblock">
+Ben Wang and Aran Komatsuzaki. 2021.
+
+</span>
+<span class="ltx_bibblock">GPT-J-6B: A 6 Billion Parameter Autoregressive Language Model.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/kingoflolz/mesh-transformer-jax" target="_blank" title="">https://github.com/kingoflolz/mesh-transformer-jax</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wolf et al. (2019)</span>
+<span class="ltx_bibblock">
+Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue,
+Anthony Moi, Pierric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz,
+et al. 2019.
+
+</span>
+<span class="ltx_bibblock">Huggingface’s transformers: State-of-the-art natural language
+processing.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib40.1.1">arXiv preprint arXiv:1910.03771</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zeldes (2017)</span>
+<span class="ltx_bibblock">
+Amir Zeldes. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/http://dx.doi.org/10.1007/s10579-016-9343-x" target="_blank" title="">The GUM corpus: Creating multilayer resources in the classroom</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">Language Resources and Evaluation</em>, 51(3):581–612.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zeman et al. (2017)</span>
+<span class="ltx_bibblock">
+Daniel Zeman, Martin Popel, Milan Straka, Jan Hajic, Joakim Nivre, Filip
+Ginter, Juhani Luotolahti, Sampo Pyysalo, Slav Petrov, Martin Potthast,
+et al. 2017.
+
+</span>
+<span class="ltx_bibblock">Conll 2017 shared task: Multilingual parsing from raw text to
+universal dependencies.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib42.1.1">CoNLL 2017 Shared Task: Multilingual Parsing from Raw Text
+to Universal Dependencies</em>, pages 1–19. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2022)</span>
+<span class="ltx_bibblock">
+Susan Zhang, Stephen Roller, Naman Goyal, Mikel Artetxe, Moya Chen, Shuohui
+Chen, Christopher Dewan, Mona Diab, Xian Li, Xi Victoria Lin, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">OPT: Open pre-trained transformer language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib43.1.1">arXiv preprint arXiv:2205.01068</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhou et al. (2022)</span>
+<span class="ltx_bibblock">
+Denny Zhou, Nathanael Schärli, Le Hou, Jason Wei, Nathan Scales, Xuezhi
+Wang, Dale Schuurmans, Olivier Bousquet, Quoc Le, and Ed Chi. 2022.
+
+</span>
+<span class="ltx_bibblock">Least-to-most prompting enables complex reasoning in large language
+models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib44.1.1">arXiv preprint arXiv:2205.10625</em>.
+
+</span>
+</li>
+</ul>
+</section>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix A </span>Further Ablations and Analysis</h2>
+<div class="ltx_para" id="A1.p1">
+<p class="ltx_p" id="A1.p1.1">In this section, we test additional factors that may affect the performance of our proposed method.</p>
+</div>
+<figure class="ltx_figure" id="A1.F6">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="A1.F6.sf1"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="A1.F6.sf1.g1" src="./media/x10.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(a) </span></figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="A1.F6.sf2"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="A1.F6.sf2.g1" src="./media/x11.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(b) </span></figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_3">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="A1.F6.sf3"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="105" id="A1.F6.sf3.g1" src="./media/x12.png" width="140"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(c) </span></figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 6: </span>Additional error analysis results for Section <a class="ltx_ref" href="#S4.SS2" title="4.2 Error Analysis ‣ 4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4.2</span></a>: performance across model sizes for different demonstrations sets on (a) NER and (b) chunking, and (c) confusion matrix for GPT-NeoX on chunking.</figcaption>
+</figure>
+<figure class="ltx_table" id="A1.T4">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="A1.T4.1">
+<tr class="ltx_tr" id="A1.T4.1.1">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T4.1.1.1" rowspan="2"><span class="ltx_text" id="A1.T4.1.1.1.1">Task</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T4.1.1.2" rowspan="2"><span class="ltx_text" id="A1.T4.1.1.2.1">Model</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="2" id="A1.T4.1.1.3">Eval Setting</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.2">
+<td class="ltx_td ltx_align_center" id="A1.T4.1.2.1">Fixed</td>
+<td class="ltx_td ltx_align_center" id="A1.T4.1.2.2">Varied</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.3">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T4.1.3.1" rowspan="3"><span class="ltx_text" id="A1.T4.1.3.1.1"><span class="ltx_text" id="A1.T4.1.3.1.1.1"></span> <span class="ltx_text" id="A1.T4.1.3.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="A1.T4.1.3.1.1.2.1">
+<span class="ltx_tr" id="A1.T4.1.3.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.3.1.1.2.1.1.1">POS</span></span>
+<span class="ltx_tr" id="A1.T4.1.3.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.3.1.1.2.1.2.1">(Acc.)</span></span>
+</span></span> <span class="ltx_text" id="A1.T4.1.3.1.1.3"></span></span></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="A1.T4.1.3.2">GPT-Neo-125M</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right ltx_border_tt" id="A1.T4.1.3.3">64.35 ± 1.6</td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="A1.T4.1.3.4">64.38 ± 1.6</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.4">
+<td class="ltx_td ltx_align_left" id="A1.T4.1.4.1">GPT-Neo-2.7B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right" id="A1.T4.1.4.2">70.36 ± 3.0</td>
+<td class="ltx_td ltx_align_right" id="A1.T4.1.4.3">70.32 ± 3.0</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.5">
+<td class="ltx_td ltx_align_left" id="A1.T4.1.5.1">GPT-J-6B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right" id="A1.T4.1.5.2">83.13 ± 1.1</td>
+<td class="ltx_td ltx_align_right" id="A1.T4.1.5.3">83.10 ± 1.1</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.6">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="A1.T4.1.6.1" rowspan="3"><span class="ltx_text" id="A1.T4.1.6.1.1"><span class="ltx_text" id="A1.T4.1.6.1.1.1"></span> <span class="ltx_text" id="A1.T4.1.6.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="A1.T4.1.6.1.1.2.1">
+<span class="ltx_tr" id="A1.T4.1.6.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.6.1.1.2.1.1.1">NER</span></span>
+<span class="ltx_tr" id="A1.T4.1.6.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T4.1.6.1.1.2.1.2.1">(F1)</span></span>
+</span></span> <span class="ltx_text" id="A1.T4.1.6.1.1.3"></span></span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="A1.T4.1.6.2">GPT-Neo-125M</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right ltx_border_t" id="A1.T4.1.6.3">16.03 ± 1.7</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T4.1.6.4">16.63 ± 2.1</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.7">
+<td class="ltx_td ltx_align_left" id="A1.T4.1.7.1">GPT-Neo-2.7M</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right" id="A1.T4.1.7.2">38.90 ± 2.7</td>
+<td class="ltx_td ltx_align_right" id="A1.T4.1.7.3">38.72 ± 2.6</td>
+</tr>
+<tr class="ltx_tr" id="A1.T4.1.8">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="A1.T4.1.8.1">GPT-J-6B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right ltx_border_bb" id="A1.T4.1.8.2">51.43 ± 0.7</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A1.T4.1.8.3">52.10 ± 0.9</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 4: </span>Results of ablating the choice of evaluation data for structured prompting on POS tagging and NER.</figcaption>
+</figure>
+<section class="ltx_subsection" id="A1.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.1 </span>Choice of evaluation set</h3>
+<div class="ltx_para" id="A1.SS1.p1">
+<p class="ltx_p" id="A1.SS1.p1.1">For computational reasons, the models are evaluated on a fixed subset of 1000 randomly sampled test examples for each task. As using a smaller evaluation set can introduce noise into our performance estimates, we run a similar experiment on a number of the smaller models but resample the evaluation examples across five runs in addition to varying the demonstrations (Table <a class="ltx_ref" href="#A1.T4" title="Table 4 ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4</span></a>). We find that varying the evaluation examples has a minimal effect on both the average performance and standard error on both POS tagging and NER.</p>
+</div>
+<figure class="ltx_table" id="A1.T5">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="A1.T5.1">
+<tr class="ltx_tr" id="A1.T5.1.1">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T5.1.1.1" rowspan="2"><span class="ltx_text" id="A1.T5.1.1.1.1">Task</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T5.1.1.2" rowspan="2"><span class="ltx_text" id="A1.T5.1.1.2.1">Model</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="2" id="A1.T5.1.1.3">With BIO Constraints?</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.2">
+<td class="ltx_td ltx_align_center" id="A1.T5.1.2.1">Yes</td>
+<td class="ltx_td ltx_align_center" id="A1.T5.1.2.2">No</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.3">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T5.1.3.1" rowspan="3"><span class="ltx_text" id="A1.T5.1.3.1.1"><span class="ltx_text" id="A1.T5.1.3.1.1.1"></span> <span class="ltx_text" id="A1.T5.1.3.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="A1.T5.1.3.1.1.2.1">
+<span class="ltx_tr" id="A1.T5.1.3.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.3.1.1.2.1.1.1">NER</span></span>
+<span class="ltx_tr" id="A1.T5.1.3.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.3.1.1.2.1.2.1">(F1)</span></span>
+</span></span> <span class="ltx_text" id="A1.T5.1.3.1.1.3"></span></span></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="A1.T5.1.3.2">GPT-Neo-125M</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right ltx_border_tt" id="A1.T5.1.3.3">15.52 ± 1.7</td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="A1.T5.1.3.4">16.03 ± 1.8</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.4">
+<td class="ltx_td ltx_align_left" id="A1.T5.1.4.1">GPT-J-6B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right" id="A1.T5.1.4.2">53.03 ± 1.0</td>
+<td class="ltx_td ltx_align_right" id="A1.T5.1.4.3">51.43 ± 0.7</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.5">
+<td class="ltx_td ltx_align_left" id="A1.T5.1.5.1">GPT-NeoX-20B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right" id="A1.T5.1.5.2">58.05 ± 2.1</td>
+<td class="ltx_td ltx_align_right" id="A1.T5.1.5.3">57.00 ± 1.9</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.6">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="A1.T5.1.6.1" rowspan="3"><span class="ltx_text" id="A1.T5.1.6.1.1"><span class="ltx_text" id="A1.T5.1.6.1.1.1"></span> <span class="ltx_text" id="A1.T5.1.6.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="A1.T5.1.6.1.1.2.1">
+<span class="ltx_tr" id="A1.T5.1.6.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.6.1.1.2.1.1.1">Chunk</span></span>
+<span class="ltx_tr" id="A1.T5.1.6.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A1.T5.1.6.1.1.2.1.2.1">(F1)</span></span>
+</span></span> <span class="ltx_text" id="A1.T5.1.6.1.1.3"></span></span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="A1.T5.1.6.2">GPT-Neo-125M</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right ltx_border_t" id="A1.T5.1.6.3">36.85 ± 1.3</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T5.1.6.4">38.32 ± 1.5</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.7">
+<td class="ltx_td ltx_align_left" id="A1.T5.1.7.1">GPT-J-6B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right" id="A1.T5.1.7.2">39.63 ± 3.4</td>
+<td class="ltx_td ltx_align_right" id="A1.T5.1.7.3">40.12 ± 3.5</td>
+</tr>
+<tr class="ltx_tr" id="A1.T5.1.8">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="A1.T5.1.8.1">GPT-NeoX-20B</td>
+<td class="ltx_td ltx_nopad_l ltx_align_right ltx_border_bb" id="A1.T5.1.8.2">57.60 ± 2.4</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A1.T5.1.8.3">59.25 ± 2.7</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 5: </span>Results of ablating the BIO constraints for structured prompting on NER and chunking.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="A1.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.2 </span>Ablating BIO Constraints</h3>
+<div class="ltx_para" id="A1.SS2.p1">
+<p class="ltx_p" id="A1.SS2.p1.1">During this work, we found that limiting the potential output tag space from the model with global BIO constraints made little difference in model performance for both NER and chunking (Table <a class="ltx_ref" href="#A1.T5" title="Table 5 ‣ A.1 Choice of evaluation set ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">5</span></a>). Specifically, in every case, the difference between the two settings was within the standard error of the means across runs, with NER performing slightly better with the constraints and chunking performing slightly worse.</p>
+</div>
+<figure class="ltx_table" id="A1.T6">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="A1.T6.1">
+<tr class="ltx_tr" id="A1.T6.1.1">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A1.T6.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="A1.T6.1.1.1.1">Model Size</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_tt" id="A1.T6.1.1.2" rowspan="2"><span class="ltx_text ltx_font_bold" id="A1.T6.1.1.2.1">k =</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="3" id="A1.T6.1.1.3"><span class="ltx_text ltx_font_bold" id="A1.T6.1.1.3.1">Task</span></td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.2">
+<td class="ltx_td ltx_align_right" id="A1.T6.1.2.1">
+<span class="ltx_text ltx_font_bold" id="A1.T6.1.2.1.1">POS</span> (Acc.)</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.2.2">
+<span class="ltx_text ltx_font_bold" id="A1.T6.1.2.2.1">NER</span> (F1)</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.2.3">
+<span class="ltx_text ltx_font_bold" id="A1.T6.1.2.3.1">Chunk</span> (F1)</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.3">
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T6.1.3.1">125M</td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_t" id="A1.T6.1.3.2" rowspan="5"><span class="ltx_text" id="A1.T6.1.3.2.1">10</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.3.3">64.35 ± 1.6</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.3.4">15.52 ± 1.7</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.3.5">36.85 ± 1.3</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.4">
+<td class="ltx_td ltx_align_center" id="A1.T6.1.4.1">1.3B</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.4.2">68.45 ± 1.7</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.4.3">39.07 ± 1.2</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.4.4">37.56 ± 4.5</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.5">
+<td class="ltx_td ltx_align_center" id="A1.T6.1.5.1">2.7B</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.5.2">70.36 ± 3.0</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.5.3">40.16 ± 2.6</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.5.4">53.18 ± 2.1</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.6">
+<td class="ltx_td ltx_align_center" id="A1.T6.1.6.1">6B</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.6.2">83.13 ± 1.1</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.6.3">53.03 ± 1.0</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.6.4">39.63 ± 3.4</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.7">
+<td class="ltx_td ltx_align_center" id="A1.T6.1.7.1">20B</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.7.2">83.56 ± 0.8</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.7.3">58.05 ± 2.1</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.7.4">57.60 ± 3.4</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.8">
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T6.1.8.1" rowspan="5"><span class="ltx_text" id="A1.T6.1.8.1.1">20B</span></td>
+<td class="ltx_td ltx_align_right ltx_border_r ltx_border_t" id="A1.T6.1.8.2">0</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.8.3">17.20</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.8.4">3.79</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.8.5">1.08</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.9">
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T6.1.9.1">1</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.9.2">70.84 ± 1.9</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.9.3">10.26 ± 1.1</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.9.4">32.02 ± 3.9</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.10">
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T6.1.10.1">3</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.10.2">79.08 ± 1.1</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.10.3">33.63 ± 2.8</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.10.4">48.33 ± 3.6</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.11">
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T6.1.11.1">5</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.11.2">81.72 ± 1.2</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.11.3">40.60 ± 1.6</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.11.4">50.98 ± 3.0</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.12">
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T6.1.12.1">7</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.12.2">82.67 ± 0.8</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.12.3">52.12 ± 3.7</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.12.4">54.00 ± 2.7</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.13">
+<td class="ltx_td" id="A1.T6.1.13.1"></td>
+<td class="ltx_td ltx_align_right ltx_border_r" id="A1.T6.1.13.2">9</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.13.3">83.56 ± 0.8</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.13.4">58.08 ± 1.8</td>
+<td class="ltx_td ltx_align_right" id="A1.T6.1.13.5">54.84 ± 2.9</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.14">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="5" id="A1.T6.1.14.1"><span class="ltx_text ltx_font_bold" id="A1.T6.1.14.1.1">Baselines</span></td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.15">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" colspan="2" id="A1.T6.1.15.1">Majority Label</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.15.2">17.75</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.15.3">0.00</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T6.1.15.4">0.00</td>
+</tr>
+<tr class="ltx_tr" id="A1.T6.1.16">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" colspan="2" id="A1.T6.1.16.1">Per-Span Majority</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A1.T6.1.16.2">80.76</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A1.T6.1.16.3">47.52</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A1.T6.1.16.4">61.84</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 6: </span>Full Results of GPT-Neo series experiments from Section <a class="ltx_ref" href="#S4.SS1" title="4.1 Overall Results ‣ 4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4.1</span></a>.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="A1.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.3 </span>Full Results of Error Analysis</h3>
+<div class="ltx_para" id="A1.SS3.p1">
+<p class="ltx_p" id="A1.SS3.p1.1">We provide additional error analysis results from Section <a class="ltx_ref" href="#S4.SS2" title="4.2 Error Analysis ‣ 4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4.2</span></a>
+in Figure <a class="ltx_ref" href="#A1.F6" title="Figure 6 ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="A1.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.4 </span>Full Results of Pretraining Data Analysis</h3>
+<div class="ltx_para" id="A1.SS4.p1">
+<p class="ltx_p" id="A1.SS4.p1.1">The complete data analysis for labels not shown in Section <a class="ltx_ref" href="#S6" title="6 Sources of Linguistic Knowledge in Pretraining Corpus ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6</span></a> is detailed in Table <a class="ltx_ref" href="#A3.T7" title="Table 7 ‣ Compute Costs ‣ Appendix C Responsible NLP Miscellanea ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">7</span></a>.</p>
+</div>
+</section>
+</section>
+<section class="ltx_appendix" id="A2">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix B </span>Complete Results of Structured Prompting Experiments</h2>
+<div class="ltx_para" id="A2.p1">
+<p class="ltx_p" id="A2.p1.1">We provide the full numerical results for the experiments in Section <a class="ltx_ref" href="#S4.SS1" title="4.1 Overall Results ‣ 4 Structured Prompting Results ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">4.1</span></a> in Table <a class="ltx_ref" href="#A1.T6" title="Table 6 ‣ A.2 Ablating BIO Constraints ‣ Appendix A Further Ablations and Analysis ‣ Prompting Language Models for Linguistic Structure"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A3">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix C </span>Responsible NLP Miscellanea</h2>
+<div class="ltx_para" id="A3.p1">
+<p class="ltx_p" id="A3.p1.1">This section details information from the Responsible NLP Checklist not covered elsewhere in the paper.</p>
+</div>
+<section class="ltx_paragraph" id="A3.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Compute Costs</h4>
+<div class="ltx_para" id="A3.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="A3.SS0.SSS0.Px1.p1.1">The computational cost of each prompting experiment on the GPT-Neo series of models varies depending on the task and size of the underlying PLM: run times for a single experiment range from around 43 minutes for POS tagging on the 125M parameter model to approximately 50 hours for chunking with GPT-NeoX (20B parameters). The smaller GPT-neo models (fewer than 6B parameters) are run on a single Nvidia RTX-6000, and larger models are run on one or more Nvidia A40 GPUs.</p>
+</div>
+<div class="ltx_para" id="A3.SS0.SSS0.Px1.p2">
+<p class="ltx_p" id="A3.SS0.SSS0.Px1.p2.1">For the GPT-3 POS tagging experiments, we run the models through the OpenAI API. When performing constrained decoding through the API, each example requires multiple calls per word in the sentence to decode the label forms, since model state caching for custom decoding is not available. For GPT-Curie (k=5), with constrained decoding, on average 230M tokens are submitted to the API per run; with Davinci (k=10, where we only performed unconstrained decoding), an average of 1.2M tokens are submitted per run.</p>
+</div>
+<figure class="ltx_table" id="A3.T7">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="A3.T7.1">
+<tr class="ltx_tr" id="A3.T7.1.1">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_tt" id="A3.T7.1.1.1"><span class="ltx_text ltx_font_bold" id="A3.T7.1.1.1.1">Label</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="A3.T7.1.1.2"><span class="ltx_text ltx_font_bold" id="A3.T7.1.1.2.1">Freq.</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="A3.T7.1.1.3"><span class="ltx_text ltx_font_bold" id="A3.T7.1.1.3.1">Task Stats</span></td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.2">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="2" id="A3.T7.1.2.1"><span class="ltx_text ltx_font_bold" id="A3.T7.1.2.1.1">POS Tagging</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="A3.T7.1.2.2"><span class="ltx_text ltx_font_bold" id="A3.T7.1.2.2.1">UD Format</span></td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.3">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_t" id="A3.T7.1.3.1">ADJ</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A3.T7.1.3.2">449,789</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A3.T7.1.3.3">2.49%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.4">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.4.1">ADP</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.4.2">1,847,009</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.4.3">0.80%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.5">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.5.1">ADV</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.5.2">2,315,004</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.5.3">0.42%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.6">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.6.1">AUX</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.6.2">572,373</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.6.3">1.71%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.7">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.7.1">CCONJ</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.7.2">22,050</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.7.3">23.48%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.8">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.8.1">DET</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.8.2">1,528,722</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.8.3">0.72%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.9">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.9.1">INTJ</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.9.2">28,882</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.9.3">2.11%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.10">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.10.1">NOUN</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.10.2">360,034</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.10.3">9.29%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.11">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.11.1">NUM</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.11.2">3,642,199</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.11.3">0.10%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.12">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.12.1">PART</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.12.2">4,573,194</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.12.3">0.09%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.13">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.13.1">PRON</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.13.2">130,754</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.13.3">11.00%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.14">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.14.1">PROPN</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.14.2">50,247</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.14.3">18.81%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.15">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.15.1">PUNCT</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.15.2">131,344</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.15.3">18.27%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.16">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.16.1">SCONJ</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.16.2">18,307</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.16.3">17.68%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.17">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.17.1">SYM</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.17.2">1,189,552</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.17.3">0.08%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.18">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.18.1">VERB</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.18.2">451,447</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.18.3">4.66%</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.19">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.19.1">X</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.19.2">–</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.19.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.20">
+<td class="ltx_td ltx_align_left ltx_border_tt" colspan="3" id="A3.T7.1.20.1"><span class="ltx_text ltx_font_bold" id="A3.T7.1.20.1.1">NER</span></td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.21">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_t" id="A3.T7.1.21.1">B-PER</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A3.T7.1.21.2">5,655</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A3.T7.1.21.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.22">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.22.1">I-PER</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.22.2">4,678</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.22.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.23">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.23.1">B-ORG</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.23.2">2,603</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.23.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.24">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.24.1">I-ORG</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.24.2">3,793</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.24.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.25">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.25.1">B-LOC</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.25.2">4,467</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.25.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.26">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.26.1">I-LOC</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.26.2">2,197</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.26.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.27">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.27.1">B-MISC</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.27.2">1,133</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.27.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.28">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A3.T7.1.28.1">I-MISC</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.28.2">907</td>
+<td class="ltx_td ltx_align_right" id="A3.T7.1.28.3">–</td>
+</tr>
+<tr class="ltx_tr" id="A3.T7.1.29">
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_r" id="A3.T7.1.29.1">O</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A3.T7.1.29.2">–</td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A3.T7.1.29.3">–</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 7: </span>Automatic analysis of the Pile for labels from UD POS tagset and CONLL03 NER tagset. <span class="ltx_text ltx_font_italic" id="A3.T7.3.1">Task Stats</span> document the percentage of occurrences that are in the UD format for POS tagging. We do not search labels that are individual characters due to how frequently they appear in the corpus.</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="A3.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Intended Usage of Artifacts</h4>
+<div class="ltx_para" id="A3.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="A3.SS0.SSS0.Px2.p1.1">To the best of our knowledge, our experiments all fall within the intended use cases of the GPT-Neo models and the Pile dataset, as well as the usage policy of the OpenAI API.</p>
+</div>
+</section>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2211.07829">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2211.07830">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2211.07830" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2211.07830">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2211.07831">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Thu Mar 14 05:48:06 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

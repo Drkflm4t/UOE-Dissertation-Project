@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2402.02420] Factuality of Large Language Models in the Year 2024</title><meta content="Large language models (LLMs), especially when instruction-tuned for chat, have become part of our daily lives, freeing people from the process of searching, extracting, and integrating information from multiple sources…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Factuality of Large Language Models in the Year 2024" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Factuality of Large Language Models in the Year 2024" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2402.02420" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2402.02420" rel="canonical" target="_blank"/>
+<!--Generated on Tue Mar  5 15:47:12 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Factuality of Large Language Models in the Year 2024</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id25.id1">Large language models (LLMs), especially when instruction-tuned for chat, have become part of our daily lives, freeing people from the process of <em class="ltx_emph ltx_font_italic" id="id25.id1.1">searching</em>, <em class="ltx_emph ltx_font_italic" id="id25.id1.2">extracting</em>, and <em class="ltx_emph ltx_font_italic" id="id25.id1.3">integrating</em> information from multiple sources by offering a straightforward answer to a variety of questions in a single place.
+Unfortunately, in many cases, LLM responses are factually incorrect, which limits their applicability in real-world scenarios.
+As a result, research on evaluating and improving the factuality of LLMs has attracted a lot of research attention recently.
+In this survey, we critically analyze existing work
+with the aim to identify the major challenges and their associated causes, pointing out to potential solutions for improving the factuality of LLMs, and analyzing the obstacles to automated factuality evaluation for open-ended text generation. We further offer an outlook on where future research should go.
+</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Large language models (LLMs) have become an integral part of our daily lives. When instruction-tuned for chat, they have enabled digital assistants that can free people from the need to <em class="ltx_emph ltx_font_italic" id="S1.p1.1.1">search</em>, <em class="ltx_emph ltx_font_italic" id="S1.p1.1.2">extract</em>, and <em class="ltx_emph ltx_font_italic" id="S1.p1.1.3">integrate</em> information from multiple sources by offering straightforward answers in a single chat.
+While people naturally expect LLMs to always present reliable information that is consistent with real-world knowledge, LLMs tend to fabricate ungrounded statements, resulting in misinformation <cite class="ltx_cite ltx_citemacro_cite">Tonmoy <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib44" title="">2024</a>)</cite>, which limits their utility.
+Thus, assessing and improving the factuality of the text generated by LLMs has become an emerging and crucial research area, aiming to identify potential errors and to advance the development of more reliable LLMs <cite class="ltx_cite ltx_citemacro_cite">Chen <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib4" title="">2023</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">To this end, researchers have collected multiple datasets, introduced a variety of measures to evaluate the factuality of LLMs, and proposed numerous strategies leveraging external knowledge through retrieval, self-reflection, and early refinement in model generation to mitigate factual errors <cite class="ltx_cite ltx_citemacro_cite">Tonmoy <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib44" title="">2024</a>)</cite>.
+A number of surveys, discussing LLM hallucinations, have also been published, which we summarize in Table <a class="ltx_ref" href="#S1.T1" title="Table 1 ‣ Why this survey? ‣ 1 Introduction ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">1</span></a>.</p>
+</div>
+<section class="ltx_paragraph" id="S1.SS0.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Why this survey?</h5>
+<figure class="ltx_table" id="S1.T1">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S1.T1.1" style="width:433.6pt;height:175.4pt;vertical-align:-0.5pt;"><span class="ltx_transformed_inner" style="transform:translate(-188.5pt,76.0pt) scale(0.534927698871703,0.534927698871703) ;">
+<table class="ltx_tabular ltx_align_middle" id="S1.T1.1.1">
+<tr class="ltx_tr" id="S1.T1.1.1.1">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S1.T1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.1.1.1" style="font-size:90%;">Survey</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S1.T1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.1.2.1" style="font-size:90%;">Date</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S1.T1.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.1.3.1" style="font-size:90%;">Pages</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_tt" id="S1.T1.1.1.1.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.4.1">
+<span class="ltx_p" id="S1.T1.1.1.1.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.1.4.1.1.1" style="font-size:90%;">Eval-uation</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_tt" id="S1.T1.1.1.1.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.5.1">
+<span class="ltx_p" id="S1.T1.1.1.1.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.1.5.1.1.1" style="font-size:90%;">Improve-ment</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_tt" id="S1.T1.1.1.1.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.6.1">
+<span class="ltx_p" id="S1.T1.1.1.1.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.1.6.1.1.1" style="font-size:90%;">Multi-modal</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_tt" id="S1.T1.1.1.1.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.1.7.1">
+<span class="ltx_p" id="S1.T1.1.1.1.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.1.7.1.1.1" style="font-size:90%;">Contributions and limitations</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.2">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S1.T1.1.1.2.1"><span class="ltx_text" id="S1.T1.1.1.2.1.1" style="font-size:90%;">This work</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.1.1.2.2"><span class="ltx_text" id="S1.T1.1.1.2.2.1" style="font-size:90%;">01-Feb-2024</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.1.1.2.3"><span class="ltx_text" id="S1.T1.1.1.2.3.1" style="font-size:90%;">9</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.1.2.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.2.4.1">
+<span class="ltx_p" id="S1.T1.1.1.2.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.2.4.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.1.2.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.2.5.1">
+<span class="ltx_p" id="S1.T1.1.1.2.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.2.5.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.1.2.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.2.6.1">
+<span class="ltx_p" id="S1.T1.1.1.2.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.2.6.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_t" id="S1.T1.1.1.2.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.2.7.1">
+<span class="ltx_p" id="S1.T1.1.1.2.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.2.7.1.1.1" style="font-size:90%;">Discusses ambiguous concepts in LLM factuality, compares and analyzes evaluation and enhancement approaches from academic and practical perspectives, outlining major challenges and promising avenues to explore.</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.3">
+<td class="ltx_td ltx_align_left" id="S1.T1.1.1.3.1"><cite class="ltx_cite ltx_citemacro_cite">Tonmoy <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.3.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib44" title="">2024</a><span class="ltx_text" id="S1.T1.1.1.3.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.3.2"><span class="ltx_text" id="S1.T1.1.1.3.2.1" style="font-size:90%;">08-Jan-2024</span></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.3.3"><span class="ltx_text" id="S1.T1.1.1.3.3.1" style="font-size:90%;">19</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.3.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.3.4.1">
+<span class="ltx_p" id="S1.T1.1.1.3.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.3.4.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.3.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.3.5.1">
+<span class="ltx_p" id="S1.T1.1.1.3.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.3.5.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.3.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.3.6.1">
+<span class="ltx_p" id="S1.T1.1.1.3.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.3.6.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.3.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.3.7.1">
+<span class="ltx_p" id="S1.T1.1.1.3.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.3.7.1.1.1" style="font-size:90%;">Summarizes recent work in terms of mitigating LLM hallucinations, but </span><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.3.7.1.1.2" style="font-size:90%;">lacks comparison</span><span class="ltx_text" id="S1.T1.1.1.3.7.1.1.3" style="font-size:90%;"> between different approaches and </span><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.3.7.1.1.4" style="font-size:90%;">discussions</span><span class="ltx_text" id="S1.T1.1.1.3.7.1.1.5" style="font-size:90%;"> to identify open questions and challenges.</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.4">
+<td class="ltx_td ltx_align_left" id="S1.T1.1.1.4.1"><cite class="ltx_cite ltx_citemacro_cite">Gao <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.4.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib12" title="">2023b</a><span class="ltx_text" id="S1.T1.1.1.4.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.4.2"><span class="ltx_text" id="S1.T1.1.1.4.2.1" style="font-size:90%;">18-Dec-2023</span></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.4.3"><span class="ltx_text" id="S1.T1.1.1.4.3.1" style="font-size:90%;">26</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.4.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.4.4.1">
+<span class="ltx_p" id="S1.T1.1.1.4.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.4.4.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.4.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.4.5.1">
+<span class="ltx_p" id="S1.T1.1.1.4.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.4.5.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.4.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.4.6.1">
+<span class="ltx_p" id="S1.T1.1.1.4.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.4.6.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.4.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.4.7.1">
+<span class="ltx_p" id="S1.T1.1.1.4.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.4.7.1.1.1" style="font-size:90%;">Summarizes three </span><span class="ltx_text ltx_font_bold" id="S1.T1.1.1.4.7.1.1.2" style="font-size:90%;">RAG paradigms</span><span class="ltx_text" id="S1.T1.1.1.4.7.1.1.3" style="font-size:90%;">: naïve, advanced, and modular RAG, with key elements and evaluation methods for the three major components in RAG (retriever, generator, and augmentation).</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.5">
+<td class="ltx_td ltx_align_left" id="S1.T1.1.1.5.1"><cite class="ltx_cite ltx_citemacro_cite">Huang <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.5.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib18" title="">2023</a><span class="ltx_text" id="S1.T1.1.1.5.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.5.2"><span class="ltx_text" id="S1.T1.1.1.5.2.1" style="font-size:90%;">09-Nov-2023</span></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.5.3"><span class="ltx_text" id="S1.T1.1.1.5.3.1" style="font-size:90%;">49</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.5.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.5.4.1">
+<span class="ltx_p" id="S1.T1.1.1.5.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.5.4.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.5.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.5.5.1">
+<span class="ltx_p" id="S1.T1.1.1.5.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.5.5.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.5.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.5.6.1">
+<span class="ltx_p" id="S1.T1.1.1.5.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.5.6.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.5.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.5.7.1">
+<span class="ltx_p" id="S1.T1.1.1.5.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.5.7.1.1.1" style="font-size:90%;">Analyzes the reasons for hallucinations, and presents a comprehensive overview of hallucination detection methods, benchmarks, and approaches to mitigate hallucinations.</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.6">
+<td class="ltx_td ltx_align_left" id="S1.T1.1.1.6.1"><cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.6.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib50" title="">2023b</a><span class="ltx_text" id="S1.T1.1.1.6.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.6.2"><span class="ltx_text" id="S1.T1.1.1.6.2.1" style="font-size:90%;">18-Oct-2023</span></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.6.3"><span class="ltx_text" id="S1.T1.1.1.6.3.1" style="font-size:90%;">44</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.6.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.6.4.1">
+<span class="ltx_p" id="S1.T1.1.1.6.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.6.4.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.6.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.6.5.1">
+<span class="ltx_p" id="S1.T1.1.1.6.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.6.5.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.6.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.6.6.1">
+<span class="ltx_p" id="S1.T1.1.1.6.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.6.6.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.6.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.6.7.1">
+<span class="ltx_p" id="S1.T1.1.1.6.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.6.7.1.1.1" style="font-size:90%;">Detailed literature review of factuality improvement and enhancement methods covering both retrieval augmentation and non-retrieval augmentation, missing discussion of major bottleneck issues in LLM factuality and promising directions to investigate.</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.7">
+<td class="ltx_td ltx_align_left" id="S1.T1.1.1.7.1"><cite class="ltx_cite ltx_citemacro_cite">Rawte <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.7.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib35" title="">2023b</a><span class="ltx_text" id="S1.T1.1.1.7.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.7.2"><span class="ltx_text" id="S1.T1.1.1.7.2.1" style="font-size:90%;">18-Sept-2023</span></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.7.3"><span class="ltx_text" id="S1.T1.1.1.7.3.1" style="font-size:90%;">11</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.7.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.7.4.1">
+<span class="ltx_p" id="S1.T1.1.1.7.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.7.4.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.7.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.7.5.1">
+<span class="ltx_p" id="S1.T1.1.1.7.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.7.5.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.7.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.7.6.1">
+<span class="ltx_p" id="S1.T1.1.1.7.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.7.6.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.7.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.7.7.1">
+<span class="ltx_p" id="S1.T1.1.1.7.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.7.7.1.1.1" style="font-size:90%;">Extensively elucidates the problem of hallucination across all major modalities of foundation models, including text (general, multilingual, domain-specific LLMs), image, video, and audio. However, inadequate coverage of approaches, in-depth categorization and comparison between methods.</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.8">
+<td class="ltx_td ltx_align_left" id="S1.T1.1.1.8.1"><cite class="ltx_cite ltx_citemacro_cite">Zhang <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.8.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib60" title="">2023c</a><span class="ltx_text" id="S1.T1.1.1.8.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.8.2"><span class="ltx_text" id="S1.T1.1.1.8.2.1" style="font-size:90%;">03-Sept-2023</span></td>
+<td class="ltx_td ltx_align_center" id="S1.T1.1.1.8.3"><span class="ltx_text" id="S1.T1.1.1.8.3.1" style="font-size:90%;">32</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.8.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.8.4.1">
+<span class="ltx_p" id="S1.T1.1.1.8.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.8.4.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.8.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.8.5.1">
+<span class="ltx_p" id="S1.T1.1.1.8.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.8.5.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.8.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.8.6.1">
+<span class="ltx_p" id="S1.T1.1.1.8.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.8.6.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top" id="S1.T1.1.1.8.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.8.7.1">
+<span class="ltx_p" id="S1.T1.1.1.8.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.8.7.1.1.1" style="font-size:90%;">Organized by different training stages of LLMs, discusses potential sources of LLM hallucinations and in-depth review of recent work on addressing the problem.</span></span>
+</span>
+</td>
+</tr>
+<tr class="ltx_tr" id="S1.T1.1.1.9">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S1.T1.1.1.9.1"><cite class="ltx_cite ltx_citemacro_cite">Guo <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S1.T1.1.1.9.1.1.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib15" title="">2022</a><span class="ltx_text" id="S1.T1.1.1.9.1.2.2.2.1" style="font-size:90%;">)</span></cite></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S1.T1.1.1.9.2"><span class="ltx_text" id="S1.T1.1.1.9.2.1" style="font-size:90%;">Feb-2022</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S1.T1.1.1.9.3"><span class="ltx_text" id="S1.T1.1.1.9.3.1" style="font-size:90%;">29</span></td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S1.T1.1.1.9.4">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.9.4.1">
+<span class="ltx_p" id="S1.T1.1.1.9.4.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.9.4.1.1.1" style="font-size:90%;">✓</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S1.T1.1.1.9.5">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.9.5.1">
+<span class="ltx_p" id="S1.T1.1.1.9.5.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.9.5.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S1.T1.1.1.9.6">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.9.6.1">
+<span class="ltx_p" id="S1.T1.1.1.9.6.1.1" style="width:28.5pt;"><span class="ltx_text" id="S1.T1.1.1.9.6.1.1.1" style="font-size:90%;">✗</span></span>
+</span>
+</td>
+<td class="ltx_td ltx_align_justify ltx_align_top ltx_border_bb" id="S1.T1.1.1.9.7">
+<span class="ltx_inline-block ltx_align_top" id="S1.T1.1.1.9.7.1">
+<span class="ltx_p" id="S1.T1.1.1.9.7.1.1" style="width:313.0pt;"><span class="ltx_text" id="S1.T1.1.1.9.7.1.1.1" style="font-size:90%;">Focused on the automated fact-checking pipeline</span></span>
+</span>
+</td>
+</tr>
+</table>
+</span></div>
+<figcaption class="ltx_caption ltx_centering" style="font-size:90%;"><span class="ltx_tag ltx_tag_table">Table 1: </span>Comparison of different surveys on the factuality of LLMs.</figcaption>
+</figure>
+<div class="ltx_para" id="S1.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S1.SS0.SSS0.Px1.p1.1">We can see in Table <a class="ltx_ref" href="#S1.T1" title="Table 1 ‣ Why this survey? ‣ 1 Introduction ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">1</span></a> that the majority of recent surveys on the factuality of LLMs or hallucination evaluation and improvements are rather lengthy, with most over 20 pages.
+While they attempt to provide a comprehensive literature review by summarizing interesting ideas and findings, organized by their intended use at different stages in the training cycle of an LLM covering pre-training, supervised fine-tuning (SFT), reinforcement learning with human or automatic feedback (RLXF), and inference, it is difficult for readers to understand the differences between some ambiguous concepts (e.g., LLM factuality vs. hallucination), fundamental challenges and promising solutions in factuality evaluation and enhancement.
+This survey, instead, focuses on recent novel and representative works in each category, summarizes their common bottlenecks and solutions to mitigate such issues while highlighting our personal stance based on practical experience and observations.
+</p>
+</div>
+<div class="ltx_para" id="S1.SS0.SSS0.Px1.p2">
+<p class="ltx_p" id="S1.SS0.SSS0.Px1.p2.1">In addition to LLM hallucination detection and mitigation strategies, <cite class="ltx_cite ltx_citemacro_cite">Huang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib18" title="">2023</a>); Zhang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib60" title="">2023c</a>)</cite> analyze potential reasons for LLM hallucination.
+<cite class="ltx_cite ltx_citemacro_cite">Gao <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib12" title="">2023b</a>)</cite> focus on retrieval augmentation generation (RAG) techniques whereas <cite class="ltx_cite ltx_citemacro_cite">Guo <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib15" title="">2022</a>)</cite> target automated fact-checking systems.
+The work of <cite class="ltx_cite ltx_citemacro_cite">Tonmoy <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib44" title="">2024</a>)</cite> compiles many recent research studies up to November 2023 albeit lacking an in-depth discussion.
+<cite class="ltx_cite ltx_citemacro_cite">Rawte <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib35" title="">2023b</a>)</cite> review numerous efforts exploring hallucinations in foundational models across various modalities, offering an overview of considerable scope and breadth, but with limited depth.
+Our objective is to address these challenges by concisely providing comprehensive insights into LLM factuality, prioritizing recent studies to accommodate the rapidly evolving landscape.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S1.SS0.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Scope</h5>
+<div class="ltx_para" id="S1.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S1.SS0.SSS0.Px2.p1.1">We outline the scope of this survey below:
+</p>
+<ul class="ltx_itemize" id="S1.I1">
+<li class="ltx_item" id="S1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i1.p1">
+<p class="ltx_p" id="S1.I1.i1.p1.1">Unlike most prior surveys, we discuss factuality across a number of modalities, including vision and speech, with an emphasis on factual errors in text.</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i2.p1">
+<p class="ltx_p" id="S1.I1.i2.p1.1">We focus on factuality of open-ended text generation without references, as opposed to generation tasks with references (e.g., summarization or dialogue with source documents or user-input contexts).</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i3.p1">
+<p class="ltx_p" id="S1.I1.i3.p1.1">We pay particular attention to factual errors involving world knowledge, and we leave other types (e.g., coding, reasoning, conflicting with user input or previously generated contexts) for future work.</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i4.p1">
+<p class="ltx_p" id="S1.I1.i4.p1.1">In addition to improving factuality and correcting factual errors, another line of research investigates improving LLM calibration, making models aware of their limitations in its knowledge and confidence in its output, enabling it to either reject to respond to instructions or express uncertainties in its answers when unsure. Given the in-depth discussion in <cite class="ltx_cite ltx_citemacro_cite">Geng <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib13" title="">2023</a>)</cite>, We exclude in this survey.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<section class="ltx_paragraph" id="S1.SS0.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">Structure</h5>
+<div class="ltx_para" id="S1.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S1.SS0.SSS0.Px3.p1.1">We first compare and contrast factuality in the context of LLMs against three closely related concepts: hallucination, relevance and trustworthiness in §<a class="ltx_ref" href="#S2" title="2 Background ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">2</span></a>.
+Next, we outline benchmarks and evaluation metrics based on data format in §<a class="ltx_ref" href="#S3" title="3 Evaluating Factuality ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">3</span></a>.
+We then discuss recent works on addressing factual errors in §<a class="ltx_ref" href="#S4" title="4 Improving Factuality ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">4</span></a> for text and other modalities in §<a class="ltx_ref" href="#S5" title="5 Factuality of Multimodal LLMs ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">5</span></a>.
+Lastly, we highlight open questions and their promising solutions in §<a class="ltx_ref" href="#S6" title="6 Challenges and Future Directions ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Background</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">Hallucination and factuality, while conceptually distinct, often occur in similar contexts and are sometimes used interchangeably,
+rendering them intricately intertwined, posing a challenge in discerning their distinct boundaries, and causing a considerable amount of misconception.
+In this section, we seek to disambiguate and refine our understanding of these two closely aligned concepts, thereby preventing misinterpretation and reducing potential confusion.
+Additionally, we further include two closely-related axes: relevance and trustworthiness for LLM evaluation to illustrate their nuance in relation to factuality.</p>
+</div>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Hallucination vs. Factuality</h5>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p1.1">The concept of hallucination in the context of traditional natural language generation tasks is typically referred to as the phenomenon in which the generated content appears nonsensical or unfaithful to the provided source content <cite class="ltx_cite ltx_citemacro_cite">Ji <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite>.
+One concrete example is made-up information in an abstractive summary with additional insights beyond the scope of the original source document.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p2">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p2.1">In the age of LLMs, the term hallucination has been reimagined, encompassing any deviation from factual reality or the inclusion of fabricated elements within generated texts <cite class="ltx_cite ltx_citemacro_cite">Tonmoy <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib44" title="">2024</a>); Rawte <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib35" title="">2023b</a>)</cite>.
+<cite class="ltx_cite ltx_citemacro_cite">Zhang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib60" title="">2023c</a>)</cite> define hallucination as the characteristic of LLMs to generate content that diverges from the user input, contradicts previously generated context, or mis-aligns with established world knowledge.
+<cite class="ltx_cite ltx_citemacro_cite">Huang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib18" title="">2023</a>)</cite> merge the input- and context-conflicting types of hallucinations and further take logical inconsistency into account to form <span class="ltx_text ltx_font_italic" id="S2.SS0.SSS0.Px1.p2.1.1">faithfulness</span> hallucination.
+Another category is <span class="ltx_text ltx_font_italic" id="S2.SS0.SSS0.Px1.p2.1.2">factuality</span> hallucination, referring to the discrepancy between generated content and verifiable real-world facts, manifesting as (1) factual inconsistency and (2) factual fabrication.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p3">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p3.1">Factuality, on the other hand, is concerned with a model’s ability to learn, acquire, and utilize factual knowledge.
+<cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib50" title="">2023b</a>)</cite> characterize factuality issues as the probability of LLMs producing content inconsistent with established facts.
+It is important to note that hallucination content may not always involve factual missteps.
+Though a piece of generated text may exhibit divergence from the initial prompt’s specifics, it falls into hallucinations, not necessarily a factual issue if the content is accurate.
+</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p4">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p4.1">It is crucial to distinguish between factual errors and instances of hallucination.
+The former involves inaccurate information whereas the latter can present unanticipated and yet factually substantiated content <cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib50" title="">2023b</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.SS0.SSS0.Px1.p5">
+<p class="ltx_p" id="S2.SS0.SSS0.Px1.p5.1"><span class="ltx_text ltx_font_bold" id="S2.SS0.SSS0.Px1.p5.1.1">Summary:</span>
+Factuality is the ability of LLMs to generate content consistent with factual information and world knowledge. Although both hallucinations and factuality issues may impact the credibility of LLMs in the context of content generation, they present distinct challenges. Hallucinations occur when LLMs produce baseless or untruthful content, not grounded in the given source. In contrast, factuality errors arise when the model fails to accurately learn and utilize factual knowledge. It is possible for a model to be factually correct yet still produce hallucinations by generating content that is either off-topic or more detailed than what is requested.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Relevance vs. Factuality</h5>
+<div class="ltx_para" id="S2.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px2.p1.1">FELM <cite class="ltx_cite ltx_citemacro_cite">Chen <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib4" title="">2023</a>)</cite> categorizes factual errors into four groups to better understand and identify LLM vulnerabilities: knowledge, irrelevance, reasoning and math, and misunderstanding falsehoods and jokes in prompts.
+Irrelevant error refers to that the generated content is unrelated to the prompt.
+For example, if the prompt is <span class="ltx_text ltx_font_italic" id="S2.SS0.SSS0.Px2.p1.1.1">What’s a country where most people love playing rugby?</span> a response like <span class="ltx_text ltx_font_italic" id="S2.SS0.SSS0.Px2.p1.1.2">New Zealand is a country where rugby is considered a national passion and is deeply ingrained in the culture …</span> would be labeled as irrelevant though it is factually true.
+While not factually incorrect, this response does not provide much helpful information.
+</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S2.SS0.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">Trustworthiness/Reliability vs. Factuality</h5>
+<div class="ltx_para" id="S2.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S2.SS0.SSS0.Px3.p1.1">In the context of LLMs, factuality <cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib50" title="">2023b</a>)</cite> refers to a model’s capability of generating contents of factual information, grouneded in reliable sources (e.g., dictionaries, Wikipedia or textbooks), with commonsense, world and domain-specific knowledge taken into account.
+In contrast, “trustworthiness” <cite class="ltx_cite ltx_citemacro_cite">Sun <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib41" title="">2024</a>)</cite> extends beyond mere factual accuracy and is measured on six dimensions: truthfulness, safety, fairness, robustness, privacy, and ethics.</p>
+</div>
+<figure class="ltx_table" id="S2.T2">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S2.T2.1" style="width:433.6pt;height:147.8pt;vertical-align:-0.5pt;"><span class="ltx_transformed_inner" style="transform:translate(-180.5pt,61.3pt) scale(0.54570969594234,0.54570969594234) ;">
+<table class="ltx_tabular ltx_align_middle" id="S2.T2.1.1">
+<tr class="ltx_tr" id="S2.T2.1.1.1">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S2.T2.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.1.1" style="font-size:90%;">Type</span></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S2.T2.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.2.1" style="font-size:90%;">Dataset</span></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S2.T2.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.3.1" style="font-size:90%;">Topic</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="S2.T2.1.1.1.4"><span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.4.1" style="font-size:90%;">Size</span></td>
+<td class="ltx_td ltx_align_right ltx_border_tt" id="S2.T2.1.1.1.5"><span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.5.1" style="font-size:90%;">ER%</span></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S2.T2.1.1.1.6">
+<span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.6.1" style="font-size:90%;">Evaluation and Metrics</span><span class="ltx_text" id="S2.T2.1.1.1.6.2" style="font-size:90%;"> used in Original Paper</span>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S2.T2.1.1.1.7"><span class="ltx_text ltx_font_bold" id="S2.T2.1.1.1.7.1" style="font-size:90%;">Freq</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.2.1" rowspan="7"><span class="ltx_text" id="S2.T2.1.1.2.1.1" style="font-size:90%;">I</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.2.2">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.2.2.1" style="font-size:90%;">FactScore</span><span class="ltx_text" id="S2.T2.1.1.2.2.2" style="font-size:90%;">-Bio </span><cite class="ltx_cite ltx_citemacro_cite">Min and et al. <span class="ltx_text" id="S2.T2.1.1.2.2.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib29" title="">2023</a><span class="ltx_text" id="S2.T2.1.1.2.2.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.2.3"><span class="ltx_text" id="S2.T2.1.1.2.3.1" style="font-size:90%;">Biography</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.2.4"><span class="ltx_text" id="S2.T2.1.1.2.4.1" style="font-size:90%;">549</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.2.5"><span class="ltx_text" id="S2.T2.1.1.2.5.1" style="font-size:90%;">42.6</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.2.6"><span class="ltx_text" id="S2.T2.1.1.2.6.1" style="font-size:90%;">Human annotation and automated fact-checkers</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.2.7"><span class="ltx_text" id="S2.T2.1.1.2.7.1" style="font-size:90%;">4</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.3">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.3.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.3.1.1" style="font-size:90%;">Factcheck-GPT</span><span class="ltx_text" id="S2.T2.1.1.3.1.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.3.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib51" title="">2023c</a><span class="ltx_text" id="S2.T2.1.1.3.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.3.2"><span class="ltx_text" id="S2.T2.1.1.3.2.1" style="font-size:90%;">Open-ended questions</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.3.3"><span class="ltx_text" id="S2.T2.1.1.3.3.1" style="font-size:90%;">94</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.3.4"><span class="ltx_text" id="S2.T2.1.1.3.4.1" style="font-size:90%;">64.9</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.3.5"><span class="ltx_text" id="S2.T2.1.1.3.5.1" style="font-size:90%;">Human annotation</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.3.6"><span class="ltx_text" id="S2.T2.1.1.3.6.1" style="font-size:90%;">1</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.4">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.4.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.4.1.1" style="font-size:90%;">FacTool</span><span class="ltx_text" id="S2.T2.1.1.4.1.2" style="font-size:90%;">-QA </span><cite class="ltx_cite ltx_citemacro_cite">Chern <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.4.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib5" title="">2023</a><span class="ltx_text" id="S2.T2.1.1.4.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.4.2"><span class="ltx_text" id="S2.T2.1.1.4.2.1" style="font-size:90%;">Knowledge-based QA</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.4.3"><span class="ltx_text" id="S2.T2.1.1.4.3.1" style="font-size:90%;">50</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.4.4"><span class="ltx_text" id="S2.T2.1.1.4.4.1" style="font-size:90%;">54.0</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.4.5"><span class="ltx_text" id="S2.T2.1.1.4.5.1" style="font-size:90%;">Human annotation and automated fact-checkers</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.4.6"><span class="ltx_text" id="S2.T2.1.1.4.6.1" style="font-size:90%;">2</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.5">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.5.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.5.1.1" style="font-size:90%;">FELM-WK</span><span class="ltx_text" id="S2.T2.1.1.5.1.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Chen <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.5.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib4" title="">2023</a><span class="ltx_text" id="S2.T2.1.1.5.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.5.2"><span class="ltx_text" id="S2.T2.1.1.5.2.1" style="font-size:90%;">Knowledge-based QA</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.5.3"><span class="ltx_text" id="S2.T2.1.1.5.3.1" style="font-size:90%;">184</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.5.4"><span class="ltx_text" id="S2.T2.1.1.5.4.1" style="font-size:90%;">46.2</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.5.5"><span class="ltx_text" id="S2.T2.1.1.5.5.1" style="font-size:90%;">Human annotation, Accuracy and F1 score</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.5.6"><span class="ltx_text" id="S2.T2.1.1.5.6.1" style="font-size:90%;">1</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.6">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.6.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.6.1.1" style="font-size:90%;">HaluEval</span><span class="ltx_text" id="S2.T2.1.1.6.1.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Li and et al. <span class="ltx_text" id="S2.T2.1.1.6.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib26" title="">2023a</a><span class="ltx_text" id="S2.T2.1.1.6.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.6.2"><span class="ltx_text" id="S2.T2.1.1.6.2.1" style="font-size:90%;">Open-ended questions</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.6.3"><span class="ltx_text" id="S2.T2.1.1.6.3.1" style="font-size:90%;">5000</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.6.4"><span class="ltx_text" id="S2.T2.1.1.6.4.1" style="font-size:90%;">12.3</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.6.5"><span class="ltx_text" id="S2.T2.1.1.6.5.1" style="font-size:90%;">Human annotation, AUROC + LLM judge + PARENT</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.6.6"><span class="ltx_text" id="S2.T2.1.1.6.6.1" style="font-size:90%;">3</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.7">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.7.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.7.1.1" style="font-size:90%;">FreshQA</span><span class="ltx_text" id="S2.T2.1.1.7.1.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Vu <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.7.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib48" title="">2023</a><span class="ltx_text" id="S2.T2.1.1.7.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.7.2"><span class="ltx_text" id="S2.T2.1.1.7.2.1" style="font-size:90%;">Open-ended questions</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.7.3"><span class="ltx_text" id="S2.T2.1.1.7.3.1" style="font-size:90%;">499</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.7.4"><span class="ltx_text" id="S2.T2.1.1.7.4.1" style="font-size:90%;">68.0</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.7.5"><span class="ltx_text" id="S2.T2.1.1.7.5.1" style="font-size:90%;">Human annotation</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.7.6"><span class="ltx_text" id="S2.T2.1.1.7.6.1" style="font-size:90%;">2</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.8">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.8.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.8.1.1" style="font-size:90%;">SelfAware</span><span class="ltx_text" id="S2.T2.1.1.8.1.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Yin <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.8.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib57" title="">2023b</a><span class="ltx_text" id="S2.T2.1.1.8.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.8.2"><span class="ltx_text" id="S2.T2.1.1.8.2.1" style="font-size:90%;">Open-ended questions</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.8.3"><span class="ltx_text" id="S2.T2.1.1.8.3.1" style="font-size:90%;">3369</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.8.4"><span class="ltx_text" id="S2.T2.1.1.8.4.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.8.5"><span class="ltx_text" id="S2.T2.1.1.8.5.1" style="font-size:90%;">Evaluate the LLM awareness of unknown by F1-score</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.8.6"><span class="ltx_text" id="S2.T2.1.1.8.6.1" style="font-size:90%;">1</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.9">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.9.1"><span class="ltx_text" id="S2.T2.1.1.9.1.1" style="font-size:90%;">II</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.9.2">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.9.2.1" style="font-size:90%;">Snowball</span><span class="ltx_text" id="S2.T2.1.1.9.2.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Zhang <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.9.2.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib59" title="">2023b</a><span class="ltx_text" id="S2.T2.1.1.9.2.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.9.3"><span class="ltx_text" id="S2.T2.1.1.9.3.1" style="font-size:90%;">Yes/No question</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.9.4"><span class="ltx_text" id="S2.T2.1.1.9.4.1" style="font-size:90%;">1500</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.9.5"><span class="ltx_text" id="S2.T2.1.1.9.5.1" style="font-size:90%;">9.4</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.9.6"><span class="ltx_text" id="S2.T2.1.1.9.6.1" style="font-size:90%;">Exact match + Accuracy/F1-score</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.9.7"><span class="ltx_text" id="S2.T2.1.1.9.7.1" style="font-size:90%;">1</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.10">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.10.1" rowspan="2"><span class="ltx_text" id="S2.T2.1.1.10.1.1" style="font-size:90%;">III</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.10.2">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.10.2.1" style="font-size:90%;">Wiki-category List</span><span class="ltx_text" id="S2.T2.1.1.10.2.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Dhuliawala <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.10.2.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib7" title="">2023</a><span class="ltx_text" id="S2.T2.1.1.10.2.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.10.3">
+<span class="ltx_text" id="S2.T2.1.1.10.3.1" style="font-size:90%;">Name some </span><span class="ltx_text ltx_font_italic" id="S2.T2.1.1.10.3.2" style="font-size:90%;">[Mexican films]</span>
+</td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.10.4"><span class="ltx_text" id="S2.T2.1.1.10.4.1" style="font-size:90%;">55</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.10.5"><span class="ltx_text" id="S2.T2.1.1.10.5.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.10.6"><span class="ltx_text" id="S2.T2.1.1.10.6.1" style="font-size:90%;">Precision/recall@5</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.10.7"><span class="ltx_text" id="S2.T2.1.1.10.7.1" style="font-size:90%;">1</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.11">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.11.1">
+<span class="ltx_text ltx_font_italic" id="S2.T2.1.1.11.1.1" style="font-size:90%;">Multispan QA</span><span class="ltx_text" id="S2.T2.1.1.11.1.2" style="font-size:90%;"> </span><cite class="ltx_cite ltx_citemacro_cite">Dhuliawala <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.11.1.3.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib7" title="">2023</a><span class="ltx_text" id="S2.T2.1.1.11.1.4.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.11.2"><span class="ltx_text" id="S2.T2.1.1.11.2.1" style="font-size:90%;">Short-term Answer</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.11.3"><span class="ltx_text" id="S2.T2.1.1.11.3.1" style="font-size:90%;">428</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.11.4"><span class="ltx_text" id="S2.T2.1.1.11.4.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.11.5"><span class="ltx_text" id="S2.T2.1.1.11.5.1" style="font-size:90%;">Exact match + F1 score</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.11.6"><span class="ltx_text" id="S2.T2.1.1.11.6.1" style="font-size:90%;">1</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.12">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S2.T2.1.1.12.1" rowspan="4"><span class="ltx_text" id="S2.T2.1.1.12.1.1" style="font-size:90%;">IV</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.12.2">
+<span class="ltx_text" id="S2.T2.1.1.12.2.1" style="font-size:90%;">TruthfulQA </span><cite class="ltx_cite ltx_citemacro_cite">Lin <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.12.2.2.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib28" title="">2022</a><span class="ltx_text" id="S2.T2.1.1.12.2.3.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.12.3"><span class="ltx_text" id="S2.T2.1.1.12.3.1" style="font-size:90%;">False belief or misconception</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.12.4"><span class="ltx_text" id="S2.T2.1.1.12.4.1" style="font-size:90%;">817</span></td>
+<td class="ltx_td ltx_align_right ltx_border_t" id="S2.T2.1.1.12.5"><span class="ltx_text" id="S2.T2.1.1.12.5.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S2.T2.1.1.12.6"><span class="ltx_text" id="S2.T2.1.1.12.6.1" style="font-size:90%;">Accuracy</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S2.T2.1.1.12.7"><span class="ltx_text" id="S2.T2.1.1.12.7.1" style="font-size:90%;">5</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.13">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.13.1">
+<span class="ltx_text" id="S2.T2.1.1.13.1.1" style="font-size:90%;">HotpotQA </span><cite class="ltx_cite ltx_citemacro_cite">Yang and et al. <span class="ltx_text" id="S2.T2.1.1.13.1.2.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib54" title="">2018</a><span class="ltx_text" id="S2.T2.1.1.13.1.3.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.13.2"><span class="ltx_text" id="S2.T2.1.1.13.2.1" style="font-size:90%;">Multi-step reasoning</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.13.3"><span class="ltx_text" id="S2.T2.1.1.13.3.1" style="font-size:90%;">113k</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.13.4"><span class="ltx_text" id="S2.T2.1.1.13.4.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.13.5"><span class="ltx_text" id="S2.T2.1.1.13.5.1" style="font-size:90%;">Exact match + F1 score</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.13.6"><span class="ltx_text" id="S2.T2.1.1.13.6.1" style="font-size:90%;">11</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.14">
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.14.1">
+<span class="ltx_text" id="S2.T2.1.1.14.1.1" style="font-size:90%;">StrategyQA </span><cite class="ltx_cite ltx_citemacro_cite">Geva <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.14.1.2.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib14" title="">2021</a><span class="ltx_text" id="S2.T2.1.1.14.1.3.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.14.2"><span class="ltx_text" id="S2.T2.1.1.14.2.1" style="font-size:90%;">Multi-step reasoning</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.14.3"><span class="ltx_text" id="S2.T2.1.1.14.3.1" style="font-size:90%;">2780</span></td>
+<td class="ltx_td ltx_align_right" id="S2.T2.1.1.14.4"><span class="ltx_text" id="S2.T2.1.1.14.4.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left" id="S2.T2.1.1.14.5"><span class="ltx_text" id="S2.T2.1.1.14.5.1" style="font-size:90%;">Recall@10</span></td>
+<td class="ltx_td ltx_align_center" id="S2.T2.1.1.14.6"><span class="ltx_text" id="S2.T2.1.1.14.6.1" style="font-size:90%;">3</span></td>
+</tr>
+<tr class="ltx_tr" id="S2.T2.1.1.15">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S2.T2.1.1.15.1">
+<span class="ltx_text" id="S2.T2.1.1.15.1.1" style="font-size:90%;">MMLU </span><cite class="ltx_cite ltx_citemacro_cite">Hendrycks <span class="ltx_text ltx_font_italic">et al.</span> <span class="ltx_text" id="S2.T2.1.1.15.1.2.1.1.1" style="font-size:90%;">(</span><a class="ltx_ref" href="#bib.bib16" title="">2021</a><span class="ltx_text" id="S2.T2.1.1.15.1.3.2.2.1" style="font-size:90%;">)</span></cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S2.T2.1.1.15.2"><span class="ltx_text" id="S2.T2.1.1.15.2.1" style="font-size:90%;">Knowledge</span></td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S2.T2.1.1.15.3"><span class="ltx_text" id="S2.T2.1.1.15.3.1" style="font-size:90%;">15700</span></td>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="S2.T2.1.1.15.4"><span class="ltx_text" id="S2.T2.1.1.15.4.1" style="font-size:90%;">–</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S2.T2.1.1.15.5"><span class="ltx_text" id="S2.T2.1.1.15.5.1" style="font-size:90%;">Accuracy</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S2.T2.1.1.15.6"><span class="ltx_text" id="S2.T2.1.1.15.6.1" style="font-size:90%;">4</span></td>
+</tr>
+</table>
+</span></div>
+<figcaption class="ltx_caption ltx_centering" style="font-size:90%;"><span class="ltx_tag ltx_tag_table">Table 2: </span><span class="ltx_text ltx_font_bold" id="S2.T2.15.1">Four types of datasets used to evaluate LLM factuality</span>. I: open-ended generation; II: Yes/No answer; III: short-term or list of entities answer; IV: A, B, C, D multiple Choice QA. Labeled datasets under type I are mostly generated by <span class="ltx_text" id="S2.T2.16.2">ChatGPT</span>, and <span class="ltx_text ltx_font_italic" id="S2.T2.17.3">FactScore</span>-Bio (<span class="ltx_text" id="S2.T2.18.4">ChatGPT</span>, <span class="ltx_text ltx_font_italic" id="S2.T2.19.5">InstGPT</span> and <span class="ltx_text" id="S2.T2.20.6">PerplexityAI</span>). ER: Human-annotated Error Rate. Freq: usage frequency as evaluation set in our first 50 references.</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Evaluating Factuality</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">Evaluating LLM factuality on open-ended generations presents a non-trivial challenge, discerning the degree to which a generated textual statement aligns with objective reality.
+Studies employ various benchmarks, evaluation strategies and metrics to achieve this goal.</p>
+</div>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Datasets and Metrics</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">While <cite class="ltx_cite ltx_citemacro_cite">Zhang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib60" title="">2023c</a>)</cite> outlined tasks and measures for hallucination evaluation, there is no comparative analysis of existing datasets to assess various aspects in regards to model factuality (e.g., knowledge grounding, fast-changing facts, snowballing hallucinations, robustness to false premises, and uncertainty awareness).
+We categorize the datasets in the format of discrimination or generation, and highlights the challenges in automatic evaluation for long-form open-ended generations.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p2">
+<p class="ltx_p" id="S3.SS1.p2.1">Current benchmarks largely assess factuality in LLMs based on two primary capabilities: proficiency in distinguishing factual accuracy within context and ability to generate factually sound content.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p3">
+<p class="ltx_p" id="S3.SS1.p3.1">The former typically comes in the form of a multi-choice question, with the expected response being a label of one of A, B, C, and D.
+For instance, HotpotQA, StrategyQA, MMLU.
+This form of evaluation has been widely used to measure the general knowledge proficiency and factual accuracy of LLMs, largely thanks to its automation-friendly nature.
+Under this evaluation formulation, model responses are easily parsed and compared with gold standard labels, enabling the calculation of accuracy or F1 scores against established benchmarks.
+</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p4">
+<p class="ltx_p" id="S3.SS1.p4.1">Precisely assessing the factuality of free-form LLM outputs remains a significant challenge due to the inherent limitations of automatic methods in the face of open-ended generation and the absence of definitive gold standard responses within an expansive output space.
+To make automatic evaluation feasible, many studies constrain the generation space to (1) Yes/No; (2) short-form phrase; and (3) a list of entities through controlling the categories of questions and generation length.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p5">
+<p class="ltx_p" id="S3.SS1.p5.1">Perhaps the most demanding, yet inherently realistic scenario is free-form long text generation, such as biography generation.
+For such generations, the most commonly used and reliable methods rely on human experts following specific guidelines, and automatic fact-checkers based on retrieved information, such as FactScore, Factool and Factcheck-GPT, to facilitate efficient and consistent evaluation.
+</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p6">
+<p class="ltx_p" id="S3.SS1.p6.1">These automatic fact-checkers generally first decompose a document into a set of atomic claims, and then verify one by one whether the claim is true or false based on the retrieved evidence, either from offline Wikipedia or online Web pages.
+The percentage of true claims over all statements in a document is used to reflect the factual status of a response (refer to FactScore). The averaged Factscore over a dataset is in turn used to assess a model’s factuality accuracy.
+However, there is no guarantee that automatic fact-checkers are 100% accurate in their verification process.
+<cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib51" title="">2023c</a>)</cite> show that even the state-of-the-art verifier, equipped with GPT-4 and supporting evidence retrieved with Google search, can only achieve an F1 score of <math alttext="0.63" class="ltx_Math" display="inline" id="S3.SS1.p6.1.m1.1"><semantics id="S3.SS1.p6.1.m1.1a"><mn id="S3.SS1.p6.1.m1.1.1" xref="S3.SS1.p6.1.m1.1.1.cmml">0.63</mn><annotation-xml encoding="MathML-Content" id="S3.SS1.p6.1.m1.1b"><cn id="S3.SS1.p6.1.m1.1.1.cmml" type="float" xref="S3.SS1.p6.1.m1.1.1">0.63</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p6.1.m1.1c">0.63</annotation></semantics></math> in identifying false claims and F1=0.53 using <span class="ltx_text" id="S3.SS1.p6.1.1">PerplexityAI</span> (compared with human-annotated labels for claims: true or false).</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p7">
+<p class="ltx_p" id="S3.SS1.p7.1"><span class="ltx_text ltx_font_bold" id="S3.SS1.p7.1.1">Summary:</span> We categorize datasets that evaluate LLM factuality into four types, depending on the answer space and the difficulty degree on which accurate automatic quantification can be performed (see Table <a class="ltx_ref" href="#S2.T2" title="Table 2 ‣ Trustworthiness/Reliability vs. Factuality ‣ 2 Background ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">2</span></a>).
+They are:
+(I) open-domain, free-form, long-term responses (FactScore: the percentage of the correct claims verified by human or automated fact-checker); (II) Yes/No answer w/wt explanation (extract Yes/No, metrics for binary classification);
+(III) short-form answer (Exact match the answer with gold labels and calculate accuracy) or the listing answer (recall@K); and
+(IV) multi-choice QA (metrics for multi-class classification).</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Other Metrics</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1">In addition to evaluation methods discussed above,
+<cite class="ltx_cite ltx_citemacro_cite">Lee <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite> quantify hallucinations using two metrics, both requiring document-level ground-truth:
+(1) hallucinated named entities error measures the percentage of named entities in generations that do not appear in the ground-truth Wikipedia document;
+(2) entailment ratio evaluates the number of generations that can be entailed by the ground-truth reference, against the number of all generations.</p>
+</div>
+<div class="ltx_para" id="S3.SS2.p2">
+<p class="ltx_p" id="S3.SS2.p2.1"><cite class="ltx_cite ltx_citemacro_cite">Rawte <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib34" title="">2023a</a>)</cite> define hallucination vulnerability index (HVI) to evaluate and rank LLMs based on their vulnerability to producing hallucinations, which takes a spectrum of factors into account.</p>
+</div>
+<div class="ltx_para" id="S3.SS2.p3">
+<p class="ltx_p" id="S3.SS2.p3.1">Some factuality measurement tasks, such as claim extraction and evidence retrieval are non-trivial to be resolved automatically.
+<cite class="ltx_cite ltx_citemacro_cite">Rawte <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib34" title="">2023a</a>)</cite> curate publicly available LLM hallucination mitigation benchmark, where LLM generations are scored by humans when automated external knowledge retrieval fails to resolve a claim clearly.
+While widely used for factuality evaluation, this hybrid approach (i.e., retrieval + human) may suffer from human annotation bias.
+</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Improving Factuality </h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">Improving the factuality of an LLM often requires updating its internal knowledge, editing fake, outdated and biased elements, thereby making its output reflect a revised collection of facts, maximizing the probability of <math alttext="P(\textrm{truth}|\textrm{prompt})" class="ltx_Math" display="inline" id="S4.p1.1.m1.1"><semantics id="S4.p1.1.m1.1a"><mrow id="S4.p1.1.m1.1.1" xref="S4.p1.1.m1.1.1.cmml"><mi id="S4.p1.1.m1.1.1.3" xref="S4.p1.1.m1.1.1.3.cmml">P</mi><mo id="S4.p1.1.m1.1.1.2" lspace="0em" rspace="0em" xref="S4.p1.1.m1.1.1.2.cmml">​</mo><mrow id="S4.p1.1.m1.1.1.1.1" xref="S4.p1.1.m1.1.1.1.1.1.cmml"><mo id="S4.p1.1.m1.1.1.1.1.2" stretchy="false" xref="S4.p1.1.m1.1.1.1.1.1.cmml">(</mo><mrow id="S4.p1.1.m1.1.1.1.1.1" xref="S4.p1.1.m1.1.1.1.1.1.cmml"><mtext id="S4.p1.1.m1.1.1.1.1.1.2" xref="S4.p1.1.m1.1.1.1.1.1.2a.cmml">truth</mtext><mo fence="false" id="S4.p1.1.m1.1.1.1.1.1.1" xref="S4.p1.1.m1.1.1.1.1.1.1.cmml">|</mo><mtext id="S4.p1.1.m1.1.1.1.1.1.3" xref="S4.p1.1.m1.1.1.1.1.1.3a.cmml">prompt</mtext></mrow><mo id="S4.p1.1.m1.1.1.1.1.3" stretchy="false" xref="S4.p1.1.m1.1.1.1.1.1.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.p1.1.m1.1b"><apply id="S4.p1.1.m1.1.1.cmml" xref="S4.p1.1.m1.1.1"><times id="S4.p1.1.m1.1.1.2.cmml" xref="S4.p1.1.m1.1.1.2"></times><ci id="S4.p1.1.m1.1.1.3.cmml" xref="S4.p1.1.m1.1.1.3">𝑃</ci><apply id="S4.p1.1.m1.1.1.1.1.1.cmml" xref="S4.p1.1.m1.1.1.1.1"><csymbol cd="latexml" id="S4.p1.1.m1.1.1.1.1.1.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1.1">conditional</csymbol><ci id="S4.p1.1.m1.1.1.1.1.1.2a.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2"><mtext id="S4.p1.1.m1.1.1.1.1.1.2.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2">truth</mtext></ci><ci id="S4.p1.1.m1.1.1.1.1.1.3a.cmml" xref="S4.p1.1.m1.1.1.1.1.1.3"><mtext id="S4.p1.1.m1.1.1.1.1.1.3.cmml" xref="S4.p1.1.m1.1.1.1.1.1.3">prompt</mtext></ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.1.m1.1c">P(\textrm{truth}|\textrm{prompt})</annotation></semantics></math>.
+One option is to adopt gradient-based methods to update model parameters to encourage desired model output. This includes pre-training, supervised fine-tuning and RLXF.
+We can also explore injecting a new fact into LLMs or overwriting the false knowledge stored in LLM memory by in-context learning (ICL).
+When models store factually correct knowledge but produce errors, they can in some cases rectify them through self-reasoning, reflection, and multi-agent debates.</p>
+</div>
+<div class="ltx_para" id="S4.p2">
+<p class="ltx_p" id="S4.p2.1">We discuss these methods throughout the lifecycle of an LLM, ranging from pre-training, to inference, to post-processing.
+Another important element is retrieval augmentation, which enhances the generation capabilities of LLMs by anchoring them in external knowledge that may not be stored or contradict the information in LLM parametric memory.
+It can be incorporated at various stages throughout model training and the subsequent inference process <cite class="ltx_cite ltx_citemacro_cite">Gao <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib12" title="">2023b</a>)</cite>, and is therefore not discussed individually.</p>
+</div>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Pre-training</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">LLMs store a vast amount of world knowledge in their parameters through the process of pre-training.
+The quality of the pre-training data plays a crucial role and misinformation could potentially cause LLMs to generate false responses, motivating the utilization of high-quality textual corpora.
+However, the prohibitively massive amount of pre-training data, typically consisting of trillions of tokens, renders manual filtering and editing impractically laborious.
+To this end, automated filtering methods have been proposed.
+For instance, <cite class="ltx_cite ltx_citemacro_cite">Brown <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib3" title="">2020</a>)</cite> introduce a method to only focus on a small portion of the CommonCrawl dataset that exhibits similarity to high-quality reference corpora.
+<cite class="ltx_cite ltx_citemacro_cite">Touvron <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib46" title="">2023</a>)</cite> propose to enhance factual robustness of mixed corpora by up-sampling documents from the most reliable sources, thereby amplifying knowledge accuracy and mitigating hallucinations.
+During the pre-training phase of <span class="ltx_text ltx_font_bold" id="S4.SS1.p1.1.1">phi-1.5</span>, <cite class="ltx_cite ltx_citemacro_cite">Li and et al. (<a class="ltx_ref" href="#bib.bib27" title="">2023b</a>)</cite> synthesize “textbook-like” data, consists of and rich in high-quality commonsense reasoning and world knowledge.
+While careful corpus curation remains the cornerstone of pre-training for enhanced factuality, the task becomes increasingly challenging with the expansion of dataset scale and the growing demand for linguistic diversity.
+It is therefore crucial to develop novel strategies that guarantee the consistency of factual knowledge across diverse cultural landscapes.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p2">
+<p class="ltx_p" id="S4.SS1.p2.2"><cite class="ltx_cite ltx_citemacro_cite">Borgeaud <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib2" title="">2021</a>)</cite> propose RETRO, a retrieval augmented pre-training approach. An auto-regressive LLM is trained from scratch with a retrieval module that is practically scalable to large-scale pre-training by retrieving billions of tokens. RETRO shows better accuracy and is less prone to hallucinate compared to GPT <cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib49" title="">2023a</a>)</cite>. While limitations lie in that RETRO performance could be compromised if the retrieval database contains inaccurate, biased or outdated information. <math alttext="\sim" class="ltx_Math" display="inline" id="S4.SS1.p2.1.m1.1"><semantics id="S4.SS1.p2.1.m1.1a"><mo id="S4.SS1.p2.1.m1.1.1" xref="S4.SS1.p2.1.m1.1.1.cmml">∼</mo><annotation-xml encoding="MathML-Content" id="S4.SS1.p2.1.m1.1b"><csymbol cd="latexml" id="S4.SS1.p2.1.m1.1.1.cmml" xref="S4.SS1.p2.1.m1.1.1">similar-to</csymbol></annotation-xml><annotation encoding="application/x-tex" id="S4.SS1.p2.1.m1.1c">\sim</annotation></semantics></math>25<math alttext="\%" class="ltx_Math" display="inline" id="S4.SS1.p2.2.m2.1"><semantics id="S4.SS1.p2.2.m2.1a"><mo id="S4.SS1.p2.2.m2.1.1" xref="S4.SS1.p2.2.m2.1.1.cmml">%</mo><annotation-xml encoding="MathML-Content" id="S4.SS1.p2.2.m2.1b"><csymbol cd="latexml" id="S4.SS1.p2.2.m2.1.1.cmml" xref="S4.SS1.p2.2.m2.1.1">percent</csymbol></annotation-xml><annotation encoding="application/x-tex" id="S4.SS1.p2.2.m2.1c">\%</annotation></semantics></math> additional computation is required for the pre-training of LLMs with retrieval.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Tuning and RLXF</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1">Continued domain-specific SFT has shown to be effective for enhancing factuality, particularly in the absence of such knowledge during pre-training.
+For instance, <cite class="ltx_cite ltx_citemacro_cite">Elaraby <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib9" title="">2023</a>)</cite> enhance the factual accuracy of LLMs through knowledge injection (KI). Knowledge, in the form of entity summaries or entity triplets, is incorporated through SFT by either intermediate tuning, i.e. first on knowledge and then on instruction data; or combined tuning, i.e. on the mixture of both.
+While some improvements are exhibited, the method alone can be insufficient to fully mitigate factual errors.
+</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p2">
+<p class="ltx_p" id="S4.SS2.p2.1">For general-purpose LLMs, SFT is typically employed to improve the instruction-following capabilities as opposed to factual knowledge which is mostly learned in pre-training.
+However, this process may inadvertently reveal areas of knowledge not covered in the pre-training, causing the risk of behavior cloning, where a model feigns understanding and responds with hallucinations to questions it has little knowledge of <cite class="ltx_cite ltx_citemacro_cite">Torabi <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib45" title="">2018</a>)</cite>.
+R-tuning <cite class="ltx_cite ltx_citemacro_cite">Zhang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib58" title="">2023a</a>)</cite> is proposed to address this issue with two pivotal steps: first, assessing the knowledge gap between the model’s parametric knowledge and the instruction tuning data, and second, creating a refusal-aware dataset for SFT.
+It enables LLMs to abstain from answering queries beyond their parametric knowledge scope.
+On the other hand, BeInfo <cite class="ltx_cite ltx_citemacro_cite">Razumovskaia <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib36" title="">2023</a>)</cite> improve factual alignment through the form of behavioral fine-tuning. The creation of the behavioral tuning dataset emphasizes two goals: selectivity (choosing correct information from the knowledge source) and response adequacy (informing the user when no relevant information is available or asking for clarification). Both methods effectively control LLMs on non-parametric questions but require extra effort in dataset curation and might hinder the models’ retention of parametric knowledge.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p3">
+<p class="ltx_p" id="S4.SS2.p3.1">Sycophancy <cite class="ltx_cite ltx_citemacro_cite">Sharma <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib37" title="">2023</a>)</cite>, known as another source of factuality errors, often arises from misalignments during SFT and RLHF<cite class="ltx_cite ltx_citemacro_cite">Ouyang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib32" title="">2022</a>)</cite>. This problem is partially attributed to human annotators’ tendency to award higher scores to responses they like rather than those that are factually accurate. <cite class="ltx_cite ltx_citemacro_cite">Wei <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib53" title="">2023</a>)</cite> explore the correlation of sycophancy with model scaling and instruction tuning. They propose a synthetic-data intervention method, using various NLP tasks to teach models that truthfulness is independent of user opinions. However, one limitation is that the generalizability of their approach remains unclear for varied prompt formats and diverse user opinions.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.p4">
+<p class="ltx_p" id="S4.SS2.p4.1"><cite class="ltx_cite ltx_citemacro_cite">Tian <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib43" title="">2023</a>)</cite> utilize direct preference optimization (DPO) <cite class="ltx_cite ltx_citemacro_cite">Rafailov <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib33" title="">2023</a>)</cite> with the feedback of factuality score either from automatic fact-checkers or LLMs predictive confidence.
+In-domain evaluation shows promising results on biographies and medical queries, but generalization performance across domains and unseen domains is under-explored.
+<cite class="ltx_cite ltx_citemacro_cite">Köksal <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib23" title="">2023</a>)</cite> propose hallucination-augmented recitations (HAR). It encourages the model to attribute to the contexts rather than its parametric knowledge, by tuning the model on the counterfactual dataset created leveraging LLM hallucinations.
+This approach offers a novel way to enhance LLM attribution and grounding in open-book QA.
+However, challenges lie in refining counterfactual generation for consistency and expanding its application to broader contexts.
+</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS2.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Retrieval Augmentation</h5>
+<div class="ltx_para" id="S4.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS2.SSS0.Px1.p1.1">Incorporating retrieval mechanisms during fine-tuning has been shown to enhance the LLM factuality on downstream tasks, particularly in open-domain QA.
+DPR <cite class="ltx_cite ltx_citemacro_cite">Karpukhin <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib22" title="">2020</a>)</cite> refines a dual-encoder framework, consisting of two BERT models. It employs a contrastive loss to align the hidden representations of questions and their corresponding answers, obtained through the respective encoder models.
+RAG <cite class="ltx_cite ltx_citemacro_cite">Lewis <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib25" title="">2020</a>)</cite> and FiD <cite class="ltx_cite ltx_citemacro_cite">Izacard and Grave (<a class="ltx_ref" href="#bib.bib19" title="">2020</a>)</cite> study a fine-tuning recipe for retrieval-augmented generation models, focusing on open-domain QA tasks.
+WebGPT <cite class="ltx_cite ltx_citemacro_cite">Nakano <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib31" title="">2021</a>)</cite> fine-tunes GPT-3 <cite class="ltx_cite ltx_citemacro_cite">Brown <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib3" title="">2020</a>)</cite> by RLHF, providing questions with factually correct long-form reference generation. The implementation in a text-based web-browsing environment allows the model to search and navigate the web.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>Inference</h3>
+<div class="ltx_para" id="S4.SS3.p1">
+<p class="ltx_p" id="S4.SS3.p1.1">We categorize approaches to improve factuality during inference into two: (1) optimizing decoding strategies to strengthen model factuality; and (2) empowering LLM learned ability by either in-context learning (ICL) or self-reasoning.</p>
+</div>
+<section class="ltx_subsubsection" id="S4.SS3.SSS1">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">4.3.1 </span>Decoding Strategy</h4>
+<div class="ltx_para" id="S4.SS3.SSS1.p1">
+<p class="ltx_p" id="S4.SS3.SSS1.p1.1">Sampling from the top subword candidates with a cumulative probability of p, known as nucleus sampling (top-p) <cite class="ltx_cite ltx_citemacro_cite">Holtzman <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib17" title="">2020</a>)</cite>, sees a decrease in factuality performance compared to greedy decoding, despite higher diversity. This is likely due to its over-encouragement of randomness.
+Building on the hypothesis that sampling randomness may damage factuality when generating the latter part of a sentence than the beginning, <cite class="ltx_cite ltx_citemacro_cite">Lee <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite> introduce factual-nucleus sampling,
+which dynamically reduces the <span class="ltx_text ltx_font_italic" id="S4.SS3.SSS1.p1.1.1">nucleus-p</span> value as generation progresses to limit diversity and improve factuality,
+modulating factual integrity and textual diversity.
+</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS1.p2">
+<p class="ltx_p" id="S4.SS3.SSS1.p2.1">Apart from randomness, some errors arise when knowledge conflicts, where context contradicts information present in the model’s prior knowledge.
+Context-aware decoding (CAD) <cite class="ltx_cite ltx_citemacro_cite">Shi <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib38" title="">2023</a>)</cite> prioritizes current context over prior knowledge, and employs contrastive ensemble logits, adjusting the weight of the probability distribution when predicting the next token with or without context.
+Despite the factuality boost, CAD is a better fit for tasks involving knowledge conflicts and heavily reliant on high-quality context.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS1.p3">
+<p class="ltx_p" id="S4.SS3.SSS1.p3.1">In contrast, DoLa <cite class="ltx_cite ltx_citemacro_cite">Chuang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib6" title="">2023</a>)</cite> takes into account both upper and lower (earlier) layers, as opposed to only the final (mature) layer.
+This method dynamically selects intermediate layers at each decoding step, in which an appropriate premature layer contains less factual information with maximum divergence among the subset of the early layers.
+This method effectively harnesses the distinct contributions of each layer to factual generations.
+However, DoLa increases the decoding time by 1.01x to 1.08x and does not utilize external knowledge, which limits its ability to correct misinformation learned during training.</p>
+</div>
+</section>
+<section class="ltx_subsubsection" id="S4.SS3.SSS2">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">4.3.2 </span>ICL and Self-reasoning</h4>
+<div class="ltx_para" id="S4.SS3.SSS2.p1">
+<p class="ltx_p" id="S4.SS3.SSS2.p1.1">In context learning (ICL) allows an LLM to leverage and learn from demonstration examples in its context to perform a particular task without the need to update model parameters.
+<cite class="ltx_cite ltx_citemacro_cite">Zheng <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib62" title="">2023</a>)</cite> present that it is possible to perform knowledge editing via ICL through facts included in demonstration examples, thereby correcting fake or outdated facts.
+The objective of demonstration examples is to teach LLMs how to:
+(1) identify and copy an answer;
+(2) generalize using in-context facts;
+(3) ignore irrelevant facts in context.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS2.p2">
+<p class="ltx_p" id="S4.SS3.SSS2.p2.1">While it is rather easy for LLMs to copy answers from contexts, changing predictions of questions related to the new facts accordingly, and keeping the original predictions if the question is irrelevant to the modified facts, remains tough.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS2.p3">
+<p class="ltx_p" id="S4.SS3.SSS2.p3.1">Another line of research leverages the self-reasoning capability of LLMs.
+<cite class="ltx_cite ltx_citemacro_cite">Du <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib8" title="">2023</a>)</cite> improve LLM factuality through multi-agent debate.
+This approach first instantiates a number of agents and then makes them debate over answers returned by other agents until a consensus is reached.
+One interesting finding is that more agents and longer debates tend to lead to better results. This approach is orthogonal and can be applied in addition to many other generation methods, such as complex prompting strategy (e.g., CoT <cite class="ltx_cite ltx_citemacro_cite">Wei <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib52" title="">2022</a>)</cite>, ReAct <cite class="ltx_cite ltx_citemacro_cite">Yao <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib55" title="">2023</a>)</cite>, Reflexion <cite class="ltx_cite ltx_citemacro_cite">Shinn <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib39" title="">2023</a>)</cite>) and retrieval augmentation.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS2.p4">
+<p class="ltx_p" id="S4.SS3.SSS2.p4.1"><span class="ltx_text ltx_font_bold ltx_font_italic" id="S4.SS3.SSS2.p4.1.1">Take-away:</span>
+<cite class="ltx_cite ltx_citemacro_cite">Zheng <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib62" title="">2023</a>)</cite> evaluate the effectiveness of knowledge editing on subject-relation-object triplets, an unrealistic setting compared to open-ended free-form text assessment. we seek answers to two research questions:
+(1) What types of facts and to what extent can facts be edited effectively, learned by LLMs through ICL?
+(2) Would SFT do a better job at learning from examples that are difficult for ICL?
+More broadly, what is the best way to insert new facts or edit false knowledge stored in LLMs.
+The community may also benefit from an in-depth comparative analysis of the effectiveness of improving factuality between SFT and ICL (perhaps also RLXF).
+</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS3.SSS2.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Retrieval Augmentation</h5>
+<div class="ltx_para" id="S4.SS3.SSS2.Px1.p1">
+<p class="ltx_p" id="S4.SS3.SSS2.Px1.p1.1">can be applied before, during, and after model generation.
+</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS2.Px1.p2">
+<p class="ltx_p" id="S4.SS3.SSS2.Px1.p2.1">One commonly used option is to apply retrieval augmentation prior to response generation.
+For questions requiring up-to-date world knowledge to answer, <cite class="ltx_cite ltx_citemacro_cite">Vu <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib48" title="">2023</a>)</cite> augment LLM prompts with web-retrieved information and demonstrate the effectiveness on improving accuracy on <span class="ltx_text ltx_font_italic" id="S4.SS3.SSS2.Px1.p2.1.1">FreshQA</span>, where <span class="ltx_text" id="S4.SS3.SSS2.Px1.p2.1.2">ChatGPT</span> and <span class="ltx_text" id="S4.SS3.SSS2.Px1.p2.1.3">GPT-4</span> struggle due to their lack of up-to-date information.
+<cite class="ltx_cite ltx_citemacro_cite">Gao <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib11" title="">2023a</a>)</cite> place all relevant paragraphs in the context and encourage the model to cite supporting evidence, instructing LLMs to understand retrieved documents and generate correct citations, thereby improving reliability and factuality.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS2.Px1.p3">
+<p class="ltx_p" id="S4.SS3.SSS2.Px1.p3.1">Pre-generation retrieval augmentation is beneficial as the generation process is conditioned on the retrieval results, implicitly constraining the output space.
+While improving factual accuracy, this comes at the cost of spontaneous and creative responses, largely limiting the capabilities of LLMs.
+An alternative method is to verify and rectify factual errors after the model generates all content.
+However, LLMs have been shown to be susceptible to hallucination snowballing <cite class="ltx_cite ltx_citemacro_cite">Zhang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib59" title="">2023b</a>)</cite>, a common issue where a model attempts to make its response consistent with previously generated content even if it is factually incorrect.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.SSS2.Px1.p4">
+<p class="ltx_p" id="S4.SS3.SSS2.Px1.p4.1">Striking a balance between preserving creative elements and avoiding the propagation of potential errors,
+EVER <cite class="ltx_cite ltx_citemacro_cite">Kang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite> and “a stitch in time saves nine” <cite class="ltx_cite ltx_citemacro_cite">Varshney <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib47" title="">2023</a>)</cite> actively detect and correct factual errors <span class="ltx_text ltx_font_bold" id="S4.SS3.SSS2.Px1.p4.1.1">during generation</span> sentence by sentence. The former leverages retrieved evidence for verification, and the latter further incorporates the probability of dominant concepts in detection.
+Their findings suggest that timely correcting errors during generation can prevent snowballing and further improve factuality.
+Nonetheless, the primary concern for this iterative process of generate-verify-correct in real-time systems is latency, making it difficult to meet the high-throughput and responsiveness demand <cite class="ltx_cite ltx_citemacro_cite">Kang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite>.</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_subsection" id="S4.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.4 </span>Automatic Fact Checkers</h3>
+<figure class="ltx_figure" id="S4.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="73" id="S4.F1.g1" src="./media/x1.png" width="183"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>Fact-checker framework: claim processor, retriever, and verifier, with optional step of <span class="ltx_text ltx_font_italic" id="S4.F1.3.1">summarizing</span> and <span class="ltx_text ltx_font_italic" id="S4.F1.4.2">explaining</span> in gray.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS4.p1">
+<p class="ltx_p" id="S4.SS4.p1.1">An automatic fact-checking framework typically consists of three components: claim processor, retriever, and verifier as shown in Figure <a class="ltx_ref" href="#S4.F1" title="Figure 1 ‣ 4.4 Automatic Fact Checkers ‣ 4 Improving Factuality ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">1</span></a>, though the implementation of verification pipelines may differ.
+For example, <span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.1">FACTOR</span> <cite class="ltx_cite ltx_citemacro_cite">Muhlgay <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib30" title="">2023</a>)</cite> and <span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.2">FactScore</span> <cite class="ltx_cite ltx_citemacro_cite">Min and et al. (<a class="ltx_ref" href="#bib.bib29" title="">2023</a>)</cite> only detect falsehoods without correction.
+While <span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.3">RARR</span> depends on web-retrieved information <cite class="ltx_cite ltx_citemacro_cite">Gao <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib10" title="">2022</a>)</cite>, and <span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.4">CoVe</span> <cite class="ltx_cite ltx_citemacro_cite">Dhuliawala <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib7" title="">2023</a>)</cite> only relies on LLM parametric knowledge <cite class="ltx_cite ltx_citemacro_cite">Dhuliawala <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib7" title="">2023</a>)</cite> to perform both detection and correction, albeit at a coarse granularity, editing the entire document.
+Compared to fine-grained verification over claims, it is unable to spot false spans precisely and tends to result in poor preservation of the original input.
+<span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.5">FacTool</span> <cite class="ltx_cite ltx_citemacro_cite">Chern <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite> and <span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.6">Factcheck-GPT</span> <cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib51" title="">2023c</a>)</cite> edit atomic claims.
+While the former breaks a document down to independent checkworthy claims with three steps: decomposition, decontextualization and checkworthiness identification, the latter employs <span class="ltx_text" id="S4.SS4.p1.1.7">GPT-4</span> to extract verifiable claims directly.
+Evaluating the effectiveness of fact-checkers remains challenging, making the improvement of such systems a difficult task.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS4.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Engineering and Practical Considerations</h5>
+<div class="ltx_para" id="S4.SS4.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS4.SSS0.Px1.p1.1">Automatic fact-checking involve tasks of extracting atomic check-worthy claims, collecting evidence either by leveraging the knowledge stored in the model parameters or retrieved externally, and verification.
+While straightforward to implement, this pipeline may be susceptible to error propagation.
+Major bottleneck lies in the absence of automatic evaluation measures to assess the quality of intermediate steps, in particular, the claim processor and evidence retriever as there is no gold standard.
+</p>
+</div>
+<div class="ltx_para" id="S4.SS4.SSS0.Px1.p2">
+<p class="ltx_p" id="S4.SS4.SSS0.Px1.p2.1">The input to a claim processor is a document to check and its expected output is a list of atomic check-worthy claims or atomic verifiable facts.
+There is no consensus on the granularity of “atomic claims”, making consistent decomposition difficult in a practical setting.
+Additionally, the concept of check-worthy and verifiable claims are subjective.
+Consequently, the definition of an atomic check-worthy claim remains a highly debatable topic.
+</p>
+</div>
+<div class="ltx_para" id="S4.SS4.SSS0.Px1.p3">
+<p class="ltx_p" id="S4.SS4.SSS0.Px1.p3.1">This naturally leads to different “gold” human-annotated atomic claims annotated following various guidelines and distinct implementation approaches to decompose a document.</p>
+</div>
+<div class="ltx_para" id="S4.SS4.SSS0.Px1.p4">
+<p class="ltx_p" id="S4.SS4.SSS0.Px1.p4.1">Given a document, even if assuming a ground-truth list of atomic claims, it remains an open question how to assess the quality of automatically derived decomposition results.
+<cite class="ltx_cite ltx_citemacro_cite">Wang <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib51" title="">2023c</a>)</cite> start by assessing the agreement in the number of claims between the ground truth and predictions, followed by examining the semantic similarity between two claims at the same index when the claim count aligns.
+Entailment ratio presented in Section <a class="ltx_ref" href="#S3.SS2" title="3.2 Other Metrics ‣ 3 Evaluating Factuality ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">3.2</span></a> is also applicable <cite class="ltx_cite ltx_citemacro_cite">Lee <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S4.SS4.SSS0.Px1.p5">
+<p class="ltx_p" id="S4.SS4.SSS0.Px1.p5.1">While it is much simpler when the evidence is constrained (e.g., to Wikipedia documents as is the case for FEVER <cite class="ltx_cite ltx_citemacro_cite">Thorne <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib42" title="">2018</a>)</cite>), accurate retrieval of evidence from the Internet and subsequently quantifying the quality of such retrieval results remain challenging.
+Similar to the assessment of atomic claims, gold-labeled evidence is unavailable and infeasible to obtain in the expansive open search space.</p>
+</div>
+<div class="ltx_para" id="S4.SS4.SSS0.Px1.p6">
+<p class="ltx_p" id="S4.SS4.SSS0.Px1.p6.1">The only step where we can confidently evaluate its quality is the accuracy of verification, a simple binary true/false label given a document/claim.
+In conclusion, perhaps the most significant hurdle limiting the development and improvement of automatic fact-checkers lies in the automated assessment and quantification of quality at intermediate stages.
+</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Factuality of Multimodal LLMs</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">More recently, multimodal LLMs (MLLMs), capable of processing visual and audio contexts (in addition to textual input), have become a new research focus.
+Despite impressive results, MLLMs also hallucinate and existing research primarily focuses on addressing grounding errors.
+</p>
+</div>
+<div class="ltx_para" id="S5.p2">
+<p class="ltx_p" id="S5.p2.1">For tuning-based approaches, <cite class="ltx_cite ltx_citemacro_cite">Sun <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib40" title="">2023</a>)</cite> apply RLHF to vision-language alignment tasks. They introduce factually-augmented RLHF, which augments a reward model with additional factual information, such as image captions and ground-truth options, to alleviate reward hacking. <cite class="ltx_cite ltx_citemacro_cite">Zhao <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib61" title="">2023</a>)</cite> introduce hallucination-aware DPO by first constructing a hallucination-aware dataset consisting of style-consistent pairs with positive and negative samples curated automatically with the help of <span class="ltx_text" id="S5.p2.1.1">GPT-4</span>, and then, performing DPO training with MLLMs. While these methods enhance truthfulness, challenges remain, in the form of expensive and intricate data generation pipelines needed for creating tuning datasets.</p>
+</div>
+<div class="ltx_para" id="S5.p3">
+<p class="ltx_p" id="S5.p3.1">Another line of research focuses on post-hoc approaches.
+<cite class="ltx_cite ltx_citemacro_cite">Yin <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib56" title="">2023a</a>)</cite> introduce a training-free pipeline of five steps: concept extraction, question formulation, visual validation, claim generation, and hallucination correction. They utilize textual LLMs, object detection, and visual QA (VQA) models to fix grounding errors in MLLM responses, framing detected objects and attributes as evidence.
+<cite class="ltx_cite ltx_citemacro_cite">Rawte <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib35" title="">2023b</a>)</cite> indicate that adapting textual factuality methods to MLLMs often requires conversion from various media to text (e.g. captioning).
+However, with increased complexity in multimodal contents, despite the application of various techniques such as VQA, OCR and ASR, fact-checking pipelines for images, audio, and video and text are largely similar. Challenges remain in accurate claim extraction and evidence retrieval across different modalities <cite class="ltx_cite ltx_citemacro_cite">Akhtar <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib1" title="">2023</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Challenges and Future Directions</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">We first identify three major challenges for improving the factuality of LLMs, and then we point to several promising directions for future work.</p>
+</div>
+<section class="ltx_paragraph" id="S6.SS0.SSS0.Px1">
+<h5 class="ltx_title ltx_title_paragraph">Language models learn the distribution of a language, not facts.</h5>
+<div class="ltx_para" id="S6.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS0.SSS0.Px1.p1.1">The training objective of language modeling is to maximize the probability of a sentence, as opposed to that of a factual statement.
+While capable of generating seemingly coherent and fluent outputs upon convergence, models are not guaranteed to always return factually accurate contents.
+</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS0.SSS0.Px2">
+<h5 class="ltx_title ltx_title_paragraph">Automatic evaluation of factual accuracy of open-ended generations remains challenging.</h5>
+<div class="ltx_para" id="S6.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS0.SSS0.Px2.p1.1">Existing studies on factuality enhancement use different benchmarks and evaluation metrics, making fair comparisons difficult, motivating the need for a unified automated evaluation framework utilizing the same collection of datasets and metrics.
+</p>
+</div>
+<div class="ltx_para" id="S6.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="S6.SS0.SSS0.Px2.p2.1">This can be further decomposed into two questions:
+(1) how to select a set of datasets that can effectively evaluate LLMs factuality?
+and (2) how to measure the percentage of factual claims given a model response with minimal time expenditure?
+Current approaches rely on either human evaluation or results of automated fact-checkers, e,g., FactScore and FacTool <cite class="ltx_cite ltx_citemacro_cite">Min and et al. (<a class="ltx_ref" href="#bib.bib29" title="">2023</a>); Chern <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite>.
+However, automatically quantifying the quality of automated fact-checkers is itself an open question, resulting in a chicken and egg situation.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS0.SSS0.Px3">
+<h5 class="ltx_title ltx_title_paragraph">Latency and multi-hop reasoning could be the bottleneck of RAG systems.</h5>
+<div class="ltx_para" id="S6.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S6.SS0.SSS0.Px3.p1.1">Retrievers serve as the core component in RAG systems, and the effectiveness of RAG is largely influenced by the quality (coverage and relevance) of the retrieved documents.
+Latency and difficulties in gathering the most pertinent evidence are the primary challenges in retrieval.
+While this is partly due to the inability of ranking algorithms to retrieve such documents, certain facts require information gathered from various sources and multi-hop reasoning.
+</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS0.SSS0.Px4">
+<h5 class="ltx_title ltx_font_italic ltx_title_paragraph">Potential Future Directions</h5>
+<div class="ltx_para" id="S6.SS0.SSS0.Px4.p1">
+<p class="ltx_p" id="S6.SS0.SSS0.Px4.p1.1"><span class="ltx_text ltx_font_italic" id="S6.SS0.SSS0.Px4.p1.1.1">Mitigation in inference:</span>
+We observe that models can often generate the correct answer in multiple trials even if some of those attempts are incorrect <cite class="ltx_cite ltx_citemacro_cite">Tian <span class="ltx_text ltx_font_italic">et al.</span> (<a class="ltx_ref" href="#bib.bib43" title="">2023</a>)</cite>.
+This motivates us to ask how to provide an anchor that can guide LLM decoding to the factually correct path?</p>
+</div>
+<div class="ltx_para" id="S6.SS0.SSS0.Px4.p2">
+<p class="ltx_p" id="S6.SS0.SSS0.Px4.p2.1">Iteratively detecting, correcting and generating during generation has been demonstrated to be effective to mitigating hallucinations.
+If simply correcting the first one or two sentences, how much improvements can we expect for subsequent generations?
+Can factually correct and relevant sentences, phrases or concepts serve as the anchors?</p>
+</div>
+<div class="ltx_para" id="S6.SS0.SSS0.Px4.p3">
+<p class="ltx_p" id="S6.SS0.SSS0.Px4.p3.1"><span class="ltx_text ltx_font_italic" id="S6.SS0.SSS0.Px4.p3.1.1">Timely detection of factual errors:</span>
+Another interesting option to explore is to only detect falsehoods without consideration of correction, allowing LLMs to incorporate uncertainty information and the contrastive probability leveraged in decoding strategies (e.g., CAD and DoLa) for timely detections without evidence.</p>
+</div>
+<div class="ltx_para" id="S6.SS0.SSS0.Px4.p4">
+<p class="ltx_p" id="S6.SS0.SSS0.Px4.p4.1"><span class="ltx_text ltx_font_italic" id="S6.SS0.SSS0.Px4.p4.1.1">Improving efficiency and accuracy of automated fact-checkers:</span>
+The key breakthrough in effectively evaluating the factual accuracy of LLMs lies in establishing accurate and efficient fact-checkers, in which how to evaluate the quality of retrieved evidence in open search space is of significant importance.
+Current methods rely on the accuracy of claim verification to deduce the quality of evidence by prompting LLMs.
+Not only is this computationally expensive, it also tends to be highly sensitive to minor prompt changes and LLM updates (e.g., the same prompt may result in inconsistent outputs).
+Instead, a small task-specific and well fine-tuned NLI model presents a more viable, robust and cost-efficient option.
+</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>Conclusion</h2>
+<div class="ltx_para" id="S7.p1">
+<p class="ltx_p" id="S7.p1.1">We presented an overview on the factuality of LLMs, surveying a number of studies covering topics such as evaluation in Section <a class="ltx_ref" href="#S3" title="3 Evaluating Factuality ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">3</span></a> and improvement methods (applicable at various stages: pre-training, SFT, inference and post-processing) in Section <a class="ltx_ref" href="#S4" title="4 Improving Factuality ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">4</span></a>, along with their respective challenges.
+We also identified three major issues and additionally pointed out promising future research directions in Section <a class="ltx_ref" href="#S6" title="6 Challenges and Future Directions ‣ Factuality of Large Language Models in the Year 2024"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Akhtar <span class="ltx_text ltx_font_italic" id="bib.bib1.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Mubashara Akhtar, Michael Schlichtkrull, and Zhijiang et al. Guo.
+
+</span>
+<span class="ltx_bibblock">Multimodal automated fact-checking: A survey.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib1.3.1">Findings of EMNLP 2023</span>, pages 5430–5448, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Borgeaud <span class="ltx_text ltx_font_italic" id="bib.bib2.2.2.1">et al.</span> [2021]</span>
+<span class="ltx_bibblock">
+Sebastian Borgeaud, Arthur Mensch, and Jordan Hoffmann et al.
+
+</span>
+<span class="ltx_bibblock">Improving language models by retrieving from trillions of tokens.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib2.3.1">ICML</span>, 2021.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Brown <span class="ltx_text ltx_font_italic" id="bib.bib3.2.2.1">et al.</span> [2020]</span>
+<span class="ltx_bibblock">
+Tom B. Brown, Benjamin Mann, Nick Ryder, and Melanie Subbiah et al.
+
+</span>
+<span class="ltx_bibblock">Language models are few-shot learners.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib3.3.1">NeurIPS 2020</span>, 2020.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chen <span class="ltx_text ltx_font_italic" id="bib.bib4.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Shiqi Chen, Yiran Zhao, Jinghan Zhang, and et al.
+
+</span>
+<span class="ltx_bibblock">Felm: Benchmarking factuality evaluation of large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib4.3.1">arXiv preprint arXiv:2310.00741</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chern <span class="ltx_text ltx_font_italic" id="bib.bib5.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+I-Chun Chern, Steffi Chern, and Shiqi Chen et al.
+
+</span>
+<span class="ltx_bibblock">Factool: Factuality detection in generative AI - A tool augmented framework for multi-task and multi-domain scenarios.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib5.3.1">CoRR</span>, abs/2307.13528, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chuang <span class="ltx_text ltx_font_italic" id="bib.bib6.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Yung-Sung Chuang, Yujia Xie, and Hongyin Luo et al.
+
+</span>
+<span class="ltx_bibblock">Dola: Decoding by contrasting layers improves factuality in large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib6.3.1">CoRR</span>, abs/2309.03883, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dhuliawala <span class="ltx_text ltx_font_italic" id="bib.bib7.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Shehzaad Dhuliawala, Mojtaba Komeili, and et al.
+
+</span>
+<span class="ltx_bibblock">Chain-of-verification reduces hallucination in large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib7.3.1">arXiv preprint arXiv:2309.11495</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Du <span class="ltx_text ltx_font_italic" id="bib.bib8.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Yilun Du, Shuang Li, Antonio Torralba, Joshua B. Tenenbaum, and Igor Mordatch.
+
+</span>
+<span class="ltx_bibblock">Improving factuality and reasoning in language models through multiagent debate.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib8.3.1">CoRR</span>, abs/2305.14325, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Elaraby <span class="ltx_text ltx_font_italic" id="bib.bib9.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Mohamed Elaraby, Mengyin Lu, and Jacob Dunn et al.
+
+</span>
+<span class="ltx_bibblock">Halo: Estimation and reduction of hallucinations in open-source weak large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib9.3.1">CoRR</span>, abs/2308.11764, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao <span class="ltx_text ltx_font_italic" id="bib.bib10.2.2.1">et al.</span> [2022]</span>
+<span class="ltx_bibblock">
+Luyu Gao, Zhuyun Dai, and Panupong et al. Pasupat.
+
+</span>
+<span class="ltx_bibblock">Attributed text generation via post-hoc research and revision.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib10.3.1">arXiv preprint arXiv:2210.08726</span>, 2022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao <span class="ltx_text ltx_font_italic" id="bib.bib11.2.2.1">et al.</span> [2023a]</span>
+<span class="ltx_bibblock">
+Tianyu Gao, Howard Yen, Jiatong Yu, and Danqi Chen.
+
+</span>
+<span class="ltx_bibblock">Enabling large language models to generate text with citations.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib11.3.1">EMNLP</span>, pages 6465–6488, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao <span class="ltx_text ltx_font_italic" id="bib.bib12.2.2.1">et al.</span> [2023b]</span>
+<span class="ltx_bibblock">
+Yunfan Gao, Yun Xiong, and et al.
+
+</span>
+<span class="ltx_bibblock">Retrieval-augmented generation for large language models: A survey.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib12.3.1">CoRR</span>, abs/2312.10997, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Geng <span class="ltx_text ltx_font_italic" id="bib.bib13.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Jiahui Geng, Fengyu Cai, and Yuxia Wang et al.
+
+</span>
+<span class="ltx_bibblock">A survey of language model confidence estimation and calibration.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib13.3.1">CoRR</span>, abs/2311.08298, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Geva <span class="ltx_text ltx_font_italic" id="bib.bib14.2.2.1">et al.</span> [2021]</span>
+<span class="ltx_bibblock">
+Mor Geva, Daniel Khashabi, and et al.
+
+</span>
+<span class="ltx_bibblock">Did aristotle use a laptop? A question answering benchmark with implicit reasoning strategies.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib14.3.1">TACL</span>, 9:346–361, 2021.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Guo <span class="ltx_text ltx_font_italic" id="bib.bib15.2.2.1">et al.</span> [2022]</span>
+<span class="ltx_bibblock">
+Zhijiang Guo, Michael Schlichtkrull, and Andreas Vlachos.
+
+</span>
+<span class="ltx_bibblock">A survey on automated fact-checking.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib15.3.1">TACL</span>, 10:178–206, 2022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hendrycks <span class="ltx_text ltx_font_italic" id="bib.bib16.2.2.1">et al.</span> [2021]</span>
+<span class="ltx_bibblock">
+Dan Hendrycks, Collin Burns, and et al.
+
+</span>
+<span class="ltx_bibblock">Measuring massive multitask language understanding.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib16.3.1">ICLR 2021</span>, 2021.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Holtzman <span class="ltx_text ltx_font_italic" id="bib.bib17.2.2.1">et al.</span> [2020]</span>
+<span class="ltx_bibblock">
+Ari Holtzman, Jan Buys, and Li et al.
+
+</span>
+<span class="ltx_bibblock">The curious case of neural text degeneration.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib17.3.1">ICLR</span>, 2020.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Huang <span class="ltx_text ltx_font_italic" id="bib.bib18.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Lei Huang, Weijiang Yu, Weitao Ma, and Weihong Zhong et al.
+
+</span>
+<span class="ltx_bibblock">A survey on hallucination in large language models: Principles, taxonomy, challenges, and open questions.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib18.3.1">CoRR</span>, abs/2311.05232, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Izacard and Grave [2020]</span>
+<span class="ltx_bibblock">
+Gautier Izacard and Edouard Grave.
+
+</span>
+<span class="ltx_bibblock">Leveraging passage retrieval with generative models for open domain question answering.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib19.1.1">ArXiv</span>, abs/2007.01282, 2020.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ji <span class="ltx_text ltx_font_italic" id="bib.bib20.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Ziwei Ji, Nayeon Lee, and Rita Frieske et al.
+
+</span>
+<span class="ltx_bibblock">Survey of hallucination in natural language generation.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib20.3.1">ACM Comput. Surv.</span>, 55(12):248:1–248:38, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kang <span class="ltx_text ltx_font_italic" id="bib.bib21.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Haoqiang Kang, Juntong Ni, and Huaxiu Yao.
+
+</span>
+<span class="ltx_bibblock">Ever: Mitigating hallucination in large language models through real-time verification and rectification.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib21.3.1">CoRR</span>, abs/2311.09114, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Karpukhin <span class="ltx_text ltx_font_italic" id="bib.bib22.2.2.1">et al.</span> [2020]</span>
+<span class="ltx_bibblock">
+Vladimir Karpukhin, Barlas Oğuz, and Sewon Min et al.
+
+</span>
+<span class="ltx_bibblock">Dense passage retrieval for open-domain question answering.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib22.3.1">ArXiv</span>, abs/2004.04906, 2020.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Köksal <span class="ltx_text ltx_font_italic" id="bib.bib23.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Abdullatif Köksal, Renat Aksitov, and Chung-Ching Chang.
+
+</span>
+<span class="ltx_bibblock">Hallucination augmented recitations for language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib23.3.1">arXiv preprint arXiv:2311.07424</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lee <span class="ltx_text ltx_font_italic" id="bib.bib24.2.2.1">et al.</span> [2022]</span>
+<span class="ltx_bibblock">
+Nayeon Lee, Wei Ping, and Peng et al. Xu.
+
+</span>
+<span class="ltx_bibblock">Factuality enhanced language models for open-ended text generation.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib24.3.1">NeuralPS</span>, 35:34586–34599, 2022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lewis <span class="ltx_text ltx_font_italic" id="bib.bib25.2.2.1">et al.</span> [2020]</span>
+<span class="ltx_bibblock">
+Patrick Lewis, Ethan Perez, and et al.
+
+</span>
+<span class="ltx_bibblock">Retrieval-augmented generation for knowledge-intensive nlp tasks.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib25.3.1">ArXiv</span>, abs/2005.11401, 2020.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li and et al. [2023a]</span>
+<span class="ltx_bibblock">
+Junyi Li and Xiaoxue Cheng et al.
+
+</span>
+<span class="ltx_bibblock">Halueval: A large-scale hallucination evaluation benchmark for large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib26.1.1">CoRR</span>, abs/2305.11747, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li and et al. [2023b]</span>
+<span class="ltx_bibblock">
+Yuanzhi Li and Sébastien Bubeck et al.
+
+</span>
+<span class="ltx_bibblock">Textbooks are all you need II: phi-1.5 technical report.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib27.1.1">CoRR</span>, abs/2309.05463, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin <span class="ltx_text ltx_font_italic" id="bib.bib28.2.2.1">et al.</span> [2022]</span>
+<span class="ltx_bibblock">
+Stephanie Lin, Jacob Hilton, and Owain Evans.
+
+</span>
+<span class="ltx_bibblock">Truthfulqa: Measuring how models mimic human falsehoods.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib28.3.1">ACL</span>, pages 3214–3252, 2022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Min and et al. [2023]</span>
+<span class="ltx_bibblock">
+Sewon Min and Kalpesh Krishna et al.
+
+</span>
+<span class="ltx_bibblock">Factscore: Fine-grained atomic evaluation of factual precision in long form text generation.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib29.1.1">CoRR</span>, abs/2305.14251, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Muhlgay <span class="ltx_text ltx_font_italic" id="bib.bib30.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Dor Muhlgay, Ori Ram, and Inbal Magar et al.
+
+</span>
+<span class="ltx_bibblock">Generating benchmarks for factuality evaluation of language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib30.3.1">CoRR</span>, abs/2307.06908, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nakano <span class="ltx_text ltx_font_italic" id="bib.bib31.2.2.1">et al.</span> [2021]</span>
+<span class="ltx_bibblock">
+Reiichiro Nakano, Jacob Hilton, and et al.
+
+</span>
+<span class="ltx_bibblock">Webgpt: Browser-assisted question-answering with human feedback.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib31.3.1">ArXiv</span>, abs/2112.09332, 2021.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ouyang <span class="ltx_text ltx_font_italic" id="bib.bib32.2.2.1">et al.</span> [2022]</span>
+<span class="ltx_bibblock">
+Long Ouyang, Jeff Wu, and Xu Jiang et al.
+
+</span>
+<span class="ltx_bibblock">Training language models to follow instructions with human feedback.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib32.3.1">ArXiv</span>, abs/2203.02155, 2022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rafailov <span class="ltx_text ltx_font_italic" id="bib.bib33.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Rafael Rafailov, Archit Sharma, and et al.
+
+</span>
+<span class="ltx_bibblock">Direct preference optimization: Your language model is secretly a reward model.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib33.3.1">CoRR</span>, abs/2305.18290, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rawte <span class="ltx_text ltx_font_italic" id="bib.bib34.2.2.1">et al.</span> [2023a]</span>
+<span class="ltx_bibblock">
+Vipula Rawte, Swagata Chakraborty, and Agnibh et al. Pathak.
+
+</span>
+<span class="ltx_bibblock">The troubling emergence of hallucination in large language models - an extensive definition, quantification, and prescriptive remediations.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib34.3.1">EMNLP 2023</span>, pages 2541–2573, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rawte <span class="ltx_text ltx_font_italic" id="bib.bib35.2.2.1">et al.</span> [2023b]</span>
+<span class="ltx_bibblock">
+Vipula Rawte, Amit P. Sheth, and Amitava Das.
+
+</span>
+<span class="ltx_bibblock">A survey of hallucination in large foundation models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib35.3.1">CoRR</span>, abs/2309.05922, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Razumovskaia <span class="ltx_text ltx_font_italic" id="bib.bib36.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Evgeniia Razumovskaia, Ivan Vulic, and Pavle Markovic et al.
+
+</span>
+<span class="ltx_bibblock">Dial beinfo for faithfulness: Improving factuality of information-seeking dialogue via behavioural fine-tuning.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib36.3.1">CoRR</span>, abs/2311.09800, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sharma <span class="ltx_text ltx_font_italic" id="bib.bib37.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, and Amanda Askell et al.
+
+</span>
+<span class="ltx_bibblock">Towards understanding sycophancy in language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib37.3.1">CoRR</span>, abs/2310.13548, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shi <span class="ltx_text ltx_font_italic" id="bib.bib38.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Weijia Shi, Xiaochuang Han, and et al.
+
+</span>
+<span class="ltx_bibblock">Trusting your evidence: Hallucinate less with context-aware decoding.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib38.3.1">arXiv preprint arXiv:2305.14739</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shinn <span class="ltx_text ltx_font_italic" id="bib.bib39.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Noah Shinn, Federico Cassano, and Gopinath et al.
+
+</span>
+<span class="ltx_bibblock">Reflexion: Language agents with verbal reinforcement learning.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib39.3.1">NeuralPS</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sun <span class="ltx_text ltx_font_italic" id="bib.bib40.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Zhiqing Sun, Sheng Shen, and Shengcao Cao et al.
+
+</span>
+<span class="ltx_bibblock">Aligning large multimodal models with factually augmented RLHF.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib40.3.1">CoRR</span>, abs/2309.14525, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sun <span class="ltx_text ltx_font_italic" id="bib.bib41.2.2.1">et al.</span> [2024]</span>
+<span class="ltx_bibblock">
+Lichao Sun, Yue Huang, and Haoran Wang et al.
+
+</span>
+<span class="ltx_bibblock">Trustllm: Trustworthiness in large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib41.3.1">ArXiv</span>, abs/2401.05561, 2024.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Thorne <span class="ltx_text ltx_font_italic" id="bib.bib42.2.2.1">et al.</span> [2018]</span>
+<span class="ltx_bibblock">
+James Thorne, Andreas Vlachos, and et al.
+
+</span>
+<span class="ltx_bibblock">FEVER: a large-scale dataset for fact extraction and VERification.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib42.3.1">NAACL</span>, pages 809–819, 2018.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tian <span class="ltx_text ltx_font_italic" id="bib.bib43.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Katherine Tian, Eric Mitchell, and et al.
+
+</span>
+<span class="ltx_bibblock">Fine-tuning language models for factuality.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib43.3.1">arXiv preprint arXiv:2311.08401</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tonmoy <span class="ltx_text ltx_font_italic" id="bib.bib44.2.2.1">et al.</span> [2024]</span>
+<span class="ltx_bibblock">
+S. M. Towhidul Islam Tonmoy, S. M. Mehedi Zaman, and et al.
+
+</span>
+<span class="ltx_bibblock">A comprehensive survey of hallucination mitigation techniques in large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib44.3.1">CoRR</span>, abs/2401.01313, 2024.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib45">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Torabi <span class="ltx_text ltx_font_italic" id="bib.bib45.2.2.1">et al.</span> [2018]</span>
+<span class="ltx_bibblock">
+Faraz Torabi, Garrett Warnell, and Peter Stone.
+
+</span>
+<span class="ltx_bibblock">Behavioral cloning from observation.
+
+</span>
+<span class="ltx_bibblock">In Jérôme Lang, editor, <span class="ltx_text ltx_font_italic" id="bib.bib45.3.1">IJCAI</span>, pages 4950–4957. ijcai.org, 2018.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib46">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Touvron <span class="ltx_text ltx_font_italic" id="bib.bib46.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Hugo Touvron, Louis Martin, and et al.
+
+</span>
+<span class="ltx_bibblock">Llama 2: Open foundation and fine-tuned chat models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib46.3.1">CoRR</span>, abs/2307.09288, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib47">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Varshney <span class="ltx_text ltx_font_italic" id="bib.bib47.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Neeraj Varshney, Wenlin Yao, and et al.
+
+</span>
+<span class="ltx_bibblock">A stitch in time saves nine: Detecting and mitigating hallucinations of llms by validating low-confidence generation.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib47.3.1">CoRR</span>, abs/2307.03987, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib48">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Vu <span class="ltx_text ltx_font_italic" id="bib.bib48.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Tu Vu, Mohit Iyyer, and et al.
+
+</span>
+<span class="ltx_bibblock">Freshllms: Refreshing large language models with search engine augmentation.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib48.3.1">arXiv preprint arXiv:2310.03214</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib49">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang <span class="ltx_text ltx_font_italic" id="bib.bib49.2.2.1">et al.</span> [2023a]</span>
+<span class="ltx_bibblock">
+Boxin Wang, Wei Ping, and et al.
+
+</span>
+<span class="ltx_bibblock">Shall we pretrain autoregressive language models with retrieval? a comprehensive study.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib49.3.1">EMNLP</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib50">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang <span class="ltx_text ltx_font_italic" id="bib.bib50.2.2.1">et al.</span> [2023b]</span>
+<span class="ltx_bibblock">
+Cunxiang Wang, Xiaoze Liu, and et al.
+
+</span>
+<span class="ltx_bibblock">Survey on factuality in large language models: Knowledge, retrieval and domain-specificity.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib50.3.1">ArXiv</span>, abs/2310.07521, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib51">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang <span class="ltx_text ltx_font_italic" id="bib.bib51.2.2.1">et al.</span> [2023c]</span>
+<span class="ltx_bibblock">
+Yuxia Wang, Revanth Gangi Reddy, and et al.
+
+</span>
+<span class="ltx_bibblock">Factcheck-gpt: End-to-end fine-grained document-level fact-checking and correction of LLM output.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib51.3.1">CoRR</span>, abs/2311.09000, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib52">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wei <span class="ltx_text ltx_font_italic" id="bib.bib52.2.2.1">et al.</span> [2022]</span>
+<span class="ltx_bibblock">
+Jason Wei, Xuezhi Wang, and Dale et al.
+
+</span>
+<span class="ltx_bibblock">Chain-of-thought prompting elicits reasoning in large language models.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib52.3.1">NeurIPS 2022</span>, 2022.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib53">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wei <span class="ltx_text ltx_font_italic" id="bib.bib53.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Jerry W. Wei, Da Huang, and Yifeng Lu et al.
+
+</span>
+<span class="ltx_bibblock">Simple synthetic data reduces sycophancy in large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib53.3.1">CoRR</span>, abs/2308.03958, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib54">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yang and et al. [2018]</span>
+<span class="ltx_bibblock">
+Zhilin Yang and Peng Qi et al.
+
+</span>
+<span class="ltx_bibblock">Hotpotqa: A dataset for diverse, explainable multi-hop question answering.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib54.1.1">EMNLP 2018</span>, pages 2369–2380, 2018.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib55">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yao <span class="ltx_text ltx_font_italic" id="bib.bib55.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Shunyu Yao, Jeffrey Zhao, and Dian et al.
+
+</span>
+<span class="ltx_bibblock">React: Synergizing reasoning and acting in language models.
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib55.3.1">ICLR</span>, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib56">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yin <span class="ltx_text ltx_font_italic" id="bib.bib56.2.2.1">et al.</span> [2023a]</span>
+<span class="ltx_bibblock">
+Shukang Yin, Chaoyou Fu, and et al.
+
+</span>
+<span class="ltx_bibblock">Woodpecker: Hallucination correction for multimodal large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib56.3.1">CoRR</span>, abs/2310.16045, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib57">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yin <span class="ltx_text ltx_font_italic" id="bib.bib57.2.2.1">et al.</span> [2023b]</span>
+<span class="ltx_bibblock">
+Zhangyue Yin, Qiushi Sun, and Qipeng Guo et al.
+
+</span>
+<span class="ltx_bibblock">Do large language models know what they don’t know?
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib57.3.1">ACL</span>, pages 8653–8665, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib58">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang <span class="ltx_text ltx_font_italic" id="bib.bib58.2.2.1">et al.</span> [2023a]</span>
+<span class="ltx_bibblock">
+Hanning Zhang, Shizhe Diao, and et al.
+
+</span>
+<span class="ltx_bibblock">R-tuning: Teaching large language models to refuse unknown questions.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib58.3.1">CoRR</span>, abs/2311.09677, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib59">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang <span class="ltx_text ltx_font_italic" id="bib.bib59.2.2.1">et al.</span> [2023b]</span>
+<span class="ltx_bibblock">
+Muru Zhang, Ofir Press, and et al.
+
+</span>
+<span class="ltx_bibblock">How language model hallucinations can snowball.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib59.3.1">CoRR</span>, abs/2305.13534, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib60">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang <span class="ltx_text ltx_font_italic" id="bib.bib60.2.2.1">et al.</span> [2023c]</span>
+<span class="ltx_bibblock">
+Yue Zhang, Yafu Li, and et al.
+
+</span>
+<span class="ltx_bibblock">Siren’s song in the AI ocean: A survey on hallucination in large language models.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib60.3.1">CoRR</span>, abs/2309.01219, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib61">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhao <span class="ltx_text ltx_font_italic" id="bib.bib61.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Zhiyuan Zhao, Bin Wang, and Linke Ouyang et al.
+
+</span>
+<span class="ltx_bibblock">Beyond hallucinations: Enhancing lvlms through hallucination-aware direct preference optimization.
+
+</span>
+<span class="ltx_bibblock"><span class="ltx_text ltx_font_italic" id="bib.bib61.3.1">CoRR</span>, abs/2311.16839, 2023.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib62">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zheng <span class="ltx_text ltx_font_italic" id="bib.bib62.2.2.1">et al.</span> [2023]</span>
+<span class="ltx_bibblock">
+Ce Zheng, Lei Li, and et al.
+
+</span>
+<span class="ltx_bibblock">Can we edit factual knowledge by in-context learning?
+
+</span>
+<span class="ltx_bibblock">In <span class="ltx_text ltx_font_italic" id="bib.bib62.3.1">EMNLP</span>, pages 4862–4876, 2023.
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2402.02418">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2402.02420">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2402.02420" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2402.02420">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2402.02421">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Tue Mar  5 15:47:12 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

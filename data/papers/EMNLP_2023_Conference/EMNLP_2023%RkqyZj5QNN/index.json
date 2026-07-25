@@ -1,0 +1,463 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        10
+    ],
+    "sections": {
+        "1 Introduction": [
+            11,
+            32
+        ],
+        "2 Related Work": [
+            33,
+            56
+        ],
+        "3 Prompt Construction": [
+            57,
+            110
+        ],
+        "4 Clues Collecting and Reasoning": [
+            111,
+            495
+        ],
+        "5 Experiments": [
+            496,
+            3586
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "2.1 Large Language Models": [
+                35,
+                44
+            ],
+            "2.2 In-context Learning": [
+                45,
+                50
+            ],
+            "2.3 Text Classification": [
+                51,
+                56
+            ]
+        },
+        "3 Prompt Construction": {
+            "3.1 Overview": [
+                59,
+                62
+            ],
+            "3.2 Prompt Construction": [
+                63,
+                66
+            ],
+            "(1) Task description $\\bm{x}_{\\textit{desc}}$": [
+                67,
+                72
+            ],
+            "(2) Demonstration": [
+                73,
+                81
+            ],
+            "(3) Input $\\bm{x_{\\textit{input}}}$": [
+                82,
+                90
+            ],
+            "3.3 Demonstration Sampling": [
+                91,
+                94
+            ],
+            "Random Sampling": [
+                95,
+                98
+            ],
+            "$k$NN Sampling": [
+                99,
+                102
+            ],
+            "SimCSE": [
+                103,
+                106
+            ],
+            "Finetuned Model": [
+                107,
+                110
+            ]
+        },
+        "4 Clues Collecting and Reasoning": {
+            "4.1 Overview": [
+                115,
+                116
+            ],
+            "Collecting Clues": [
+                117,
+                122
+            ],
+            "Reasoning": [
+                123,
+                128
+            ],
+            "Decision Making": [
+                129,
+                136
+            ],
+            "4.2 Collecting clues and reasoning in zero-shot": [
+                137,
+                142
+            ],
+            "4.2.1 Clue Collecting and Reasoning in few-shot": [
+                143,
+                217
+            ],
+            "Clue Generation": [
+                218,
+                223
+            ],
+            "Reasoning Generation": [
+                224,
+                235
+            ],
+            "4.3 Voting": [
+                236,
+                495
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Models for Comparison": [
+                506,
+                507
+            ],
+            "Supervised models": [
+                508,
+                518
+            ],
+            "Few-shot Setup": [
+                519,
+                570
+            ],
+            "5.2 Results on the full training set": [
+                571,
+                578
+            ],
+            "5.3 Results on low-resource settings": [
+                579,
+                785
+            ],
+            "5.4 Domain Adaptation": [
+                786,
+                3586
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                13,
+                13
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ]
+        ],
+        "2 Related Work": [
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                55
+            ]
+        ],
+        "3 Prompt Construction": [
+            [
+                61,
+                61
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                77,
+                78
+            ],
+            [
+                80,
+                80
+            ],
+            [
+                84,
+                84
+            ],
+            [
+                86,
+                86
+            ],
+            [
+                88,
+                89
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                109,
+                109
+            ]
+        ],
+        "4 Clues Collecting and Reasoning": [
+            [
+                113,
+                113
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                127
+            ],
+            [
+                131,
+                131
+            ],
+            [
+                133,
+                133
+            ],
+            [
+                135,
+                135
+            ],
+            [
+                139,
+                139
+            ],
+            [
+                141,
+                141
+            ],
+            [
+                145,
+                145
+            ],
+            [
+                220,
+                220
+            ],
+            [
+                222,
+                222
+            ],
+            [
+                226,
+                226
+            ],
+            [
+                228,
+                228
+            ],
+            [
+                230,
+                230
+            ],
+            [
+                232,
+                232
+            ],
+            [
+                234,
+                234
+            ],
+            [
+                238,
+                238
+            ],
+            [
+                240,
+                241
+            ]
+        ],
+        "5 Experiments": [
+            [
+                498,
+                498
+            ],
+            [
+                500,
+                500
+            ],
+            [
+                502,
+                502
+            ],
+            [
+                504,
+                504
+            ],
+            [
+                510,
+                510
+            ],
+            [
+                512,
+                517
+            ],
+            [
+                521,
+                521
+            ],
+            [
+                523,
+                525
+            ],
+            [
+                573,
+                573
+            ],
+            [
+                575,
+                575
+            ],
+            [
+                577,
+                577
+            ],
+            [
+                581,
+                581
+            ],
+            [
+                788,
+                788
+            ],
+            [
+                790,
+                790
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.1.g1]": [
+                15,
+                19
+            ],
+            "[FIGURE S1.F2.1.g1]": [
+                21,
+                25
+            ]
+        },
+        "2 Related Work": {},
+        "3 Prompt Construction": {},
+        "4 Clues Collecting and Reasoning": {},
+        "5 Experiments": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Prompt Construction": {},
+        "4 Clues Collecting and Reasoning": {
+            "[TABLE S4.T1]": [
+                147,
+                216
+            ],
+            "[TABLE S4.T2]": [
+                243,
+                494
+            ]
+        },
+        "5 Experiments": {
+            "[TABLE S5.T3]": [
+                527,
+                569
+            ],
+            "[TABLE S5.T4]": [
+                583,
+                784
+            ],
+            "[TABLE S5.SS4.4]": [
+                792,
+                3584
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Prompt Construction": {},
+        "4 Clues Collecting and Reasoning": {},
+        "5 Experiments": {}
+    }
+}

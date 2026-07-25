@@ -1,0 +1,514 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        8
+    ],
+    "sections": {
+        "1 Introduction": [
+            9,
+            18
+        ],
+        "2 Related Work": [
+            19,
+            24
+        ],
+        "3 Malls Dataset Creation": [
+            25,
+            176
+        ],
+        "4 Fine-tuning LogicLLaMA for NL-FOL Translation": [
+            177,
+            253
+        ],
+        "5 Experiments": [
+            254,
+            287
+        ],
+        "6 Conclusion": [
+            288,
+            291
+        ],
+        "References": [
+            292,
+            320
+        ],
+        "Appendix A Appendix": [
+            321,
+            324
+        ],
+        "Appendix B Malls Dataset Creation Details": [
+            325,
+            619
+        ],
+        "Appendix C Computing Logical Equivalence and BLEU Score": [
+            620,
+            629
+        ],
+        "Appendix D Experimental Settings": [
+            630,
+            636
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Malls Dataset Creation": {
+            "3.1 Prompt pipeline": [
+                159,
+                168
+            ],
+            "3.2 Dataset statistics": [
+                169,
+                176
+            ]
+        },
+        "4 Fine-tuning LogicLLaMA for NL-FOL Translation": {
+            "4.1 Fine-tuning for direct translation and naive correction": [
+                193,
+                198
+            ],
+            "4.2 Chain-of-Thought correction via SFT and RLHF": [
+                199,
+                214
+            ],
+            "4.2.1 FOL Rule Perturbations and SFT": [
+                215,
+                232
+            ],
+            "4.2.2 RLHF for CoT correction": [
+                233,
+                245
+            ],
+            "4.2.3 FOL evaluation and reward design": [
+                246,
+                253
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Results": [
+                276,
+                279
+            ],
+            "5.2 Analysis": [
+                280,
+                287
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Malls Dataset Creation Details": {
+            "B.1 Data collection": [
+                573,
+                576
+            ],
+            "B.2 FOL parsing and verification": [
+                577,
+                613
+            ],
+            "B.3 Malls statistics": [
+                614,
+                619
+            ]
+        },
+        "Appendix C Computing Logical Equivalence and BLEU Score": {},
+        "Appendix D Experimental Settings": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ]
+        ],
+        "2 Related Work": [
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ]
+        ],
+        "3 Malls Dataset Creation": [
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                163,
+                163
+            ],
+            [
+                165,
+                165
+            ],
+            [
+                167,
+                167
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                173,
+                173
+            ],
+            [
+                175,
+                175
+            ]
+        ],
+        "4 Fine-tuning LogicLLaMA for NL-FOL Translation": [
+            [
+                179,
+                179
+            ],
+            [
+                181,
+                181
+            ],
+            [
+                183,
+                183
+            ],
+            [
+                185,
+                185
+            ],
+            [
+                195,
+                195
+            ],
+            [
+                197,
+                197
+            ],
+            [
+                207,
+                207
+            ],
+            [
+                209,
+                209
+            ],
+            [
+                211,
+                211
+            ],
+            [
+                213,
+                213
+            ],
+            [
+                223,
+                223
+            ],
+            [
+                225,
+                225
+            ],
+            [
+                227,
+                227
+            ],
+            [
+                229,
+                229
+            ],
+            [
+                231,
+                231
+            ],
+            [
+                235,
+                235
+            ],
+            [
+                237,
+                237
+            ],
+            [
+                239,
+                240
+            ],
+            [
+                242,
+                242
+            ],
+            [
+                244,
+                244
+            ],
+            [
+                248,
+                248
+            ],
+            [
+                250,
+                250
+            ],
+            [
+                252,
+                252
+            ]
+        ],
+        "5 Experiments": [
+            [
+                256,
+                256
+            ],
+            [
+                258,
+                258
+            ],
+            [
+                260,
+                260
+            ],
+            [
+                262,
+                262
+            ],
+            [
+                278,
+                278
+            ],
+            [
+                282,
+                282
+            ],
+            [
+                284,
+                284
+            ],
+            [
+                286,
+                286
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                290,
+                290
+            ]
+        ],
+        "References": [
+            [
+                294,
+                319
+            ]
+        ],
+        "Appendix A Appendix": [
+            [
+                323,
+                323
+            ]
+        ],
+        "Appendix B Malls Dataset Creation Details": [
+            [
+                575,
+                575
+            ],
+            [
+                585,
+                585
+            ],
+            [
+                587,
+                587
+            ],
+            [
+                589,
+                589
+            ],
+            [
+                591,
+                591
+            ],
+            [
+                593,
+                593
+            ],
+            [
+                595,
+                595
+            ],
+            [
+                597,
+                597
+            ],
+            [
+                599,
+                599
+            ],
+            [
+                601,
+                601
+            ],
+            [
+                603,
+                603
+            ],
+            [
+                605,
+                610
+            ],
+            [
+                612,
+                612
+            ],
+            [
+                616,
+                616
+            ],
+            [
+                618,
+                618
+            ]
+        ],
+        "Appendix C Computing Logical Equivalence and BLEU Score": [
+            [
+                622,
+                622
+            ],
+            [
+                624,
+                624
+            ],
+            [
+                626,
+                626
+            ],
+            [
+                628,
+                628
+            ]
+        ],
+        "Appendix D Experimental Settings": [
+            [
+                632,
+                632
+            ],
+            [
+                634,
+                634
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Malls Dataset Creation": {
+            "[FIGURE S3.F1.g1]": [
+                153,
+                157
+            ]
+        },
+        "4 Fine-tuning LogicLLaMA for NL-FOL Translation": {
+            "[FIGURE S4.F2.g1]": [
+                187,
+                191
+            ],
+            "[FIGURE S4.F3.g1]": [
+                201,
+                205
+            ],
+            "[FIGURE S4.SS2.SSS1.24.24.24.g1]": [
+                217,
+                221
+            ]
+        },
+        "5 Experiments": {
+            "[FIGURE S5.2.2.2.1.g1]": [
+                264,
+                268
+            ],
+            "[FIGURE S5.F6.g1]": [
+                270,
+                274
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Malls Dataset Creation Details": {
+            "[FIGURE A2.F7.g1]": [
+                327,
+                331
+            ],
+            "[FIGURE A2.1.1.1.g1]": [
+                333,
+                337
+            ],
+            "[FIGURE A2.SS2.1.1.1.g1]": [
+                579,
+                583
+            ]
+        },
+        "Appendix C Computing Logical Equivalence and BLEU Score": {},
+        "Appendix D Experimental Settings": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Malls Dataset Creation": {
+            "[TABLE S3.T1]": [
+                31,
+                151
+            ]
+        },
+        "4 Fine-tuning LogicLLaMA for NL-FOL Translation": {},
+        "5 Experiments": {},
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Malls Dataset Creation Details": {
+            "[TABLE A2.T5]": [
+                339,
+                571
+            ]
+        },
+        "Appendix C Computing Logical Equivalence and BLEU Score": {},
+        "Appendix D Experimental Settings": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Malls Dataset Creation": {},
+        "4 Fine-tuning LogicLLaMA for NL-FOL Translation": {},
+        "5 Experiments": {},
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Malls Dataset Creation Details": {},
+        "Appendix C Computing Logical Equivalence and BLEU Score": {},
+        "Appendix D Experimental Settings": {}
+    }
+}

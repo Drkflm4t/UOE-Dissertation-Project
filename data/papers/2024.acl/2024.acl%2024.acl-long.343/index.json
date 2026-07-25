@@ -1,0 +1,509 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            36
+        ],
+        "2 Problem Formulation": [
+            37,
+            45
+        ],
+        "3 Methods": [
+            46,
+            82
+        ],
+        "4 Relation to Other Influence Functions": [
+            83,
+            108
+        ],
+        "5 Experiments": [
+            109,
+            628
+        ],
+        "6 Discussion": [
+            629,
+            854
+        ],
+        "7 Related Work": [
+            855,
+            862
+        ],
+        "8 Conclusion": [
+            863,
+            868
+        ],
+        "References": [
+            869,
+            1016
+        ],
+        "Appendix A Appendix": [
+            1017,
+            1037
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Problem Formulation": {},
+        "3 Methods": {
+            "3.1 UnTrac": [
+                48,
+                60
+            ],
+            "3.2 UnTrac-Inv": [
+                61,
+                82
+            ]
+        },
+        "4 Relation to Other Influence Functions": {
+            "4.1 TracIn, GradDot & GradCos": [
+                85,
+                94
+            ],
+            "4.2 Hessian-based Influence Functions": [
+                95,
+                104
+            ],
+            "4.3 Connection to UnTrac & UnTrac-Inv": [
+                105,
+                108
+            ]
+        },
+        "5 Experiments": {
+            "TracIn, GradDot & GradCos": [
+                117,
+                120
+            ],
+            "HIF": [
+                121,
+                468
+            ],
+            "5.1 Tracing Influential Training Tasks": [
+                469,
+                472
+            ],
+            "Dataset": [
+                508,
+                620
+            ],
+            "Model": [
+                504,
+                507
+            ],
+            "Results": [
+                621,
+                628
+            ],
+            "5.2 Tracing Influential Pretraining Corpora": [
+                500,
+                503
+            ]
+        },
+        "6 Discussion": {
+            "6.1 Sensitivity to Epoch & Batch Size": [
+                633,
+                842
+            ],
+            "6.2 Sensitivity to Optimizer & Learning Rate": [
+                843,
+                846
+            ],
+            "Optimizer": [
+                847,
+                850
+            ],
+            "Learning Rate": [
+                851,
+                854
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "A.1 How to Compute Leave-Dataset-Out": [
+                1019,
+                1022
+            ],
+            "A.2 Relation to Other Influence Functions": [
+                1023,
+                1032
+            ],
+            "A.3 Evaluation by Spearman Correlation": [
+                1033,
+                1037
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ]
+        ],
+        "2 Problem Formulation": [
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                42
+            ],
+            [
+                44,
+                44
+            ]
+        ],
+        "3 Methods": [
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                59
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                67
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                73,
+                75
+            ],
+            [
+                77,
+                79
+            ],
+            [
+                81,
+                81
+            ]
+        ],
+        "4 Relation to Other Influence Functions": [
+            [
+                87,
+                87
+            ],
+            [
+                89,
+                91
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                99,
+                101
+            ],
+            [
+                103,
+                103
+            ],
+            [
+                107,
+                107
+            ]
+        ],
+        "5 Experiments": [
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                471,
+                471
+            ],
+            [
+                475,
+                475
+            ],
+            [
+                477,
+                480
+            ],
+            [
+                482,
+                482
+            ],
+            [
+                486,
+                486
+            ],
+            [
+                496,
+                496
+            ],
+            [
+                498,
+                498
+            ],
+            [
+                502,
+                502
+            ],
+            [
+                506,
+                506
+            ],
+            [
+                510,
+                510
+            ],
+            [
+                512,
+                512
+            ],
+            [
+                514,
+                514
+            ],
+            [
+                623,
+                623
+            ],
+            [
+                625,
+                625
+            ],
+            [
+                627,
+                627
+            ]
+        ],
+        "6 Discussion": [
+            [
+                631,
+                631
+            ],
+            [
+                635,
+                635
+            ],
+            [
+                637,
+                637
+            ],
+            [
+                845,
+                845
+            ],
+            [
+                849,
+                849
+            ],
+            [
+                853,
+                853
+            ]
+        ],
+        "7 Related Work": [
+            [
+                857,
+                857
+            ],
+            [
+                859,
+                859
+            ],
+            [
+                861,
+                861
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                865,
+                865
+            ],
+            [
+                867,
+                867
+            ]
+        ],
+        "References": [
+            [
+                871,
+                911
+            ]
+        ],
+        "Appendix A Appendix": [
+            [
+                1021,
+                1021
+            ],
+            [
+                1025,
+                1025
+            ],
+            [
+                1027,
+                1029
+            ],
+            [
+                1031,
+                1031
+            ],
+            [
+                1035,
+                1035
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                17,
+                21
+            ]
+        },
+        "2 Problem Formulation": {},
+        "3 Methods": {},
+        "4 Relation to Other Influence Functions": {},
+        "5 Experiments": {
+            "[FIGURE S5.F2.1.g1]": [
+                488,
+                492
+            ],
+            "[FIGURE S5.F3.1.g1]": [
+                614,
+                619
+            ]
+        },
+        "6 Discussion": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "References": {
+            "[FIGURE A0.F4.g1]": [
+                913,
+                917
+            ]
+        },
+        "Appendix A Appendix": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Problem Formulation": {},
+        "3 Methods": {},
+        "4 Relation to Other Influence Functions": {},
+        "5 Experiments": {
+            "[TABLE S5.SS0.SSS0.Px2.tab1]": [
+                125,
+                237
+            ],
+            "[TABLE S5.T1]": [
+                239,
+                351
+            ],
+            "[TABLE S5.T2]": [
+                353,
+                467
+            ],
+            "[TABLE S5.T3]": [
+                516,
+                612
+            ]
+        },
+        "6 Discussion": {
+            "[TABLE S6.T4]": [
+                639,
+                841
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "References": {
+            "[TABLE A0.T5]": [
+                919,
+                1015
+            ]
+        },
+        "Appendix A Appendix": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Problem Formulation": {},
+        "3 Methods": {},
+        "4 Relation to Other Influence Functions": {},
+        "5 Experiments": {},
+        "6 Discussion": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "References": {},
+        "Appendix A Appendix": {}
+    }
+}

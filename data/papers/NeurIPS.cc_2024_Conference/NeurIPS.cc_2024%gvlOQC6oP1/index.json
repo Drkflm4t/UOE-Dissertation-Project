@@ -1,0 +1,927 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        13
+    ],
+    "sections": {
+        "1 Introduction": [
+            14,
+            39
+        ],
+        "2 Related Works": [
+            40,
+            49
+        ],
+        "3 Benchmark": [
+            50,
+            93
+        ],
+        "4 Method": [
+            94,
+            162
+        ],
+        "5 Experiments": [
+            163,
+            2355
+        ],
+        "6 Conclusion": [
+            2356,
+            2361
+        ],
+        "References": [
+            2362,
+            2417
+        ],
+        "Appendix A More examples of the D-Rep Dataset": [
+            2418,
+            2421
+        ],
+        "Appendix B The Instantiations of PDFs": [
+            2422,
+            2614
+        ],
+        "Appendix C The Visualization of What the Network Learns": [
+            2615,
+            2622
+        ],
+        "Appendix D Implement GPT-4V Turbo on our D-Rep Test Dataset": [
+            2623,
+            2626
+        ],
+        "Appendix E The Similarities Predicted by Other Models": [
+            2627,
+            2630
+        ],
+        "Appendix F The Details of Six Diffusion Models": [
+            2631,
+            2642
+        ],
+        "Appendix G More Replication Examples": [
+            2643,
+            2646
+        ],
+        "Appendix H Failure Cases": [
+            2647,
+            2747
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Works": {
+            "2.1 Existing Image Copy Detection Methods": [
+                42,
+                45
+            ],
+            "2.2 Replication in Diffusion Models": [
+                46,
+                49
+            ]
+        },
+        "3 Benchmark": {
+            "3.1 D-Rep Dataset": [
+                60,
+                67
+            ],
+            "3.2 Evaluation Protocols": [
+                68,
+                93
+            ]
+        },
+        "4 Method": {
+            "4.1 Converting Level to Probability Density": [
+                104,
+                126
+            ],
+            "4.2 Representing an Image as a Set of Vectors": [
+                127,
+                162
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Training Details": [
+                165,
+                168
+            ],
+            "5.2 Challenge from the ICDiff Task": [
+                169,
+                646
+            ],
+            "5.3 The Effectiveness of PDF-Embedding": [
+                647,
+                2339
+            ],
+            "5.4 Simulated Evaluation of Diffusion Models": [
+                2340,
+                2355
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A More examples of the D-Rep Dataset": {},
+        "Appendix B The Instantiations of PDFs": {},
+        "Appendix C The Visualization of What the Network Learns": {},
+        "Appendix D Implement GPT-4V Turbo on our D-Rep Test Dataset": {},
+        "Appendix E The Similarities Predicted by Other Models": {},
+        "Appendix F The Details of Six Diffusion Models": {},
+        "Appendix G More Replication Examples": {},
+        "Appendix H Failure Cases": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ],
+            [
+                26,
+                26
+            ],
+            [
+                28,
+                28
+            ],
+            [
+                30,
+                30
+            ],
+            [
+                32,
+                32
+            ],
+            [
+                34,
+                34
+            ],
+            [
+                36,
+                38
+            ]
+        ],
+        "2 Related Works": [
+            [
+                44,
+                44
+            ],
+            [
+                48,
+                48
+            ]
+        ],
+        "3 Benchmark": [
+            [
+                58,
+                58
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                84
+            ],
+            [
+                86,
+                86
+            ],
+            [
+                88,
+                88
+            ],
+            [
+                90,
+                90
+            ],
+            [
+                92,
+                92
+            ]
+        ],
+        "4 Method": [
+            [
+                102,
+                102
+            ],
+            [
+                106,
+                106
+            ],
+            [
+                108,
+                108
+            ],
+            [
+                110,
+                111
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                116
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                120,
+                121
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                129,
+                129
+            ],
+            [
+                131,
+                133
+            ],
+            [
+                135,
+                135
+            ],
+            [
+                137,
+                137
+            ],
+            [
+                139,
+                140
+            ],
+            [
+                142,
+                142
+            ],
+            [
+                144,
+                145
+            ],
+            [
+                147,
+                147
+            ],
+            [
+                149,
+                149
+            ],
+            [
+                151,
+                152
+            ],
+            [
+                154,
+                154
+            ],
+            [
+                156,
+                156
+            ],
+            [
+                158,
+                159
+            ],
+            [
+                161,
+                161
+            ]
+        ],
+        "5 Experiments": [
+            [
+                167,
+                167
+            ],
+            [
+                645,
+                645
+            ],
+            [
+                649,
+                649
+            ],
+            [
+                651,
+                651
+            ],
+            [
+                961,
+                961
+            ],
+            [
+                963,
+                963
+            ],
+            [
+                965,
+                965
+            ],
+            [
+                2348,
+                2348
+            ],
+            [
+                2350,
+                2350
+            ],
+            [
+                2352,
+                2352
+            ],
+            [
+                2354,
+                2354
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                2358,
+                2358
+            ],
+            [
+                2360,
+                2360
+            ]
+        ],
+        "References": [
+            [
+                2364,
+                2416
+            ]
+        ],
+        "Appendix A More examples of the D-Rep Dataset": [
+            [
+                2420,
+                2420
+            ]
+        ],
+        "Appendix B The Instantiations of PDFs": [
+            [
+                2424,
+                2424
+            ],
+            [
+                2426,
+                2426
+            ],
+            [
+                2428,
+                2429
+            ],
+            [
+                2431,
+                2431
+            ],
+            [
+                2433,
+                2434
+            ],
+            [
+                2436,
+                2436
+            ],
+            [
+                2438,
+                2439
+            ],
+            [
+                2441,
+                2441
+            ],
+            [
+                2443,
+                2444
+            ],
+            [
+                2446,
+                2446
+            ],
+            [
+                2448,
+                2448
+            ],
+            [
+                2450,
+                2450
+            ],
+            [
+                2452,
+                2453
+            ],
+            [
+                2455,
+                2455
+            ],
+            [
+                2457,
+                2458
+            ],
+            [
+                2460,
+                2460
+            ],
+            [
+                2462,
+                2463
+            ],
+            [
+                2465,
+                2465
+            ],
+            [
+                2467,
+                2468
+            ],
+            [
+                2470,
+                2470
+            ],
+            [
+                2472,
+                2473
+            ],
+            [
+                2475,
+                2475
+            ],
+            [
+                2477,
+                2478
+            ],
+            [
+                2480,
+                2480
+            ],
+            [
+                2482,
+                2483
+            ],
+            [
+                2485,
+                2485
+            ],
+            [
+                2487,
+                2487
+            ],
+            [
+                2489,
+                2490
+            ],
+            [
+                2492,
+                2492
+            ],
+            [
+                2494,
+                2495
+            ],
+            [
+                2497,
+                2497
+            ],
+            [
+                2499,
+                2500
+            ],
+            [
+                2502,
+                2502
+            ],
+            [
+                2504,
+                2505
+            ],
+            [
+                2507,
+                2507
+            ],
+            [
+                2509,
+                2509
+            ],
+            [
+                2511,
+                2511
+            ],
+            [
+                2513,
+                2514
+            ],
+            [
+                2516,
+                2516
+            ],
+            [
+                2518,
+                2518
+            ],
+            [
+                2520,
+                2520
+            ],
+            [
+                2522,
+                2523
+            ],
+            [
+                2525,
+                2525
+            ],
+            [
+                2527,
+                2528
+            ],
+            [
+                2530,
+                2530
+            ],
+            [
+                2532,
+                2532
+            ],
+            [
+                2534,
+                2535
+            ],
+            [
+                2537,
+                2537
+            ],
+            [
+                2539,
+                2540
+            ],
+            [
+                2542,
+                2542
+            ],
+            [
+                2544,
+                2544
+            ],
+            [
+                2546,
+                2547
+            ],
+            [
+                2549,
+                2549
+            ],
+            [
+                2551,
+                2552
+            ],
+            [
+                2554,
+                2554
+            ],
+            [
+                2556,
+                2557
+            ],
+            [
+                2559,
+                2559
+            ],
+            [
+                2561,
+                2562
+            ],
+            [
+                2564,
+                2564
+            ],
+            [
+                2566,
+                2566
+            ],
+            [
+                2568,
+                2568
+            ],
+            [
+                2570,
+                2571
+            ],
+            [
+                2573,
+                2573
+            ],
+            [
+                2575,
+                2576
+            ],
+            [
+                2578,
+                2578
+            ],
+            [
+                2580,
+                2582
+            ],
+            [
+                2584,
+                2584
+            ],
+            [
+                2586,
+                2588
+            ],
+            [
+                2590,
+                2590
+            ],
+            [
+                2592,
+                2593
+            ],
+            [
+                2595,
+                2595
+            ],
+            [
+                2597,
+                2599
+            ],
+            [
+                2601,
+                2601
+            ],
+            [
+                2603,
+                2605
+            ],
+            [
+                2607,
+                2607
+            ]
+        ],
+        "Appendix C The Visualization of What the Network Learns": [
+            [
+                2617,
+                2617
+            ],
+            [
+                2619,
+                2619
+            ],
+            [
+                2621,
+                2621
+            ]
+        ],
+        "Appendix D Implement GPT-4V Turbo on our D-Rep Test Dataset": [
+            [
+                2625,
+                2625
+            ]
+        ],
+        "Appendix E The Similarities Predicted by Other Models": [
+            [
+                2629,
+                2629
+            ]
+        ],
+        "Appendix F The Details of Six Diffusion Models": [
+            [
+                2633,
+                2633
+            ],
+            [
+                2635,
+                2635
+            ],
+            [
+                2637,
+                2637
+            ],
+            [
+                2639,
+                2639
+            ],
+            [
+                2641,
+                2641
+            ]
+        ],
+        "Appendix G More Replication Examples": [
+            [
+                2645,
+                2645
+            ]
+        ],
+        "Appendix H Failure Cases": [
+            [
+                2655,
+                2655
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.1.g1]": [
+                16,
+                20
+            ]
+        },
+        "2 Related Works": {},
+        "3 Benchmark": {
+            "[FIGURE S3.1.g1]": [
+                52,
+                56
+            ]
+        },
+        "4 Method": {
+            "[FIGURE S4.1.g1]": [
+                96,
+                100
+            ]
+        },
+        "5 Experiments": {
+            "[FIGURE S5.SS3.1.g1]": [
+                955,
+                959
+            ],
+            "[FIGURE S5.SS4.1.g1]": [
+                2342,
+                2346
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A More examples of the D-Rep Dataset": {},
+        "Appendix B The Instantiations of PDFs": {
+            "[FIGURE A2.1.g1]": [
+                2609,
+                2613
+            ]
+        },
+        "Appendix C The Visualization of What the Network Learns": {},
+        "Appendix D Implement GPT-4V Turbo on our D-Rep Test Dataset": {},
+        "Appendix E The Similarities Predicted by Other Models": {},
+        "Appendix F The Details of Six Diffusion Models": {},
+        "Appendix G More Replication Examples": {},
+        "Appendix H Failure Cases": {
+            "[FIGURE A8.1.g1]": [
+                2649,
+                2653
+            ],
+            "[FIGURE A8.2.g1]": [
+                2657,
+                2661
+            ],
+            "[FIGURE A8.3.g1]": [
+                2663,
+                2667
+            ],
+            "[FIGURE A8.4.g1]": [
+                2669,
+                2673
+            ],
+            "[FIGURE A8.5.g1]": [
+                2675,
+                2679
+            ],
+            "[FIGURE A8.6.g1]": [
+                2681,
+                2685
+            ],
+            "[FIGURE A8.7.g1]": [
+                2687,
+                2691
+            ],
+            "[FIGURE A8.8.g1]": [
+                2693,
+                2697
+            ],
+            "[FIGURE A8.9.g1]": [
+                2699,
+                2703
+            ],
+            "[FIGURE A8.10.1.g1]": [
+                2705,
+                2709
+            ],
+            "[FIGURE A8.34.g1]": [
+                2711,
+                2715
+            ],
+            "[FIGURE A8.35.g1]": [
+                2717,
+                2721
+            ],
+            "[FIGURE A8.36.g1]": [
+                2723,
+                2727
+            ],
+            "[FIGURE A8.37.g1]": [
+                2729,
+                2733
+            ],
+            "[FIGURE A8.38.g1]": [
+                2735,
+                2739
+            ],
+            "[FIGURE A8.39.g1]": [
+                2741,
+                2745
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Benchmark": {},
+        "4 Method": {},
+        "5 Experiments": {
+            "[TABLE S5.T1]": [
+                171,
+                643
+            ],
+            "[TABLE S5.T2]": [
+                653,
+                953
+            ],
+            "[TABLE S5.T3]": [
+                967,
+                2338
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A More examples of the D-Rep Dataset": {},
+        "Appendix B The Instantiations of PDFs": {},
+        "Appendix C The Visualization of What the Network Learns": {},
+        "Appendix D Implement GPT-4V Turbo on our D-Rep Test Dataset": {},
+        "Appendix E The Similarities Predicted by Other Models": {},
+        "Appendix F The Details of Six Diffusion Models": {},
+        "Appendix G More Replication Examples": {},
+        "Appendix H Failure Cases": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Benchmark": {},
+        "4 Method": {},
+        "5 Experiments": {},
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A More examples of the D-Rep Dataset": {},
+        "Appendix B The Instantiations of PDFs": {},
+        "Appendix C The Visualization of What the Network Learns": {},
+        "Appendix D Implement GPT-4V Turbo on our D-Rep Test Dataset": {},
+        "Appendix E The Similarities Predicted by Other Models": {},
+        "Appendix F The Details of Six Diffusion Models": {},
+        "Appendix G More Replication Examples": {},
+        "Appendix H Failure Cases": {}
+    }
+}

@@ -1,0 +1,1031 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            32
+        ],
+        "2 Background and Related Work": [
+            33,
+            68
+        ],
+        "3 Methods": [
+            69,
+            114
+        ],
+        "4 Experimental Setup": [
+            115,
+            376
+        ],
+        "5 Results": [
+            377,
+            886
+        ],
+        "6 Conclusion": [
+            887,
+            892
+        ],
+        "7 Limitations": [
+            893,
+            918
+        ],
+        "Acknowledgements": [
+            919,
+            922
+        ],
+        "References": [
+            923,
+            999
+        ],
+        "Appendix A Study Methods": [
+            1000,
+            1182
+        ],
+        "Appendix B Language Models Architectures": [
+            1183,
+            1339
+        ],
+        "Appendix C KD without Labeled Data": [
+            1340,
+            1526
+        ],
+        "Appendix D Additional Implementation Details": [
+            1527,
+            1572
+        ],
+        "Appendix E Additional Results": [
+            1573,
+            4594
+        ],
+        "Appendix F Human Evaluation for ART10": [
+            4595,
+            4644
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Background and Related Work": {
+            "2.1 Natural Language Generation": [
+                35,
+                42
+            ],
+            "2.2 Exposure Bias": [
+                43,
+                48
+            ],
+            "2.3 Compression and Knowledge Distillation": [
+                49,
+                68
+            ]
+        },
+        "3 Methods": {
+            "3.1 Research Design": [
+                71,
+                74
+            ],
+            "3.2 Architectures and Pruning": [
+                75,
+                78
+            ],
+            "3.3 Objectives111More formal descriptions and implementation details of the methods discussed in \u00a7[3.3](#S3.SS3 \"3.3 Objectives1footnote 11footnote 1More formal descriptions and implementation details of the methods discussed in \u00a73.3 and \u00a73.4 are provided in \u00a7A \u2023 3 Methods \u2023 A Systematic Study of Knowledge Distillation for Natural Language Generation with Pseudo-Target Training\") and \u00a7[3.4](#S3.SS4 \"3.4 Pseudo-Targets (a.k.a sequence-level KD)1footnote 11footnote 1 \u2023 3 Methods \u2023 A Systematic Study of Knowledge Distillation for Natural Language Generation with Pseudo-Target Training\") are provided in \u00a7[A](#A1 \"Appendix A Study Methods \u2023 A Systematic Study of Knowledge Distillation for Natural Language Generation with Pseudo-Target Training\")": [
+                79,
+                90
+            ],
+            "3.4 Pseudo-Targets (a.k.a sequence-level KD)11footnotemark: 1": [
+                91,
+                106
+            ],
+            "3.5 Joint-Teaching": [
+                107,
+                114
+            ]
+        },
+        "4 Experimental Setup": {
+            "4.1 Tasks and Datasets": [
+                119,
+                181
+            ],
+            "4.2 Models and Pruning": [
+                182,
+                191
+            ],
+            "4.3 Evaluation": [
+                192,
+                376
+            ]
+        },
+        "5 Results": {
+            "5.1 Extreme setup: KD with GPT-4": [
+                879,
+                886
+            ]
+        },
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Study Methods": {},
+        "Appendix B Language Models Architectures": {
+            "B.1 Transformer Background": [
+                1189,
+                1208
+            ],
+            "B.2 Complexity Analysis": [
+                1209,
+                1333
+            ],
+            "B.3 Task Performance Analysis": [
+                1334,
+                1339
+            ]
+        },
+        "Appendix C KD without Labeled Data": {
+            "C.1 Experimental Setup": [
+                1348,
+                1518
+            ],
+            "C.2 Results": [
+                1519,
+                1526
+            ]
+        },
+        "Appendix D Additional Implementation Details": {
+            "Training": [
+                1531,
+                1536
+            ],
+            "Fine-tuning": [
+                1537,
+                1540
+            ],
+            "Evaluation": [
+                1541,
+                1544
+            ],
+            "Knowledge Distillation": [
+                1545,
+                1550
+            ],
+            "Pseudo Targets": [
+                1551,
+                1558
+            ],
+            "Computational Profiling": [
+                1559,
+                1562
+            ],
+            "D.1 The Shake7 Dataset": [
+                1563,
+                1566
+            ],
+            "D.2 URLs of Code and Data": [
+                1567,
+                1572
+            ]
+        },
+        "Appendix E Additional Results": {},
+        "Appendix F Human Evaluation for ART10": {
+            "F.1 Human Evaluation \u2013 Instructions": [
+                4624,
+                4633
+            ],
+            "F.2 Generated Examples": [
+                4634,
+                4644
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ]
+        ],
+        "2 Background and Related Work": [
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                51,
+                51
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                59,
+                59
+            ],
+            [
+                67,
+                67
+            ]
+        ],
+        "3 Methods": [
+            [
+                73,
+                73
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                99,
+                99
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                103,
+                103
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ]
+        ],
+        "4 Experimental Setup": [
+            [
+                117,
+                117
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                127
+            ],
+            [
+                129,
+                129
+            ],
+            [
+                184,
+                184
+            ],
+            [
+                186,
+                186
+            ],
+            [
+                188,
+                188
+            ],
+            [
+                190,
+                190
+            ],
+            [
+                194,
+                194
+            ],
+            [
+                375,
+                375
+            ]
+        ],
+        "5 Results": [
+            [
+                379,
+                379
+            ],
+            [
+                381,
+                381
+            ],
+            [
+                383,
+                383
+            ],
+            [
+                385,
+                385
+            ],
+            [
+                387,
+                387
+            ],
+            [
+                389,
+                389
+            ],
+            [
+                578,
+                578
+            ],
+            [
+                580,
+                580
+            ],
+            [
+                582,
+                582
+            ],
+            [
+                584,
+                584
+            ],
+            [
+                586,
+                586
+            ],
+            [
+                877,
+                877
+            ],
+            [
+                881,
+                881
+            ],
+            [
+                883,
+                883
+            ],
+            [
+                885,
+                885
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                889,
+                889
+            ],
+            [
+                891,
+                891
+            ]
+        ],
+        "7 Limitations": [
+            [
+                895,
+                895
+            ],
+            [
+                897,
+                897
+            ],
+            [
+                899,
+                899
+            ],
+            [
+                901,
+                901
+            ],
+            [
+                903,
+                903
+            ],
+            [
+                905,
+                905
+            ],
+            [
+                907,
+                907
+            ],
+            [
+                909,
+                909
+            ],
+            [
+                911,
+                911
+            ],
+            [
+                913,
+                913
+            ],
+            [
+                915,
+                915
+            ],
+            [
+                917,
+                917
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                921,
+                921
+            ]
+        ],
+        "References": [
+            [
+                925,
+                998
+            ]
+        ],
+        "Appendix A Study Methods": [
+            [
+                1002,
+                1002
+            ],
+            [
+                1004,
+                1004
+            ],
+            [
+                1006,
+                1006
+            ],
+            [
+                1008,
+                1011
+            ],
+            [
+                1013,
+                1013
+            ],
+            [
+                1015,
+                1015
+            ],
+            [
+                1017,
+                1017
+            ],
+            [
+                1019,
+                1022
+            ],
+            [
+                1134,
+                1134
+            ],
+            [
+                1136,
+                1136
+            ],
+            [
+                1138,
+                1138
+            ],
+            [
+                1140,
+                1140
+            ],
+            [
+                1142,
+                1142
+            ],
+            [
+                1144,
+                1144
+            ],
+            [
+                1146,
+                1146
+            ],
+            [
+                1148,
+                1148
+            ],
+            [
+                1150,
+                1150
+            ],
+            [
+                1152,
+                1152
+            ],
+            [
+                1154,
+                1154
+            ],
+            [
+                1156,
+                1156
+            ],
+            [
+                1158,
+                1158
+            ],
+            [
+                1160,
+                1160
+            ],
+            [
+                1162,
+                1162
+            ],
+            [
+                1164,
+                1164
+            ],
+            [
+                1166,
+                1166
+            ],
+            [
+                1168,
+                1168
+            ],
+            [
+                1170,
+                1170
+            ],
+            [
+                1172,
+                1172
+            ],
+            [
+                1174,
+                1174
+            ],
+            [
+                1176,
+                1176
+            ],
+            [
+                1178,
+                1179
+            ],
+            [
+                1181,
+                1181
+            ]
+        ],
+        "Appendix B Language Models Architectures": [
+            [
+                1185,
+                1185
+            ],
+            [
+                1187,
+                1187
+            ],
+            [
+                1191,
+                1191
+            ],
+            [
+                1193,
+                1193
+            ],
+            [
+                1195,
+                1195
+            ],
+            [
+                1197,
+                1197
+            ],
+            [
+                1199,
+                1199
+            ],
+            [
+                1201,
+                1201
+            ],
+            [
+                1211,
+                1211
+            ],
+            [
+                1213,
+                1213
+            ],
+            [
+                1215,
+                1215
+            ],
+            [
+                1217,
+                1217
+            ],
+            [
+                1219,
+                1219
+            ],
+            [
+                1221,
+                1221
+            ],
+            [
+                1223,
+                1223
+            ],
+            [
+                1225,
+                1225
+            ],
+            [
+                1336,
+                1336
+            ],
+            [
+                1338,
+                1338
+            ]
+        ],
+        "Appendix C KD without Labeled Data": [
+            [
+                1342,
+                1342
+            ],
+            [
+                1344,
+                1344
+            ],
+            [
+                1346,
+                1346
+            ],
+            [
+                1350,
+                1350
+            ],
+            [
+                1352,
+                1352
+            ],
+            [
+                1354,
+                1354
+            ],
+            [
+                1356,
+                1356
+            ],
+            [
+                1511,
+                1511
+            ],
+            [
+                1513,
+                1513
+            ],
+            [
+                1515,
+                1515
+            ],
+            [
+                1517,
+                1517
+            ],
+            [
+                1521,
+                1521
+            ],
+            [
+                1523,
+                1523
+            ],
+            [
+                1525,
+                1525
+            ]
+        ],
+        "Appendix D Additional Implementation Details": [
+            [
+                1529,
+                1529
+            ],
+            [
+                1533,
+                1533
+            ],
+            [
+                1535,
+                1535
+            ],
+            [
+                1539,
+                1539
+            ],
+            [
+                1543,
+                1543
+            ],
+            [
+                1547,
+                1547
+            ],
+            [
+                1549,
+                1549
+            ],
+            [
+                1553,
+                1553
+            ],
+            [
+                1555,
+                1555
+            ],
+            [
+                1557,
+                1557
+            ],
+            [
+                1561,
+                1561
+            ],
+            [
+                1565,
+                1565
+            ],
+            [
+                1569,
+                1571
+            ]
+        ],
+        "Appendix E Additional Results": [
+            [
+                1575,
+                1575
+            ]
+        ],
+        "Appendix F Human Evaluation for ART10": [
+            [
+                4620,
+                4620
+            ],
+            [
+                4622,
+                4622
+            ],
+            [
+                4626,
+                4626
+            ],
+            [
+                4628,
+                4632
+            ],
+            [
+                4636,
+                4636
+            ],
+            [
+                4638,
+                4638
+            ],
+            [
+                4640,
+                4640
+            ],
+            [
+                4642,
+                4642
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Background and Related Work": {
+            "[FIGURE S2.F1.g1]": [
+                61,
+                65
+            ]
+        },
+        "3 Methods": {
+            "[FIGURE S3.F2.g1]": [
+                85,
+                89
+            ]
+        },
+        "4 Experimental Setup": {},
+        "5 Results": {},
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Study Methods": {},
+        "Appendix B Language Models Architectures": {
+            "[FIGURE A2.F3.g1]": [
+                1203,
+                1207
+            ]
+        },
+        "Appendix C KD without Labeled Data": {
+            "[FIGURE A3.F4.g1]": [
+                1505,
+                1509
+            ]
+        },
+        "Appendix D Additional Implementation Details": {},
+        "Appendix E Additional Results": {},
+        "Appendix F Human Evaluation for ART10": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Background and Related Work": {},
+        "3 Methods": {},
+        "4 Experimental Setup": {
+            "[TABLE S4.T1]": [
+                131,
+                180
+            ],
+            "[TABLE S4.T2]": [
+                196,
+                373
+            ]
+        },
+        "5 Results": {
+            "[TABLE S5.T3]": [
+                391,
+                576
+            ],
+            "[TABLE S5.T4]": [
+                588,
+                875
+            ]
+        },
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Study Methods": {
+            "[TABLE A1.T5]": [
+                1024,
+                1132
+            ]
+        },
+        "Appendix B Language Models Architectures": {
+            "[TABLE A2.T6]": [
+                1227,
+                1332
+            ]
+        },
+        "Appendix C KD without Labeled Data": {
+            "[TABLE A3.T7]": [
+                1358,
+                1503
+            ]
+        },
+        "Appendix D Additional Implementation Details": {},
+        "Appendix E Additional Results": {
+            "[TABLE A5.T8]": [
+                1577,
+                1946
+            ],
+            "[TABLE A5.T9]": [
+                1948,
+                2603
+            ],
+            "[TABLE A5.T10]": [
+                2605,
+                3279
+            ],
+            "[TABLE A5.T11]": [
+                3281,
+                3936
+            ],
+            "[TABLE A5.T12]": [
+                3938,
+                4593
+            ]
+        },
+        "Appendix F Human Evaluation for ART10": {
+            "[TABLE A6.T13]": [
+                4597,
+                4618
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Background and Related Work": {},
+        "3 Methods": {},
+        "4 Experimental Setup": {},
+        "5 Results": {},
+        "6 Conclusion": {},
+        "7 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Study Methods": {},
+        "Appendix B Language Models Architectures": {},
+        "Appendix C KD without Labeled Data": {},
+        "Appendix D Additional Implementation Details": {},
+        "Appendix E Additional Results": {},
+        "Appendix F Human Evaluation for ART10": {}
+    }
+}

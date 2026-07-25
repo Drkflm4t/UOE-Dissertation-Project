@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2310.07715] To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing</title><meta content="NLP is in a period of disruptive change that is impacting our methodologies, funding sources, and public perception.
+In this work, we seek to understand how to shape our future by better understanding our past.
+We stud…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2310.07715" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2310.07715" rel="canonical" target="_blank"/>
+<!--Generated on Wed Feb 28 00:45:45 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">To Build Our Future, We Must Know Our Past: 
+<br class="ltx_break"/>Contextualizing Paradigm Shifts in Natural Language Processing</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id13.id1">NLP is in a period of disruptive change that is impacting our methodologies, funding sources, and public perception.
+In this work, we seek to understand how to shape our future by better understanding our past.
+We study factors that shape NLP as a field, including culture, incentives, and infrastructure by conducting long-form interviews with 26 NLP researchers of varying seniority, research area, institution, and social identity.
+Our interviewees identify cyclical patterns in the field, as well as new shifts without historical parallel, including changes in benchmark culture and software infrastructure.
+We complement this discussion with quantitative analysis of citation, authorship, and language use in the ACL Anthology over time.
+We conclude by discussing shared visions, concerns, and hopes for the future of NLP.
+We hope that this study of our field’s past and present can prompt informed discussion of our community’s implicit norms and more deliberate action to consciously shape the future.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Natural language processing (NLP) is in a period of flux.
+The unprecedented advances of deep neural networks and large language models (LLMs) in NLP coincides with a shift not only in the nature of our research questions and methodology, but also in the size and visibility of our field. Since the mid-2010s, the number of first-time authors publishing in the ACL Anthology has been increasing exponentially (Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">1</span></a>).
+Recent publicity around NLP technology, most notably ChatGPT, has brought our field into the public spotlight, with corresponding (over-)excitement and scrutiny.</p>
+</div>
+<figure class="ltx_figure" id="S1.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="351" id="S1.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>The number of unique researchers publishing in ACL venues has increased dramatically, from 715 unique authors in 1980 to 17,829 in 2022.</figcaption>
+</figure>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">In the 2022 NLP Community Metasurvey, many NLP practicioners expressed fears that private firms exert excessive influence on the field, that “a majority of the research being published in NLP is of dubious scientific value,” and that AI technology could lead to a catastrophic event this century <cite class="ltx_cite ltx_citemacro_citep">(Michael et al., <a class="ltx_ref" href="#bib.bib21" title="">2022</a>)</cite>.
+More recently, there has been discussion of the increasing prevalence of closed-source models in NLP and how that will shape the field and its innovations <cite class="ltx_cite ltx_citemacro_citep">(Rogers, <a class="ltx_ref" href="#bib.bib31" title="">2023</a>; Solaiman, <a class="ltx_ref" href="#bib.bib35" title="">2023</a>; Liao and Vaughan, <a class="ltx_ref" href="#bib.bib18" title="">2023</a>)</cite>.
+In order to tackle these big challenges, we must understand the factors — norms, incentives, technology and culture — that led to our current crossroads.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">We present a study of the community in its current state, informed by a series of long-form retrospective interviews with NLP researchers.
+Our interviewees identify patterns throughout the history of NLP, describing periods of research productivity and stagnation that recur over decades and appear at smaller scale around prominent methods (§<a class="ltx_ref" href="#S3" title="3 Exploit-explore cycles of work ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">3</span></a>).
+Interviewees also point out unparalleled shifts in the community’s norms and incentives. Aggregating trends across interviews, we identify key factors shaping these shifts, including the rise and persistence of benchmarking culture (§<a class="ltx_ref" href="#S4" title="4 Benchmarking culture ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">4</span></a>) and the maturation and centralization of software infrastructure (§<a class="ltx_ref" href="#S5" title="5 Software lotteries ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">5</span></a>).
+Our quantitative analysis of citation patterns, authorship, and language use in the ACL Anthology over time provides a complementary view of the shifts described by interviewees, grounding their narratives and our interpretation in measurable trends.
+Through our characterization of the current state of the NLP research community and the factors that have led us here, we aim to offer a foundation for informed reflection on the future that we as a community might wish to see.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Methods</h2>
+<section class="ltx_subsection" id="S2.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.1 </span>Qualitative methods</h3>
+<div class="ltx_para" id="S2.SS1.p1">
+<p class="ltx_p" id="S2.SS1.p1.1">We recruited 26 researchers to participate in interviews
+using <span class="ltx_text ltx_font_italic" id="S2.SS1.p1.1.1">purposive</span> <cite class="ltx_cite ltx_citemacro_cite">Campbell et al. (<a class="ltx_ref" href="#bib.bib8" title="">2020</a>)</cite> and <span class="ltx_text ltx_font_italic" id="S2.SS1.p1.1.2">snowball</span> sampling <cite class="ltx_cite ltx_citemacro_cite">Parker et al. (<a class="ltx_ref" href="#bib.bib25" title="">2019</a>)</cite>: asking participants to recommend other candidates, and purposively selecting for diversity in affiliation, career stage, geographic position, and research area (see participant demographics in Appendix <a class="ltx_ref" href="#A1.SS1" title="A.1 Participant demographics ‣ Appendix A Details of Qualitative Methodologies ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">A.1</span></a>). Our sample had a 69-31% academia-industry split, was 19% women, and 27% of participants identified as part of a minoritized group in the field. Of our academic participants, we had a near-even split of early-, mid-, and late-career researchers; industry researchers were 75% individual contributers and 25% managers.</p>
+</div>
+<div class="ltx_para" id="S2.SS1.p2">
+<p class="ltx_p" id="S2.SS1.p2.1">Interviews were semi-structured <cite class="ltx_cite ltx_citemacro_cite">Weiss (<a class="ltx_ref" href="#bib.bib43" title="">1995</a>)</cite>, including a dedicated notetaker, and recorded with participant consent, lasting between 45-73 minutes (mean: 58 minutes). Interviews followed an interview guide (see Appendix <a class="ltx_ref" href="#A1.SS3" title="A.3 Interview Guide ‣ Appendix A Details of Qualitative Methodologies ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">A.3</span></a>) and began by contrasting the participant’s experience of the NLP community at the start of their career and the current moment, then moved to discussion of shifts in the community during their career. Interviews were conducted between November 2022 and May 2023; coincidentally, this was contemporaneous with the release of ChatGPT in November 2022 and GPT-4 in March 2023, which frequently provided points of reflection for our participants.</p>
+</div>
+<div class="ltx_para" id="S2.SS1.p3">
+<p class="ltx_p" id="S2.SS1.p3.1">Following procedures of grounded theory <cite class="ltx_cite ltx_citemacro_cite">Strauss and Corbin (<a class="ltx_ref" href="#bib.bib36" title="">1990</a>)</cite>, the authors present for the interview produced analytical memos for early interviews <cite class="ltx_cite ltx_citemacro_cite">Glaser et al. (<a class="ltx_ref" href="#bib.bib13" title="">2004</a>)</cite>.
+As interviews proceeded, authors began a process of independently <span class="ltx_text ltx_font_italic" id="S2.SS1.p3.1.1">open coding</span> the data, an <span class="ltx_text ltx_font_italic" id="S2.SS1.p3.1.2">interpretive</span> <cite class="ltx_cite ltx_citemacro_cite">Lincoln et al. (<a class="ltx_ref" href="#bib.bib19" title="">2011</a>)</cite> analytical process where researchers assign conceptual labels to segments of data <cite class="ltx_cite ltx_citemacro_cite">Strauss and Corbin (<a class="ltx_ref" href="#bib.bib36" title="">1990</a>)</cite>.
+After this, authors convened to discuss their open codes, systematizing recurring themes and contrasts to construct a preliminary closed coding frame <cite class="ltx_cite ltx_citemacro_cite">Miles and Huberman (<a class="ltx_ref" href="#bib.bib22" title="">1994</a>)</cite>. After this, an author who was not present in the interview applied the closed coding frame to the data.
+In weekly analysis meetings, new codes arose to capture new themes or provide greater specificity, in which case the closed coding scheme was revised, categories refined, and data re-coded in an iterative process.
+Analysis reported here emerged first from this coded data, was refined by subsequent review of raw transcripts to check context, and developed in discussion between all authors.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S2.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.2 </span>Quantitative Methods</h3>
+<div class="ltx_para" id="S2.SS2.p1">
+<p class="ltx_p" id="S2.SS2.p1.1">We use quantitative methods primarily as a coherence check on our qualitative results.
+While our work is largely concerned with the <span class="ltx_text ltx_font_italic" id="S2.SS2.p1.1.1">causes</span> and <span class="ltx_text ltx_font_italic" id="S2.SS2.p1.1.2">community reception</span> of changes in the community, our quantitative analyses provide evidence that these changes have occurred.
+This includes analyzing authorship shifts (Figure <a class="ltx_ref" href="#A2.F4" title="Figure 4 ‣ Appendix B Detailed quantitative methodology ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">4</span></a>), citation patterns (Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Quantitative Methods ‣ 2 Methods ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">2</span></a>), terminology use (Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Quantitative Methods ‣ 2 Methods ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">2</span></a>,<a class="ltx_ref" href="#S5.F3" title="Figure 3 ‣ Centralization on frameworks ‣ 5 Software lotteries ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">3</span></a>) in the ACL anthology over time; for more details on reproducing this analysis, see Appendix <a class="ltx_ref" href="#A2" title="Appendix B Detailed quantitative methodology ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">B</span></a>.</p>
+</div>
+<figure class="ltx_figure" id="S2.F2"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="196" id="S2.F2.g1" src="./media/x2.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>Quantitative and qualitative timeline. The lower half of this diagram captures historical information that our participants felt was relevant, along with their reported date ranges. The upper half captures quantitative information that parallels that timeline. Bar charts indicate fraction of papers that cite a given paper, while line charts indicate the fraction of papers that use a particular term.</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Exploit-explore cycles of work</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">Our participants described cyclical behavior in NLP research following methodological shifts every few years.
+Many participants referred to these methodological shifts as “paradigm shifts”, with similar structure, which we characterize as <em class="ltx_emph ltx_font_italic" id="S3.p1.1.1">explore</em> and <em class="ltx_emph ltx_font_italic" id="S3.p1.1.2">exploit</em> phases.<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span>Inspired by the verbiage of reinforcement learning, e.g.  <cite class="ltx_cite ltx_citemacro_citet">Sutton and Barto (<a class="ltx_ref" href="#bib.bib38" title="">2018</a>)</cite>.</span></span></span></p>
+</div>
+<section class="ltx_paragraph" id="S3.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">First wave: exploit.</h4>
+<div class="ltx_para" id="S3.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS0.SSS0.Px1.p1.1">Participants suggested that after a key paper, a wave of work is published that demonstrates the utility of that method across varying tasks or benchmarks.
+Interviewees variously describe this stage as <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.1">“following the bandwagon” (17)</span>, <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.2">“land grab stuff” (9)</span>,
+or <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.3">“picking the low-hanging fruit” (8)</span>. A researcher with prior experience in computer vision drew parallels between the rise of BERT and the computer vision community after AlexNet was released, where <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.4">“it felt like every other paper was, ‘I have fine tuned ImageNet trained CNN on some new dataset’ ” (17)</span>.
+However, participants identified benefits of this <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.5">“initial wave of showing things work” (17)</span> in demonstrating the value of techniques across tasks or domains; in finding the seemingly obvious ideas which do <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.6">not</span> work, thus exposing new areas to investigate; and in developing downstream applications. When one researcher was asked to identify their own exploit work, they joked we could simply <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.7">“sort [their] Google Scholar from most cited to least cited” (9)</span>, describing another incentive to publish the first paper applying a new methodology to a particular task.
+Participants additionally described doing exploit work early in their careers
+as a hedge against riskier, longer-term projects. However, most participants ascribed low status to exploit work<span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span>Data work is also commonly perceived as low-status <cite class="ltx_cite ltx_citemacro_cite">Sambasivan et al. (<a class="ltx_ref" href="#bib.bib33" title="">2021</a>)</cite>; participants agreed data work was previously undervalued in NLP but described a trend of increasing respect, one calling dataset curation <span class="ltx_text ltx_font_italic" id="footnote2.1">“valorized.” (7)</span></span></span></span>, with participants calling these projects <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.8">“low difficulty” (4)</span> and <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.9">“obvious idea[s]” (9)</span> with <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.10">“high probability of success” (4)</span>. Participants also discussed increasing risk of being <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p1.1.11">“scooped” (7,9,4)</span> on exploit work as the community grows larger.</p>
+</div>
+<div class="ltx_para" id="S3.SS0.SSS0.Px1.p2">
+<p class="ltx_p" id="S3.SS0.SSS0.Px1.p2.1">Participants felt that <span class="ltx_text ltx_font_bold" id="S3.SS0.SSS0.Px1.p2.1.1">the exploit phase of work is not sustainable.</span> Eventually, <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p2.1.2">“the low hanging fruit has been picked” (8)</span>; this style of work becomes unsurprising and less publishable.
+As one researcher put it: <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px1.p2.1.3">“if I fine tune [BERT] for some new task, it’s probably going to get some high accuracy. And that’s fine. That’s the end.” (17)</span>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Second wave: explore</h4>
+<div class="ltx_para" id="S3.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS0.SSS0.Px2.p1.1">After some time in the exploit phase,
+participants described a state where obvious extensions to the dominant methodology have already been proposed, and fewer papers demonstrate dramatic improvements over the state of the art on popular benchmarks.</p>
+</div>
+<div class="ltx_para" id="S3.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="S3.SS0.SSS0.Px2.p2.1">In this phase, work on identifying the ways that the new method is flawed gains prominence.
+This work may focus on interpretability, bias, data or compute efficiency.
+While some participants see this as a time of <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px2.p2.1.1">“stalled” (8)</span> progress, others described this as <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px2.p2.1.2">“the more interesting research after the initial wave of showing things work” (18)</span>. A mid-career participant identified this as the work they choose to focus on: <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px2.p2.1.3">“I’m at the stage of my career where I don’t want to just push numbers, you know. I’ll let the grad students do that. I want to do interesting stuff” (22)</span>. Participants often saw “pushing numbers” as lower-status work, appropriate for graduate students and important for advancing the field and one’s career, but ultimately not what researchers hope to explore.</p>
+</div>
+<div class="ltx_para" id="S3.SS0.SSS0.Px2.p3">
+<p class="ltx_p" id="S3.SS0.SSS0.Px2.p3.1">Some work to improve benchmark performance was also perceived as explore work, particularly when it involved developing new architectures. One participant described a distinction between <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px2.p3.1.1">“entering a race” (4)</span> and <span class="ltx_text ltx_font_italic" id="S3.SS0.SSS0.Px2.p3.1.2">“forging in a new direction” (4)</span> with a project, which focuses the exploit/explore divide more on the perceived surprisingness of an idea rather than the type of contribution made.
+<span class="ltx_text ltx_font_bold" id="S3.SS0.SSS0.Px2.p3.1.3">Exploration often leads to a new breakthrough, causing the cycle to begin anew.</span></p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Where are we now?</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">Placing the current state of the field along the exploit-explore cycle requires defining the current methodological “paradigm”. Participants identified similar patterns at varying scales, with some disagreement on the placement of recent trends.</p>
+</div>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Prompting as a methodological shift</h4>
+<div class="ltx_para" id="S3.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px1.p1.1">Several participants described prompting as a paradigm shift or a direction that the community found promising, but most participants viewed current work on prompt engineering or <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px1.p1.1.1">“ChatGPT for X” (9)</span> as
+something that people are working on <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px1.p1.1.2">“instead […] of something that might make a fundamental difference” (14)</span>. One participant described both prompt engineering and previous work on feature engineering as <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px1.p1.1.3">“psuedoscience […] just poking at the model” (6)</span>.
+The current flurry of prompting work was viewed by several participants as lower-status work exploiting a known method.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">“Era of scale”</h4>
+<div class="ltx_para" id="S3.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px2.p1.1">For participants who discussed larger-scale cycles, pre-trained models were frequently identified as the most recent methodological shift. Participants disagreed on whether scaling up pre-trained models (in terms of parameter count, training time, and/or pre-training data) was a form of exploiting or exploring this method. Some participants found current approaches to scale to be <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px2.p1.1.1">“a reliable recipe where we, when we put more resources in, we get […] more useful behavior and capabilities out” (4)</span> and relatively easy to perform: <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px2.p1.1.2">“Once you have that GPU […] it’s like, super simple” (5)</span>. This perception of scaling up as both high likelihood of success and low difficulty places it as exploit work, and researchers who described scale in this way tended to view it as exploiting “obvious” trends. One researcher described scale as a way of establishing what is possible but <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px2.p1.1.3">“actually a bad way to achieve our goals.” (4)</span>, with further (explore-wave) work necessary to find efficient ways to achieve the same performance.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.SSS0.Px2.p2">
+<p class="ltx_p" id="S3.SS1.SSS0.Px2.p2.1">A minority of participants argued that, while historical efforts to scale models or extract large noisy corpora from the internet were exploit work, current efforts to scale are different, displaying <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px2.p2.1.1">“emergence in addition to scale, whereas previously we just saw […] diminishing returns” (22)</span>. Some participants also emphasized the engineering work required to scale models, saying that some were <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px2.p2.1.2">“underestimating the amount of work that goes into training a large model” (8)</span> and identifying people or engineering teams as a major resource necessary to perform scaling work. These participants who described scaling work as producing surprising results and being higher difficulty also described scaling as
+higher status, more exploratory work.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">“Deep learning monoculture”</h4>
+<div class="ltx_para" id="S3.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px3.p1.1">There was a sense from several participants that the current cycle has changed the field more than previous ones, featuring greater centralization on fewer methods (see §<a class="ltx_ref" href="#S5" title="5 Software lotteries ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">5</span></a> for more discussion). Some expressed concern: <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px3.p1.1.1">“a technique shows some promise, and then more people investigate it. That’s perfectly appropriate and reasonable, but I think it happens a little too much. […] <span class="ltx_text ltx_font_bold" id="S3.SS1.SSS0.Px3.p1.1.1.1">Everybody collapses on this one approach […] everything else gets abandoned.</span>” (19)</span>. Another participant described peers from linguistics departments who left NLP because they felt alienated by the focus on machine learning.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S3.SS1.SSS0.Px4">
+<h4 class="ltx_title ltx_title_paragraph">Issues with peer review</h4>
+<div class="ltx_para" id="S3.SS1.SSS0.Px4.p1">
+<p class="ltx_p" id="S3.SS1.SSS0.Px4.p1.1">Some felt that peer review was inherently biased toward incremental work because peer reviewers are invested in the success of the current methodological trends, with one participant arguing that <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px4.p1.1.1">“if you want to break the paradigm and do something different, you’re gonna get bad reviews, and that’s fatal these days” (21)</span>.
+Far more commonly, participants did not express inherent opposition to peer review but raised concerns because of the recent expansion of the field, with one senior industry researcher remarking that peer reviewers are now primarily junior researchers who<span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px4.p1.1.2">“have not seen the effort that went into [earlier] papers” (12)</span>. Another participant asserted that <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px4.p1.1.3">“<span class="ltx_text ltx_font_bold" id="S3.SS1.SSS0.Px4.p1.1.3.1">my peers never review my papers</span>” (22)</span>. Participants additionally suggested that the pressure on junior researchers to publish more causes an acceleration in the pace of research and reinforcement of current norms, as research that is farther from current norms/methodologies requires higher upfront time investment.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.SSS0.Px4.p2">
+<p class="ltx_p" id="S3.SS1.SSS0.Px4.p2.1">This competitiveness can manifest in harsher reviews, and one participant described a <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px4.p2.1.1">“deadly combination” (19)</span> of higher standards for papers and lower quality of reviews.
+Some participants described this as a reason they were choosing to engage less with NLP conferences; one industry researcher stated that <span class="ltx_text ltx_font_italic" id="S3.SS1.SSS0.Px4.p2.1.2">“I just find it difficult to publish papers in *CL that have ideas in them.” (22)</span>.</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Benchmarking culture</h2>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>The rise of benchmarks</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">Senior and emeritus faculty shared a consistent recollection of the ACL community before the prominence of benchmarks as centralized around a few US institutions and characterized by <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.1">“patient money” (21)</span>: funding from DARPA that did not require any deliverables or statements of work.
+Capabilities in language technologies were showcased with technical <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.2">“toy” (26, 19)</span> demonstrations that were evaluated qualitatively: <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.3">“the performance metrics were, ‘Oh my God it does that? No machine ever did that before.’ ” (21)</span>.
+Participants repeatedly mentioned how small the community was; at conferences, <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.4">“everybody knew each other. Everybody was conversing, in all the issues” (26)</span>.
+<span class="ltx_text ltx_font_bold" id="S4.SS1.p1.1.5">The field was described as <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.5.1">“higher trust” (22)</span></span>, with social mediation of research quality– able to function in the absence of standardization because of the strong interconnectedness of the community.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p2">
+<p class="ltx_p" id="S4.SS1.p2.1">Many participants recalled the rise of benchmarks in the late 1990s and early 2000s, coinciding with a major expansion in the NLP community in the wake of the “statistical revolution,” where participants described statistical models displacing more traditional rules-based work (see Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Quantitative Methods ‣ 2 Methods ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">2</span></a>). In the words of one participant, the field became of <span class="ltx_text ltx_font_italic" id="S4.SS1.p2.1.1">“such a big snowballing size that nobody owned the first evers anymore.” (26)</span>. Instead, after the release of the Penn Treebank in 1993 and the reporting of initial results on the dataset, <span class="ltx_text ltx_font_italic" id="S4.SS1.p2.1.2">“the climb started” (25)</span> to increase performance.
+Some participants attributed these changes to an influx of methods from machine learning and statistics, while others described them as methods to understand and organize progress when doing this coordination through one’s social network was no longer feasible.</p>
+</div>
+<div class="ltx_para" id="S4.SS1.p3">
+<p class="ltx_p" id="S4.SS1.p3.1">Over time, this focus on metrics seems to have overtaken the rest of the field, in part through the operationalization of metrics as a key condition of DARPA funding. One participant credited this to Anthony Tether, who became director of DARPA in 2001: they described earlier DARPA grants as funding <span class="ltx_text ltx_font_italic" id="S4.SS1.p3.1.1">“the crazy […] stuff that just might be a breakthrough” (21)</span> and DARPA under Tether as <span class="ltx_text ltx_font_italic" id="S4.SS1.p3.1.2">“show me the metrics. We’re going to run these metrics every year.” (21)</span>.<span class="ltx_note ltx_role_footnote" id="footnote3"><sup class="ltx_note_mark">3</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">3</sup><span class="ltx_tag ltx_tag_note">3</span>Other participants named DARPA program managers Charles Wayne and J. Allen Sears as additional key players. A recent tribute to Wayne <cite class="ltx_cite ltx_citemacro_cite">Church (<a class="ltx_ref" href="#bib.bib9" title="">2018</a>)</cite> provides additional context reflecting on DARPA’s shift in priorities in the mid-1980s.</span></span></span></p>
+</div>
+<div class="ltx_para" id="S4.SS1.p4">
+<p class="ltx_p" id="S4.SS1.p4.1">Some participants mourned the risk appetite of a culture that prioritized “first-evers,” criticizing the lack of funding for ideas that did not immediately perform well at evaluations (notably leading to the recession of neural networks until 2011). However, there was sharp disagreement here; many other participants celebrated the introduction of benchmarks, with one stating that comparing results on benchmarks between methods <span class="ltx_text ltx_font_italic" id="S4.SS1.p4.1.1">“really brought people together to exchange ideas. […] I think this really helped the field to move forward.” (2)</span>. Other participants similarly argued that a culture of quantitative measurement was key for moving on from techniques that were appealing for their <span class="ltx_text ltx_font_italic" id="S4.SS1.p4.1.2">“elegance” (14)</span> but empirically underperforming.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>The current state of benchmarks</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1">Roughly twenty years on from the establishment of benchmarks as a field-wide priority, our participants’ attitudes towards benchmarks had become significantly more complex.
+Many of our participants still found benchmarks necessary, but nearly all of them found them increasingly insufficient.</p>
+</div>
+<section class="ltx_paragraph" id="S4.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Misaligned incentives</h4>
+<div class="ltx_para" id="S4.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S4.SS2.SSS0.Px1.p1.1">Many participants, particular early- and late-career faculty, argued that the field incentivizes the production of benchmark results to the exclusion of all else: <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px1.p1.1.1">“the typical research paper…their immediate goal has to be to get another 2% and get the boldface black entry on the table.” (21)</span>. For our participants, <span class="ltx_text ltx_font_bold" id="S4.SS2.SSS0.Px1.p1.1.2">improvements on benchmarks in NLP are the only results that are self-justifying to reviewers.</span>
+Some participants felt this encourages researchers to exploit modeling tricks to get state-of-the-art results on benchmarks, rather than explore the deeper mechanisms by which models function (see §<a class="ltx_ref" href="#S3.SS0.SSS0.Px2" title="Second wave: explore ‣ 3 Exploit-explore cycles of work ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">3</span></a>).</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">“We’re solving NLP”</h4>
+<div class="ltx_para" id="S4.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S4.SS2.SSS0.Px2.p1.1">Some participants perceive a degradation in the value of benchmarks because of the strength of newer models. Participants appreciated both the increased diversity and frequency of new benchmark introduction, but noted that the time for new approaches to reach <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px2.p1.1.1">“superhuman” (6,22)</span> levels of performance on any specific benchmark is shortening. One common comparison was between part of speech tagging (<span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px2.p1.1.2">“a hill that was climbed for […] about 20 years” (15)</span>) and most modern benchmarks (“solved” within a few years, or even months). Some went further, describing <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px2.p1.1.3">“solving NLP” (8)</span> or naming 2020 as the time when <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px2.p1.1.4">“classification was solved” (15)</span>.</p>
+</div>
+<div class="ltx_para" id="S4.SS2.SSS0.Px2.p2">
+<p class="ltx_p" id="S4.SS2.SSS0.Px2.p2.1">However, when participants were asked for clarification on what it meant to “solve” a problem, most participants hedged in similar ways; that datasets and benchmarks could be solved, with the correct scoping, but problems could rarely or never be solved.
+Many participants argued that the standard for solving a task should be human equivalency, and that this was not possible without new benchmarks, metrics, or task definition.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S4.SS2.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">NLP in the wild</h4>
+<div class="ltx_para" id="S4.SS2.SSS0.Px3.p1">
+<p class="ltx_p" id="S4.SS2.SSS0.Px3.p1.1">Some participants argued that many benchmarks reflect tasks that <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px3.p1.1.1">“aren’t that useful in the world” (13)</span>, and that this has led to a situation where <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px3.p1.1.2">“[NLP], a field that, like fundamentally, is about something about people, knows remarkably little about people” (3)</span>.
+Industry participants often viewed this as a distinction between their work and the academic community, with one stating that <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px3.p1.1.3">“most of the academic benchmarks out there are not real tasks” (12)</span>.
+Many academics articulated a desire for more human-centered NLP, and most participants described feeling pressure over the
+unprecedented level of outside interest in the field.
+One participant contrasted the international attention on ChatGPT with the visibility of earlier NLP work: <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px3.p1.1.4">“It’s not like anyone ever went to like parser.yahoo.com to run a parser on something” (3)</span>.
+Participants argued that, given this outside attention, the benchmark focus of NLP is too narrow, that <span class="ltx_text ltx_font_bold" id="S4.SS2.SSS0.Px3.p1.1.5">benchmarks fail to capture notions of language understanding that translate to wider audiences</span>, and that we should move on from benchmarks not when they are saturated but when <span class="ltx_text ltx_font_italic" id="S4.SS2.SSS0.Px3.p1.1.6">“it wouldn’t really improve the world to improve this performance anymore” (9)</span>.
+This echoed a common refrain: many participants, especially early- and mid-career researchers, saw positive social change as a goal of progress in NLP.</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Software lotteries</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1"><cite class="ltx_cite ltx_citemacro_citet">Hooker (<a class="ltx_ref" href="#bib.bib14" title="">2021</a>)</cite> argues that machine learning research has been shaped by a <span class="ltx_text ltx_font_italic" id="S5.p1.1.1">hardware lottery</span>: an idea’s success is partially tied to its suitability for available hardware.
+Several participants spoke about software in ways that indicate an analogous <span class="ltx_text ltx_font_italic" id="S5.p1.1.2">software lottery</span> in NLP research: as the community centralizes in its software use, it also centralizes in methodology, with researchers’ choices of methods influenced by relative ease of implementation.
+This appeared to be a relatively new phenomenon; participants described previously using custom-designed software from their own research group, or writing code from scratch for each new project.</p>
+</div>
+<section class="ltx_paragraph" id="S5.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Centralization on frameworks</h4>
+<div class="ltx_para" id="S5.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="S5.SS0.SSS0.Px1.p1.1">As deep learning became more popular in NLP, participants described the landscape shifting. As TensorFlow <cite class="ltx_cite ltx_citemacro_citep">(Abadi et al., <a class="ltx_ref" href="#bib.bib1" title="">2015</a>)</cite> increased support for NLP modeling, PyTorch <cite class="ltx_cite ltx_citemacro_citep">(Paszke et al., <a class="ltx_ref" href="#bib.bib26" title="">2019</a>)</cite> was released, along with NLP-specific toolkits such as DyNet <cite class="ltx_cite ltx_citemacro_cite">Neubig et al. (<a class="ltx_ref" href="#bib.bib24" title="">2017</a>)</cite> and AllenNLP <cite class="ltx_cite ltx_citemacro_citep">(Gardner et al., <a class="ltx_ref" href="#bib.bib12" title="">2018</a>)</cite>, and
+<span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px1.p1.1.1">“everything started being […] simpler to manage, simpler to train” (17)</span>.
+Previously, participants described spending <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px1.p1.1.2">“like 90% of our time re-implementing papers” (12)</span>; as more papers began releasing code implemented in popular frameworks, the cost of using those methods as baselines decreased. One participant stated that <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px1.p1.1.3">“things that software makes easy, people are going to do” (18)</span>; this further compounds <span class="ltx_text ltx_font_bold" id="S5.SS0.SSS0.Px1.p1.1.4">centralization onto the most popular libraries, with little incentive to stray from the mainstream</span>: <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px1.p1.1.5">“everybody uses PyTorch, so now I use PyTorch too” (8)</span>; <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px1.p1.1.6">“we just use HuggingFace for pretty much everything” (18)</span>.<span class="ltx_note ltx_role_footnote" id="footnote4"><sup class="ltx_note_mark">4</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">4</sup><span class="ltx_tag ltx_tag_note">4</span>In this section, we primarily discuss open source frameworks commonly used by academic and industry researchers. However, many of our participants working in industry also describe affordances and constraints of <span class="ltx_text ltx_font_italic" id="footnote4.1">internal</span> toolkits that are used at their respective companies.</span></span></span>
+Figure 3 visualizes mentions of frameworks across papers in the ACL Anthology, showing both the rise and fall in their popularity. The rising peaks of popularity reflect the centralization over time.
+While some communities within NLP had previously seen some centralization on toolkits (e.g. machine translation’s use of Moses <cite class="ltx_cite ltx_citemacro_citep">(Koehn et al., <a class="ltx_ref" href="#bib.bib16" title="">2007</a>)</cite>), the current centralization is transcends subfields.</p>
+</div>
+<figure class="ltx_figure" id="S5.F3"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="346" id="S5.F3.g1" src="./media/x3.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>Mentions of libraries over time in the ACL Anthology. Note the cyclic pattern and increasing concentration on the dominant framework over time. While some libraries are built on others, the shift in mentions over time captures the primary level of abstraction that researchers consider important. See appendix <a class="ltx_ref" href="#A2" title="Appendix B Detailed quantitative methodology ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">B</span></a> for details on how we handle ambiguity in mentions.
+</figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S5.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Centralization on specific models</h4>
+<div class="ltx_para" id="S5.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="S5.SS0.SSS0.Px2.p1.1">Participants identified another shift after the release of BERT and subsequent development of Hugging Face.
+Because of pre-training, participants moved from merely using the same libraries to <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px2.p1.1.1">“everyone us[ing] the same base models” (9)</span>. Participants expressed concern that this led to further centralization in the community, with one participant identifying a trend of some people <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px2.p1.1.2">“not us[ing] anything else than BERT […] that’s a problem” (5)</span>. This concentration around particular modeling choices has reached <span class="ltx_text ltx_font_bold" id="S5.SS0.SSS0.Px2.p1.1.3">greater heights than any previous concentration on a method</span>; in 2021, <math alttext="46.7\%" class="ltx_Math" display="inline" id="S5.SS0.SSS0.Px2.p1.1.m1.1"><semantics id="S5.SS0.SSS0.Px2.p1.1.m1.1a"><mrow id="S5.SS0.SSS0.Px2.p1.1.m1.1.1" xref="S5.SS0.SSS0.Px2.p1.1.m1.1.1.cmml"><mn id="S5.SS0.SSS0.Px2.p1.1.m1.1.1.2" xref="S5.SS0.SSS0.Px2.p1.1.m1.1.1.2.cmml">46.7</mn><mo id="S5.SS0.SSS0.Px2.p1.1.m1.1.1.1" xref="S5.SS0.SSS0.Px2.p1.1.m1.1.1.1.cmml">%</mo></mrow><annotation-xml encoding="MathML-Content" id="S5.SS0.SSS0.Px2.p1.1.m1.1b"><apply id="S5.SS0.SSS0.Px2.p1.1.m1.1.1.cmml" xref="S5.SS0.SSS0.Px2.p1.1.m1.1.1"><csymbol cd="latexml" id="S5.SS0.SSS0.Px2.p1.1.m1.1.1.1.cmml" xref="S5.SS0.SSS0.Px2.p1.1.m1.1.1.1">percent</csymbol><cn id="S5.SS0.SSS0.Px2.p1.1.m1.1.1.2.cmml" type="float" xref="S5.SS0.SSS0.Px2.p1.1.m1.1.1.2">46.7</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.SS0.SSS0.Px2.p1.1.m1.1c">46.7\%</annotation></semantics></math> of papers in the ACL anthology cited BERT (<cite class="ltx_cite ltx_citemacro_citet">Devlin et al. (<a class="ltx_ref" href="#bib.bib10" title="">2019</a>)</cite>; Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Quantitative Methods ‣ 2 Methods ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">2</span></a>)<span class="ltx_note ltx_role_footnote" id="footnote5"><sup class="ltx_note_mark">5</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">5</sup><span class="ltx_tag ltx_tag_note">5</span>While not every paper that cites BERT uses a BERT model, this indicates how central BERT is both as a model and as a frame for the discussion of other work. For comparison, only two other papers have been cited by more than 20% of anthology papers in a single year: “Attention is All You Need” <cite class="ltx_cite ltx_citemacro_citep">(Vaswani et al., <a class="ltx_ref" href="#bib.bib40" title="">2017</a>)</cite> with 27% in 2021 and GloVe <cite class="ltx_cite ltx_citemacro_citep">(Pennington et al., <a class="ltx_ref" href="#bib.bib27" title="">2014</a>)</cite> with 21% in 2019.</span></span></span>.</p>
+</div>
+<div class="ltx_para" id="S5.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="S5.SS0.SSS0.Px2.p2.1">Other large models are only available to researchers via an API.
+One participant who works on LLMs in industry argued that black-box LLMs, while <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px2.p2.1.1">“non-scientific” (15)</span> in many ways, were like large-scale technical tools constructed in other disciplines, drawing a parallel to particle physics:
+<span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px2.p2.1.2">“computer science is getting to have its CERN moment now […] there’s only one Large Hadron Collider, right?” (15)</span>. This participant argued that NLP has become a field whose frontiers require tools that are beyond most organizations’ resources and capabilities to construct, but nonetheless are widely adopted and set bounding parameters for future research as they see wide adoption.
+In this vision, black-box LLMs take on the same role as the <a class="ltx_ref ltx_href" href="https://home.cern/science/accelerators/large-hadron-collider" target="_blank" title="">LHC</a> or the <a class="ltx_ref ltx_href" href="https://hubblesite.org/home" target="_blank" title="">Hubble Space Telescope</a> (both notably public endeavors, unlike most LLMs), as tools whose specifications are decided on by a few well-resourced organizations who shape significant parts of the field.
+But most participants expressed skepticism about the scientific validity of experiments on black-box LLMs, with one participant referencing critiques of early-2000s IR research on Google <cite class="ltx_cite ltx_citemacro_cite">Kilgarriff (<a class="ltx_ref" href="#bib.bib15" title="">2007</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS0.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Centralization on Python</h4>
+<div class="ltx_para" id="S5.SS0.SSS0.Px3.p1">
+<p class="ltx_p" id="S5.SS0.SSS0.Px3.p1.1">While most early-career and late-career participants did not express strong opinions about programming languages, many mid-career participants expressed strong dislike for Python, describing it as <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px3.p1.1.1">“a horrible language” (22)</span> with efficiency issues that are <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px3.p1.1.2">“an impediment to us getting things done” (20)</span> and data structure implementations that are <span class="ltx_text ltx_font_italic" id="S5.SS0.SSS0.Px3.p1.1.3">“a complete disaster in terms of memory” (9)</span>. One participant described their ideal next paradigm shift in the field as a shift away from using Python for NLP. 
+<br class="ltx_break"/>Yet even the participants who most vehemently opposed Python used it for most of their research, citing the lack of well-supported NLP toolkits or community use in other languages.
+This is an instance of a software lottery at a higher level, where the dominance of a single programming language has snowballed with the continued development of research artifacts in that language.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Consequences of centralization</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<p class="ltx_p" id="S5.SS1.p1.1">This increasing centralization of the modern NLP stack has several consequences. One of the primary ones, however, is the loss of control of design decisions for the majority of researchers in the community.
+Practically, researchers can now choose from a handful of well-established implementations, but only have access to software and models once the decisions on how to build them have already been reified in ways that are difficult to change.</p>
+</div>
+<section class="ltx_paragraph" id="S5.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Lower barriers</h4>
+<div class="ltx_para" id="S5.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S5.SS1.SSS0.Px1.p1.1">Beyond time saved (re-)
+implementing methods, many participants identified a lower barrier to entry into the field as a notable benefit of centralization on specific software infrastructure.
+Participants described students getting state of the art results within an hour of tackling a problem; seeing the average startup time for new students decreasing from six months to a few weeks; and teaching students with no computer science background to build NLP applications with prompting.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Obscuring what’s “under the hood”</h4>
+<div class="ltx_para" id="S5.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S5.SS1.SSS0.Px2.p1.1">One participant recalled trying to convince their earlier students to implement things from scratch in order to understand all the details of the method, but no longer doing so because <span class="ltx_text ltx_font_italic" id="S5.SS1.SSS0.Px2.p1.1.1">“I don’t think it’s possible […] it’s just too complicated” (11)</span>; others attributed this to speed more than complexity, stating that <span class="ltx_text ltx_font_italic" id="S5.SS1.SSS0.Px2.p1.1.2">“the pace is so fast that there is no time to properly document, there is no time to properly engage with this code, you’re just using them directly” (5)</span>.
+However, this can cause issues on an operational level; several participants recalled instances where a bug or poor documentation of shared software tools resulted in invalid research results. One participant described using a widely shared piece of evaluation code that made an unstated assumption about the input data format, leading to <span class="ltx_text ltx_font_italic" id="S5.SS1.SSS0.Px2.p1.1.3">“massively inflated evaluation numbers” (3)</span> on a well-cited dataset.
+Another participant described working on a paper where they realized, an hour before the paper deadline, that the student authors had used two different tokenizers in the pipeline by mistake:
+<span class="ltx_text ltx_font_italic" id="S5.SS1.SSS0.Px2.p1.1.4">“we decided that well, the results were still valid, and the results would only get better if [it was fixed]…so the paper went out. It was published that way.” (26)</span>
+Software bugs in research code are not a new problem,<span class="ltx_note ltx_role_footnote" id="footnote6"><sup class="ltx_note_mark">6</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">6</sup><span class="ltx_tag ltx_tag_note">6</span><cite class="ltx_cite ltx_citemacro_citet">Tambon et al. (<a class="ltx_ref" href="#bib.bib39" title="">2023</a>)</cite> describe <span class="ltx_text ltx_font_italic" id="footnote6.1">silent bugs</span> in popular deep learning frameworks that escape notice due to undetected error propagation.</span></span></span>
+but participants described bugs in toolkits as difficult to diagnose because they <span class="ltx_text ltx_font_italic" id="S5.SS1.SSS0.Px2.p1.1.5">“trust that the library is correct most of the time” (8)</span>, even as they spoke of finding <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.SSS0.Px2.p1.1.6">“many, many, many” (8)<span class="ltx_text ltx_font_upright" id="S5.SS1.SSS0.Px2.p1.1.6.1"> bugs in toolkits</span></span> including HuggingFace and PyTorch.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS1.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Software is implicit funding</h4>
+<div class="ltx_para" id="S5.SS1.SSS0.Px3.p1">
+<p class="ltx_p" id="S5.SS1.SSS0.Px3.p1.1">Participants suggested that tools that win the software lottery act as a sort of implicit funding: they enable research groups to conduct work that would not be possible in the tools’ absence, and many of our participants asserted that the scope of their projects expanded as a result. However, they also significantly raise the relative cost of doing research that does not fall neatly into existing tools’ purview. As one participant stated, <span class="ltx_text ltx_font_italic" id="S5.SS1.SSS0.Px3.p1.1.1">“You’re not gonna just build your own system that’s gonna compete on these major benchmarks yourself. You have to start [with] the infrastructure that is there” (19)</span>.
+This set of incentives pushes researchers to follow current methodological practice, and some participants feared this led toward more incremental work.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S5.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.2 </span>Impact on Reproducibility</h3>
+<div class="ltx_para" id="S5.SS2.p1">
+<p class="ltx_p" id="S5.SS2.p1.1">A common sentiment among participants was that centralization has had an overall positive impact on reproducibility, because using shared tools makes it easier to evaluate and use others’ research code.
+However, participants also expressed concerns that the increasing secrecy of industry research complicates that overall narrative: <span class="ltx_text ltx_font_italic" id="S5.SS2.p1.1.1">“things are more open, reproducible… except for those tech companies who share nothing” (14)</span>.</p>
+</div>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Shifts in expectations</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px1.p1.1">One participant described a general shift in focus to <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px1.p1.1.1">“making sure that you make claims that are supported rather than reproducing prior work exactly” (12)</span> in order to match reviewers’ shifting expectations. However, participants also felt that the expectations for baselines had increased: <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px1.p1.1.2">“[in the past,] everybody knew that the Google system was better because they were running on the entire Internet. But like that was not a requirement [to] match Google’s accuracy. But now it is, right?” (8)</span>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Disparities in compute access</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px2.p1.1">Many felt that building large-scale systems was increasingly out of reach for academics, echoing concerns previously described by <cite class="ltx_cite ltx_citemacro_citet">Ahmed and Wahed (<a class="ltx_ref" href="#bib.bib3" title="">2020</a>)</cite>. Participants worried that <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.1.1">“we are building an upper class of AI” (6)</span> where most researchers must <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.1.2">“build on top of [large models]” (15)</span> that they cannot replicate, though others expressed optimism that <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.1.3">“clever people who are motivated to solve these problems” (22)</span> will develop new efficient methods <cite class="ltx_cite ltx_citemacro_cite">Bartoldson et al. (<a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite>.
+Industry participants from large tech companies also felt resource-constrained: <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.1.4">“modern machine learning expands to fit the available compute.” (4)</span>.</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Related Work</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">The shifts we explore in this paper have not happened in a vacuum, with adjacent research communities such as computer vision (CV) and machine learning (ML) experiencing similar phenomena, inspiring a number of recent papers discussing norms in AI more broadly. <cite class="ltx_cite ltx_citemacro_citet">Birhane et al. (<a class="ltx_ref" href="#bib.bib6" title="">2022</a>)</cite> analyze a set of the most highly cited papers at recent ML conferences, finding that they eschew discussion of societal need and negative potential, instead emphasizing a limited set of values benefiting relatively few entities.
+Others have noticed that corporate interests have played an increasing role in shaping research, and quantified this with studies of author affiliations over time in machine learning <cite class="ltx_cite ltx_citemacro_citep">(Ahmed and Wahed, <a class="ltx_ref" href="#bib.bib3" title="">2020</a>)</cite> and NLP <cite class="ltx_cite ltx_citemacro_citep">(Abdalla et al., <a class="ltx_ref" href="#bib.bib2" title="">2023</a>)</cite>.
+<cite class="ltx_cite ltx_citemacro_citet">Su and Crandall (<a class="ltx_ref" href="#bib.bib37" title="">2021</a>)</cite> study the tangible emotional impact of recent dramatic growth in the CV community by asking community members to write stories about emotional events they experienced as members of their research community.</p>
+</div>
+<div class="ltx_para" id="S6.p2">
+<p class="ltx_p" id="S6.p2.1">While we focus on summarizing and synthesizing the views of our participants, some of the over-arching themes identified in this work have been discussed more critically. <cite class="ltx_cite ltx_citemacro_citet">Fishman and Hancox-Li (<a class="ltx_ref" href="#bib.bib11" title="">2022</a>)</cite> critique the unification of ML research around transformer models on both epistemic and ethical grounds.
+Position papers have critiqued the notion of general purpose benchmarks for AI <cite class="ltx_cite ltx_citemacro_citep">(Raji et al., <a class="ltx_ref" href="#bib.bib29" title="">2021</a>)</cite>, and emphasized the importance of more careful and deliberate data curation in NLP <cite class="ltx_cite ltx_citemacro_citep">(Rogers, <a class="ltx_ref" href="#bib.bib30" title="">2021</a>; Bowman and Dahl, <a class="ltx_ref" href="#bib.bib7" title="">2021</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S6.p3">
+<p class="ltx_p" id="S6.p3.1">The NLP Community Metasurvey <cite class="ltx_cite ltx_citemacro_citep">(Michael et al., <a class="ltx_ref" href="#bib.bib21" title="">2022</a>)</cite> provides a complementary view to this work, with their survey eliciting opinions from a broad swath of the *CL community on a set of 32 controversial statements related to the field. The survey also asked respondents to guess at what the most popular beliefs would be, eliciting sociological beliefs about the community. While there is no direct overlap between our questions and Metasurvey questions, participants raised the topics of scaling up, benchmarking culture, anonymous peer review, and the role of industry research, which were the subject of Metasurvey questions. Where we can map between our thematic analysis and Metasurvey questions, we see agreement– e.g. many of our participants discussed others valuing scale, but few placed high value themselves on scaling up as a research contribution.</p>
+</div>
+<div class="ltx_para" id="S6.p4">
+<p class="ltx_p" id="S6.p4.1">The availability of the ACL Anthology has enabled quantitative studies of our community via patterns of citation, authorship, and language use over time. <cite class="ltx_cite ltx_citemacro_citet">Anderson et al. (<a class="ltx_ref" href="#bib.bib4" title="">2012</a>)</cite> perform a topic model analysis over the Anthology to identify different eras of research and better understand how they develop over time, and analyze factors leading authors to join and leave the community. <cite class="ltx_cite ltx_citemacro_citet">Mohammad (<a class="ltx_ref" href="#bib.bib23" title="">2020</a>)</cite> analyze citation patterns in *CL conferences across research topics and paper types, and <cite class="ltx_cite ltx_citemacro_citet">Singh et al. (<a class="ltx_ref" href="#bib.bib34" title="">2023</a>)</cite> specifically inspect the phenomenon wherein more recent papers are less likely to cite older work. <cite class="ltx_cite ltx_citemacro_citet">Pramanick et al. (<a class="ltx_ref" href="#bib.bib28" title="">2023</a>)</cite> provide a view of paradigm shifts in the NLP community complementary to ours based on a diachronic analysis of the ACL Anthology, inferring causal links between datasets, methods, tasks and metrics.</p>
+</div>
+<div class="ltx_para" id="S6.p5">
+<p class="ltx_p" id="S6.p5.1">Shifts in norms and methods in science more broadly has been studied outside computing-related fields. Most notably,
+<cite class="ltx_cite ltx_citemacro_citet">Kuhn (<a class="ltx_ref" href="#bib.bib17" title="">1970</a>)</cite> coined the term <span class="ltx_text ltx_font_italic" id="S6.p5.1.1">paradigm shift</span> in <span class="ltx_text ltx_font_italic" id="S6.p5.1.2">The Structure of Scientific Revolutions</span>. His theory of the cyclic process of science over decades or centuries has some parallels with the (shorter timescale) exploit-explore cycles discussed in this work. Note that in this work, we did not prime participants with an <span class="ltx_text ltx_font_italic" id="S6.p5.1.3">a priori</span> definition of paradigm shift, allowing each participant to engage with the term according to their own interpretation, which often differed from Kuhn’s notion of a paradigm shift.</p>
+</div>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>The Future</h2>
+<div class="ltx_para" id="S7.p1">
+<p class="ltx_p" id="S7.p1.1">The rise of large language models has coincided with disruptive change in NLP: accelerating centralization of software and methodologies, questioning of the value of benchmarks, unprecedented public scrutiny of the field, and dramatic growth of the community.
+A shift like this can feel threatening to the fundamental nature of NLP research, but this is not the first period of flux in the field, nor are the fundamental forces enabling LLMs’ dominance and other changes entirely new.</p>
+</div>
+<div class="ltx_para" id="S7.p2">
+<p class="ltx_p" id="S7.p2.1">Our participants described cycles of change in the NLP community from mid-80s to the present, with common themes of first exploiting and then exploring promising methodologies. Each methodological shift brought corresponding cultural change: the shift from symbolic to statistical methods brought about the rise of benchmark culture and the end of the socially mediated, small-network ACL community. Neural methods began the centralization on software toolkits and the methodologies they support. Pre-training intensified this software lottery, causing unprecedented levels of centralization on individual methods and models. Current models have called into question the value of benchmarks and catapulted NLP into the public eye. Our participants largely agree on the resulting incentives– to beat benchmark results, to do the easiest thing rather than the most fulfilling, to produce work faster and faster – while largely expressing frustration with the consequences.</p>
+</div>
+<div class="ltx_para" id="S7.p3">
+<p class="ltx_p" id="S7.p3.1">We hope that this contextualization of the current state of NLP will both serve to inform newer members of the community and stir informed discussion on the condition of the field. While we do not prescribe specific solutions, some topics of discussion emerge from the themes of this work:</p>
+<ul class="ltx_itemize" id="S7.I1">
+<li class="ltx_item" id="S7.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S7.I1.i1.p1">
+<p class="ltx_p" id="S7.I1.i1.p1.1">Who holds the power to shape the field? How can a broad range of voices be heard?</p>
+</div>
+</li>
+<li class="ltx_item" id="S7.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S7.I1.i2.p1">
+<p class="ltx_p" id="S7.I1.i2.p1.1">Do the incentives in place encourage the behavior we would like to see? How can we improve reviewing to align with our values?</p>
+</div>
+</li>
+<li class="ltx_item" id="S7.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S7.I1.i3.p1">
+<p class="ltx_p" id="S7.I1.i3.p1.1">What affects the ability to do longer-term work that may deviate from current norms?</p>
+</div>
+</li>
+<li class="ltx_item" id="S7.I1.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S7.I1.i4.p1">
+<p class="ltx_p" id="S7.I1.i4.p1.1">How can the community arrive at an actively mediated consensus, rather than passively being shaped by forces like the ones we discuss?</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="ltx_para" id="S7.p4">
+<p class="ltx_p" id="S7.p4.1">We personally take great hope for our community from this project.
+The care with which all participants reflected on the shape of the field suggests to us that many people are concerned about these issues, invested in the community, and hopeful for the future. By sharing publicly what people so thoughtfully articulate privately, we hope to prompt further discussion of what the community can do to build our future.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitations</h2>
+<section class="ltx_paragraph" id="Sx1.SS0.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Western bias</h4>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px1.p1">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px1.p1.1">The most notably <span class="ltx_text ltx_font_italic" id="Sx1.SS0.SSS0.Px1.p1.1.1">irrepresentative</span> sampling bias in our participant pool is the lack of non-Western institutional affiliation (and the strong skew toward North American affiliations). This bias has arisen likely in part due to our own institutional affiliation and conceptions of the community. That being said, given the Association for Computational Linguistics’ historically US- and English-centric skews, this allows us to gather historical perspectives. Additionally, considering that Western institutions constitute a citation network largely distinct from Asian networks <cite class="ltx_cite ltx_citemacro_cite">Rungta et al. (<a class="ltx_ref" href="#bib.bib32" title="">2022</a>)</cite>, we believe that our sample allows us to tell a rich and thorough story of factors which have shaped the Western NLP research community, which both informs and is informed by other communities of NLP researchers.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="Sx1.SS0.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Lack of early career voices</h4>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px2.p1">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px2.p1.1">Our inclusion criteria for our participants– three or more publications in *CL, IR, or speech venues<span class="ltx_note ltx_role_footnote" id="footnote7"><sup class="ltx_note_mark">7</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">7</sup><span class="ltx_tag ltx_tag_note">7</span>In order to capture perspectives of the community changing over time, and to select for people who are part of these communities.</span></span></span>– necessarily means that we have limited perspectives on and from more junior NLP researchers (such as junior graduate students), those hoping to conduct NLP research in the future, those who have engaged with NLP research in the past and decided not to continue before developing a publication record, and those who have consciously decided <span class="ltx_text ltx_font_italic" id="Sx1.SS0.SSS0.Px2.p1.1.1">not</span> to engage with NLP research in the first place.
+In general, although we gathered perspectives from participants across a variety of demographic backgrounds, our participants represent those who have been successful and persisted in the field. This is especially true for our participants in academia; of our participants’ current academic affiliations, only R1 institutions (if in the US) and institutions of comparable research output (if outside the US) are represented. We therefore may be missing perspectives from certain groups of researchers, including those who primarily engage with undergraduate students or face more limited resource constraints than most of the academic faculty we interviewed.</p>
+</div>
+<div class="ltx_para" id="Sx1.SS0.SSS0.Px2.p2">
+<p class="ltx_p" id="Sx1.SS0.SSS0.Px2.p2.1">Future research could further examine differences between geographic subcommunities in NLP and more closely examine influences on people’s participation in and disengagement from the community. Additionally, we leave to future work a more intentional exploration of perspectives from early career researchers and those who have not yet published but are interested in NLP research.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Ethics Statement</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">Following Institutional Review Board recommendations, we take steps to preserve the anonymity of our participants, including aggregating or generalizing across demographic information, avoiding the typical practice of providing a table of per-interviewee demographics, using discretion to redact or not report quotes that may be identifying, and randomizing participant numbers. Participants consented to the interview and to being quoted anonymously in this work. This work underwent additional IRB screening for interviewing participants in GDPR-protected zones.</p>
+</div>
+<div class="ltx_para" id="Sx2.p2">
+<p class="ltx_p" id="Sx2.p2.1">We view our work as having potential for positive impact on the ACL community, as we prompt its members to engage in active reflection. We believe that, given recent developments in the field and the co-occuring external scrutiny, the current moment is a particularly appropriate time for such reflection. Additionally, we hope that our work can serve those currently <span class="ltx_text ltx_font_italic" id="Sx2.p2.1.1">external</span> to the community as an accessible, human-centered survey of the field and factors that have shaped it over the decades, prioritizing sharing of anecdotes and other in-group knowledge that may be difficult for outsiders to learn about otherwise.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx3">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx3.p1">
+<p class="ltx_p" id="Sx3.p1.1">This work would not have been possible without our participants, who were generous with their time and engaged deeply with this material. We would additionally like to thank Jill Fain Lehman, Anjalie Field, Dawn Nafus, Momin M. Malik, Graham Neubig and the anonymous reviewers for their helpful comments.</p>
+</div>
+<div class="ltx_para" id="Sx3.p2">
+<p class="ltx_p" id="Sx3.p2.1">This work was supported in part by a grant from the National Science Foundation Graduate Research Fellowship Program under Grant No. DGE2140739. Widder gratefully acknowledges the support of the Digital Life Initiative at Cornell Tech. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views
+of the sponsors.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Abadi et al. (2015)</span>
+<span class="ltx_bibblock">
+Martín Abadi, Ashish Agarwal, Paul Barham, Eugene Brevdo, Zhifeng Chen,
+Craig Citro, Greg S. Corrado, Andy Davis, Jeffrey Dean, Matthieu Devin,
+Sanjay Ghemawat, Ian Goodfellow, Andrew Harp, Geoffrey Irving, Michael Isard,
+Yangqing Jia, Rafal Jozefowicz, Lukasz Kaiser, Manjunath Kudlur, Josh
+Levenberg, Dandelion Mané, Rajat Monga, Sherry Moore, Derek Murray, Chris
+Olah, Mike Schuster, Jonathon Shlens, Benoit Steiner, Ilya Sutskever, Kunal
+Talwar, Paul Tucker, Vincent Vanhoucke, Vijay Vasudevan, Fernanda Viégas,
+Oriol Vinyals, Pete Warden, Martin Wattenberg, Martin Wicke, Yuan Yu, and
+Xiaoqiang Zheng. 2015.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://www.tensorflow.org/" target="_blank" title="">TensorFlow: Large-scale
+machine learning on heterogeneous systems</a>.
+
+</span>
+<span class="ltx_bibblock">Software available from tensorflow.org.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Abdalla et al. (2023)</span>
+<span class="ltx_bibblock">
+Mohamed Abdalla, Jan Philip Wahle, Terry Ruas, Aurélie Névéol, Fanny Ducel,
+Saif M. Mohammad, and Karën Fort. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2305.02797" target="_blank" title="">The elephant in the room:
+Analyzing the presence of big tech in natural language processing research</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ahmed and Wahed (2020)</span>
+<span class="ltx_bibblock">
+Nur Ahmed and Muntasir Wahed. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2010.15581" target="_blank" title="">The de-democratization of
+ai: Deep learning and the compute divide in artificial intelligence
+research</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Anderson et al. (2012)</span>
+<span class="ltx_bibblock">
+Ashton Anderson, Dan Jurafsky, and Daniel A. McFarland. 2012.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://aclanthology.org/W12-3202" target="_blank" title="">Towards a computational
+history of the ACL: 1980-2008</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">Proceedings of the ACL-2012 Special Workshop on
+Rediscovering 50 Years of Discoveries</em>, pages 13–21, Jeju Island, Korea.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bartoldson et al. (2023)</span>
+<span class="ltx_bibblock">
+Brian R. Bartoldson, Bhavya Kailkhura, and Davis Blalock. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://jmlr.org/papers/v24/22-1208.html" target="_blank" title="">Compute-efficient
+deep learning: Algorithmic trends and opportunities</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">Journal of Machine Learning Research</em>, 24(122):1–77.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Birhane et al. (2022)</span>
+<span class="ltx_bibblock">
+Abeba Birhane, Pratyusha Kalluri, Dallas Card, William Agnew, Ravit Dotan, and
+Michelle Bao. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/3531146.3533083" target="_blank" title="">The values encoded
+in machine learning research</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Proceedings of the 2022 ACM Conference on Fairness,
+Accountability, and Transparency</em>, FAccT ’22, page 173–184, New York, NY,
+USA. Association for Computing Machinery.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bowman and Dahl (2021)</span>
+<span class="ltx_bibblock">
+Samuel R. Bowman and George Dahl. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.naacl-main.385" target="_blank" title="">What will it
+take to fix benchmarking in natural language understanding?</a>
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">Proceedings of the 2021 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies</em>, pages 4843–4855, Online. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Campbell et al. (2020)</span>
+<span class="ltx_bibblock">
+Steve Campbell, Melanie Greenwood, Sarah Prior, Toniele Shearer, Kerrie Walkem,
+Sarah Young, Danielle Bywaters, and Kim Walker. 2020.
+
+</span>
+<span class="ltx_bibblock">Purposive sampling: complex or simple? research case examples.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">Journal of research in Nursing</em>, 25(8):652–661.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Church (2018)</span>
+<span class="ltx_bibblock">
+Kenneth Ward Church. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1017/S1351324917000389" target="_blank" title="">Emerging trends: A
+tribute to charles wayne</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">Natural Language Engineering</em>, 24(1):155–160.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Devlin et al. (2019)</span>
+<span class="ltx_bibblock">
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/N19-1423" target="_blank" title="">BERT: Pre-training of
+deep bidirectional transformers for language understanding</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">Proceedings of the 2019 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long and Short Papers)</em>, pages 4171–4186,
+Minneapolis, Minnesota. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Fishman and Hancox-Li (2022)</span>
+<span class="ltx_bibblock">
+Nic Fishman and Leif Hancox-Li. 2022.
+
+</span>
+<span class="ltx_bibblock">Should attention be all we need? the epistemic and ethical
+implications of unification in machine learning.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">2022 ACM Conference on Fairness, Accountability, and
+Transparency</em>, pages 1516–1527.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gardner et al. (2018)</span>
+<span class="ltx_bibblock">
+Matt Gardner, Joel Grus, Mark Neumann, Oyvind Tafjord, Pradeep Dasigi,
+Nelson F. Liu, Matthew Peters, Michael Schmitz, and Luke Zettlemoyer. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/W18-2501" target="_blank" title="">AllenNLP: A deep
+semantic natural language processing platform</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">Proceedings of Workshop for NLP Open Source Software
+(NLP-OSS)</em>, pages 1–6, Melbourne, Australia. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Glaser et al. (2004)</span>
+<span class="ltx_bibblock">
+Barney G Glaser, Judith Holton, et al. 2004.
+
+</span>
+<span class="ltx_bibblock">Remodeling grounded theory.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">Forum qualitative sozialforschung/forum: qualitative social
+research</em>, volume 5.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hooker (2021)</span>
+<span class="ltx_bibblock">
+Sara Hooker. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/3467017" target="_blank" title="">The hardware lottery</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">Communications of the ACM</em>, 64(12):58–65.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kilgarriff (2007)</span>
+<span class="ltx_bibblock">
+Adam Kilgarriff. 2007.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1162/coli.2007.33.1.147" target="_blank" title="">Last words:
+Googleology is bad science</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">Computational Linguistics</em>, 33(1):147–151.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Koehn et al. (2007)</span>
+<span class="ltx_bibblock">
+Philipp Koehn, Hieu Hoang, Alexandra Birch, Chris Callison-Burch, Marcello
+Federico, Nicola Bertoldi, Brooke Cowan, Wade Shen, Christine Moran, Richard
+Zens, Chris Dyer, Ondřej Bojar, Alexandra Constantin, and Evan Herbst.
+2007.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://aclanthology.org/P07-2045" target="_blank" title="">Moses: Open source
+toolkit for statistical machine translation</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">Proceedings of the 45th Annual Meeting of the Association
+for Computational Linguistics Companion Volume Proceedings of the Demo and
+Poster Sessions</em>, pages 177–180, Prague, Czech Republic. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kuhn (1970)</span>
+<span class="ltx_bibblock">
+Thomas S. Kuhn. 1970.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">The structure of scientific revolutions</em>.
+
+</span>
+<span class="ltx_bibblock">University of Chicago Press, Chicago.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liao and Vaughan (2023)</span>
+<span class="ltx_bibblock">
+Q. Vera Liao and Jennifer Wortman Vaughan. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2306.01941" target="_blank" title="">Ai transparency in the age
+of llms: A human-centered research roadmap</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lincoln et al. (2011)</span>
+<span class="ltx_bibblock">
+Yvonna S Lincoln, Susan A Lynham, and Egon G Guba. 2011.
+
+</span>
+<span class="ltx_bibblock">Paradigmatic controversies, contradictions, and emerging confluences,
+revisited.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">The Sage handbook of qualitative research</em>, 4:97–128.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lo et al. (2020)</span>
+<span class="ltx_bibblock">
+Kyle Lo, Lucy Lu Wang, Mark Neumann, Rodney Kinney, and Daniel Weld. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.acl-main.447" target="_blank" title="">S2ORC: The
+semantic scholar open research corpus</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">Proceedings of the 58th Annual Meeting of the Association
+for Computational Linguistics</em>, pages 4969–4983, Online. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Michael et al. (2022)</span>
+<span class="ltx_bibblock">
+Julian Michael, Ari Holtzman, Alicia Parrish, Aaron Mueller, Alex Wang,
+Angelica Chen, Divyam Madaan, Nikita Nangia, Richard Yuanzhe Pang, Jason
+Phang, and Samuel R. Bowman. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2208.12852" target="_blank" title="">What do nlp researchers
+believe? results of the nlp community metasurvey</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Miles and Huberman (1994)</span>
+<span class="ltx_bibblock">
+Matthew B Miles and A Michael Huberman. 1994.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">Qualitative data analysis: An expanded sourcebook</em>.
+
+</span>
+<span class="ltx_bibblock">sage.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mohammad (2020)</span>
+<span class="ltx_bibblock">
+Saif M. Mohammad. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.acl-main.464" target="_blank" title="">Examining
+citations of natural language processing literature</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">Proceedings of the 58th Annual Meeting of the Association
+for Computational Linguistics</em>, pages 5199–5209, Online. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Neubig et al. (2017)</span>
+<span class="ltx_bibblock">
+Graham Neubig, Chris Dyer, Yoav Goldberg, Austin Matthews, Waleed Ammar,
+Antonios Anastasopoulos, Miguel Ballesteros, David Chiang, Daniel Clothiaux,
+Trevor Cohn, Kevin Duh, Manaal Faruqui, Cynthia Gan, Dan Garrette, Yangfeng
+Ji, Lingpeng Kong, Adhiguna Kuncoro, Gaurav Kumar, Chaitanya Malaviya, Paul
+Michel, Yusuke Oda, Matthew Richardson, Naomi Saphra, Swabha Swayamdipta, and
+Pengcheng Yin. 2017.
+
+</span>
+<span class="ltx_bibblock">Dynet: The dynamic neural network toolkit.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">arXiv preprint arXiv:1701.03980</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Parker et al. (2019)</span>
+<span class="ltx_bibblock">
+Charlie Parker, Sam Scott, and Alistair Geddes. 2019.
+
+</span>
+<span class="ltx_bibblock">Snowball sampling.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib25.1.1">SAGE research methods foundations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Paszke et al. (2019)</span>
+<span class="ltx_bibblock">
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
+Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban
+Desmaison, Andreas Köpf, Edward Yang, Zach DeVito, Martin Raison, Alykhan
+Tejani, Sasank Chilamkurthy, Benoit Steiner, Lu Fang, Junjie Bai, and Soumith
+Chintala. 2019.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">PyTorch: An Imperative Style, High-Performance Deep Learning
+Library</em>. Curran Associates Inc., Red Hook, NY, USA.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pennington et al. (2014)</span>
+<span class="ltx_bibblock">
+Jeffrey Pennington, Richard Socher, and Christopher Manning. 2014.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.3115/v1/D14-1162" target="_blank" title="">GloVe: Global
+vectors for word representation</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">Proceedings of the 2014 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>, pages 1532–1543, Doha, Qatar.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pramanick et al. (2023)</span>
+<span class="ltx_bibblock">
+Aniket Pramanick, Yufang Hou, and Iryna Gurevych. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2305.12920" target="_blank" title="">A diachronic analysis of the
+nlp research paradigm shift: When, how, and why?</a>
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Raji et al. (2021)</span>
+<span class="ltx_bibblock">
+Deborah Raji, Emily Denton, Emily M. Bender, Alex Hanna, and Amandalynne
+Paullada. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/file/084b6fbb10729ed4da8c3d3f5a3ae7c9-Paper-round2.pdf" target="_blank" title="">Ai and the everything in the whole wide world benchmark</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">Proceedings of the Neural Information Processing Systems
+Track on Datasets and Benchmarks</em>, volume 1. Curran.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rogers (2021)</span>
+<span class="ltx_bibblock">
+Anna Rogers. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.acl-long.170" target="_blank" title="">Changing the
+world by changing the data</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">Proceedings of the 59th Annual Meeting of the Association
+for Computational Linguistics and the 11th International Joint Conference on
+Natural Language Processing (Volume 1: Long Papers)</em>, pages 2182–2194,
+Online. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rogers (2023)</span>
+<span class="ltx_bibblock">
+Anna Rogers. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://hackingsemantics.xyz/2023/closed-baselines/" target="_blank" title="">Closed
+ai models make bad baselines</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rungta et al. (2022)</span>
+<span class="ltx_bibblock">
+Mukund Rungta, Janvijay Singh, Saif M. Mohammad, and Diyi Yang. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://aclanthology.org/2022.emnlp-main.89" target="_blank" title="">Geographic
+citation gaps in NLP research</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">Proceedings of the 2022 Conference on Empirical Methods in
+Natural Language Processing</em>, pages 1371–1383, Abu Dhabi, United Arab
+Emirates. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sambasivan et al. (2021)</span>
+<span class="ltx_bibblock">
+Nithya Sambasivan, Shivani Kapania, Hannah Highfill, Diana Akrong, Praveen
+Paritosh, and Lora M Aroyo. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1145/3411764.3445518" target="_blank" title="">“everyone wants to
+do the model work, not the data work”: Data cascades in high-stakes ai</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib33.1.1">Proceedings of the 2021 CHI Conference on Human Factors in
+Computing Systems</em>, CHI ’21, New York, NY, USA. Association for Computing
+Machinery.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Singh et al. (2023)</span>
+<span class="ltx_bibblock">
+Janvijay Singh, Mukund Rungta, Diyi Yang, and Saif M. Mohammad. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2305.18554" target="_blank" title="">Forgotten knowledge:
+Examining the citational amnesia in nlp</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Solaiman (2023)</span>
+<span class="ltx_bibblock">
+Irene Solaiman. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2302.04844" target="_blank" title="">The gradient of generative
+ai release: Methods and considerations</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Strauss and Corbin (1990)</span>
+<span class="ltx_bibblock">
+Anselm Strauss and Juliet Corbin. 1990.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">Basics of qualitative research</em>.
+
+</span>
+<span class="ltx_bibblock">Sage publications.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Su and Crandall (2021)</span>
+<span class="ltx_bibblock">
+Norman Makoto Su and David J. Crandall. 2021.
+
+</span>
+<span class="ltx_bibblock">The affective growth of computer vision.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">Proceedings of the IEEE/CVF Conference on Computer Vision
+and Pattern Recognition (CVPR)</em>, pages 9291–9300.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sutton and Barto (2018)</span>
+<span class="ltx_bibblock">
+Richard S Sutton and Andrew G Barto. 2018.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">Reinforcement learning: An introduction</em>.
+
+</span>
+<span class="ltx_bibblock">MIT press.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tambon et al. (2023)</span>
+<span class="ltx_bibblock">
+Florian Tambon, Amin Nikanjam, Le An, Foutse Khomh, and Giuliano Antoniol.
+2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2112.13314" target="_blank" title="">Silent bugs in deep learning
+frameworks: An empirical study of keras and tensorflow</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Vaswani et al. (2017)</span>
+<span class="ltx_bibblock">
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+Aidan N Gomez, Ł ukasz Kaiser, and Illia Polosukhin. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf" target="_blank" title="">Attention is all you need</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib40.1.1">Advances in Neural Information Processing Systems</em>,
+volume 30. Curran Associates, Inc.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wade (2022)</span>
+<span class="ltx_bibblock">
+Alex D Wade. 2022.
+
+</span>
+<span class="ltx_bibblock">The semantic scholar academic graph (s2ag).
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">Companion Proceedings of the Web Conference 2022</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Way et al. (2016)</span>
+<span class="ltx_bibblock">
+Samuel Way, Daniel Larremore, and Aaron Clauset. 2016.
+
+</span>
+<span class="ltx_bibblock">Gender, productivity, and prestige in computer science faculty hiring
+networks.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Weiss (1995)</span>
+<span class="ltx_bibblock">
+Robert S Weiss. 1995.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib43.1.1">Learning from strangers: The art and method of qualitative
+interview studies</em>.
+
+</span>
+<span class="ltx_bibblock">Simon and Schuster.
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix A </span>Details of Qualitative Methodologies</h2>
+<section class="ltx_subsection" id="A1.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.1 </span>Participant demographics</h3>
+<div class="ltx_para" id="A1.SS1.p1">
+<p class="ltx_p" id="A1.SS1.p1.1">Of the academics interviewed, there was an even split between early, mid, and late career (6/33% each). Of those in industry, 6 (75%) were individual contributors and 2 (25%) were research managers.
+Our sample is only 19% women, which is likely representative, as women comprise approximately 15% of tenure-track computer science faculty in the US <cite class="ltx_cite ltx_citemacro_cite">Way et al. (<a class="ltx_ref" href="#bib.bib42" title="">2016</a>)</cite>.
+For more discussion of the sample characteristics, see <a class="ltx_ref" href="#Sx1.SS0.SSS0.Px1" title="Western bias ‣ Limitations ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_title">Western bias</span></a>.
+Our positive response rate was 82%.</p>
+</div>
+<figure class="ltx_table" id="A1.T1">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="A1.T1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="A1.T1.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt" id="A1.T1.1.1.1.1">Demographic trait</th>
+<th class="ltx_td ltx_align_right ltx_th ltx_th_column ltx_border_tt" id="A1.T1.1.1.1.2">% of sample</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A1.T1.1.2.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="A1.T1.1.2.1.1">In academia</th>
+<td class="ltx_td ltx_align_right ltx_border_t" id="A1.T1.1.2.1.2">69%</td>
+</tr>
+<tr class="ltx_tr" id="A1.T1.1.3.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T1.1.3.2.1">Women</th>
+<td class="ltx_td ltx_align_right" id="A1.T1.1.3.2.2">19%</td>
+</tr>
+<tr class="ltx_tr" id="A1.T1.1.4.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T1.1.4.3.1">Minoritized group</th>
+<td class="ltx_td ltx_align_right" id="A1.T1.1.4.3.2">27%</td>
+</tr>
+<tr class="ltx_tr" id="A1.T1.1.5.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A1.T1.1.5.4.1">Born outside US</th>
+<td class="ltx_td ltx_align_right" id="A1.T1.1.5.4.2">38%</td>
+</tr>
+<tr class="ltx_tr" id="A1.T1.1.6.5">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="A1.T1.1.6.5.1">Currently works outside US</th>
+<td class="ltx_td ltx_align_right ltx_border_bb" id="A1.T1.1.6.5.2">4%</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span>Self-reported demographic makeup of subjects.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="A1.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.2 </span>Consent protocol</h3>
+<div class="ltx_para" id="A1.SS2.p1">
+<p class="ltx_p" id="A1.SS2.p1.1">Interviewees were asked for verbal consent unless they were in a GDPR-protected region at the time of the interview, in which case they provided written consent via DocuSign instead. This consent script was IRB-approved.</p>
+</div>
+<div class="ltx_para" id="A1.SS2.p2">
+<blockquote class="ltx_quote" id="A1.SS2.p2.1">
+<p class="ltx_p" id="A1.SS2.p2.1.1">Hi, thanks for taking the time to talk with me! My collaborators on this project and I work for CMU. We can be reached at [emails] should you have any questions for us during the study or after. 
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.2">This interview will take between 45 minutes and an hour. There will be no compensation for participation.
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.3">Participation is always voluntary, and you may refuse to participate in the research study or stop participation at any time.
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.4">You will not be identified in any reports we release from this research. This data will be deidentified, which means you will not be identified by name or any other specific characteristic. We may quote you anonymously. Just in case, though, please do not reveal any private or personally-identifiable information about yourself or others in your answer to our questions. 
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.5">I’d like to record the audio of this interview as a memory aid. You can ask me to stop the recording at any time. Only the members of our research team will have access to these recordings.
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.6">We really appreciate your participation, and we hope to publish this research to advance our understanding of the factors shaping the NLP research community.
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.7">Do you have any questions? If not, do I have your consent to participate in this study?
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.8">[answer any questions; if consented, begin recording]
+<br class="ltx_break"/></p>
+<p class="ltx_p" id="A1.SS2.p2.1.9">Alright, I’ve started the recording. Just to confirm, do I have your consent to participate in this study, and to record this interview?</p>
+</blockquote>
+</div>
+</section>
+<section class="ltx_subsection" id="A1.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.3 </span>Interview Guide</h3>
+<div class="ltx_para" id="A1.SS3.p1">
+<p class="ltx_p" id="A1.SS3.p1.1">These questions are intentionally open-ended, and the interviewers asked non-scripted followups or additional questions where appropriate. Over time, as early themes emerged, additional questions were added, particularly on funding and pace of work.</p>
+</div>
+<div class="ltx_para" id="A1.SS3.p2">
+<ol class="ltx_enumerate" id="A1.I1">
+<li class="ltx_item" id="A1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">1.</span>
+<div class="ltx_para" id="A1.I1.i1.p1">
+<p class="ltx_p" id="A1.I1.i1.p1.1">First, I have a few questions about your relationship to the NLP community. You can be as specific or as vague as you’d like with your responses.</p>
+<ol class="ltx_enumerate" id="A1.I1.i1.I1">
+<li class="ltx_item" id="A1.I1.i1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(a)</span>
+<div class="ltx_para" id="A1.I1.i1.I1.i1.p1">
+<p class="ltx_p" id="A1.I1.i1.I1.i1.p1.1">What do you consider to be your main/home/primary research community?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(b)</span>
+<div class="ltx_para" id="A1.I1.i1.I1.i2.p1">
+<p class="ltx_p" id="A1.I1.i1.I1.i2.p1.1">More specifically, what venues do you follow and/or publish in?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(c)</span>
+<div class="ltx_para" id="A1.I1.i1.I1.i3.p1">
+<p class="ltx_p" id="A1.I1.i1.I1.i3.p1.1">What subarea(s) or subfields are you most active in?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i1.I1.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(d)</span>
+<div class="ltx_para" id="A1.I1.i1.I1.i4.p1">
+<p class="ltx_p" id="A1.I1.i1.I1.i4.p1.1">Is this different from what you have considered your main community at other points in your career? (Prompt: if so, what changed?)</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i1.I1.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(e)</span>
+<div class="ltx_para" id="A1.I1.i1.I1.i5.p1">
+<p class="ltx_p" id="A1.I1.i1.I1.i5.p1.1">What would you define as the start of your NLP research career? (e.g. start of PhD, research as an undergrad, etc). (Prompt: When was this?)</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">2.</span>
+<div class="ltx_para" id="A1.I1.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.p1.1">I’d like to hear your thoughts on what the field was like near the beginning of your career.</p>
+<ol class="ltx_enumerate" id="A1.I1.i2.I1">
+<li class="ltx_item" id="A1.I1.i2.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(a)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i1.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i1.p1.1">When you started in your field, what did people generally think were the most promising directions? (Prompt: do you agree?)</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(b)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i2.p1.1">How do you interpret the term “promising”?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(c)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i3.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i3.p1.1">What do you think the research community prioritized when you started?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I1.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(d)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i4.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i4.p1.1">What was the scope of the work that your research group did?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I1.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(e)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i5.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i5.p1.1">What was your relationship to computing resources at the start of your career?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I1.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(f)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i6.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i6.p1.1">What did your software workflow look like when you first started doing research?
+(Prompt: What tools, frameworks, libraries did you use?)</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I1.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(g)</span>
+<div class="ltx_para" id="A1.I1.i2.I1.i7.p1">
+<p class="ltx_p" id="A1.I1.i2.I1.i7.p1.1">Where did funding for your work come from? (Prompt: what were the major costs involved with your research?)</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="ltx_para" id="A1.I1.i2.p2">
+<p class="ltx_p" id="A1.I1.i2.p2.1">Now, I’d like to compare this with the current state of the field.</p>
+<ol class="ltx_enumerate" id="A1.I1.i2.I2">
+<li class="ltx_item" id="A1.I1.i2.I2.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(a)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i1.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i1.p1.1">What do you think others in your field would say are the most promising directions? (Prompt: do you agree?)</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(b)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i2.p1.1">What do you think the research community prioritizes now?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(c)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i3.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i3.p1.1">What is the scope of the work that your research group does?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(d)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i4.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i4.p1.1">How do computing resources affect your group’s work now?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(e)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i5.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i5.p1.1">How does the software workflow look like for you or your students now?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(f)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i6.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i6.p1.1">What tools, frameworks, libraries do you or your students use?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(g)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i7.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i7.p1.1">Have these tools, frameworks, and libraries made an impact on your (or your students’) research?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i8" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(h)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i8.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i8.p1.1">What impacts do you think these tools, frameworks, and libraries have made on your community’s research?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i9" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(i)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i9.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i9.p1.1">Where does the funding for your work come from? (Prompt: what are the major costs involved in your research?)</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i10" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(j)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i10.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i10.p1.1">When you or your students start a new project, how long on average do you expect it to take, from the start of work to a paper submission?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I2.i11" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(k)</span>
+<div class="ltx_para" id="A1.I1.i2.I2.i11.p1">
+<p class="ltx_p" id="A1.I1.i2.I2.i11.p1.1">Has this changed over your career? (Prompt: what has led to this change?)</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="ltx_para" id="A1.I1.i2.p3">
+<p class="ltx_p" id="A1.I1.i2.p3.1">Now I’d like to hear your thoughts on the changes you’ve observed in your career.</p>
+<ol class="ltx_enumerate" id="A1.I1.i2.I3">
+<li class="ltx_item" id="A1.I1.i2.I3.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(a)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i1.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i1.p1.1">Are there paradigm shifts that you would identify in the field over the course of your career?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I3.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(b)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i2.p1.1">Did your community change at all, as a result of these paradigm shifts?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I3.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(c)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i3.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i3.p1.1">Prompt: what years would you ascribe to each shift?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I3.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(d)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i4.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i4.p1.1">How frequently do you feel the community undergoes a paradigm shift? (Prompt: is this frequency changing?)</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I3.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(e)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i5.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i5.p1.1">Are there concerns you have with the direction of the field?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I3.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(f)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i6.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i6.p1.1">If there were to be a paradigm shift in the next few years, in what direction should it go?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I3.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(g)</span>
+<div class="ltx_para" id="A1.I1.i2.I3.i7.p1">
+<p class="ltx_p" id="A1.I1.i2.I3.i7.p1.1">Do you think changes in the research community have changed your teaching? (Prompts: how? How do you feel about this shift?)</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="ltx_para" id="A1.I1.i2.p4">
+<p class="ltx_p" id="A1.I1.i2.p4.1">Now I have some demographic questions, which will help us understand the range of people that we talk to. If you’d prefer not to answer any of them, just let me know.</p>
+<ol class="ltx_enumerate" id="A1.I1.i2.I4">
+<li class="ltx_item" id="A1.I1.i2.I4.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(a)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i1.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i1.p1.1">With which gender do you identify?</p>
+<ol class="ltx_enumerate" id="A1.I1.i2.I4.i1.I1">
+<li class="ltx_item" id="A1.I1.i2.I4.i1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">i.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i1.I1.i1.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i1.I1.i1.p1.1">Man</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">ii.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i1.I1.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i1.I1.i2.p1.1">Woman</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">iii.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i1.I1.i3.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i1.I1.i3.p1.1">Or, feel free to specify as you wish</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(b)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.p1.1">I am going to read some age brackets. Can you indicate when I read a bracket that your age falls into?</p>
+<ol class="ltx_enumerate" id="A1.I1.i2.I4.i2.I1">
+<li class="ltx_item" id="A1.I1.i2.I4.i2.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">i.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.I1.i1.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.I1.i1.p1.1">18-24</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i2.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">ii.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.I1.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.I1.i2.p1.1">25-34</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i2.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">iii.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.I1.i3.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.I1.i3.p1.1">35-44</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i2.I1.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">iv.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.I1.i4.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.I1.i4.p1.1">45-54</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i2.I1.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">v.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.I1.i5.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.I1.i5.p1.1">55-64</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i2.I1.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">vi.</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i2.I1.i6.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i2.I1.i6.p1.1">65+</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(c)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i3.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i3.p1.1">Which country were you born in?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(d)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i4.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i4.p1.1">(if not already known) Which country are you currently based in?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(e)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i5.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i5.p1.1">What stage of your academic career would you consider yourself in?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(f)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i6.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i6.p1.1">Do you consider yourself a part of a minoritized group in your field?</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2.I4.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">(g)</span>
+<div class="ltx_para" id="A1.I1.i2.I4.i7.p1">
+<p class="ltx_p" id="A1.I1.i2.I4.i7.p1.1">Anything else in your background that feels relevant or that you want to add?</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">3.</span>
+<div class="ltx_para" id="A1.I1.i3.p1">
+<p class="ltx_p" id="A1.I1.i3.p1.1">Finally, we’d like to hear from more people about these issues. Is there anyone you could introduce us to who you think would have interesting answers to these questions?</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</section>
+</section>
+<section class="ltx_appendix" id="A2">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix B </span>Detailed quantitative methodology</h2>
+<div class="ltx_para" id="A2.p1">
+<p class="ltx_p" id="A2.p1.1">We begin with the ACL Anthology and focus on papers between 1980 and 2022. Using the SemanticScholar (S2) API <cite class="ltx_cite ltx_citemacro_cite">Wade (<a class="ltx_ref" href="#bib.bib41" title="">2022</a>)</cite>, we obtain author and citation information of papers indexed by S2 (some venues, such as some workshops, and some Findings<span class="ltx_note ltx_role_footnote" id="footnote8"><sup class="ltx_note_mark">8</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">8</sup><span class="ltx_tag ltx_tag_note">8</span>As of October 2023, while some Findings papers, such as from ACL 2021 and EMNLP 2020, are automatically indexed by S2, Findings papers from some conferences such as EMNLP 2022 are not. While some of these papers (or versions of them) may still be indexed by S2 due to also being on ArXiv or a similar service, we do not include them in our set of papers.</span></span></span> papers, are not indexed, leaving <math alttext="77,235" class="ltx_Math" display="inline" id="A2.p1.1.m1.2"><semantics id="A2.p1.1.m1.2a"><mrow id="A2.p1.1.m1.2.3.2" xref="A2.p1.1.m1.2.3.1.cmml"><mn id="A2.p1.1.m1.1.1" xref="A2.p1.1.m1.1.1.cmml">77</mn><mo id="A2.p1.1.m1.2.3.2.1" xref="A2.p1.1.m1.2.3.1.cmml">,</mo><mn id="A2.p1.1.m1.2.2" xref="A2.p1.1.m1.2.2.cmml">235</mn></mrow><annotation-xml encoding="MathML-Content" id="A2.p1.1.m1.2b"><list id="A2.p1.1.m1.2.3.1.cmml" xref="A2.p1.1.m1.2.3.2"><cn id="A2.p1.1.m1.1.1.cmml" type="integer" xref="A2.p1.1.m1.1.1">77</cn><cn id="A2.p1.1.m1.2.2.cmml" type="integer" xref="A2.p1.1.m1.2.2">235</cn></list></annotation-xml><annotation encoding="application/x-tex" id="A2.p1.1.m1.2c">77,235</annotation></semantics></math> papers), with a focus on citations of papers identified by our participants as having been influential to the NLP community. We select from this set of influential papers to generate the bar plots for Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Quantitative Methods ‣ 2 Methods ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">2</span></a>. Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">1</span></a> uses author publication information linked to the individual papers considered.</p>
+</div>
+<div class="ltx_para" id="A2.p2">
+<p class="ltx_p" id="A2.p2.1">We rely on S2ORC <cite class="ltx_cite ltx_citemacro_cite">Lo et al. (<a class="ltx_ref" href="#bib.bib20" title="">2020</a>)</cite> for full-text PDF parses of a subset of these papers, which we use match for mentions of software toolkits identified by our participants as having been influential to the community, for Figure <a class="ltx_ref" href="#S5.F3" title="Figure 3 ‣ Centralization on frameworks ‣ 5 Software lotteries ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">3</span></a>, as well as for mentions of influential techniques in the line plot of Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Quantitative Methods ‣ 2 Methods ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">2</span></a>. Note that quantifying mentions is noisy: framework/library names can be spelled in a variety of ways, and names like "Moses" are also used for authors in the ACL Anthology. For figure 3, we normalize by lowercasing all text, and using the most common normalized spelling, e.g. <span class="ltx_text ltx_font_typewriter" id="A2.p2.1.1">tensorflow</span>, or <span class="ltx_text ltx_font_typewriter" id="A2.p2.1.2">huggingface</span>. We estimate that this will overestimate the presence of Moses, due to its other usages. and underestimate the presence of Hugging Face, which is officially spelled “Hugging Face”, but much more often used as “HuggingFace”. Despite this, the incredible growth and popularity of Hugging Face relative to other frameworks is still prominently visible.</p>
+</div>
+<div class="ltx_para" id="A2.p3">
+<p class="ltx_p" id="A2.p3.1">We present an alternative view of data, similar to that seen in Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">1</span></a>, in Figure <a class="ltx_ref" href="#A2.F4" title="Figure 4 ‣ Appendix B Detailed quantitative methodology ‣ To Build Our Future, We Must Know Our Past: Contextualizing Paradigm Shifts in Natural Language Processing"><span class="ltx_text ltx_ref_tag">4</span></a>.
+Here, we define members of the community as authors with at least three papers total in *CL venues. Authors are counted as “leaving” the community the year after their last *CL publication. We only consider trends in authorship until 2020, as it is difficult to determine if authors who did not publish in the last few years have left the community indefinitely.</p>
+</div>
+<figure class="ltx_figure" id="A2.F4"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="153" id="A2.F4.g1" src="./media/x4.png" width="231"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span>The number of “active” researchers publishing in ACL venues has increased dramatically, with more newcomers to the field year over year</figcaption>
+</figure>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2310.07714">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2310.07715">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2310.07715" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2310.07715">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2310.07716">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Wed Feb 28 00:45:45 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

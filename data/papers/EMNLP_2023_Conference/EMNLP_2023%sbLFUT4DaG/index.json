@@ -1,0 +1,805 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            25
+        ],
+        "2 Related Work": [
+            26,
+            43
+        ],
+        "3 Knowledge Graph Enhancement of Textual Information": [
+            44,
+            165
+        ],
+        "4 Methodology": [
+            166,
+            692
+        ],
+        "5 Experiments on KGE": [
+            693,
+            729
+        ],
+        "6 Enhancing Textual Information in KGs: Impact on Downstream Tasks": [
+            730,
+            832
+        ],
+        "7 Conclusion and Future Work": [
+            833,
+            838
+        ],
+        "Limitations": [
+            839,
+            856
+        ],
+        "Acknowledgements": [
+            857,
+            860
+        ],
+        "References": [
+            861,
+            922
+        ],
+        "Appendix A Creating WikiKGE-10": [
+            923,
+            986
+        ],
+        "Appendix B Related Work: Addendum": [
+            987,
+            990
+        ],
+        "Appendix C Methodology: Addendum": [
+            991,
+            1599
+        ],
+        "Appendix D WikiKGE-10: Additional Results": [
+            1600,
+            1707
+        ],
+        "Appendix E Impact on Downstream Tasks: Question Answering": [
+            1708,
+            1719
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Knowledge graphs.": [
+                30,
+                33
+            ],
+            "Textual information in knowledge graphs.": [
+                34,
+                39
+            ],
+            "Knowledge graph acquisition and completion.": [
+                40,
+                43
+            ]
+        },
+        "3 Knowledge Graph Enhancement of Textual Information": {
+            "3.1 Task definition": [
+                54,
+                62
+            ],
+            "3.2 Coverage of non-English information": [
+                63,
+                149
+            ],
+            "3.3 Precision of non-English information": [
+                150,
+                159
+            ],
+            "3.4 Evaluating KGE with WikiKGE-10": [
+                160,
+                165
+            ]
+        },
+        "4 Methodology": {
+            "4.1 Baseline approaches": [
+                170,
+                171
+            ],
+            "Machine Translation (MT).": [
+                172,
+                175
+            ],
+            "Web Search (WS).": [
+                176,
+                179
+            ],
+            "Large Language Models (LLMs).": [
+                180,
+                662
+            ],
+            "4.2 M-NTA: Multi-source Naturalization, Translation, and Alignment": [
+                663,
+                666
+            ],
+            "Source systems in M-NTA.": [
+                667,
+                676
+            ],
+            "Ranking answers in M-NTA.": [
+                677,
+                692
+            ]
+        },
+        "5 Experiments on KGE": {
+            "5.1 Experimental setup": [
+                697,
+                713
+            ],
+            "5.2 Results and discussion": [
+                714,
+                717
+            ],
+            "Different languages hold different knowledge.": [
+                718,
+                721
+            ],
+            "WS may not be suitable for KGE.": [
+                722,
+                725
+            ],
+            "Prompting LLMs requires caution.": [
+                726,
+                729
+            ]
+        },
+        "6 Enhancing Textual Information in KGs: Impact on Downstream Tasks": {
+            "Multilingual Entity Linking (MEL).": [
+                734,
+                783
+            ],
+            "Multilingual Knowledge Graph Completion (MKGC).": [
+                784,
+                832
+            ]
+        },
+        "7 Conclusion and Future Work": {},
+        "Limitations": {
+            "Textual information in knowledge graphs.": [
+                841,
+                844
+            ],
+            "Different knowledge graphs.": [
+                845,
+                848
+            ],
+            "WikiKGE-10.": [
+                849,
+                852
+            ],
+            "M-NTA.": [
+                853,
+                856
+            ]
+        },
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Creating WikiKGE-10": {
+            "A.1 Choice of languages": [
+                927,
+                952
+            ],
+            "A.2 Human annotation process": [
+                953,
+                978
+            ],
+            "A.3 Quality assurance and inter-annotator agreement": [
+                979,
+                986
+            ]
+        },
+        "Appendix B Related Work: Addendum": {},
+        "Appendix C Methodology: Addendum": {
+            "C.1 Contextualizing entity names": [
+                995,
+                1000
+            ],
+            "C.2 Aligning and de-contextualizing entity names": [
+                1001,
+                1006
+            ],
+            "C.3 MT: implementation details": [
+                1007,
+                1010
+            ],
+            "C.4 WS: implementation details": [
+                1011,
+                1016
+            ],
+            "C.5 LLMs: implementation details": [
+                1017,
+                1028
+            ],
+            "C.6 M-NTA: implementation details": [
+                1029,
+                1032
+            ],
+            "C.6.1 The value of $\\lambda$": [
+                1033,
+                1101
+            ],
+            "C.6.2 The choice of $\\phi$": [
+                1102,
+                1203
+            ],
+            "C.6.3 Ablation study": [
+                1204,
+                1586
+            ],
+            "C.7 Applying M-NTA to entity descriptions": [
+                1587,
+                1599
+            ]
+        },
+        "Appendix D WikiKGE-10: Additional Results": {},
+        "Appendix E Impact on Downstream Tasks: Question Answering": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                14,
+                14
+            ],
+            [
+                16,
+                16
+            ],
+            [
+                18,
+                22
+            ],
+            [
+                24,
+                24
+            ]
+        ],
+        "2 Related Work": [
+            [
+                28,
+                28
+            ],
+            [
+                32,
+                32
+            ],
+            [
+                36,
+                36
+            ],
+            [
+                38,
+                38
+            ],
+            [
+                42,
+                42
+            ]
+        ],
+        "3 Knowledge Graph Enhancement of Textual Information": [
+            [
+                46,
+                46
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                59
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                67,
+                67
+            ],
+            [
+                152,
+                152
+            ],
+            [
+                154,
+                156
+            ],
+            [
+                158,
+                158
+            ],
+            [
+                162,
+                162
+            ],
+            [
+                164,
+                164
+            ]
+        ],
+        "4 Methodology": [
+            [
+                168,
+                168
+            ],
+            [
+                174,
+                174
+            ],
+            [
+                178,
+                178
+            ],
+            [
+                182,
+                182
+            ],
+            [
+                665,
+                665
+            ],
+            [
+                669,
+                669
+            ],
+            [
+                671,
+                673
+            ],
+            [
+                675,
+                675
+            ],
+            [
+                679,
+                679
+            ],
+            [
+                681,
+                682
+            ],
+            [
+                684,
+                684
+            ],
+            [
+                686,
+                687
+            ],
+            [
+                689,
+                689
+            ],
+            [
+                691,
+                691
+            ]
+        ],
+        "5 Experiments on KGE": [
+            [
+                695,
+                695
+            ],
+            [
+                699,
+                699
+            ],
+            [
+                701,
+                701
+            ],
+            [
+                703,
+                703
+            ],
+            [
+                705,
+                710
+            ],
+            [
+                712,
+                712
+            ],
+            [
+                716,
+                716
+            ],
+            [
+                720,
+                720
+            ],
+            [
+                724,
+                724
+            ],
+            [
+                728,
+                728
+            ]
+        ],
+        "6 Enhancing Textual Information in KGs: Impact on Downstream Tasks": [
+            [
+                732,
+                732
+            ],
+            [
+                736,
+                736
+            ],
+            [
+                786,
+                786
+            ]
+        ],
+        "7 Conclusion and Future Work": [
+            [
+                835,
+                835
+            ],
+            [
+                837,
+                837
+            ]
+        ],
+        "Limitations": [
+            [
+                843,
+                843
+            ],
+            [
+                847,
+                847
+            ],
+            [
+                851,
+                851
+            ],
+            [
+                855,
+                855
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                859,
+                859
+            ]
+        ],
+        "References": [
+            [
+                863,
+                921
+            ]
+        ],
+        "Appendix A Creating WikiKGE-10": [
+            [
+                925,
+                925
+            ],
+            [
+                929,
+                929
+            ],
+            [
+                931,
+                937
+            ],
+            [
+                939,
+                939
+            ],
+            [
+                955,
+                955
+            ],
+            [
+                957,
+                957
+            ],
+            [
+                959,
+                959
+            ],
+            [
+                961,
+                965
+            ],
+            [
+                967,
+                967
+            ],
+            [
+                969,
+                969
+            ],
+            [
+                971,
+                971
+            ],
+            [
+                981,
+                981
+            ],
+            [
+                983,
+                983
+            ],
+            [
+                985,
+                985
+            ]
+        ],
+        "Appendix B Related Work: Addendum": [
+            [
+                989,
+                989
+            ]
+        ],
+        "Appendix C Methodology: Addendum": [
+            [
+                993,
+                993
+            ],
+            [
+                997,
+                997
+            ],
+            [
+                999,
+                999
+            ],
+            [
+                1003,
+                1003
+            ],
+            [
+                1005,
+                1005
+            ],
+            [
+                1009,
+                1009
+            ],
+            [
+                1013,
+                1013
+            ],
+            [
+                1015,
+                1015
+            ],
+            [
+                1019,
+                1019
+            ],
+            [
+                1021,
+                1021
+            ],
+            [
+                1023,
+                1025
+            ],
+            [
+                1027,
+                1027
+            ],
+            [
+                1031,
+                1031
+            ],
+            [
+                1035,
+                1035
+            ],
+            [
+                1037,
+                1037
+            ],
+            [
+                1104,
+                1104
+            ],
+            [
+                1206,
+                1206
+            ],
+            [
+                1589,
+                1589
+            ],
+            [
+                1591,
+                1591
+            ],
+            [
+                1593,
+                1593
+            ],
+            [
+                1595,
+                1596
+            ],
+            [
+                1598,
+                1598
+            ]
+        ],
+        "Appendix D WikiKGE-10: Additional Results": [
+            [
+                1602,
+                1602
+            ],
+            [
+                1604,
+                1604
+            ]
+        ],
+        "Appendix E Impact on Downstream Tasks: Question Answering": [
+            [
+                1710,
+                1710
+            ],
+            [
+                1712,
+                1712
+            ],
+            [
+                1714,
+                1715
+            ],
+            [
+                1717,
+                1717
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Knowledge Graph Enhancement of Textual Information": {
+            "[FIGURE S3.F1.g1]": [
+                48,
+                52
+            ]
+        },
+        "4 Methodology": {},
+        "5 Experiments on KGE": {},
+        "6 Enhancing Textual Information in KGs: Impact on Downstream Tasks": {},
+        "7 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Creating WikiKGE-10": {
+            "[FIGURE A1.F2.g1]": [
+                941,
+                945
+            ],
+            "[FIGURE A1.F3.g1]": [
+                947,
+                951
+            ],
+            "[FIGURE A1.F5.g1]": [
+                973,
+                977
+            ]
+        },
+        "Appendix B Related Work: Addendum": {},
+        "Appendix C Methodology: Addendum": {
+            "[FIGURE A3.F6.g1]": [
+                1039,
+                1043
+            ],
+            "[FIGURE A3.F7.g1]": [
+                1045,
+                1049
+            ]
+        },
+        "Appendix D WikiKGE-10: Additional Results": {
+            "[FIGURE A4.F8.g1]": [
+                1702,
+                1706
+            ]
+        },
+        "Appendix E Impact on Downstream Tasks: Question Answering": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Knowledge Graph Enhancement of Textual Information": {
+            "[TABLE S3.T1]": [
+                69,
+                148
+            ]
+        },
+        "4 Methodology": {
+            "[TABLE S4.T2]": [
+                184,
+                661
+            ]
+        },
+        "5 Experiments on KGE": {},
+        "6 Enhancing Textual Information in KGs: Impact on Downstream Tasks": {
+            "[TABLE S6.T3]": [
+                738,
+                782
+            ],
+            "[TABLE S6.T4]": [
+                788,
+                831
+            ]
+        },
+        "7 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Creating WikiKGE-10": {},
+        "Appendix B Related Work: Addendum": {},
+        "Appendix C Methodology: Addendum": {
+            "[TABLE A3.T5]": [
+                1051,
+                1100
+            ],
+            "[TABLE A3.T6]": [
+                1106,
+                1140
+            ],
+            "[TABLE A3.T7]": [
+                1142,
+                1202
+            ],
+            "[TABLE A3.T8]": [
+                1208,
+                1585
+            ]
+        },
+        "Appendix D WikiKGE-10: Additional Results": {
+            "[TABLE A4.T9]": [
+                1606,
+                1700
+            ]
+        },
+        "Appendix E Impact on Downstream Tasks: Question Answering": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Knowledge Graph Enhancement of Textual Information": {},
+        "4 Methodology": {},
+        "5 Experiments on KGE": {},
+        "6 Enhancing Textual Information in KGs: Impact on Downstream Tasks": {},
+        "7 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Creating WikiKGE-10": {},
+        "Appendix B Related Work: Addendum": {},
+        "Appendix C Methodology: Addendum": {},
+        "Appendix D WikiKGE-10: Additional Results": {},
+        "Appendix E Impact on Downstream Tasks: Question Answering": {}
+    }
+}

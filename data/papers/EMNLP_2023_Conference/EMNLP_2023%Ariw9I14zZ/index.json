@@ -1,0 +1,527 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            21
+        ],
+        "2 Background": [
+            22,
+            42
+        ],
+        "3 Methodology": [
+            43,
+            135
+        ],
+        "4 Experiment setup": [
+            136,
+            304
+        ],
+        "5 Results": [
+            305,
+            635
+        ],
+        "6 Analysis": [
+            636,
+            854
+        ],
+        "7 Related work": [
+            855,
+            866
+        ],
+        "8 Conclusion": [
+            867,
+            870
+        ],
+        "Limitations": [
+            871,
+            874
+        ],
+        "References": [
+            875,
+            912
+        ],
+        "Appendix A Appendix": [
+            913,
+            914
+        ],
+        "Appendix B Appendix": [
+            915,
+            1717
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Background": {
+            "2.1 Sentencepiece": [
+                24,
+                27
+            ],
+            "2.2 Clustering": [
+                28,
+                33
+            ],
+            "2.3 Vocabulary allocation": [
+                34,
+                42
+            ]
+        },
+        "3 Methodology": {
+            "3.1 Building the vocabulary": [
+                102,
+                105
+            ],
+            "Training monolingual SPMs": [
+                106,
+                115
+            ],
+            "Constructing lexical fingerprints": [
+                116,
+                119
+            ],
+            "Clustering and capacity allocation": [
+                120,
+                125
+            ],
+            "The final vocabulary": [
+                126,
+                129
+            ],
+            "3.2 Training the model": [
+                130,
+                135
+            ]
+        },
+        "4 Experiment setup": {
+            "4.1 Baselines": [
+                253,
+                256
+            ],
+            "XLM-R (250K)": [
+                257,
+                260
+            ],
+            "XLM-R (1M)": [
+                261,
+                264
+            ],
+            "Chung et\u00a0al. ([2020](#bib.bib5)) (1M)": [
+                265,
+                268
+            ],
+            "4.2 Datasets": [
+                269,
+                272
+            ],
+            "FLoRes-200": [
+                273,
+                276
+            ],
+            "XNLI": [
+                277,
+                280
+            ],
+            "MLQA": [
+                281,
+                284
+            ],
+            "XQuAD": [
+                285,
+                288
+            ],
+            "TyDiQA-GoldP": [
+                289,
+                292
+            ],
+            "NER": [
+                293,
+                296
+            ],
+            "Americas NLI": [
+                297,
+                300
+            ],
+            "MasakhaNER": [
+                301,
+                304
+            ]
+        },
+        "5 Results": {
+            "5.1 Comparisons using partial training": [
+                618,
+                627
+            ],
+            "5.2 Fully trained model": [
+                628,
+                635
+            ]
+        },
+        "6 Analysis": {
+            "6.1 The Zipf ceiling": [
+                831,
+                836
+            ],
+            "6.2 Qualitative improvements in tokenization": [
+                837,
+                840
+            ],
+            "6.3 Over-tokenization": [
+                841,
+                850
+            ],
+            "6.4 Speed vs. size": [
+                851,
+                854
+            ]
+        },
+        "7 Related work": {
+            "7.1 Vocabulary-free models": [
+                857,
+                860
+            ],
+            "7.2 Building larger vocabularies": [
+                861,
+                866
+            ]
+        },
+        "8 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Appendix": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                14,
+                14
+            ],
+            [
+                16,
+                16
+            ],
+            [
+                18,
+                20
+            ]
+        ],
+        "2 Background": [
+            [
+                26,
+                26
+            ],
+            [
+                30,
+                30
+            ],
+            [
+                32,
+                32
+            ],
+            [
+                36,
+                36
+            ],
+            [
+                38,
+                39
+            ],
+            [
+                41,
+                41
+            ]
+        ],
+        "3 Methodology": [
+            [
+                104,
+                104
+            ],
+            [
+                108,
+                108
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                122,
+                122
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                128,
+                128
+            ],
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                134
+            ]
+        ],
+        "4 Experiment setup": [
+            [
+                255,
+                255
+            ],
+            [
+                259,
+                259
+            ],
+            [
+                263,
+                263
+            ],
+            [
+                267,
+                267
+            ],
+            [
+                271,
+                271
+            ],
+            [
+                275,
+                275
+            ],
+            [
+                279,
+                279
+            ],
+            [
+                283,
+                283
+            ],
+            [
+                287,
+                287
+            ],
+            [
+                291,
+                291
+            ],
+            [
+                295,
+                295
+            ],
+            [
+                299,
+                299
+            ],
+            [
+                303,
+                303
+            ]
+        ],
+        "5 Results": [
+            [
+                620,
+                620
+            ],
+            [
+                630,
+                630
+            ],
+            [
+                632,
+                632
+            ],
+            [
+                634,
+                634
+            ]
+        ],
+        "6 Analysis": [
+            [
+                833,
+                833
+            ],
+            [
+                835,
+                835
+            ],
+            [
+                839,
+                839
+            ],
+            [
+                843,
+                843
+            ],
+            [
+                853,
+                853
+            ]
+        ],
+        "7 Related work": [
+            [
+                859,
+                859
+            ],
+            [
+                863,
+                863
+            ],
+            [
+                865,
+                865
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                869,
+                869
+            ]
+        ],
+        "Limitations": [
+            [
+                873,
+                873
+            ]
+        ],
+        "References": [
+            [
+                877,
+                911
+            ]
+        ],
+        "Appendix A Appendix": [],
+        "Appendix B Appendix": [
+            [
+                917,
+                917
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Methodology": {
+            "[FIGURE S3.F1.g1]": [
+                110,
+                114
+            ]
+        },
+        "4 Experiment setup": {},
+        "5 Results": {
+            "[FIGURE S5.F2.g1]": [
+                622,
+                626
+            ]
+        },
+        "6 Analysis": {
+            "[FIGURE S6.F3.g1]": [
+                825,
+                829
+            ],
+            "[FIGURE S6.F4.g1]": [
+                845,
+                849
+            ]
+        },
+        "7 Related work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Appendix": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Methodology": {
+            "[TABLE S3.T1]": [
+                45,
+                100
+            ]
+        },
+        "4 Experiment setup": {
+            "[TABLE S4.T2]": [
+                138,
+                251
+            ]
+        },
+        "5 Results": {
+            "[TABLE S5.T3]": [
+                307,
+                499
+            ],
+            "[TABLE S5.T4]": [
+                501,
+                616
+            ]
+        },
+        "6 Analysis": {
+            "[TABLE S6.T5]": [
+                638,
+                719
+            ],
+            "[TABLE S6.T6]": [
+                721,
+                823
+            ]
+        },
+        "7 Related work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Appendix": {
+            "[TABLE A2.T7]": [
+                919,
+                1001
+            ],
+            "[TABLE A2.T8]": [
+                1003,
+                1097
+            ],
+            "[TABLE A2.T9]": [
+                1099,
+                1217
+            ],
+            "[TABLE A2.T10]": [
+                1219,
+                1612
+            ],
+            "[TABLE A2.T11]": [
+                1614,
+                1715
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Methodology": {},
+        "4 Experiment setup": {},
+        "5 Results": {},
+        "6 Analysis": {},
+        "7 Related work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {},
+        "Appendix B Appendix": {}
+    }
+}

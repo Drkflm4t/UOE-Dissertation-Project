@@ -1,0 +1,635 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            34
+        ],
+        "2 Related Work": [
+            35,
+            51
+        ],
+        "3 Method": [
+            52,
+            305
+        ],
+        "4 Experiments": [
+            306,
+            327
+        ],
+        "5 Results": [
+            328,
+            343
+        ],
+        "6 Analysis": [
+            344,
+            379
+        ],
+        "7 Conclusion": [
+            380,
+            383
+        ],
+        "Limitations": [
+            384,
+            391
+        ],
+        "References": [
+            392,
+            447
+        ],
+        "Appendix A Preliminaries for WLLM": [
+            448,
+            550
+        ],
+        "Appendix B Watermark Embedding/Detecting Algorithm of SWEET": [
+            551,
+            554
+        ],
+        "Appendix C Related Work (Full ver.)": [
+            555,
+            631
+        ],
+        "Appendix D Implementation Details": [
+            632,
+            645
+        ],
+        "Appendix E Further Pareto Frontier Results on StarCoder/LLaMA": [
+            646,
+            689
+        ],
+        "Appendix F More Details about Experiments with General Prompts": [
+            690,
+            693
+        ],
+        "Appendix G Further Analysis of Lexical Type Distributions": [
+            694,
+            719
+        ],
+        "Appendix H Further Analysis of Breakdown of Post-hoc methods": [
+            720,
+            730
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {
+            "3.1 Motivation": [
+                56,
+                63
+            ],
+            "3.2 The SWEET Method": [
+                64,
+                305
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Tasks and Metrics": [
+                310,
+                317
+            ],
+            "4.2 Baselines": [
+                318,
+                323
+            ],
+            "4.3 Entropy Threshold Search": [
+                324,
+                327
+            ]
+        },
+        "5 Results": {
+            "5.1 Main Results": [
+                330,
+                339
+            ],
+            "5.2 Comparison of Pareto Frontiers between SWEET and WLLM": [
+                340,
+                343
+            ]
+        },
+        "6 Analysis": {
+            "6.1 Detection Ability without Prompts": [
+                346,
+                351
+            ],
+            "6.2 Impact of Entropy Thresholds.": [
+                352,
+                362
+            ],
+            "6.3 Lexical Types Distribution": [
+                363,
+                375
+            ],
+            "6.4 Breakdown of Post-hoc methods": [
+                376,
+                379
+            ]
+        },
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Preliminaries for WLLM": {
+            "Watermarking in LM-generated Text.": [
+                466,
+                550
+            ]
+        },
+        "Appendix B Watermark Embedding/Detecting Algorithm of SWEET": {},
+        "Appendix C Related Work (Full ver.)": {},
+        "Appendix D Implementation Details": {
+            "D.1 DetectGPT": [
+                636,
+                639
+            ],
+            "D.2 WLLM and SWEET": [
+                640,
+                645
+            ]
+        },
+        "Appendix E Further Pareto Frontier Results on StarCoder/LLaMA": {},
+        "Appendix F More Details about Experiments with General Prompts": {},
+        "Appendix G Further Analysis of Lexical Type Distributions": {
+            "G.1 List of Lexical Types": [
+                696,
+                709
+            ],
+            "G.2 Lexical Types Distributions Below Threshold": [
+                710,
+                719
+            ]
+        },
+        "Appendix H Further Analysis of Breakdown of Post-hoc methods": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                33
+            ]
+        ],
+        "2 Related Work": [
+            [
+                37,
+                37
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                43
+            ]
+        ],
+        "3 Method": [
+            [
+                54,
+                54
+            ],
+            [
+                58,
+                58
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                80
+            ],
+            [
+                82,
+                82
+            ]
+        ],
+        "4 Experiments": [
+            [
+                308,
+                308
+            ],
+            [
+                312,
+                312
+            ],
+            [
+                314,
+                314
+            ],
+            [
+                316,
+                316
+            ],
+            [
+                320,
+                320
+            ],
+            [
+                322,
+                322
+            ],
+            [
+                326,
+                326
+            ]
+        ],
+        "5 Results": [
+            [
+                332,
+                332
+            ],
+            [
+                334,
+                334
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                338,
+                338
+            ],
+            [
+                342,
+                342
+            ]
+        ],
+        "6 Analysis": [
+            [
+                348,
+                348
+            ],
+            [
+                350,
+                350
+            ],
+            [
+                361,
+                361
+            ],
+            [
+                372,
+                372
+            ],
+            [
+                374,
+                374
+            ],
+            [
+                378,
+                378
+            ]
+        ],
+        "7 Conclusion": [
+            [
+                382,
+                382
+            ]
+        ],
+        "Limitations": [
+            [
+                386,
+                386
+            ],
+            [
+                388,
+                388
+            ],
+            [
+                390,
+                390
+            ]
+        ],
+        "References": [
+            [
+                394,
+                446
+            ]
+        ],
+        "Appendix A Preliminaries for WLLM": [
+            [
+                451,
+                451
+            ],
+            [
+                453,
+                454
+            ],
+            [
+                456,
+                457
+            ],
+            [
+                459,
+                459
+            ],
+            [
+                461,
+                462
+            ],
+            [
+                464,
+                464
+            ],
+            [
+                468,
+                468
+            ],
+            [
+                470,
+                470
+            ]
+        ],
+        "Appendix B Watermark Embedding/Detecting Algorithm of SWEET": [
+            [
+                553,
+                553
+            ]
+        ],
+        "Appendix C Related Work (Full ver.)": [
+            [
+                557,
+                557
+            ],
+            [
+                559,
+                559
+            ],
+            [
+                561,
+                561
+            ],
+            [
+                563,
+                563
+            ],
+            [
+                565,
+                565
+            ],
+            [
+                567,
+                567
+            ]
+        ],
+        "Appendix D Implementation Details": [
+            [
+                634,
+                634
+            ],
+            [
+                638,
+                638
+            ],
+            [
+                642,
+                642
+            ],
+            [
+                644,
+                644
+            ]
+        ],
+        "Appendix E Further Pareto Frontier Results on StarCoder/LLaMA": [
+            [
+                682,
+                682
+            ],
+            [
+                684,
+                684
+            ],
+            [
+                686,
+                686
+            ],
+            [
+                688,
+                688
+            ]
+        ],
+        "Appendix F More Details about Experiments with General Prompts": [
+            [
+                692,
+                692
+            ]
+        ],
+        "Appendix G Further Analysis of Lexical Type Distributions": [
+            [
+                698,
+                698
+            ],
+            [
+                700,
+                708
+            ],
+            [
+                718,
+                718
+            ]
+        ],
+        "Appendix H Further Analysis of Breakdown of Post-hoc methods": [
+            [
+                722,
+                722
+            ],
+            [
+                724,
+                724
+            ],
+            [
+                726,
+                726
+            ],
+            [
+                728,
+                728
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "[FIGURE S2.F2.1.g1]": [
+                45,
+                50
+            ]
+        },
+        "3 Method": {
+            "[FIGURE S3.F3.1.g1]": [
+                299,
+                304
+            ]
+        },
+        "4 Experiments": {},
+        "5 Results": {},
+        "6 Analysis": {
+            "[FIGURE S6.F4.1.g1]": [
+                354,
+                359
+            ],
+            "[FIGURE S6.F5.1.g1]": [
+                365,
+                370
+            ]
+        },
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Preliminaries for WLLM": {},
+        "Appendix B Watermark Embedding/Detecting Algorithm of SWEET": {},
+        "Appendix C Related Work (Full ver.)": {},
+        "Appendix D Implementation Details": {},
+        "Appendix E Further Pareto Frontier Results on StarCoder/LLaMA": {
+            "[FIGURE A5.F6.1.g1]": [
+                648,
+                654
+            ],
+            "[FIGURE A5.F7.1.g1]": [
+                656,
+                661
+            ],
+            "[FIGURE A5.F8.1.g1]": [
+                663,
+                667
+            ],
+            "[FIGURE A5.F9.1.g1]": [
+                669,
+                674
+            ],
+            "[FIGURE A5.F10.1.g1]": [
+                676,
+                680
+            ]
+        },
+        "Appendix F More Details about Experiments with General Prompts": {},
+        "Appendix G Further Analysis of Lexical Type Distributions": {
+            "[FIGURE A7.F11.1.g1]": [
+                712,
+                716
+            ]
+        },
+        "Appendix H Further Analysis of Breakdown of Post-hoc methods": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {
+            "[TABLE S3.T1]": [
+                84,
+                297
+            ]
+        },
+        "4 Experiments": {},
+        "5 Results": {},
+        "6 Analysis": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Preliminaries for WLLM": {},
+        "Appendix B Watermark Embedding/Detecting Algorithm of SWEET": {},
+        "Appendix C Related Work (Full ver.)": {
+            "[TABLE A3.T2]": [
+                569,
+                630
+            ]
+        },
+        "Appendix D Implementation Details": {},
+        "Appendix E Further Pareto Frontier Results on StarCoder/LLaMA": {},
+        "Appendix F More Details about Experiments with General Prompts": {},
+        "Appendix G Further Analysis of Lexical Type Distributions": {},
+        "Appendix H Further Analysis of Breakdown of Post-hoc methods": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {},
+        "5 Results": {},
+        "6 Analysis": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Preliminaries for WLLM": {
+            "[ALGORITHM alg1]": [
+                472,
+                500
+            ],
+            "[ALGORITHM alg2]": [
+                502,
+                549
+            ]
+        },
+        "Appendix B Watermark Embedding/Detecting Algorithm of SWEET": {},
+        "Appendix C Related Work (Full ver.)": {},
+        "Appendix D Implementation Details": {},
+        "Appendix E Further Pareto Frontier Results on StarCoder/LLaMA": {},
+        "Appendix F More Details about Experiments with General Prompts": {},
+        "Appendix G Further Analysis of Lexical Type Distributions": {},
+        "Appendix H Further Analysis of Breakdown of Post-hoc methods": {}
+    }
+}

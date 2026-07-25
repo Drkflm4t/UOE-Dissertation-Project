@@ -1,0 +1,1333 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        17
+    ],
+    "sections": {
+        "1 Introduction": [
+            18,
+            37
+        ],
+        "2 Preliminaries": [
+            38,
+            57
+        ],
+        "3 Echo Embeddings": [
+            58,
+            136
+        ],
+        "4 Methodology": [
+            137,
+            185
+        ],
+        "5 Experiments": [
+            186,
+            653
+        ],
+        "6 Related Work": [
+            654,
+            667
+        ],
+        "7 Conclusion": [
+            668,
+            673
+        ],
+        "8 Limitations": [
+            674,
+            677
+        ],
+        "Acknowledgements": [
+            678,
+            687
+        ],
+        "References": [
+            688,
+            743
+        ],
+        "Appendix A General Information for Reproducibility": [
+            744,
+            759
+        ],
+        "Appendix B Echo Embeddings: Additional Information": [
+            760,
+            843
+        ],
+        "Appendix C Additional Zero-shot Results": [
+            844,
+            1037
+        ],
+        "Appendix D Additional Finetuning Results": [
+            1038,
+            4778
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Preliminaries": {
+            "Embeddings from language models.": [
+                42,
+                53
+            ],
+            "Classical embeddings.": [
+                54,
+                57
+            ]
+        },
+        "3 Echo Embeddings": {
+            "3.1 Classical Embeddings Miss Bidirectional Information.": [
+                62,
+                74
+            ],
+            "3.2 Echo Embeddings": [
+                75,
+                90
+            ],
+            "3.3 Repetition Captures Bidirectional Info": [
+                91,
+                102
+            ],
+            "3.4 Classical vs. Echo on Synthetic Data": [
+                103,
+                106
+            ],
+            "Datasets.": [
+                107,
+                116
+            ],
+            "Results.": [
+                117,
+                120
+            ],
+            "Does last-token pooling resolve the failure of classical embeddings?": [
+                121,
+                126
+            ],
+            "Does last-token pooling resolve the failure after finetuning?": [
+                127,
+                136
+            ]
+        },
+        "4 Methodology": {
+            "4.1 Constructing Zero-shot Embeddings.": [
+                141,
+                144
+            ],
+            "Baselines.": [
+                145,
+                151
+            ],
+            "4.2 Constructing Finetuned Embeddings.": [
+                152,
+                155
+            ],
+            "Extracting embeddings.": [
+                156,
+                171
+            ],
+            "Datasets.": [
+                172,
+                175
+            ],
+            "Optimization.": [
+                176,
+                179
+            ],
+            "4.3 Massive Text Embedding Benchmark": [
+                180,
+                185
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Evaluation of Zero-shot Embeddings": [
+                397,
+                400
+            ],
+            "Echo embeddings outperform classical embeddings zero-shot.": [
+                401,
+                404
+            ],
+            "Qualitative comparison of classical and echo embeddings.": [
+                405,
+                424
+            ],
+            "Quantitative evaluation of the failure mode.": [
+                425,
+                428
+            ],
+            "Last-token vs mean token pooling.": [
+                429,
+                432
+            ],
+            "Echo embeddings vs summarization.": [
+                433,
+                436
+            ],
+            "5.2 Evaluation of Finetuned Embeddings": [
+                437,
+                637
+            ],
+            "Echo embeddings outperform classical embeddings after finetuning.": [
+                638,
+                641
+            ],
+            "Comparison to prior state-of-the-art models.": [
+                642,
+                645
+            ],
+            "Why doesn\u2019t last-token pooling close the gap?": [
+                646,
+                649
+            ],
+            "Can we relax autoregressive language models to a bidirectional architecture and fine-tune?": [
+                650,
+                653
+            ]
+        },
+        "6 Related Work": {
+            "Sentence embeddings.": [
+                656,
+                659
+            ],
+            "Next-token language modeling for embeddings.": [
+                660,
+                663
+            ],
+            "Zero-shot embeddings.": [
+                664,
+                667
+            ]
+        },
+        "7 Conclusion": {},
+        "8 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A General Information for Reproducibility": {
+            "A.1 Massive Text Embedding Benchmark": [
+                748,
+                751
+            ],
+            "A.2 Base Model HuggingFace IDs": [
+                752,
+                759
+            ]
+        },
+        "Appendix B Echo Embeddings: Additional Information": {
+            "Cosine Similarity.": [
+                764,
+                777
+            ],
+            "Prompts for Section\u00a0[3](#S3 \"3 Echo Embeddings \u2023 Repetition Improves Language Model Embeddings\").": [
+                778,
+                791
+            ],
+            "General Prompting Guidelines.": [
+                792,
+                815
+            ],
+            "Toy data.": [
+                816,
+                843
+            ]
+        },
+        "Appendix C Additional Zero-shot Results": {
+            "Prompt sampling procedure.": [
+                848,
+                995
+            ],
+            "Subset of MTEB for zero-shot evaluation.": [
+                996,
+                999
+            ],
+            "Measuring the sensitivity of different embedding strategies to prompting.": [
+                1000,
+                1003
+            ],
+            "Evaluation of zero-shot results with different validation sets.": [
+                1004,
+                1013
+            ],
+            "C.1 Validating the connection between our synthetic data experiments and real data.": [
+                1014,
+                1019
+            ],
+            "Identifying examples based on similarity in the first/second part of the sentence.": [
+                1020,
+                1023
+            ],
+            "Measuring sentence similarity estimation error.": [
+                1024,
+                1027
+            ],
+            "Results.": [
+                1028,
+                1033
+            ],
+            "Qualitative examples.": [
+                1034,
+                1037
+            ]
+        },
+        "Appendix D Additional Finetuning Results": {
+            "Training Datasets.": [
+                1042,
+                1045
+            ],
+            "GPUs.": [
+                1046,
+                1049
+            ],
+            "Instructions for finetuning datasets.": [
+                1050,
+                1053
+            ],
+            "Models on MTEB leaderboard.": [
+                1054,
+                1057
+            ],
+            "Additional ablations.": [
+                1058,
+                1061
+            ],
+            "Performance over training time.": [
+                1062,
+                1065
+            ],
+            "Computational benefits of echo embeddings.": [
+                1066,
+                1069
+            ],
+            "All results.": [
+                1070,
+                1275
+            ],
+            "Training objective.": [
+                1276,
+                4778
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                20,
+                20
+            ],
+            [
+                22,
+                22
+            ],
+            [
+                30,
+                30
+            ],
+            [
+                32,
+                32
+            ],
+            [
+                34,
+                34
+            ],
+            [
+                36,
+                36
+            ]
+        ],
+        "2 Preliminaries": [
+            [
+                40,
+                40
+            ],
+            [
+                44,
+                44
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                48,
+                48
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                52
+            ],
+            [
+                56,
+                56
+            ]
+        ],
+        "3 Echo Embeddings": [
+            [
+                60,
+                60
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                71
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                79,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                99,
+                99
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                129,
+                129
+            ]
+        ],
+        "4 Methodology": [
+            [
+                139,
+                139
+            ],
+            [
+                143,
+                143
+            ],
+            [
+                147,
+                147
+            ],
+            [
+                149,
+                150
+            ],
+            [
+                154,
+                154
+            ],
+            [
+                158,
+                158
+            ],
+            [
+                160,
+                162
+            ],
+            [
+                164,
+                164
+            ],
+            [
+                166,
+                168
+            ],
+            [
+                170,
+                170
+            ],
+            [
+                174,
+                174
+            ],
+            [
+                178,
+                178
+            ],
+            [
+                182,
+                182
+            ],
+            [
+                184,
+                184
+            ]
+        ],
+        "5 Experiments": [
+            [
+                399,
+                399
+            ],
+            [
+                403,
+                403
+            ],
+            [
+                407,
+                407
+            ],
+            [
+                409,
+                412
+            ],
+            [
+                414,
+                414
+            ],
+            [
+                416,
+                419
+            ],
+            [
+                421,
+                421
+            ],
+            [
+                423,
+                423
+            ],
+            [
+                427,
+                427
+            ],
+            [
+                431,
+                431
+            ],
+            [
+                435,
+                435
+            ],
+            [
+                636,
+                636
+            ],
+            [
+                640,
+                640
+            ],
+            [
+                644,
+                644
+            ],
+            [
+                648,
+                648
+            ],
+            [
+                652,
+                652
+            ]
+        ],
+        "6 Related Work": [
+            [
+                658,
+                658
+            ],
+            [
+                662,
+                662
+            ],
+            [
+                666,
+                666
+            ]
+        ],
+        "7 Conclusion": [
+            [
+                670,
+                670
+            ],
+            [
+                672,
+                672
+            ]
+        ],
+        "8 Limitations": [
+            [
+                676,
+                676
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                680,
+                680
+            ],
+            [
+                682,
+                682
+            ],
+            [
+                684,
+                684
+            ],
+            [
+                686,
+                686
+            ]
+        ],
+        "References": [
+            [
+                690,
+                742
+            ]
+        ],
+        "Appendix A General Information for Reproducibility": [
+            [
+                746,
+                746
+            ],
+            [
+                750,
+                750
+            ],
+            [
+                754,
+                754
+            ],
+            [
+                756,
+                758
+            ]
+        ],
+        "Appendix B Echo Embeddings: Additional Information": [
+            [
+                762,
+                762
+            ],
+            [
+                766,
+                766
+            ],
+            [
+                768,
+                769
+            ],
+            [
+                771,
+                771
+            ],
+            [
+                773,
+                774
+            ],
+            [
+                776,
+                776
+            ],
+            [
+                780,
+                780
+            ],
+            [
+                782,
+                783
+            ],
+            [
+                785,
+                785
+            ],
+            [
+                787,
+                788
+            ],
+            [
+                790,
+                790
+            ],
+            [
+                794,
+                794
+            ],
+            [
+                796,
+                796
+            ],
+            [
+                798,
+                798
+            ],
+            [
+                800,
+                800
+            ],
+            [
+                802,
+                802
+            ],
+            [
+                804,
+                804
+            ],
+            [
+                806,
+                806
+            ],
+            [
+                808,
+                808
+            ],
+            [
+                810,
+                810
+            ],
+            [
+                812,
+                812
+            ],
+            [
+                814,
+                814
+            ],
+            [
+                818,
+                818
+            ],
+            [
+                820,
+                820
+            ],
+            [
+                822,
+                822
+            ],
+            [
+                824,
+                824
+            ],
+            [
+                826,
+                826
+            ],
+            [
+                828,
+                828
+            ],
+            [
+                830,
+                830
+            ],
+            [
+                832,
+                832
+            ],
+            [
+                834,
+                834
+            ],
+            [
+                836,
+                836
+            ],
+            [
+                838,
+                838
+            ],
+            [
+                840,
+                840
+            ],
+            [
+                842,
+                842
+            ]
+        ],
+        "Appendix C Additional Zero-shot Results": [
+            [
+                846,
+                846
+            ],
+            [
+                850,
+                850
+            ],
+            [
+                852,
+                858
+            ],
+            [
+                860,
+                860
+            ],
+            [
+                862,
+                862
+            ],
+            [
+                864,
+                864
+            ],
+            [
+                866,
+                866
+            ],
+            [
+                868,
+                868
+            ],
+            [
+                870,
+                870
+            ],
+            [
+                872,
+                872
+            ],
+            [
+                874,
+                874
+            ],
+            [
+                876,
+                876
+            ],
+            [
+                878,
+                878
+            ],
+            [
+                880,
+                880
+            ],
+            [
+                882,
+                882
+            ],
+            [
+                884,
+                884
+            ],
+            [
+                886,
+                886
+            ],
+            [
+                888,
+                888
+            ],
+            [
+                890,
+                890
+            ],
+            [
+                892,
+                892
+            ],
+            [
+                894,
+                894
+            ],
+            [
+                896,
+                896
+            ],
+            [
+                898,
+                898
+            ],
+            [
+                900,
+                900
+            ],
+            [
+                902,
+                902
+            ],
+            [
+                904,
+                904
+            ],
+            [
+                906,
+                906
+            ],
+            [
+                908,
+                908
+            ],
+            [
+                910,
+                910
+            ],
+            [
+                912,
+                912
+            ],
+            [
+                914,
+                914
+            ],
+            [
+                916,
+                916
+            ],
+            [
+                918,
+                918
+            ],
+            [
+                920,
+                920
+            ],
+            [
+                922,
+                922
+            ],
+            [
+                924,
+                924
+            ],
+            [
+                926,
+                926
+            ],
+            [
+                928,
+                928
+            ],
+            [
+                930,
+                930
+            ],
+            [
+                932,
+                932
+            ],
+            [
+                934,
+                934
+            ],
+            [
+                936,
+                936
+            ],
+            [
+                938,
+                938
+            ],
+            [
+                940,
+                940
+            ],
+            [
+                942,
+                942
+            ],
+            [
+                944,
+                944
+            ],
+            [
+                946,
+                946
+            ],
+            [
+                948,
+                948
+            ],
+            [
+                950,
+                950
+            ],
+            [
+                952,
+                952
+            ],
+            [
+                954,
+                954
+            ],
+            [
+                956,
+                956
+            ],
+            [
+                958,
+                958
+            ],
+            [
+                960,
+                960
+            ],
+            [
+                962,
+                962
+            ],
+            [
+                964,
+                964
+            ],
+            [
+                966,
+                966
+            ],
+            [
+                968,
+                968
+            ],
+            [
+                970,
+                970
+            ],
+            [
+                972,
+                972
+            ],
+            [
+                974,
+                974
+            ],
+            [
+                976,
+                976
+            ],
+            [
+                978,
+                978
+            ],
+            [
+                980,
+                980
+            ],
+            [
+                982,
+                982
+            ],
+            [
+                984,
+                984
+            ],
+            [
+                986,
+                986
+            ],
+            [
+                988,
+                988
+            ],
+            [
+                990,
+                990
+            ],
+            [
+                992,
+                992
+            ],
+            [
+                994,
+                994
+            ],
+            [
+                998,
+                998
+            ],
+            [
+                1002,
+                1002
+            ],
+            [
+                1006,
+                1006
+            ],
+            [
+                1016,
+                1016
+            ],
+            [
+                1018,
+                1018
+            ],
+            [
+                1022,
+                1022
+            ],
+            [
+                1026,
+                1026
+            ],
+            [
+                1030,
+                1030
+            ],
+            [
+                1032,
+                1032
+            ],
+            [
+                1036,
+                1036
+            ]
+        ],
+        "Appendix D Additional Finetuning Results": [
+            [
+                1040,
+                1040
+            ],
+            [
+                1044,
+                1044
+            ],
+            [
+                1048,
+                1048
+            ],
+            [
+                1052,
+                1052
+            ],
+            [
+                1056,
+                1056
+            ],
+            [
+                1060,
+                1060
+            ],
+            [
+                1064,
+                1064
+            ],
+            [
+                1068,
+                1068
+            ],
+            [
+                1072,
+                1072
+            ],
+            [
+                1278,
+                1278
+            ],
+            [
+                1280,
+                1281
+            ],
+            [
+                1283,
+                1283
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                24,
+                28
+            ]
+        },
+        "2 Preliminaries": {},
+        "3 Echo Embeddings": {
+            "[FIGURE S3.F2.g1]": [
+                85,
+                89
+            ],
+            "[FIGURE S3.F3.g1]": [
+                131,
+                135
+            ]
+        },
+        "4 Methodology": {},
+        "5 Experiments": {},
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "8 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A General Information for Reproducibility": {},
+        "Appendix B Echo Embeddings: Additional Information": {},
+        "Appendix C Additional Zero-shot Results": {
+            "[FIGURE A3.F4.g1]": [
+                1008,
+                1012
+            ]
+        },
+        "Appendix D Additional Finetuning Results": {
+            "[FIGURE A4.F5.g1]": [
+                2040,
+                2044
+            ],
+            "[FIGURE A4.F6.g1]": [
+                2046,
+                2050
+            ],
+            "[FIGURE A4.F7.g1]": [
+                2052,
+                2056
+            ],
+            "[FIGURE A4.F8.g1]": [
+                2058,
+                2062
+            ],
+            "[FIGURE A4.F9.g1]": [
+                2064,
+                2068
+            ],
+            "[FIGURE A4.F10.g1]": [
+                2070,
+                2074
+            ],
+            "[FIGURE A4.F11.g1]": [
+                4126,
+                4130
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 Echo Embeddings": {},
+        "4 Methodology": {},
+        "5 Experiments": {
+            "[TABLE S5.T1]": [
+                188,
+                395
+            ],
+            "[TABLE S5.T2]": [
+                439,
+                634
+            ]
+        },
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "8 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A General Information for Reproducibility": {},
+        "Appendix B Echo Embeddings: Additional Information": {},
+        "Appendix C Additional Zero-shot Results": {},
+        "Appendix D Additional Finetuning Results": {
+            "[TABLE A4.T3]": [
+                1074,
+                1274
+            ],
+            "[TABLE A4.T4]": [
+                1285,
+                1499
+            ],
+            "[TABLE A4.T5]": [
+                1501,
+                1630
+            ],
+            "[TABLE A4.T6]": [
+                1632,
+                1846
+            ],
+            "[TABLE A4.T7]": [
+                1848,
+                2038
+            ],
+            "[TABLE A4.T8]": [
+                2076,
+                2306
+            ],
+            "[TABLE A4.T9]": [
+                2308,
+                2538
+            ],
+            "[TABLE A4.T10]": [
+                2540,
+                2770
+            ],
+            "[TABLE A4.T11]": [
+                2772,
+                2950
+            ],
+            "[TABLE A4.T12]": [
+                2952,
+                3130
+            ],
+            "[TABLE A4.T13]": [
+                3132,
+                3310
+            ],
+            "[TABLE A4.T14]": [
+                3312,
+                4124
+            ],
+            "[TABLE A4.T15]": [
+                4132,
+                4285
+            ],
+            "[TABLE A4.T16]": [
+                4287,
+                4776
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 Echo Embeddings": {},
+        "4 Methodology": {},
+        "5 Experiments": {},
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "8 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A General Information for Reproducibility": {},
+        "Appendix B Echo Embeddings: Additional Information": {},
+        "Appendix C Additional Zero-shot Results": {},
+        "Appendix D Additional Finetuning Results": {}
+    }
+}

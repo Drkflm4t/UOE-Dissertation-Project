@@ -1,0 +1,660 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            24
+        ],
+        "2 Structured Prompting of Pretrained Language Models": [
+            25,
+            38
+        ],
+        "3 Experimental Setup": [
+            39,
+            90
+        ],
+        "4 Structured Prompting Results": [
+            91,
+            164
+        ],
+        "5 When Does Structured Prompting Work?": [
+            165,
+            284
+        ],
+        "6 Sources of Linguistic Knowledge in Pretraining Corpus": [
+            285,
+            451
+        ],
+        "7 Related Work": [
+            452,
+            469
+        ],
+        "8 Conclusion": [
+            470,
+            473
+        ],
+        "Limitatons": [
+            474,
+            489
+        ],
+        "Acknowledgements": [
+            490,
+            493
+        ],
+        "References": [
+            494,
+            540
+        ],
+        "Appendix A Further Ablations and Analysis": [
+            541,
+            793
+        ],
+        "Appendix B Complete Results of Structured Prompting Experiments": [
+            794,
+            797
+        ],
+        "Appendix C Responsible NLP Miscellanea": [
+            798,
+            962
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Structured Prompting of Pretrained Language Models": {},
+        "3 Experimental Setup": {
+            "3.1 Prompt Formatting": [
+                41,
+                46
+            ],
+            "3.2 Sequence Tagging Tasks": [
+                47,
+                50
+            ],
+            "Part-of-Speech (POS) Tagging": [
+                51,
+                54
+            ],
+            "Sentence Chunking": [
+                55,
+                58
+            ],
+            "Named Entity Recognition (NER)": [
+                59,
+                62
+            ],
+            "3.3 Models": [
+                63,
+                66
+            ],
+            "GPT-Neo": [
+                67,
+                70
+            ],
+            "GPT-3": [
+                71,
+                76
+            ],
+            "3.4 Additional Experimental Details": [
+                77,
+                90
+            ]
+        },
+        "4 Structured Prompting Results": {
+            "4.1 Overall Results": [
+                95,
+                98
+            ],
+            "Structured prompting performs effective few-shot sequence tagging": [
+                99,
+                102
+            ],
+            "Structured prompting scales with model and demonstration size": [
+                103,
+                150
+            ],
+            "Structured prompting with GPT-3": [
+                151,
+                156
+            ],
+            "4.2 Error Analysis": [
+                157,
+                164
+            ]
+        },
+        "5 When Does Structured Prompting Work?": {
+            "5.1 Effect of Seen Labels": [
+                175,
+                186
+            ],
+            "5.2 Effect of Label Form": [
+                187,
+                190
+            ],
+            "Label shuffling confuses GPT-NeoX": [
+                191,
+                196
+            ],
+            "GPT-NeoX in-context learns with arbitrary proxy labels": [
+                197,
+                284
+            ]
+        },
+        "6 Sources of Linguistic Knowledge in Pretraining Corpus": {
+            "6.1 Task Data Contamination": [
+                291,
+                294
+            ],
+            "POS Tagging": [
+                295,
+                302
+            ],
+            "NER": [
+                303,
+                308
+            ],
+            "6.2 Labels in Other Contexts": [
+                309,
+                443
+            ],
+            "6.3 Relationship Between Labels and Classes": [
+                444,
+                451
+            ]
+        },
+        "7 Related Work": {
+            "Prompting PLMs for Sequence Information": [
+                454,
+                457
+            ],
+            "Probing Pretrained Models": [
+                458,
+                463
+            ],
+            "Analysis of Prompting Methods": [
+                464,
+                469
+            ]
+        },
+        "8 Conclusion": {},
+        "Limitatons": {
+            "Data Leakage": [
+                476,
+                481
+            ],
+            "Experimental Limitations with GPT-3": [
+                482,
+                485
+            ],
+            "English-only Experiments": [
+                486,
+                489
+            ]
+        },
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Further Ablations and Analysis": {
+            "A.1 Choice of evaluation set": [
+                612,
+                676
+            ],
+            "A.2 Ablating BIO Constraints": [
+                677,
+                785
+            ],
+            "A.3 Full Results of Error Analysis": [
+                786,
+                789
+            ],
+            "A.4 Full Results of Pretraining Data Analysis": [
+                790,
+                793
+            ]
+        },
+        "Appendix B Complete Results of Structured Prompting Experiments": {},
+        "Appendix C Responsible NLP Miscellanea": {
+            "Compute Costs": [
+                802,
+                957
+            ],
+            "Intended Usage of Artifacts": [
+                958,
+                962
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ]
+        ],
+        "2 Structured Prompting of Pretrained Language Models": [
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ]
+        ],
+        "3 Experimental Setup": [
+            [
+                43,
+                43
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ]
+        ],
+        "4 Structured Prompting Results": [
+            [
+                93,
+                93
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                153,
+                153
+            ],
+            [
+                155,
+                155
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                163,
+                163
+            ]
+        ],
+        "5 When Does Structured Prompting Work?": [
+            [
+                167,
+                167
+            ],
+            [
+                177,
+                177
+            ],
+            [
+                179,
+                179
+            ],
+            [
+                189,
+                189
+            ],
+            [
+                193,
+                193
+            ],
+            [
+                195,
+                195
+            ],
+            [
+                199,
+                199
+            ]
+        ],
+        "6 Sources of Linguistic Knowledge in Pretraining Corpus": [
+            [
+                287,
+                287
+            ],
+            [
+                289,
+                289
+            ],
+            [
+                293,
+                293
+            ],
+            [
+                297,
+                297
+            ],
+            [
+                299,
+                299
+            ],
+            [
+                301,
+                301
+            ],
+            [
+                305,
+                305
+            ],
+            [
+                307,
+                307
+            ],
+            [
+                311,
+                311
+            ],
+            [
+                313,
+                313
+            ],
+            [
+                446,
+                446
+            ],
+            [
+                448,
+                448
+            ],
+            [
+                450,
+                450
+            ]
+        ],
+        "7 Related Work": [
+            [
+                456,
+                456
+            ],
+            [
+                460,
+                460
+            ],
+            [
+                462,
+                462
+            ],
+            [
+                466,
+                466
+            ],
+            [
+                468,
+                468
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                472,
+                472
+            ]
+        ],
+        "Limitatons": [
+            [
+                478,
+                478
+            ],
+            [
+                480,
+                480
+            ],
+            [
+                484,
+                484
+            ],
+            [
+                488,
+                488
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                492,
+                492
+            ]
+        ],
+        "References": [
+            [
+                496,
+                539
+            ]
+        ],
+        "Appendix A Further Ablations and Analysis": [
+            [
+                543,
+                543
+            ],
+            [
+                614,
+                614
+            ],
+            [
+                679,
+                679
+            ],
+            [
+                788,
+                788
+            ],
+            [
+                792,
+                792
+            ]
+        ],
+        "Appendix B Complete Results of Structured Prompting Experiments": [
+            [
+                796,
+                796
+            ]
+        ],
+        "Appendix C Responsible NLP Miscellanea": [
+            [
+                800,
+                800
+            ],
+            [
+                804,
+                804
+            ],
+            [
+                806,
+                806
+            ],
+            [
+                960,
+                960
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                13,
+                17
+            ]
+        },
+        "2 Structured Prompting of Pretrained Language Models": {
+            "[FIGURE S2.F2.sf1.g1]": [
+                33,
+                37
+            ]
+        },
+        "3 Experimental Setup": {
+            "[FIGURE S3.F3.sf1.g1]": [
+                85,
+                89
+            ]
+        },
+        "4 Structured Prompting Results": {},
+        "5 When Does Structured Prompting Work?": {
+            "[FIGURE S5.F4.g1]": [
+                169,
+                173
+            ],
+            "[FIGURE S5.F5.g1]": [
+                181,
+                185
+            ]
+        },
+        "6 Sources of Linguistic Knowledge in Pretraining Corpus": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitatons": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Further Ablations and Analysis": {
+            "[FIGURE A1.F6.sf1.g1]": [
+                545,
+                549
+            ]
+        },
+        "Appendix B Complete Results of Structured Prompting Experiments": {},
+        "Appendix C Responsible NLP Miscellanea": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Structured Prompting of Pretrained Language Models": {},
+        "3 Experimental Setup": {},
+        "4 Structured Prompting Results": {
+            "[TABLE S4.T1]": [
+                107,
+                149
+            ]
+        },
+        "5 When Does Structured Prompting Work?": {
+            "[TABLE S5.T2]": [
+                201,
+                283
+            ]
+        },
+        "6 Sources of Linguistic Knowledge in Pretraining Corpus": {
+            "[TABLE S6.T3]": [
+                315,
+                442
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitatons": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Further Ablations and Analysis": {
+            "[TABLE A1.T4]": [
+                551,
+                610
+            ],
+            "[TABLE A1.T5]": [
+                616,
+                675
+            ],
+            "[TABLE A1.T6]": [
+                681,
+                784
+            ]
+        },
+        "Appendix B Complete Results of Structured Prompting Experiments": {},
+        "Appendix C Responsible NLP Miscellanea": {
+            "[TABLE A3.T7]": [
+                808,
+                956
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Structured Prompting of Pretrained Language Models": {},
+        "3 Experimental Setup": {},
+        "4 Structured Prompting Results": {},
+        "5 When Does Structured Prompting Work?": {},
+        "6 Sources of Linguistic Knowledge in Pretraining Corpus": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitatons": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Further Ablations and Analysis": {},
+        "Appendix B Complete Results of Structured Prompting Experiments": {},
+        "Appendix C Responsible NLP Miscellanea": {}
+    }
+}

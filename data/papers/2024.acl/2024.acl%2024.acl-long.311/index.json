@@ -1,0 +1,684 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            138
+        ],
+        "2 Background": [
+            139,
+            152
+        ],
+        "3 Experimental Setup": [
+            153,
+            176
+        ],
+        "4 Effects of the Alignment Dataset": [
+            177,
+            350
+        ],
+        "5 Effects of the Alignment Method": [
+            351,
+            375
+        ],
+        "6 Effects of the Nature of Base Models": [
+            376,
+            519
+        ],
+        "7 Comparing QLoRA with LoRA": [
+            520,
+            523
+        ],
+        "8 Key Takeaways": [
+            524,
+            531
+        ],
+        "9 Conclusion and Future Work": [
+            532,
+            537
+        ],
+        "Limitations": [
+            538,
+            545
+        ],
+        "Ethics Statement": [
+            546,
+            551
+        ],
+        "Acknowledgements": [
+            552,
+            555
+        ],
+        "References": [
+            556,
+            587
+        ],
+        "Appendix A Extended Results": [
+            588,
+            933
+        ],
+        "Appendix B Hyperparameter settings": [
+            934,
+            1012
+        ],
+        "Appendix C Alignment Dataset Creation and Details": [
+            1013,
+            1022
+        ],
+        "Appendix D Evaluation Dataset Statistics": [
+            1023,
+            1044
+        ],
+        "Appendix E Model and Compute Statistics": [
+            1045,
+            1048
+        ],
+        "Appendix F Background and Related Work": [
+            1049,
+            1071
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Background": {
+            "Alignment Methods": [
+                141,
+                148
+            ],
+            "Parameter-Efficient Training (PEFT)": [
+                149,
+                152
+            ]
+        },
+        "3 Experimental Setup": {
+            "Preferences and Preference Alignment Datasets": [
+                155,
+                158
+            ],
+            "Base Models": [
+                159,
+                168
+            ],
+            "Evaluation Tasks and Metrics": [
+                169,
+                172
+            ],
+            "Training Setup": [
+                173,
+                176
+            ]
+        },
+        "4 Effects of the Alignment Dataset": {
+            "4.1 Impact of Quality": [
+                181,
+                184
+            ],
+            "Setup": [
+                337,
+                340
+            ],
+            "Results and Observations": [
+                341,
+                344
+            ],
+            "4.2 Impact of Quantity": [
+                209,
+                212
+            ],
+            "4.3 Impact of Data Mixtures": [
+                333,
+                336
+            ],
+            "4.4 Key Takeaways": [
+                345,
+                350
+            ]
+        },
+        "5 Effects of the Alignment Method": {
+            "Setup": [
+                361,
+                364
+            ],
+            "Results": [
+                365,
+                370
+            ],
+            "5.1 Key Takeaways": [
+                371,
+                375
+            ]
+        },
+        "6 Effects of the Nature of Base Models": {
+            "6.1 Contrasting Pre-trained and Instruction-Tuned Models": [
+                378,
+                381
+            ],
+            "Setup": [
+                500,
+                503
+            ],
+            "Results and Observations": [
+                504,
+                507
+            ],
+            "6.2 Effect of using Merged Models": [
+                496,
+                499
+            ],
+            "6.3 Key Takeaways": [
+                508,
+                519
+            ]
+        },
+        "7 Comparing QLoRA with LoRA": {},
+        "8 Key Takeaways": {},
+        "9 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Extended Results": {},
+        "Appendix B Hyperparameter settings": {},
+        "Appendix C Alignment Dataset Creation and Details": {},
+        "Appendix D Evaluation Dataset Statistics": {
+            "MMLU": [
+                1025,
+                1028
+            ],
+            "Big-Bench Hard": [
+                1029,
+                1032
+            ],
+            "Alpaca Eval": [
+                1033,
+                1036
+            ],
+            "RealToxicity": [
+                1037,
+                1040
+            ],
+            "Red-Instruct": [
+                1041,
+                1044
+            ]
+        },
+        "Appendix E Model and Compute Statistics": {},
+        "Appendix F Background and Related Work": {
+            "F.1 Alignment Methods": [
+                1051,
+                1054
+            ],
+            "Supervised fine-tuning (SFT)": [
+                1055,
+                1058
+            ],
+            "Reinforcement Learning from Human Feedback (RLHF)": [
+                1059,
+                1062
+            ],
+            "Direct Preference Optimization (DPO)": [
+                1063,
+                1066
+            ],
+            "F.2 Parameter-Efficient Training (PEFT)": [
+                1067,
+                1071
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                127
+            ],
+            [
+                129,
+                129
+            ],
+            [
+                131,
+                131
+            ],
+            [
+                133,
+                133
+            ],
+            [
+                135,
+                137
+            ]
+        ],
+        "2 Background": [
+            [
+                143,
+                143
+            ],
+            [
+                145,
+                145
+            ],
+            [
+                147,
+                147
+            ],
+            [
+                151,
+                151
+            ]
+        ],
+        "3 Experimental Setup": [
+            [
+                157,
+                157
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                175,
+                175
+            ]
+        ],
+        "4 Effects of the Alignment Dataset": [
+            [
+                179,
+                179
+            ],
+            [
+                183,
+                183
+            ],
+            [
+                187,
+                187
+            ],
+            [
+                191,
+                191
+            ],
+            [
+                193,
+                193
+            ],
+            [
+                207,
+                207
+            ],
+            [
+                211,
+                211
+            ],
+            [
+                215,
+                215
+            ],
+            [
+                219,
+                219
+            ],
+            [
+                221,
+                221
+            ],
+            [
+                223,
+                223
+            ],
+            [
+                335,
+                335
+            ],
+            [
+                339,
+                339
+            ],
+            [
+                343,
+                343
+            ],
+            [
+                347,
+                349
+            ]
+        ],
+        "5 Effects of the Alignment Method": [
+            [
+                353,
+                353
+            ],
+            [
+                363,
+                363
+            ],
+            [
+                367,
+                367
+            ],
+            [
+                369,
+                369
+            ],
+            [
+                373,
+                374
+            ]
+        ],
+        "6 Effects of the Nature of Base Models": [
+            [
+                380,
+                380
+            ],
+            [
+                384,
+                384
+            ],
+            [
+                492,
+                492
+            ],
+            [
+                494,
+                494
+            ],
+            [
+                498,
+                498
+            ],
+            [
+                502,
+                502
+            ],
+            [
+                506,
+                506
+            ],
+            [
+                510,
+                512
+            ]
+        ],
+        "7 Comparing QLoRA with LoRA": [
+            [
+                522,
+                522
+            ]
+        ],
+        "8 Key Takeaways": [
+            [
+                526,
+                526
+            ],
+            [
+                528,
+                530
+            ]
+        ],
+        "9 Conclusion and Future Work": [
+            [
+                534,
+                534
+            ],
+            [
+                536,
+                536
+            ]
+        ],
+        "Limitations": [
+            [
+                540,
+                540
+            ],
+            [
+                542,
+                544
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                548,
+                548
+            ],
+            [
+                550,
+                550
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                554,
+                554
+            ]
+        ],
+        "References": [
+            [
+                558,
+                586
+            ]
+        ],
+        "Appendix A Extended Results": [
+            [
+                932,
+                932
+            ]
+        ],
+        "Appendix B Hyperparameter settings": [
+            [
+                1011,
+                1011
+            ]
+        ],
+        "Appendix C Alignment Dataset Creation and Details": [
+            [
+                1015,
+                1015
+            ],
+            [
+                1017,
+                1017
+            ],
+            [
+                1019,
+                1019
+            ],
+            [
+                1021,
+                1021
+            ]
+        ],
+        "Appendix D Evaluation Dataset Statistics": [
+            [
+                1027,
+                1027
+            ],
+            [
+                1031,
+                1031
+            ],
+            [
+                1035,
+                1035
+            ],
+            [
+                1039,
+                1039
+            ],
+            [
+                1043,
+                1043
+            ]
+        ],
+        "Appendix E Model and Compute Statistics": [
+            [
+                1047,
+                1047
+            ]
+        ],
+        "Appendix F Background and Related Work": [
+            [
+                1053,
+                1053
+            ],
+            [
+                1057,
+                1057
+            ],
+            [
+                1061,
+                1061
+            ],
+            [
+                1065,
+                1065
+            ],
+            [
+                1069,
+                1069
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Experimental Setup": {
+            "[FIGURE S3.F1.g1]": [
+                163,
+                167
+            ]
+        },
+        "4 Effects of the Alignment Dataset": {
+            "[FIGURE S4.F2.g1]": [
+                195,
+                199
+            ],
+            "[FIGURE S4.F3.g1]": [
+                201,
+                205
+            ],
+            "[FIGURE S4.F4.g1]": [
+                327,
+                331
+            ]
+        },
+        "5 Effects of the Alignment Method": {
+            "[FIGURE S5.F5.g1]": [
+                355,
+                359
+            ]
+        },
+        "6 Effects of the Nature of Base Models": {
+            "[FIGURE S6.F6.g1]": [
+                514,
+                518
+            ]
+        },
+        "7 Comparing QLoRA with LoRA": {},
+        "8 Key Takeaways": {},
+        "9 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Extended Results": {},
+        "Appendix B Hyperparameter settings": {},
+        "Appendix C Alignment Dataset Creation and Details": {},
+        "Appendix D Evaluation Dataset Statistics": {},
+        "Appendix E Model and Compute Statistics": {},
+        "Appendix F Background and Related Work": {}
+    },
+    "tables": {
+        "1 Introduction": {
+            "[TABLE S1.T1]": [
+                14,
+                123
+            ]
+        },
+        "2 Background": {},
+        "3 Experimental Setup": {},
+        "4 Effects of the Alignment Dataset": {
+            "[TABLE S4.T2]": [
+                225,
+                325
+            ]
+        },
+        "5 Effects of the Alignment Method": {},
+        "6 Effects of the Nature of Base Models": {
+            "[TABLE S6.T3]": [
+                386,
+                488
+            ]
+        },
+        "7 Comparing QLoRA with LoRA": {},
+        "8 Key Takeaways": {},
+        "9 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Extended Results": {
+            "[TABLE A1.T4]": [
+                590,
+                812
+            ],
+            "[TABLE A1.T5]": [
+                814,
+                930
+            ]
+        },
+        "Appendix B Hyperparameter settings": {
+            "[TABLE A2.T6]": [
+                936,
+                1009
+            ]
+        },
+        "Appendix C Alignment Dataset Creation and Details": {},
+        "Appendix D Evaluation Dataset Statistics": {},
+        "Appendix E Model and Compute Statistics": {},
+        "Appendix F Background and Related Work": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Experimental Setup": {},
+        "4 Effects of the Alignment Dataset": {},
+        "5 Effects of the Alignment Method": {},
+        "6 Effects of the Nature of Base Models": {},
+        "7 Comparing QLoRA with LoRA": {},
+        "8 Key Takeaways": {},
+        "9 Conclusion and Future Work": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Extended Results": {},
+        "Appendix B Hyperparameter settings": {},
+        "Appendix C Alignment Dataset Creation and Details": {},
+        "Appendix D Evaluation Dataset Statistics": {},
+        "Appendix E Model and Compute Statistics": {},
+        "Appendix F Background and Related Work": {}
+    }
+}

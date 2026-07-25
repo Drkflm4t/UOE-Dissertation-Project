@@ -1,0 +1,521 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        8
+    ],
+    "sections": {
+        "1 Introduction": [
+            9,
+            30
+        ],
+        "2 Related Work": [
+            31,
+            44
+        ],
+        "3 Method": [
+            45,
+            117
+        ],
+        "4 Experiments": [
+            118,
+            721
+        ],
+        "5 Conclusion": [
+            722,
+            729
+        ],
+        "Acknowledgment": [
+            730,
+            733
+        ],
+        "References": [
+            734,
+            829
+        ],
+        "Appendix A Implementation Details": [
+            830,
+            847
+        ],
+        "Appendix B More Visualization Results": [
+            848,
+            892
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Native 3D Generative Models": [
+                33,
+                36
+            ],
+            "Rendering-based 3D Generative Models": [
+                37,
+                40
+            ],
+            "Reconstruction-based 3D Generative Models": [
+                41,
+                44
+            ]
+        },
+        "3 Method": {
+            "3.1 Data Curation: Structured Splat Reconstruction": [
+                56,
+                76
+            ],
+            "3.2 Splat Latents": [
+                77,
+                87
+            ],
+            "3.3 DiffSplat Generative Model": [
+                88,
+                89
+            ],
+            "3.3.1 Model Architecture": [
+                90,
+                97
+            ],
+            "3.3.2 Training Objectives": [
+                98,
+                117
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Experimental Settings": [
+                120,
+                123
+            ],
+            "4.2 Text-conditioned Generation": [
+                124,
+                125
+            ],
+            "Baselines": [
+                299,
+                302
+            ],
+            "Results and Comparisions": [
+                303,
+                374
+            ],
+            "4.3 Image-conditioned Generation": [
+                297,
+                298
+            ],
+            "4.4 Application: Controllable Generation": [
+                375,
+                384
+            ],
+            "4.5 Ablation and Analysis": [
+                385,
+                388
+            ],
+            "4.5.1 Splat Latent Reconstruction": [
+                389,
+                390
+            ],
+            "Reconstruction Inputs": [
+                391,
+                394
+            ],
+            "Auto-encoding Stragegies": [
+                395,
+                691
+            ],
+            "4.5.2 DiffSplat 3D Generation": [
+                692,
+                699
+            ],
+            "Multi-view Manners": [
+                700,
+                703
+            ],
+            "Training Objectives": [
+                704,
+                707
+            ],
+            "Base Text-to-image Diffusion Models": [
+                708,
+                711
+            ],
+            "4.5.3 Interpreting Splat Latents": [
+                712,
+                721
+            ]
+        },
+        "5 Conclusion": {
+            "Limitations and Future Work": [
+                726,
+                729
+            ]
+        },
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A Implementation Details": {
+            "Reproducibility": [
+                832,
+                835
+            ],
+            "Training": [
+                836,
+                839
+            ],
+            "Inference": [
+                840,
+                843
+            ],
+            "Cost": [
+                844,
+                847
+            ]
+        },
+        "Appendix B More Visualization Results": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                23
+            ]
+        ],
+        "2 Related Work": [
+            [
+                35,
+                35
+            ],
+            [
+                39,
+                39
+            ],
+            [
+                43,
+                43
+            ]
+        ],
+        "3 Method": [
+            [
+                54,
+                54
+            ],
+            [
+                58,
+                58
+            ],
+            [
+                60,
+                61
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                65
+            ],
+            [
+                67,
+                68
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                73
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                84
+            ],
+            [
+                86,
+                86
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                94,
+                94
+            ],
+            [
+                96,
+                96
+            ],
+            [
+                100,
+                100
+            ],
+            [
+                102,
+                103
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                111,
+                112
+            ],
+            [
+                114,
+                114
+            ],
+            [
+                116,
+                116
+            ]
+        ],
+        "4 Experiments": [
+            [
+                122,
+                122
+            ],
+            [
+                128,
+                128
+            ],
+            [
+                132,
+                132
+            ],
+            [
+                301,
+                301
+            ],
+            [
+                305,
+                305
+            ],
+            [
+                377,
+                377
+            ],
+            [
+                387,
+                387
+            ],
+            [
+                393,
+                393
+            ],
+            [
+                397,
+                397
+            ],
+            [
+                702,
+                702
+            ],
+            [
+                706,
+                706
+            ],
+            [
+                710,
+                710
+            ],
+            [
+                720,
+                720
+            ]
+        ],
+        "5 Conclusion": [
+            [
+                724,
+                724
+            ],
+            [
+                728,
+                728
+            ]
+        ],
+        "Acknowledgment": [
+            [
+                732,
+                732
+            ]
+        ],
+        "References": [
+            [
+                736,
+                828
+            ]
+        ],
+        "Appendix A Implementation Details": [
+            [
+                834,
+                834
+            ],
+            [
+                838,
+                838
+            ],
+            [
+                842,
+                842
+            ],
+            [
+                846,
+                846
+            ]
+        ],
+        "Appendix B More Visualization Results": []
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                25,
+                29
+            ]
+        },
+        "2 Related Work": {},
+        "3 Method": {
+            "[FIGURE S3.F2.g1]": [
+                47,
+                52
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F3.g1]": [
+                134,
+                138
+            ],
+            "[FIGURE S4.F4.g1]": [
+                307,
+                311
+            ],
+            "[FIGURE S4.F5.g1]": [
+                379,
+                383
+            ],
+            "[FIGURE S4.F6.g1]": [
+                694,
+                698
+            ],
+            "[FIGURE S4.F7.g1]": [
+                714,
+                718
+            ]
+        },
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A Implementation Details": {},
+        "Appendix B More Visualization Results": {
+            "[FIGURE A2.F8.g1]": [
+                850,
+                854
+            ],
+            "[FIGURE A2.F9.g1]": [
+                856,
+                860
+            ],
+            "[FIGURE A2.F10.g1]": [
+                862,
+                866
+            ],
+            "[FIGURE A2.F11.g1]": [
+                868,
+                872
+            ],
+            "[FIGURE A2.F12.g1]": [
+                874,
+                878
+            ],
+            "[FIGURE A2.F13.g1]": [
+                880,
+                884
+            ],
+            "[FIGURE A2.F14.g1]": [
+                886,
+                890
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                140,
+                295
+            ],
+            "[TABLE S4.T2]": [
+                313,
+                373
+            ],
+            "[TABLE S4.T4]": [
+                399,
+                524
+            ],
+            "[TABLE S4.T5]": [
+                526,
+                690
+            ]
+        },
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A Implementation Details": {},
+        "Appendix B More Visualization Results": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {},
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "References": {},
+        "Appendix A Implementation Details": {},
+        "Appendix B More Visualization Results": {}
+    }
+}

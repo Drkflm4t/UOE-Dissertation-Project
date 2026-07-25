@@ -1,0 +1,874 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            20
+        ],
+        "2 Preliminaries": [
+            21,
+            60
+        ],
+        "3 Methodology": [
+            61,
+            146
+        ],
+        "4 Experiments": [
+            147,
+            706
+        ],
+        "5 Related Work": [
+            707,
+            720
+        ],
+        "6 Conclusion and Limitation": [
+            721,
+            730
+        ],
+        "Acknowledgments": [
+            731,
+            734
+        ],
+        "References": [
+            735,
+            785
+        ],
+        "Appendix A Broad Impacts": [
+            786,
+            789
+        ],
+        "Appendix B The Details of DiffLight": [
+            790,
+            842
+        ],
+        "Appendix C Datasets": [
+            843,
+            904
+        ],
+        "Appendix D Baseline Methods": [
+            905,
+            925
+        ],
+        "Appendix E Proof of Partial Rewards Conditioned Diffusion": [
+            926,
+            942
+        ],
+        "Appendix F Additional Experiments Results": [
+            943,
+            1535
+        ],
+        "Appendix G Discussion on MissLight": [
+            1536,
+            1672
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Preliminaries": {
+            "2.1 Partially Observable Markov Decision Process": [
+                23,
+                26
+            ],
+            "2.2 Traffic Signal Control with Missing Data": [
+                27,
+                38
+            ],
+            "2.3 Diffusion Models for Reinforcement Learning": [
+                39,
+                40
+            ],
+            "Diffusion model.": [
+                41,
+                49
+            ],
+            "Diffusing decision-making.": [
+                50,
+                56
+            ],
+            "Classifier-free guidance.": [
+                57,
+                60
+            ]
+        },
+        "3 Methodology": {
+            "3.1 Partial Rewards Conditioned Diffusion": [
+                93,
+                118
+            ],
+            "3.2 Diffusing with Spatial-Temporal Transformer": [
+                119,
+                122
+            ],
+            "3.3 Diffusion Communication Mechanism": [
+                123,
+                131
+            ],
+            "3.4 Training and Inference of DiffLight": [
+                132,
+                133
+            ],
+            "Training process.": [
+                134,
+                142
+            ],
+            "Inference process.": [
+                143,
+                146
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Experimental Setup": [
+                149,
+                150
+            ],
+            "Experiment Settings": [
+                151,
+                154
+            ],
+            "Datasets": [
+                155,
+                158
+            ],
+            "Evaluation Metrics": [
+                159,
+                167
+            ],
+            "Compared Methods": [
+                168,
+                171
+            ],
+            "4.2 Performance under Data-Missing Scenarios": [
+                172,
+                175
+            ],
+            "Random missing.": [
+                176,
+                387
+            ],
+            "Kriging missing.": [
+                388,
+                620
+            ],
+            "4.3 Ablation Study": [
+                621,
+                691
+            ],
+            "4.4 Model Generalization": [
+                692,
+                706
+            ]
+        },
+        "5 Related Work": {
+            "Traffic Signal Control": [
+                709,
+                712
+            ],
+            "Diffusion-based Reinforcement Learning": [
+                713,
+                716
+            ],
+            "Traffic Data Imputation": [
+                717,
+                720
+            ]
+        },
+        "6 Conclusion and Limitation": {
+            "Conclusion": [
+                723,
+                726
+            ],
+            "Limitation": [
+                727,
+                730
+            ]
+        },
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Broad Impacts": {},
+        "Appendix B The Details of DiffLight": {
+            "B.1 Hyperparameters of DiffLight": [
+                792,
+                801
+            ],
+            "B.2 Structure of STFormer": [
+                802,
+                805
+            ],
+            "Data embedding layer.": [
+                806,
+                814
+            ],
+            "Spatial-temporal encoder layer.": [
+                815,
+                838
+            ],
+            "Output layer.": [
+                839,
+                842
+            ]
+        },
+        "Appendix C Datasets": {
+            "C.1 Detials of Datasets": [
+                845,
+                894
+            ],
+            "C.2 Missing Pattern": [
+                895,
+                904
+            ]
+        },
+        "Appendix D Baseline Methods": {
+            "Baseline approaches.": [
+                909,
+                921
+            ],
+            "Store-and-forward method.": [
+                922,
+                925
+            ]
+        },
+        "Appendix E Proof of Partial Rewards Conditioned Diffusion": {},
+        "Appendix F Additional Experiments Results": {
+            "F.1 Performance without Missing Data": [
+                945,
+                1030
+            ],
+            "F.2 Influence of Unobserved Locations": [
+                1031,
+                1080
+            ],
+            "F.3 Limit of Missing Rates": [
+                1081,
+                1126
+            ],
+            "F.4 Scalability of DiffLight": [
+                1127,
+                1249
+            ],
+            "F.5 Additional Ablation Study on Diffusion Communication Mechanism": [
+                1250,
+                1319
+            ],
+            "F.6 Additional Ablation Study on the Inverse Dynamics": [
+                1320,
+                1363
+            ],
+            "F.7 Time Cost": [
+                1364,
+                1535
+            ]
+        },
+        "Appendix G Discussion on MissLight": {
+            "Model training.": [
+                1540,
+                1543
+            ],
+            "Model composition.": [
+                1544,
+                1672
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ]
+        ],
+        "2 Preliminaries": [
+            [
+                25,
+                25
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                45,
+                46
+            ],
+            [
+                48,
+                48
+            ],
+            [
+                52,
+                52
+            ],
+            [
+                54,
+                55
+            ],
+            [
+                59,
+                59
+            ]
+        ],
+        "3 Methodology": [
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                70,
+                71
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                76
+            ],
+            [
+                78,
+                78
+            ],
+            [
+                80,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                95,
+                95
+            ],
+            [
+                97,
+                98
+            ],
+            [
+                100,
+                100
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                105
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                109,
+                110
+            ],
+            [
+                112,
+                112
+            ],
+            [
+                114,
+                115
+            ],
+            [
+                117,
+                117
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                128
+            ],
+            [
+                130,
+                130
+            ],
+            [
+                136,
+                136
+            ],
+            [
+                138,
+                139
+            ],
+            [
+                141,
+                141
+            ],
+            [
+                145,
+                145
+            ]
+        ],
+        "4 Experiments": [
+            [
+                153,
+                153
+            ],
+            [
+                157,
+                157
+            ],
+            [
+                161,
+                161
+            ],
+            [
+                163,
+                164
+            ],
+            [
+                166,
+                166
+            ],
+            [
+                170,
+                170
+            ],
+            [
+                174,
+                174
+            ],
+            [
+                178,
+                178
+            ],
+            [
+                390,
+                390
+            ],
+            [
+                619,
+                619
+            ],
+            [
+                623,
+                623
+            ],
+            [
+                690,
+                690
+            ],
+            [
+                700,
+                700
+            ],
+            [
+                702,
+                703
+            ],
+            [
+                705,
+                705
+            ]
+        ],
+        "5 Related Work": [
+            [
+                711,
+                711
+            ],
+            [
+                715,
+                715
+            ],
+            [
+                719,
+                719
+            ]
+        ],
+        "6 Conclusion and Limitation": [
+            [
+                725,
+                725
+            ],
+            [
+                729,
+                729
+            ]
+        ],
+        "Acknowledgments": [
+            [
+                733,
+                733
+            ]
+        ],
+        "References": [
+            [
+                737,
+                784
+            ]
+        ],
+        "Appendix A Broad Impacts": [
+            [
+                788,
+                788
+            ]
+        ],
+        "Appendix B The Details of DiffLight": [
+            [
+                794,
+                794
+            ],
+            [
+                796,
+                800
+            ],
+            [
+                804,
+                804
+            ],
+            [
+                808,
+                808
+            ],
+            [
+                810,
+                811
+            ],
+            [
+                813,
+                813
+            ],
+            [
+                817,
+                817
+            ],
+            [
+                819,
+                819
+            ],
+            [
+                821,
+                822
+            ],
+            [
+                824,
+                825
+            ],
+            [
+                827,
+                827
+            ],
+            [
+                829,
+                830
+            ],
+            [
+                832,
+                832
+            ],
+            [
+                834,
+                835
+            ],
+            [
+                837,
+                837
+            ],
+            [
+                841,
+                841
+            ]
+        ],
+        "Appendix C Datasets": [
+            [
+                847,
+                847
+            ],
+            [
+                849,
+                849
+            ],
+            [
+                897,
+                897
+            ]
+        ],
+        "Appendix D Baseline Methods": [
+            [
+                907,
+                907
+            ],
+            [
+                911,
+                911
+            ],
+            [
+                913,
+                918
+            ],
+            [
+                920,
+                920
+            ],
+            [
+                924,
+                924
+            ]
+        ],
+        "Appendix E Proof of Partial Rewards Conditioned Diffusion": [
+            [
+                928,
+                928
+            ],
+            [
+                930,
+                934
+            ],
+            [
+                936,
+                936
+            ],
+            [
+                938,
+                939
+            ],
+            [
+                941,
+                941
+            ]
+        ],
+        "Appendix F Additional Experiments Results": [
+            [
+                947,
+                947
+            ],
+            [
+                1033,
+                1033
+            ],
+            [
+                1083,
+                1083
+            ],
+            [
+                1129,
+                1129
+            ],
+            [
+                1252,
+                1252
+            ],
+            [
+                1322,
+                1322
+            ],
+            [
+                1366,
+                1366
+            ]
+        ],
+        "Appendix G Discussion on MissLight": [
+            [
+                1538,
+                1538
+            ],
+            [
+                1542,
+                1542
+            ],
+            [
+                1546,
+                1546
+            ],
+            [
+                1548,
+                1548
+            ],
+            [
+                1670,
+                1670
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Preliminaries": {
+            "[FIGURE S2.F1.g1]": [
+                29,
+                33
+            ]
+        },
+        "3 Methodology": {
+            "[FIGURE S3.F2.g1]": [
+                87,
+                91
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F3.sf1.g1]": [
+                694,
+                698
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion and Limitation": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Broad Impacts": {},
+        "Appendix B The Details of DiffLight": {},
+        "Appendix C Datasets": {
+            "[FIGURE A3.F4.sf1.g1]": [
+                899,
+                903
+            ]
+        },
+        "Appendix D Baseline Methods": {},
+        "Appendix E Proof of Partial Rewards Conditioned Diffusion": {},
+        "Appendix F Additional Experiments Results": {},
+        "Appendix G Discussion on MissLight": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 Methodology": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                180,
+                386
+            ],
+            "[TABLE S4.T2]": [
+                392,
+                617
+            ],
+            "[TABLE S4.T3]": [
+                625,
+                688
+            ]
+        },
+        "5 Related Work": {},
+        "6 Conclusion and Limitation": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Broad Impacts": {},
+        "Appendix B The Details of DiffLight": {},
+        "Appendix C Datasets": {
+            "[TABLE A3.T4]": [
+                851,
+                893
+            ]
+        },
+        "Appendix D Baseline Methods": {},
+        "Appendix E Proof of Partial Rewards Conditioned Diffusion": {},
+        "Appendix F Additional Experiments Results": {
+            "[TABLE A6.T5]": [
+                949,
+                1029
+            ],
+            "[TABLE A6.T6]": [
+                1035,
+                1079
+            ],
+            "[TABLE A6.T7]": [
+                1085,
+                1125
+            ],
+            "[TABLE A6.T8]": [
+                1131,
+                1183
+            ],
+            "[TABLE A6.T9]": [
+                1185,
+                1248
+            ],
+            "[TABLE A6.T10]": [
+                1254,
+                1318
+            ],
+            "[TABLE A6.T11]": [
+                1324,
+                1362
+            ],
+            "[TABLE A6.T12]": [
+                1368,
+                1450
+            ],
+            "[TABLE A6.T13]": [
+                1452,
+                1534
+            ]
+        },
+        "Appendix G Discussion on MissLight": {
+            "[TABLE A7.T14]": [
+                1550,
+                1605
+            ],
+            "[TABLE A7.T15]": [
+                1607,
+                1668
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Preliminaries": {},
+        "3 Methodology": {},
+        "4 Experiments": {},
+        "5 Related Work": {},
+        "6 Conclusion and Limitation": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Broad Impacts": {},
+        "Appendix B The Details of DiffLight": {},
+        "Appendix C Datasets": {},
+        "Appendix D Baseline Methods": {},
+        "Appendix E Proof of Partial Rewards Conditioned Diffusion": {},
+        "Appendix F Additional Experiments Results": {},
+        "Appendix G Discussion on MissLight": {}
+    }
+}

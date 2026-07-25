@@ -1,0 +1,715 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            25
+        ],
+        "2 Background": [
+            26,
+            39
+        ],
+        "3 Related Works": [
+            40,
+            61
+        ],
+        "4 Model Architecture": [
+            62,
+            195
+        ],
+        "5 Experimental Settings": [
+            196,
+            373
+        ],
+        "6 Experiments": [
+            374,
+            393
+        ],
+        "7 Result": [
+            394,
+            417
+        ],
+        "8 Structural Analysis": [
+            418,
+            557
+        ],
+        "9 Conclusions": [
+            558,
+            561
+        ],
+        "Limitations": [
+            562,
+            567
+        ],
+        "Acknowledgements": [
+            568,
+            571
+        ],
+        "References": [
+            572,
+            639
+        ],
+        "Appendix": [
+            640,
+            643
+        ],
+        "Appendix A Hyperparameters": [
+            644,
+            647
+        ],
+        "Appendix B Hypothesis Tests": [
+            648,
+            664
+        ],
+        "Appendix C List of News Outlets in Dataset": [
+            665,
+            704
+        ],
+        "Appendix D Human Evaluation Template": [
+            705,
+            761
+        ],
+        "Appendix E Validity of Clustering Results": [
+            762,
+            769
+        ],
+        "Appendix F Sample News Articles from Each Cluster": [
+            770,
+            1047
+        ],
+        "Appendix G Example Model Output": [
+            1048,
+            1056
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Related Works": {
+            "Detecting political ideologies and biases": [
+                42,
+                47
+            ],
+            "Hierarchical attention": [
+                48,
+                53
+            ],
+            "Relevance Propagation": [
+                54,
+                57
+            ],
+            "Article-level political bias datasets": [
+                58,
+                61
+            ]
+        },
+        "4 Model Architecture": {
+            "4.1 Semantic Understanding": [
+                68,
+                71
+            ],
+            "Semantics": [
+                72,
+                75
+            ],
+            "Position": [
+                76,
+                82
+            ],
+            "Discourse": [
+                83,
+                86
+            ],
+            "4.2 Multi-Head Sentence Type Detection": [
+                87,
+                181
+            ],
+            "4.3 Context Cluster Embedding": [
+                182,
+                195
+            ]
+        },
+        "5 Experimental Settings": {
+            "5.1 Datasets": [
+                198,
+                205
+            ],
+            "5.2 Baseline": [
+                206,
+                373
+            ]
+        },
+        "6 Experiments": {
+            "Comparison against baseline": [
+                378,
+                381
+            ],
+            "Sensitivity to test data": [
+                382,
+                385
+            ],
+            "Sensitivity to training data": [
+                386,
+                389
+            ],
+            "Learning Curve": [
+                390,
+                393
+            ]
+        },
+        "7 Result": {
+            "7.1 Comparison against baseline": [
+                398,
+                403
+            ],
+            "7.2 Sensitivity to test data": [
+                404,
+                413
+            ],
+            "7.3 Sensitivity to training data": [
+                414,
+                417
+            ]
+        },
+        "8 Structural Analysis": {
+            "8.1 Main Sentences as Extractive Summary": [
+                430,
+                433
+            ],
+            "Machine Evaluation": [
+                434,
+                489
+            ],
+            "Human Evaluation": [
+                490,
+                493
+            ],
+            "8.2 Structure of documents": [
+                494,
+                545
+            ],
+            "8.2.1 Cluster 1 - Straight News with the Inverted Pyramid Structure": [
+                546,
+                549
+            ],
+            "8.2.2 Cluster 2 - Straight News Beyond the Inverted Pyramid": [
+                550,
+                553
+            ],
+            "8.2.3 Cluster 3 - Interpretive News": [
+                554,
+                557
+            ]
+        },
+        "9 Conclusions": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Hyperparameters": {},
+        "Appendix B Hypothesis Tests": {
+            "B.1 Sensitivity to test data": [
+                652,
+                656
+            ],
+            "B.2 Sensitivity to training data": [
+                657,
+                664
+            ]
+        },
+        "Appendix C List of News Outlets in Dataset": {},
+        "Appendix D Human Evaluation Template": {},
+        "Appendix E Validity of Clustering Results": {},
+        "Appendix F Sample News Articles from Each Cluster": {
+            "F.1 Cluster 1 - Inverted Pyramid Structure": [
+                774,
+                851
+            ],
+            "F.2 Cluster 2 - Straight Reporting": [
+                852,
+                929
+            ],
+            "F.3 Cluster 3 - Interpretive Reporting": [
+                930,
+                1047
+            ]
+        },
+        "Appendix G Example Model Output": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                12,
+                12
+            ],
+            [
+                20,
+                20
+            ],
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ]
+        ],
+        "2 Background": [
+            [
+                28,
+                28
+            ],
+            [
+                30,
+                30
+            ],
+            [
+                32,
+                32
+            ]
+        ],
+        "3 Related Works": [
+            [
+                44,
+                44
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                52
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                60,
+                60
+            ]
+        ],
+        "4 Model Architecture": [
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                74,
+                74
+            ],
+            [
+                78,
+                78
+            ],
+            [
+                80,
+                81
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                89,
+                89
+            ],
+            [
+                91,
+                92
+            ],
+            [
+                94,
+                94
+            ],
+            [
+                184,
+                184
+            ],
+            [
+                186,
+                187
+            ],
+            [
+                189,
+                189
+            ],
+            [
+                191,
+                192
+            ],
+            [
+                194,
+                194
+            ]
+        ],
+        "5 Experimental Settings": [
+            [
+                200,
+                200
+            ],
+            [
+                202,
+                202
+            ],
+            [
+                204,
+                204
+            ],
+            [
+                208,
+                208
+            ]
+        ],
+        "6 Experiments": [
+            [
+                376,
+                376
+            ],
+            [
+                380,
+                380
+            ],
+            [
+                384,
+                384
+            ],
+            [
+                388,
+                388
+            ],
+            [
+                392,
+                392
+            ]
+        ],
+        "7 Result": [
+            [
+                396,
+                396
+            ],
+            [
+                400,
+                400
+            ],
+            [
+                402,
+                402
+            ],
+            [
+                406,
+                406
+            ],
+            [
+                416,
+                416
+            ]
+        ],
+        "8 Structural Analysis": [
+            [
+                426,
+                426
+            ],
+            [
+                428,
+                428
+            ],
+            [
+                432,
+                432
+            ],
+            [
+                436,
+                436
+            ],
+            [
+                492,
+                492
+            ],
+            [
+                496,
+                496
+            ],
+            [
+                498,
+                498
+            ],
+            [
+                548,
+                548
+            ],
+            [
+                552,
+                552
+            ],
+            [
+                556,
+                556
+            ]
+        ],
+        "9 Conclusions": [
+            [
+                560,
+                560
+            ]
+        ],
+        "Limitations": [
+            [
+                564,
+                564
+            ],
+            [
+                566,
+                566
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                570,
+                570
+            ]
+        ],
+        "References": [
+            [
+                574,
+                638
+            ]
+        ],
+        "Appendix": [
+            [
+                642,
+                642
+            ]
+        ],
+        "Appendix A Hyperparameters": [
+            [
+                646,
+                646
+            ]
+        ],
+        "Appendix B Hypothesis Tests": [
+            [
+                650,
+                650
+            ],
+            [
+                654,
+                655
+            ],
+            [
+                659,
+                660
+            ],
+            [
+                662,
+                663
+            ]
+        ],
+        "Appendix C List of News Outlets in Dataset": [],
+        "Appendix D Human Evaluation Template": [
+            [
+                707,
+                707
+            ]
+        ],
+        "Appendix E Validity of Clustering Results": [
+            [
+                764,
+                764
+            ],
+            [
+                766,
+                768
+            ]
+        ],
+        "Appendix F Sample News Articles from Each Cluster": [
+            [
+                772,
+                772
+            ],
+            [
+                970,
+                970
+            ]
+        ],
+        "Appendix G Example Model Output": []
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                14,
+                18
+            ]
+        },
+        "2 Background": {
+            "[FIGURE S2.F2.g1]": [
+                34,
+                38
+            ]
+        },
+        "3 Related Works": {},
+        "4 Model Architecture": {},
+        "5 Experimental Settings": {},
+        "6 Experiments": {},
+        "7 Result": {
+            "[FIGURE S7.F3.g1]": [
+                408,
+                412
+            ]
+        },
+        "8 Structural Analysis": {
+            "[FIGURE S8.F4.g1]": [
+                420,
+                424
+            ]
+        },
+        "9 Conclusions": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Hyperparameters": {},
+        "Appendix B Hypothesis Tests": {},
+        "Appendix C List of News Outlets in Dataset": {},
+        "Appendix D Human Evaluation Template": {},
+        "Appendix E Validity of Clustering Results": {},
+        "Appendix F Sample News Articles from Each Cluster": {},
+        "Appendix G Example Model Output": {
+            "[FIGURE A7.F5.g1]": [
+                1050,
+                1054
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Related Works": {},
+        "4 Model Architecture": {
+            "[TABLE S4.T1]": [
+                96,
+                180
+            ]
+        },
+        "5 Experimental Settings": {
+            "[TABLE S5.T2]": [
+                210,
+                372
+            ]
+        },
+        "6 Experiments": {},
+        "7 Result": {},
+        "8 Structural Analysis": {
+            "[TABLE S8.T3]": [
+                438,
+                488
+            ],
+            "[TABLE S8.T4]": [
+                500,
+                544
+            ]
+        },
+        "9 Conclusions": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Hyperparameters": {},
+        "Appendix B Hypothesis Tests": {},
+        "Appendix C List of News Outlets in Dataset": {
+            "[TABLE A3.T5]": [
+                667,
+                703
+            ]
+        },
+        "Appendix D Human Evaluation Template": {
+            "[TABLE A4.T6]": [
+                709,
+                760
+            ]
+        },
+        "Appendix E Validity of Clustering Results": {},
+        "Appendix F Sample News Articles from Each Cluster": {
+            "[TABLE A6.T7]": [
+                776,
+                812
+            ],
+            "[TABLE A6.T8]": [
+                814,
+                850
+            ],
+            "[TABLE A6.T9]": [
+                854,
+                890
+            ],
+            "[TABLE A6.T10]": [
+                892,
+                928
+            ],
+            "[TABLE A6.T11]": [
+                932,
+                968
+            ],
+            "[TABLE A6.SS3.tab1]": [
+                972,
+                998
+            ],
+            "[TABLE A6.SS3.tab2]": [
+                1000,
+                1018
+            ],
+            "[TABLE A6.T12]": [
+                1020,
+                1046
+            ]
+        },
+        "Appendix G Example Model Output": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Related Works": {},
+        "4 Model Architecture": {},
+        "5 Experimental Settings": {},
+        "6 Experiments": {},
+        "7 Result": {},
+        "8 Structural Analysis": {},
+        "9 Conclusions": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Hyperparameters": {},
+        "Appendix B Hypothesis Tests": {},
+        "Appendix C List of News Outlets in Dataset": {},
+        "Appendix D Human Evaluation Template": {},
+        "Appendix E Validity of Clustering Results": {},
+        "Appendix F Sample News Articles from Each Cluster": {},
+        "Appendix G Example Model Output": {}
+    }
+}

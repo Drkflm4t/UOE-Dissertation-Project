@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2404.04163] Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval</title><meta content="This study investigates the existence of positional biases in Transformer-based models for text representation learning, particularly in the context of web document retrieval. We build on previous research that demonst…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2404.04163" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2404.04163" rel="canonical" target="_blank"/>
+<!--Generated on Sun May  5 21:51:16 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Dwell in the Beginning: How Language Models Embed 
+<br class="ltx_break"/>Long Documents for Dense Retrieval</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id9.id1">This study investigates the existence of positional biases in Transformer-based models for text representation learning, particularly in the context of web document retrieval. We build on previous research that demonstrated loss of information in the middle of input sequences for causal language models, extending it to the domain of representation learning. We examine positional biases at various stages of training for an encoder-decoder model, including language model pre-training, contrastive pre-training, and contrastive fine-tuning. Experiments with the MS-MARCO document collection reveal that after contrastive pre-training the model already generates embeddings that better capture early contents of the input, with fine-tuning further aggravating this effect.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Recent advancements have allowed transformer-based models to handle increasingly larger context lengths, resulting in the availability of Large Language Models (LLMs) that can accommodate input lengths reaching tens of thousands of tokens <cite class="ltx_cite ltx_citemacro_citep">(Xiong et al., <a class="ltx_ref" href="#bib.bib36" title="">2023</a>)</cite>. However, studies to assess how well this context is captured by causal LMs <cite class="ltx_cite ltx_citemacro_citep">(Liu et al., <a class="ltx_ref" href="#bib.bib16" title="">2023</a>)</cite> have shown that the models are biased to the information contained at the beginning of the input, and tend to lose scope of information in middle.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Instead of focusing on generation, we extend this type of study to text representation learning, which has been a fundamental task for dense retrieval <cite class="ltx_cite ltx_citemacro_citep">(Yates et al., <a class="ltx_ref" href="#bib.bib38" title="">2021</a>)</cite>, and is gaining attention in the context of of retrieval-augmented generation <cite class="ltx_cite ltx_citemacro_citep">(Chevalier et al., <a class="ltx_ref" href="#bib.bib3" title="">2023</a>; Mu et al., <a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite>, and recommendation systems <cite class="ltx_cite ltx_citemacro_citep">(Doddapaneni et al., <a class="ltx_ref" href="#bib.bib7" title="">2024</a>)</cite>. Specifically, we focus on web document retrieval, examining how well a single embedding can represent a web document, while addressing the emergence of position biases.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">We start by continuously pre-training and fine-tuning an encoder-decoder model similar to T5-base <cite class="ltx_cite ltx_citemacro_citep">(Raffel et al., <a class="ltx_ref" href="#bib.bib26" title="">2020</a>)</cite> but with a context length of 2048 tokens, following standard techniques to achieve a model that is representative of the state-of-the-art among the low-parameter spectrum. We leverage the MS-MARCO (v1) document collection <cite class="ltx_cite ltx_citemacro_citep">(Nguyen et al., <a class="ltx_ref" href="#bib.bib22" title="">2016</a>)</cite>, as this dataset is commonly found in evaluation benchmarks <cite class="ltx_cite ltx_citemacro_citep">(Thakur et al., <a class="ltx_ref" href="#bib.bib30" title="">2021</a>; Muennighoff et al., <a class="ltx_ref" href="#bib.bib21" title="">2023</a>)</cite>, and it is one of the major sources of training data for contrastive fine-tuning <cite class="ltx_cite ltx_citemacro_citep">(Zhang et al., <a class="ltx_ref" href="#bib.bib42" title="">2023</a>; Wang et al., <a class="ltx_ref" href="#bib.bib33" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">Then, we study the existence of a <span class="ltx_text ltx_font_italic" id="S1.p4.1.1">dwell in the beginning</span> effect, as we note that the model displays positional biases where earlier parts of the input are dominant in the embedding. As a systematic approach to the research of this effect, we track the behavior by evaluating the model on position-aware tasks during multiple stages of its training. As a result of our experiments, we conclude that these biases start emerging during unsupervised contrastive pre-training, and that heavy reliance on MS-MARCO data for fine-tuning will exacerbate this behavior, given the data distribution.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Related Work</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">Bi-encoders are now the state of the art approach to dense retrieval <cite class="ltx_cite ltx_citemacro_citep">(Yates et al., <a class="ltx_ref" href="#bib.bib38" title="">2021</a>)</cite>.
+Training these models involves many challenges, with authors often leveraging contrastive loss functions together with techniques like ANCE <cite class="ltx_cite ltx_citemacro_citep">(Xiong et al., <a class="ltx_ref" href="#bib.bib35" title="">2021</a>)</cite> to sample hard negative examples. Other techniques that are often employed include in-domain pre-training <cite class="ltx_cite ltx_citemacro_citep">(Gao and Callan, <a class="ltx_ref" href="#bib.bib8" title="">2022</a>)</cite> and retrieval-aligned pre-training <cite class="ltx_cite ltx_citemacro_citep">(Lu et al., <a class="ltx_ref" href="#bib.bib17" title="">2021</a>; Xiao et al., <a class="ltx_ref" href="#bib.bib34" title="">2022</a>; Lee et al., <a class="ltx_ref" href="#bib.bib13" title="">2019</a>; Ma et al., <a class="ltx_ref" href="#bib.bib18" title="">2022</a>)</cite>, which allow for a better fine-tuning starting point.</p>
+</div>
+<div class="ltx_para" id="S2.p2">
+<p class="ltx_p" id="S2.p2.1">For long document retrieval, early methods dealt with the increased input length through aggregation strategies, which rely on segmenting the document into passages that are scored independently <cite class="ltx_cite ltx_citemacro_citep">(Dai and Callan, <a class="ltx_ref" href="#bib.bib4" title="">2019</a>; Yilmaz et al., <a class="ltx_ref" href="#bib.bib39" title="">2019</a>)</cite>. Instead of aggregating scores, studies like PARADE <cite class="ltx_cite ltx_citemacro_citep">(Li et al., <a class="ltx_ref" href="#bib.bib14" title="">2020</a>)</cite> considered the aggregation of passage-level representations. Other authors <cite class="ltx_cite ltx_citemacro_citep">(Boytsov et al., <a class="ltx_ref" href="#bib.bib2" title="">2022</a>)</cite> considered the usage of Transformer architectures with sparse attention patterns <cite class="ltx_cite ltx_citemacro_citep">(Beltagy et al., <a class="ltx_ref" href="#bib.bib1" title="">2020</a>; Zaheer et al., <a class="ltx_ref" href="#bib.bib40" title="">2020</a>; Kitaev et al., <a class="ltx_ref" href="#bib.bib11" title="">2020</a>; Sun et al., <a class="ltx_ref" href="#bib.bib29" title="">2022</a>)</cite> to model the long inputs more efficiently, but did not achieve successful results.</p>
+</div>
+<div class="ltx_para" id="S2.p3">
+<p class="ltx_p" id="S2.p3.1">Currently, LLaRA <cite class="ltx_cite ltx_citemacro_citep">(Li et al., <a class="ltx_ref" href="#bib.bib15" title="">2023</a>)</cite> achieves state-of-the-art performance in the MS-MARCO document retrieval task, by pre-training LLaMA-7B <cite class="ltx_cite ltx_citemacro_citep">(Touvron et al., <a class="ltx_ref" href="#bib.bib31" title="">2023</a>)</cite> with a retrieval-aligned task. Models like LLaRA leverage context windows of up to 4096 tokens, relying on FlashAttention <cite class="ltx_cite ltx_citemacro_citep">(Dao et al., <a class="ltx_ref" href="#bib.bib6" title="">2022</a>; Dao, <a class="ltx_ref" href="#bib.bib5" title="">2023</a>)</cite> for fast and exact full attention computation, together with some variation of Rotary Position Embeddings (RoPE) <cite class="ltx_cite ltx_citemacro_citep">(Su et al., <a class="ltx_ref" href="#bib.bib28" title="">2024</a>)</cite> or Attention with Linear Biases (ALiBi) <cite class="ltx_cite ltx_citemacro_citep">(Press et al., <a class="ltx_ref" href="#bib.bib25" title="">2022</a>)</cite>. This way, models can achieve better modeling and length extrapolation without further training, while resorting to full attention computations.</p>
+</div>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Methodology</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">This section details the training of a small T5 retriever with 2048 input length (2K-T5), adapting the T5 architecture to follow recent advancements in long-context language modeling, and following a state-of-the-art dense retrieval training pipeline.</p>
+</div>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Model Architecture</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">We use the T5-base architecture as a backbone, replacing the positional embeddings by RoPE. This change was motivated by RoPE’s ability to extrapolate to larger contexts, and its compatibility with Flash Attention. Specifically, we use NTK-scaling RoPE, which in theory allows for extrapolation to longer input sequences without further training. The retriever follows a bi-encoder architecture, using the decoder as a pooler <cite class="ltx_cite ltx_citemacro_citep">(Ni et al., <a class="ltx_ref" href="#bib.bib23" title="">2022</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Dense Retriever Training Pipeline</h3>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1"><span class="ltx_text ltx_font_bold" id="S3.SS2.p1.1.1">Language Modelling Pre-training:</span> Starting from the T5-base available at Huggingface<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span><a class="ltx_ref ltx_href" href="https://huggingface.co/t5-base" target="_blank" title="">https://huggingface.co/t5-base</a></span></span></span>, we continuously pre-train the model on 8 billion tokens from the MS-MARCO document collection, for the model to adapt to the new maximum length, new positional embeddings, and document distribution. We follow the original T5 span-corruption task, masking 15% of the input sequence, with an average corrupted span length of 3 tokens.</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p2">
+<p class="ltx_p" id="S3.SS2.p2.2"><span class="ltx_text ltx_font_bold" id="S3.SS2.p2.2.1">Unsupervised Contrastive Pre-training:</span>
+In order to align the model with the fine-tuning task, we further pre-train the model following the cropping technique <cite class="ltx_cite ltx_citemacro_citep">(Izacard et al., <a class="ltx_ref" href="#bib.bib10" title="">2022</a>)</cite>. In this task, given a document, a positive pair (<math alttext="q" class="ltx_Math" display="inline" id="S3.SS2.p2.1.m1.1"><semantics id="S3.SS2.p2.1.m1.1a"><mi id="S3.SS2.p2.1.m1.1.1" xref="S3.SS2.p2.1.m1.1.1.cmml">q</mi><annotation-xml encoding="MathML-Content" id="S3.SS2.p2.1.m1.1b"><ci id="S3.SS2.p2.1.m1.1.1.cmml" xref="S3.SS2.p2.1.m1.1.1">𝑞</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p2.1.m1.1c">q</annotation></semantics></math>, <math alttext="d" class="ltx_Math" display="inline" id="S3.SS2.p2.2.m2.1"><semantics id="S3.SS2.p2.2.m2.1a"><mi id="S3.SS2.p2.2.m2.1.1" xref="S3.SS2.p2.2.m2.1.1.cmml">d</mi><annotation-xml encoding="MathML-Content" id="S3.SS2.p2.2.m2.1b"><ci id="S3.SS2.p2.2.m2.1.1.cmml" xref="S3.SS2.p2.2.m2.1.1">𝑑</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p2.2.m2.1c">d</annotation></semantics></math>) is sampled by independently cropping two random spans comprising 10 to 50% of the input. The model is trained to minimize the following contrastive loss:</p>
+</div>
+<div class="ltx_para" id="S3.SS2.p3">
+<table class="ltx_equation ltx_eqn_table" id="S3.E1">
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math alttext="\mathcal{L}=-\frac{1}{n}\sum_{i}\log\frac{e^{\mathrm{cos}(f(q_{i}),f(d_{i}))}}{e^{\mathrm{cos}(f(q_{i}),f(d_{i}))}+\sum_{j}e^{\mathrm{cos}(f(q_{i}),f(d^{-}_{ij}))}}\;," class="ltx_Math" display="block" id="S3.E1.m1.7"><semantics id="S3.E1.m1.7a"><mrow id="S3.E1.m1.7.7.1" xref="S3.E1.m1.7.7.1.1.cmml"><mrow id="S3.E1.m1.7.7.1.1" xref="S3.E1.m1.7.7.1.1.cmml"><mi class="ltx_font_mathcaligraphic" id="S3.E1.m1.7.7.1.1.2" xref="S3.E1.m1.7.7.1.1.2.cmml">ℒ</mi><mo id="S3.E1.m1.7.7.1.1.1" xref="S3.E1.m1.7.7.1.1.1.cmml">=</mo><mrow id="S3.E1.m1.7.7.1.1.3" xref="S3.E1.m1.7.7.1.1.3.cmml"><mo id="S3.E1.m1.7.7.1.1.3a" xref="S3.E1.m1.7.7.1.1.3.cmml">−</mo><mrow id="S3.E1.m1.7.7.1.1.3.2" xref="S3.E1.m1.7.7.1.1.3.2.cmml"><mfrac id="S3.E1.m1.7.7.1.1.3.2.2" xref="S3.E1.m1.7.7.1.1.3.2.2.cmml"><mn id="S3.E1.m1.7.7.1.1.3.2.2.2" xref="S3.E1.m1.7.7.1.1.3.2.2.2.cmml">1</mn><mi id="S3.E1.m1.7.7.1.1.3.2.2.3" xref="S3.E1.m1.7.7.1.1.3.2.2.3.cmml">n</mi></mfrac><mo id="S3.E1.m1.7.7.1.1.3.2.1" lspace="0em" rspace="0em" xref="S3.E1.m1.7.7.1.1.3.2.1.cmml">​</mo><mrow id="S3.E1.m1.7.7.1.1.3.2.3" xref="S3.E1.m1.7.7.1.1.3.2.3.cmml"><munder id="S3.E1.m1.7.7.1.1.3.2.3.1" xref="S3.E1.m1.7.7.1.1.3.2.3.1.cmml"><mo id="S3.E1.m1.7.7.1.1.3.2.3.1.2" movablelimits="false" xref="S3.E1.m1.7.7.1.1.3.2.3.1.2.cmml">∑</mo><mi id="S3.E1.m1.7.7.1.1.3.2.3.1.3" xref="S3.E1.m1.7.7.1.1.3.2.3.1.3.cmml">i</mi></munder><mrow id="S3.E1.m1.7.7.1.1.3.2.3.2" xref="S3.E1.m1.7.7.1.1.3.2.3.2.cmml"><mi id="S3.E1.m1.7.7.1.1.3.2.3.2.1" xref="S3.E1.m1.7.7.1.1.3.2.3.2.1.cmml">log</mi><mo id="S3.E1.m1.7.7.1.1.3.2.3.2a" lspace="0.167em" xref="S3.E1.m1.7.7.1.1.3.2.3.2.cmml">⁡</mo><mfrac id="S3.E1.m1.6.6" xref="S3.E1.m1.6.6.cmml"><msup id="S3.E1.m1.2.2.2" xref="S3.E1.m1.2.2.2.cmml"><mi id="S3.E1.m1.2.2.2.4" xref="S3.E1.m1.2.2.2.4.cmml">e</mi><mrow id="S3.E1.m1.2.2.2.2.2" xref="S3.E1.m1.2.2.2.2.2.cmml"><mi id="S3.E1.m1.2.2.2.2.2.4" xref="S3.E1.m1.2.2.2.2.2.4.cmml">cos</mi><mo id="S3.E1.m1.2.2.2.2.2.3" lspace="0em" rspace="0em" xref="S3.E1.m1.2.2.2.2.2.3.cmml">​</mo><mrow id="S3.E1.m1.2.2.2.2.2.2.2" xref="S3.E1.m1.2.2.2.2.2.2.3.cmml"><mo id="S3.E1.m1.2.2.2.2.2.2.2.3" stretchy="false" xref="S3.E1.m1.2.2.2.2.2.2.3.cmml">(</mo><mrow id="S3.E1.m1.1.1.1.1.1.1.1.1" xref="S3.E1.m1.1.1.1.1.1.1.1.1.cmml"><mi id="S3.E1.m1.1.1.1.1.1.1.1.1.3" xref="S3.E1.m1.1.1.1.1.1.1.1.1.3.cmml">f</mi><mo id="S3.E1.m1.1.1.1.1.1.1.1.1.2" lspace="0em" rspace="0em" xref="S3.E1.m1.1.1.1.1.1.1.1.1.2.cmml">​</mo><mrow id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.cmml"><mo id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.2" stretchy="false" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.cmml">(</mo><msub id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.cmml"><mi id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.2" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.2.cmml">q</mi><mi id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.3" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.3.cmml">i</mi></msub><mo id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.3" stretchy="false" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.2.2.2.2.2.2.2.4" xref="S3.E1.m1.2.2.2.2.2.2.3.cmml">,</mo><mrow id="S3.E1.m1.2.2.2.2.2.2.2.2" xref="S3.E1.m1.2.2.2.2.2.2.2.2.cmml"><mi id="S3.E1.m1.2.2.2.2.2.2.2.2.3" xref="S3.E1.m1.2.2.2.2.2.2.2.2.3.cmml">f</mi><mo id="S3.E1.m1.2.2.2.2.2.2.2.2.2" lspace="0em" rspace="0em" xref="S3.E1.m1.2.2.2.2.2.2.2.2.2.cmml">​</mo><mrow id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.cmml"><mo id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.2" stretchy="false" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.cmml">(</mo><msub id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.cmml"><mi id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.2" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.2.cmml">d</mi><mi id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.3" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.3.cmml">i</mi></msub><mo id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.3" stretchy="false" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.2.2.2.2.2.2.2.5" stretchy="false" xref="S3.E1.m1.2.2.2.2.2.2.3.cmml">)</mo></mrow></mrow></msup><mrow id="S3.E1.m1.6.6.6" xref="S3.E1.m1.6.6.6.cmml"><msup id="S3.E1.m1.6.6.6.6" xref="S3.E1.m1.6.6.6.6.cmml"><mi id="S3.E1.m1.6.6.6.6.2" xref="S3.E1.m1.6.6.6.6.2.cmml">e</mi><mrow id="S3.E1.m1.4.4.4.2.2" xref="S3.E1.m1.4.4.4.2.2.cmml"><mi id="S3.E1.m1.4.4.4.2.2.4" xref="S3.E1.m1.4.4.4.2.2.4.cmml">cos</mi><mo id="S3.E1.m1.4.4.4.2.2.3" lspace="0em" rspace="0em" xref="S3.E1.m1.4.4.4.2.2.3.cmml">​</mo><mrow id="S3.E1.m1.4.4.4.2.2.2.2" xref="S3.E1.m1.4.4.4.2.2.2.3.cmml"><mo id="S3.E1.m1.4.4.4.2.2.2.2.3" stretchy="false" xref="S3.E1.m1.4.4.4.2.2.2.3.cmml">(</mo><mrow id="S3.E1.m1.3.3.3.1.1.1.1.1" xref="S3.E1.m1.3.3.3.1.1.1.1.1.cmml"><mi id="S3.E1.m1.3.3.3.1.1.1.1.1.3" xref="S3.E1.m1.3.3.3.1.1.1.1.1.3.cmml">f</mi><mo id="S3.E1.m1.3.3.3.1.1.1.1.1.2" lspace="0em" rspace="0em" xref="S3.E1.m1.3.3.3.1.1.1.1.1.2.cmml">​</mo><mrow id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.cmml"><mo id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.2" stretchy="false" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.cmml">(</mo><msub id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.cmml"><mi id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.2" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.2.cmml">q</mi><mi id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.3" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.3.cmml">i</mi></msub><mo id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.3" stretchy="false" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.4.4.4.2.2.2.2.4" xref="S3.E1.m1.4.4.4.2.2.2.3.cmml">,</mo><mrow id="S3.E1.m1.4.4.4.2.2.2.2.2" xref="S3.E1.m1.4.4.4.2.2.2.2.2.cmml"><mi id="S3.E1.m1.4.4.4.2.2.2.2.2.3" xref="S3.E1.m1.4.4.4.2.2.2.2.2.3.cmml">f</mi><mo id="S3.E1.m1.4.4.4.2.2.2.2.2.2" lspace="0em" rspace="0em" xref="S3.E1.m1.4.4.4.2.2.2.2.2.2.cmml">​</mo><mrow id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.cmml"><mo id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.2" stretchy="false" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.cmml">(</mo><msub id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.cmml"><mi id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.2" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.2.cmml">d</mi><mi id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.3" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.3.cmml">i</mi></msub><mo id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.3" stretchy="false" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.4.4.4.2.2.2.2.5" stretchy="false" xref="S3.E1.m1.4.4.4.2.2.2.3.cmml">)</mo></mrow></mrow></msup><mo id="S3.E1.m1.6.6.6.5" rspace="0.055em" xref="S3.E1.m1.6.6.6.5.cmml">+</mo><mrow id="S3.E1.m1.6.6.6.7" xref="S3.E1.m1.6.6.6.7.cmml"><msub id="S3.E1.m1.6.6.6.7.1" xref="S3.E1.m1.6.6.6.7.1.cmml"><mo id="S3.E1.m1.6.6.6.7.1.2" xref="S3.E1.m1.6.6.6.7.1.2.cmml">∑</mo><mi id="S3.E1.m1.6.6.6.7.1.3" xref="S3.E1.m1.6.6.6.7.1.3.cmml">j</mi></msub><msup id="S3.E1.m1.6.6.6.7.2" xref="S3.E1.m1.6.6.6.7.2.cmml"><mi id="S3.E1.m1.6.6.6.7.2.2" xref="S3.E1.m1.6.6.6.7.2.2.cmml">e</mi><mrow id="S3.E1.m1.6.6.6.4.2" xref="S3.E1.m1.6.6.6.4.2.cmml"><mi id="S3.E1.m1.6.6.6.4.2.4" xref="S3.E1.m1.6.6.6.4.2.4.cmml">cos</mi><mo id="S3.E1.m1.6.6.6.4.2.3" lspace="0em" rspace="0em" xref="S3.E1.m1.6.6.6.4.2.3.cmml">​</mo><mrow id="S3.E1.m1.6.6.6.4.2.2.2" xref="S3.E1.m1.6.6.6.4.2.2.3.cmml"><mo id="S3.E1.m1.6.6.6.4.2.2.2.3" stretchy="false" xref="S3.E1.m1.6.6.6.4.2.2.3.cmml">(</mo><mrow id="S3.E1.m1.5.5.5.3.1.1.1.1" xref="S3.E1.m1.5.5.5.3.1.1.1.1.cmml"><mi id="S3.E1.m1.5.5.5.3.1.1.1.1.3" xref="S3.E1.m1.5.5.5.3.1.1.1.1.3.cmml">f</mi><mo id="S3.E1.m1.5.5.5.3.1.1.1.1.2" lspace="0em" rspace="0em" xref="S3.E1.m1.5.5.5.3.1.1.1.1.2.cmml">​</mo><mrow id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.cmml"><mo id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.2" stretchy="false" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.cmml">(</mo><msub id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.cmml"><mi id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.2" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.2.cmml">q</mi><mi id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.3" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.3.cmml">i</mi></msub><mo id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.3" stretchy="false" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.6.6.6.4.2.2.2.4" xref="S3.E1.m1.6.6.6.4.2.2.3.cmml">,</mo><mrow id="S3.E1.m1.6.6.6.4.2.2.2.2" xref="S3.E1.m1.6.6.6.4.2.2.2.2.cmml"><mi id="S3.E1.m1.6.6.6.4.2.2.2.2.3" xref="S3.E1.m1.6.6.6.4.2.2.2.2.3.cmml">f</mi><mo id="S3.E1.m1.6.6.6.4.2.2.2.2.2" lspace="0em" rspace="0em" xref="S3.E1.m1.6.6.6.4.2.2.2.2.2.cmml">​</mo><mrow id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.cmml"><mo id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.2" stretchy="false" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.cmml">(</mo><msubsup id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.cmml"><mi id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.2" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.2.cmml">d</mi><mrow id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.cmml"><mi id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.2" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.2.cmml">i</mi><mo id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.1" lspace="0em" rspace="0em" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.1.cmml">​</mo><mi id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.3" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.3.cmml">j</mi></mrow><mo id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.3" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.3.cmml">−</mo></msubsup><mo id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.3" stretchy="false" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.6.6.6.4.2.2.2.5" stretchy="false" xref="S3.E1.m1.6.6.6.4.2.2.3.cmml">)</mo></mrow></mrow></msup></mrow></mrow></mfrac></mrow></mrow></mrow></mrow></mrow><mo id="S3.E1.m1.7.7.1.2" lspace="0.280em" xref="S3.E1.m1.7.7.1.1.cmml">,</mo></mrow><annotation-xml encoding="MathML-Content" id="S3.E1.m1.7b"><apply id="S3.E1.m1.7.7.1.1.cmml" xref="S3.E1.m1.7.7.1"><eq id="S3.E1.m1.7.7.1.1.1.cmml" xref="S3.E1.m1.7.7.1.1.1"></eq><ci id="S3.E1.m1.7.7.1.1.2.cmml" xref="S3.E1.m1.7.7.1.1.2">ℒ</ci><apply id="S3.E1.m1.7.7.1.1.3.cmml" xref="S3.E1.m1.7.7.1.1.3"><minus id="S3.E1.m1.7.7.1.1.3.1.cmml" xref="S3.E1.m1.7.7.1.1.3"></minus><apply id="S3.E1.m1.7.7.1.1.3.2.cmml" xref="S3.E1.m1.7.7.1.1.3.2"><times id="S3.E1.m1.7.7.1.1.3.2.1.cmml" xref="S3.E1.m1.7.7.1.1.3.2.1"></times><apply id="S3.E1.m1.7.7.1.1.3.2.2.cmml" xref="S3.E1.m1.7.7.1.1.3.2.2"><divide id="S3.E1.m1.7.7.1.1.3.2.2.1.cmml" xref="S3.E1.m1.7.7.1.1.3.2.2"></divide><cn id="S3.E1.m1.7.7.1.1.3.2.2.2.cmml" type="integer" xref="S3.E1.m1.7.7.1.1.3.2.2.2">1</cn><ci id="S3.E1.m1.7.7.1.1.3.2.2.3.cmml" xref="S3.E1.m1.7.7.1.1.3.2.2.3">𝑛</ci></apply><apply id="S3.E1.m1.7.7.1.1.3.2.3.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3"><apply id="S3.E1.m1.7.7.1.1.3.2.3.1.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3.1"><csymbol cd="ambiguous" id="S3.E1.m1.7.7.1.1.3.2.3.1.1.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3.1">subscript</csymbol><sum id="S3.E1.m1.7.7.1.1.3.2.3.1.2.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3.1.2"></sum><ci id="S3.E1.m1.7.7.1.1.3.2.3.1.3.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3.1.3">𝑖</ci></apply><apply id="S3.E1.m1.7.7.1.1.3.2.3.2.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3.2"><log id="S3.E1.m1.7.7.1.1.3.2.3.2.1.cmml" xref="S3.E1.m1.7.7.1.1.3.2.3.2.1"></log><apply id="S3.E1.m1.6.6.cmml" xref="S3.E1.m1.6.6"><divide id="S3.E1.m1.6.6.7.cmml" xref="S3.E1.m1.6.6"></divide><apply id="S3.E1.m1.2.2.2.cmml" xref="S3.E1.m1.2.2.2"><csymbol cd="ambiguous" id="S3.E1.m1.2.2.2.3.cmml" xref="S3.E1.m1.2.2.2">superscript</csymbol><ci id="S3.E1.m1.2.2.2.4.cmml" xref="S3.E1.m1.2.2.2.4">𝑒</ci><apply id="S3.E1.m1.2.2.2.2.2.cmml" xref="S3.E1.m1.2.2.2.2.2"><times id="S3.E1.m1.2.2.2.2.2.3.cmml" xref="S3.E1.m1.2.2.2.2.2.3"></times><ci id="S3.E1.m1.2.2.2.2.2.4.cmml" xref="S3.E1.m1.2.2.2.2.2.4">cos</ci><interval closure="open" id="S3.E1.m1.2.2.2.2.2.2.3.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2"><apply id="S3.E1.m1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1"><times id="S3.E1.m1.1.1.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1.2"></times><ci id="S3.E1.m1.1.1.1.1.1.1.1.1.3.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1.3">𝑓</ci><apply id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1">subscript</csymbol><ci id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.2">𝑞</ci><ci id="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.3.cmml" xref="S3.E1.m1.1.1.1.1.1.1.1.1.1.1.1.3">𝑖</ci></apply></apply><apply id="S3.E1.m1.2.2.2.2.2.2.2.2.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2"><times id="S3.E1.m1.2.2.2.2.2.2.2.2.2.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2.2"></times><ci id="S3.E1.m1.2.2.2.2.2.2.2.2.3.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2.3">𝑓</ci><apply id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.1.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1">subscript</csymbol><ci id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.2.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.2">𝑑</ci><ci id="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.3.cmml" xref="S3.E1.m1.2.2.2.2.2.2.2.2.1.1.1.3">𝑖</ci></apply></apply></interval></apply></apply><apply id="S3.E1.m1.6.6.6.cmml" xref="S3.E1.m1.6.6.6"><plus id="S3.E1.m1.6.6.6.5.cmml" xref="S3.E1.m1.6.6.6.5"></plus><apply id="S3.E1.m1.6.6.6.6.cmml" xref="S3.E1.m1.6.6.6.6"><csymbol cd="ambiguous" id="S3.E1.m1.6.6.6.6.1.cmml" xref="S3.E1.m1.6.6.6.6">superscript</csymbol><ci id="S3.E1.m1.6.6.6.6.2.cmml" xref="S3.E1.m1.6.6.6.6.2">𝑒</ci><apply id="S3.E1.m1.4.4.4.2.2.cmml" xref="S3.E1.m1.4.4.4.2.2"><times id="S3.E1.m1.4.4.4.2.2.3.cmml" xref="S3.E1.m1.4.4.4.2.2.3"></times><ci id="S3.E1.m1.4.4.4.2.2.4.cmml" xref="S3.E1.m1.4.4.4.2.2.4">cos</ci><interval closure="open" id="S3.E1.m1.4.4.4.2.2.2.3.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2"><apply id="S3.E1.m1.3.3.3.1.1.1.1.1.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1"><times id="S3.E1.m1.3.3.3.1.1.1.1.1.2.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1.2"></times><ci id="S3.E1.m1.3.3.3.1.1.1.1.1.3.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1.3">𝑓</ci><apply id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1">subscript</csymbol><ci id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.2">𝑞</ci><ci id="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.3.cmml" xref="S3.E1.m1.3.3.3.1.1.1.1.1.1.1.1.3">𝑖</ci></apply></apply><apply id="S3.E1.m1.4.4.4.2.2.2.2.2.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2"><times id="S3.E1.m1.4.4.4.2.2.2.2.2.2.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2.2"></times><ci id="S3.E1.m1.4.4.4.2.2.2.2.2.3.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2.3">𝑓</ci><apply id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.1.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1">subscript</csymbol><ci id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.2.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.2">𝑑</ci><ci id="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.3.cmml" xref="S3.E1.m1.4.4.4.2.2.2.2.2.1.1.1.3">𝑖</ci></apply></apply></interval></apply></apply><apply id="S3.E1.m1.6.6.6.7.cmml" xref="S3.E1.m1.6.6.6.7"><apply id="S3.E1.m1.6.6.6.7.1.cmml" xref="S3.E1.m1.6.6.6.7.1"><csymbol cd="ambiguous" id="S3.E1.m1.6.6.6.7.1.1.cmml" xref="S3.E1.m1.6.6.6.7.1">subscript</csymbol><sum id="S3.E1.m1.6.6.6.7.1.2.cmml" xref="S3.E1.m1.6.6.6.7.1.2"></sum><ci id="S3.E1.m1.6.6.6.7.1.3.cmml" xref="S3.E1.m1.6.6.6.7.1.3">𝑗</ci></apply><apply id="S3.E1.m1.6.6.6.7.2.cmml" xref="S3.E1.m1.6.6.6.7.2"><csymbol cd="ambiguous" id="S3.E1.m1.6.6.6.7.2.1.cmml" xref="S3.E1.m1.6.6.6.7.2">superscript</csymbol><ci id="S3.E1.m1.6.6.6.7.2.2.cmml" xref="S3.E1.m1.6.6.6.7.2.2">𝑒</ci><apply id="S3.E1.m1.6.6.6.4.2.cmml" xref="S3.E1.m1.6.6.6.4.2"><times id="S3.E1.m1.6.6.6.4.2.3.cmml" xref="S3.E1.m1.6.6.6.4.2.3"></times><ci id="S3.E1.m1.6.6.6.4.2.4.cmml" xref="S3.E1.m1.6.6.6.4.2.4">cos</ci><interval closure="open" id="S3.E1.m1.6.6.6.4.2.2.3.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2"><apply id="S3.E1.m1.5.5.5.3.1.1.1.1.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1"><times id="S3.E1.m1.5.5.5.3.1.1.1.1.2.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1.2"></times><ci id="S3.E1.m1.5.5.5.3.1.1.1.1.3.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1.3">𝑓</ci><apply id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1">subscript</csymbol><ci id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.2">𝑞</ci><ci id="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.3.cmml" xref="S3.E1.m1.5.5.5.3.1.1.1.1.1.1.1.3">𝑖</ci></apply></apply><apply id="S3.E1.m1.6.6.6.4.2.2.2.2.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2"><times id="S3.E1.m1.6.6.6.4.2.2.2.2.2.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.2"></times><ci id="S3.E1.m1.6.6.6.4.2.2.2.2.3.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.3">𝑓</ci><apply id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.1.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1">subscript</csymbol><apply id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.1.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1">superscript</csymbol><ci id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.2.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.2">𝑑</ci><minus id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.3.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.2.3"></minus></apply><apply id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3"><times id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.1.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.1"></times><ci id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.2.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.2">𝑖</ci><ci id="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.3.cmml" xref="S3.E1.m1.6.6.6.4.2.2.2.2.1.1.1.3.3">𝑗</ci></apply></apply></apply></interval></apply></apply></apply></apply></apply></apply></apply></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.E1.m1.7c">\mathcal{L}=-\frac{1}{n}\sum_{i}\log\frac{e^{\mathrm{cos}(f(q_{i}),f(d_{i}))}}{e^{\mathrm{cos}(f(q_{i}),f(d_{i}))}+\sum_{j}e^{\mathrm{cos}(f(q_{i}),f(d^{-}_{ij}))}}\;,</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(1)</span></td>
+</tr></tbody>
+</table>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p4">
+<p class="ltx_p" id="S3.SS2.p4.4">where each query <math alttext="q_{i}" class="ltx_Math" display="inline" id="S3.SS2.p4.1.m1.1"><semantics id="S3.SS2.p4.1.m1.1a"><msub id="S3.SS2.p4.1.m1.1.1" xref="S3.SS2.p4.1.m1.1.1.cmml"><mi id="S3.SS2.p4.1.m1.1.1.2" xref="S3.SS2.p4.1.m1.1.1.2.cmml">q</mi><mi id="S3.SS2.p4.1.m1.1.1.3" xref="S3.SS2.p4.1.m1.1.1.3.cmml">i</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS2.p4.1.m1.1b"><apply id="S3.SS2.p4.1.m1.1.1.cmml" xref="S3.SS2.p4.1.m1.1.1"><csymbol cd="ambiguous" id="S3.SS2.p4.1.m1.1.1.1.cmml" xref="S3.SS2.p4.1.m1.1.1">subscript</csymbol><ci id="S3.SS2.p4.1.m1.1.1.2.cmml" xref="S3.SS2.p4.1.m1.1.1.2">𝑞</ci><ci id="S3.SS2.p4.1.m1.1.1.3.cmml" xref="S3.SS2.p4.1.m1.1.1.3">𝑖</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p4.1.m1.1c">q_{i}</annotation></semantics></math> is associated with 1 positive document <math alttext="d_{i}" class="ltx_Math" display="inline" id="S3.SS2.p4.2.m2.1"><semantics id="S3.SS2.p4.2.m2.1a"><msub id="S3.SS2.p4.2.m2.1.1" xref="S3.SS2.p4.2.m2.1.1.cmml"><mi id="S3.SS2.p4.2.m2.1.1.2" xref="S3.SS2.p4.2.m2.1.1.2.cmml">d</mi><mi id="S3.SS2.p4.2.m2.1.1.3" xref="S3.SS2.p4.2.m2.1.1.3.cmml">i</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS2.p4.2.m2.1b"><apply id="S3.SS2.p4.2.m2.1.1.cmml" xref="S3.SS2.p4.2.m2.1.1"><csymbol cd="ambiguous" id="S3.SS2.p4.2.m2.1.1.1.cmml" xref="S3.SS2.p4.2.m2.1.1">subscript</csymbol><ci id="S3.SS2.p4.2.m2.1.1.2.cmml" xref="S3.SS2.p4.2.m2.1.1.2">𝑑</ci><ci id="S3.SS2.p4.2.m2.1.1.3.cmml" xref="S3.SS2.p4.2.m2.1.1.3">𝑖</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p4.2.m2.1c">d_{i}</annotation></semantics></math> as per the sampling technique, and negatives <math alttext="\{d^{-}_{ij}\}" class="ltx_Math" display="inline" id="S3.SS2.p4.3.m3.1"><semantics id="S3.SS2.p4.3.m3.1a"><mrow id="S3.SS2.p4.3.m3.1.1.1" xref="S3.SS2.p4.3.m3.1.1.2.cmml"><mo id="S3.SS2.p4.3.m3.1.1.1.2" stretchy="false" xref="S3.SS2.p4.3.m3.1.1.2.cmml">{</mo><msubsup id="S3.SS2.p4.3.m3.1.1.1.1" xref="S3.SS2.p4.3.m3.1.1.1.1.cmml"><mi id="S3.SS2.p4.3.m3.1.1.1.1.2.2" xref="S3.SS2.p4.3.m3.1.1.1.1.2.2.cmml">d</mi><mrow id="S3.SS2.p4.3.m3.1.1.1.1.3" xref="S3.SS2.p4.3.m3.1.1.1.1.3.cmml"><mi id="S3.SS2.p4.3.m3.1.1.1.1.3.2" xref="S3.SS2.p4.3.m3.1.1.1.1.3.2.cmml">i</mi><mo id="S3.SS2.p4.3.m3.1.1.1.1.3.1" lspace="0em" rspace="0em" xref="S3.SS2.p4.3.m3.1.1.1.1.3.1.cmml">​</mo><mi id="S3.SS2.p4.3.m3.1.1.1.1.3.3" xref="S3.SS2.p4.3.m3.1.1.1.1.3.3.cmml">j</mi></mrow><mo id="S3.SS2.p4.3.m3.1.1.1.1.2.3" xref="S3.SS2.p4.3.m3.1.1.1.1.2.3.cmml">−</mo></msubsup><mo id="S3.SS2.p4.3.m3.1.1.1.3" stretchy="false" xref="S3.SS2.p4.3.m3.1.1.2.cmml">}</mo></mrow><annotation-xml encoding="MathML-Content" id="S3.SS2.p4.3.m3.1b"><set id="S3.SS2.p4.3.m3.1.1.2.cmml" xref="S3.SS2.p4.3.m3.1.1.1"><apply id="S3.SS2.p4.3.m3.1.1.1.1.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1"><csymbol cd="ambiguous" id="S3.SS2.p4.3.m3.1.1.1.1.1.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1">subscript</csymbol><apply id="S3.SS2.p4.3.m3.1.1.1.1.2.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1"><csymbol cd="ambiguous" id="S3.SS2.p4.3.m3.1.1.1.1.2.1.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1">superscript</csymbol><ci id="S3.SS2.p4.3.m3.1.1.1.1.2.2.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1.2.2">𝑑</ci><minus id="S3.SS2.p4.3.m3.1.1.1.1.2.3.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1.2.3"></minus></apply><apply id="S3.SS2.p4.3.m3.1.1.1.1.3.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1.3"><times id="S3.SS2.p4.3.m3.1.1.1.1.3.1.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1.3.1"></times><ci id="S3.SS2.p4.3.m3.1.1.1.1.3.2.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1.3.2">𝑖</ci><ci id="S3.SS2.p4.3.m3.1.1.1.1.3.3.cmml" xref="S3.SS2.p4.3.m3.1.1.1.1.3.3">𝑗</ci></apply></apply></set></annotation-xml><annotation encoding="application/x-tex" id="S3.SS2.p4.3.m3.1c">\{d^{-}_{ij}\}</annotation></semantics></math> are sampled in-batch. We use a batch size of 128 leveraging GradCache <cite class="ltx_cite ltx_citemacro_citep">(Gao et al., <a class="ltx_ref" href="#bib.bib9" title="">2021</a>)</cite>, and cross-device negatives across 4 GPUs. The representations <math alttext="f(.)" class="ltx_math_unparsed" display="inline" id="S3.SS2.p4.4.m4.1"><semantics id="S3.SS2.p4.4.m4.1a"><mrow id="S3.SS2.p4.4.m4.1b"><mi id="S3.SS2.p4.4.m4.1.1">f</mi><mrow id="S3.SS2.p4.4.m4.1.2"><mo id="S3.SS2.p4.4.m4.1.2.1" stretchy="false">(</mo><mo id="S3.SS2.p4.4.m4.1.2.2" lspace="0em" rspace="0.167em">.</mo><mo id="S3.SS2.p4.4.m4.1.2.3" stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex" id="S3.SS2.p4.4.m4.1c">f(.)</annotation></semantics></math> generated by the model are compared using the cosine similarity function.</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p5">
+<p class="ltx_p" id="S3.SS2.p5.1"><span class="ltx_text ltx_font_bold" id="S3.SS2.p5.1.1">Supervised Contrastive Fine-tuning:</span>
+We finally fine-tune the model for retrieval in the MS-MARCO dataset for eight epochs. We start with ANCE-MaxP negatives <cite class="ltx_cite ltx_citemacro_citep">(Xiong et al., <a class="ltx_ref" href="#bib.bib35" title="">2021</a>)</cite>, refreshing them every two epochs with the model under training.
+We follow the loss introduced in Equation <a class="ltx_ref" href="#S3.E1" title="In 3.2 Dense Retriever Training Pipeline ‣ 3 Methodology ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">1</span></a>, sampling 9 negatives per query, using a batch size of 128, using in-batch negatives, and cross-device negatives across 4 GPUs.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Experiments</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">This section starts by addressing the overall retrieval performance of the 2K-T5 model. Then, we note the <span class="ltx_text ltx_font_italic" id="S4.p1.1.1">dwell in the beginning</span> behavior that is present in the model, investigating each of the training steps to identify its emergence.</p>
+</div>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Retrieval Performance</h3>
+<figure class="ltx_table" id="S4.T1">
+<div class="ltx_inline-block ltx_transformed_outer" id="S4.T1.1" style="width:433.6pt;height:113.5pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(-24.0pt,6.3pt) scale(0.900409506907348,0.900409506907348) ;">
+<table class="ltx_tabular ltx_align_middle" id="S4.T1.1.1">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S4.T1.1.1.1.1">
+<td class="ltx_td ltx_border_tt" id="S4.T1.1.1.1.1.1"></td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S4.T1.1.1.1.1.2">Size</td>
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S4.T1.1.1.1.1.3">MRR@100</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_tt" id="S4.T1.1.1.1.1.4">R@100</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.2.2">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.2.2.1">ANCE-MaxP <cite class="ltx_cite ltx_citemacro_citep">(Xiong et al., <a class="ltx_ref" href="#bib.bib35" title="">2021</a>)</cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.2.2.2">base</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.2.2.3">0.384</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_t" id="S4.T1.1.1.2.2.4">0.906</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.3.3">
+<td class="ltx_td ltx_align_left" id="S4.T1.1.1.3.3.1">ADORE <cite class="ltx_cite ltx_citemacro_citep">(Zhan et al., <a class="ltx_ref" href="#bib.bib41" title="">2021</a>)</cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S4.T1.1.1.3.3.2">base</td>
+<td class="ltx_td ltx_align_left" id="S4.T1.1.1.3.3.3">0.405</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="S4.T1.1.1.3.3.4">0.919</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.4.4">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.4.4.1">ICT <cite class="ltx_cite ltx_citemacro_citep">(Lee et al., <a class="ltx_ref" href="#bib.bib13" title="">2019</a>)</cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.4.4.2">base</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.4.4.3">0.396</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_t" id="S4.T1.1.1.4.4.4">0.882</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.5.5">
+<td class="ltx_td ltx_align_left" id="S4.T1.1.1.5.5.1">SEED <cite class="ltx_cite ltx_citemacro_citep">(Lu et al., <a class="ltx_ref" href="#bib.bib17" title="">2021</a>)</cite>
+</td>
+<td class="ltx_td ltx_align_left" id="S4.T1.1.1.5.5.2">base</td>
+<td class="ltx_td ltx_align_left" id="S4.T1.1.1.5.5.3">0.396</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="S4.T1.1.1.5.5.4">0.902</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.6.6">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.6.6.1">RepLLaMA <cite class="ltx_cite ltx_citemacro_citep">(Ma et al., <a class="ltx_ref" href="#bib.bib19" title="">2023</a>)</cite>
+</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.6.6.2">7B</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T1.1.1.6.6.3">0.456</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_t" id="S4.T1.1.1.6.6.4">-</td>
+</tr>
+<tr class="ltx_tr" id="S4.T1.1.1.7.7">
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_t" id="S4.T1.1.1.7.7.1">T5-2K (ours)</td>
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_t" id="S4.T1.1.1.7.7.2">base</td>
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_t" id="S4.T1.1.1.7.7.3">0.414</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_bb ltx_border_t" id="S4.T1.1.1.7.7.4">0.915</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 1: </span>Retrieval results on MS-MARCO documents.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">Before moving to the study of the positional biases, we look into the overall performance of our model to assess its soundness. For reference, Table <a class="ltx_ref" href="#S4.T1" title="Table 1 ‣ 4.1 Retrieval Performance ‣ 4 Experiments ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">1</span></a> contains retrieval results on the MS-MARCO dataset, using the official metrics (mean reciprocal rank and recall). We show the results for models that are trained following similar pipelines, noting that our model achieves similar performance. The first group references models that do not leverage pre-training tasks, while the ones in the second group incorporate them. Finally, the third group contains a model that also underwent simple fine-tuning, but was scaled to 7B parameters. Note that other authors have proposed heavily engineered pre-training tasks that do improve results (e.g., COSTA <cite class="ltx_cite ltx_citemacro_citep">(Ma et al., <a class="ltx_ref" href="#bib.bib18" title="">2022</a>)</cite>, Longtriever <cite class="ltx_cite ltx_citemacro_citep">(Yang et al., <a class="ltx_ref" href="#bib.bib37" title="">2023</a>)</cite>, and LLaRA <cite class="ltx_cite ltx_citemacro_citep">(Li et al., <a class="ltx_ref" href="#bib.bib15" title="">2023</a>)</cite>), but that is out of the scope of this work. Appendix <a class="ltx_ref" href="#A1" title="Appendix A Training Details ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">A</span></a> provides additional insights and training details.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Impact of Relevant Passage Position</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.3">For a subset of the queries in the MS-MARCO dataset (i.e., 1130 queries ), we can cross-reference their relevant documents with the MS-MARCO passage collection to identify the relevant information within the document. As such, in this experiment, we retrieve from the collection 11 times: First, a default run with the documents unchanged, followed by 10 runs where the documents associated with the queries have the relevant passage moved to the different positions in the document. For each document, given its length (<math alttext="l_{d}" class="ltx_Math" display="inline" id="S4.SS2.p1.1.m1.1"><semantics id="S4.SS2.p1.1.m1.1a"><msub id="S4.SS2.p1.1.m1.1.1" xref="S4.SS2.p1.1.m1.1.1.cmml"><mi id="S4.SS2.p1.1.m1.1.1.2" xref="S4.SS2.p1.1.m1.1.1.2.cmml">l</mi><mi id="S4.SS2.p1.1.m1.1.1.3" xref="S4.SS2.p1.1.m1.1.1.3.cmml">d</mi></msub><annotation-xml encoding="MathML-Content" id="S4.SS2.p1.1.m1.1b"><apply id="S4.SS2.p1.1.m1.1.1.cmml" xref="S4.SS2.p1.1.m1.1.1"><csymbol cd="ambiguous" id="S4.SS2.p1.1.m1.1.1.1.cmml" xref="S4.SS2.p1.1.m1.1.1">subscript</csymbol><ci id="S4.SS2.p1.1.m1.1.1.2.cmml" xref="S4.SS2.p1.1.m1.1.1.2">𝑙</ci><ci id="S4.SS2.p1.1.m1.1.1.3.cmml" xref="S4.SS2.p1.1.m1.1.1.3">𝑑</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS2.p1.1.m1.1c">l_{d}</annotation></semantics></math>) and the length of the relevant passage (<math alttext="l_{p}" class="ltx_Math" display="inline" id="S4.SS2.p1.2.m2.1"><semantics id="S4.SS2.p1.2.m2.1a"><msub id="S4.SS2.p1.2.m2.1.1" xref="S4.SS2.p1.2.m2.1.1.cmml"><mi id="S4.SS2.p1.2.m2.1.1.2" xref="S4.SS2.p1.2.m2.1.1.2.cmml">l</mi><mi id="S4.SS2.p1.2.m2.1.1.3" xref="S4.SS2.p1.2.m2.1.1.3.cmml">p</mi></msub><annotation-xml encoding="MathML-Content" id="S4.SS2.p1.2.m2.1b"><apply id="S4.SS2.p1.2.m2.1.1.cmml" xref="S4.SS2.p1.2.m2.1.1"><csymbol cd="ambiguous" id="S4.SS2.p1.2.m2.1.1.1.cmml" xref="S4.SS2.p1.2.m2.1.1">subscript</csymbol><ci id="S4.SS2.p1.2.m2.1.1.2.cmml" xref="S4.SS2.p1.2.m2.1.1.2">𝑙</ci><ci id="S4.SS2.p1.2.m2.1.1.3.cmml" xref="S4.SS2.p1.2.m2.1.1.3">𝑝</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS2.p1.2.m2.1c">l_{p}</annotation></semantics></math>), we compute 10 sequential and uniform insertion points for the passage, formally given by <math alttext="I_{i}=(i-1)\frac{l_{d}-l_{p}}{9},i\in\{1,...,10\}" class="ltx_Math" display="inline" id="S4.SS2.p1.3.m3.5"><semantics id="S4.SS2.p1.3.m3.5a"><mrow id="S4.SS2.p1.3.m3.5.5.2" xref="S4.SS2.p1.3.m3.5.5.3.cmml"><mrow id="S4.SS2.p1.3.m3.4.4.1.1" xref="S4.SS2.p1.3.m3.4.4.1.1.cmml"><msub id="S4.SS2.p1.3.m3.4.4.1.1.3" xref="S4.SS2.p1.3.m3.4.4.1.1.3.cmml"><mi id="S4.SS2.p1.3.m3.4.4.1.1.3.2" xref="S4.SS2.p1.3.m3.4.4.1.1.3.2.cmml">I</mi><mi id="S4.SS2.p1.3.m3.4.4.1.1.3.3" xref="S4.SS2.p1.3.m3.4.4.1.1.3.3.cmml">i</mi></msub><mo id="S4.SS2.p1.3.m3.4.4.1.1.2" xref="S4.SS2.p1.3.m3.4.4.1.1.2.cmml">=</mo><mrow id="S4.SS2.p1.3.m3.4.4.1.1.1" xref="S4.SS2.p1.3.m3.4.4.1.1.1.cmml"><mrow id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.cmml"><mo id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.2" stretchy="false" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.cmml">(</mo><mrow id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.cmml"><mi id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.2" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.2.cmml">i</mi><mo id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.1" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.1.cmml">−</mo><mn id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.3" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.3.cmml">1</mn></mrow><mo id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.3" stretchy="false" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.cmml">)</mo></mrow><mo id="S4.SS2.p1.3.m3.4.4.1.1.1.2" lspace="0em" rspace="0em" xref="S4.SS2.p1.3.m3.4.4.1.1.1.2.cmml">​</mo><mfrac id="S4.SS2.p1.3.m3.4.4.1.1.1.3" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.cmml"><mrow id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.cmml"><msub id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.cmml"><mi id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.2" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.2.cmml">l</mi><mi id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.3" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.3.cmml">d</mi></msub><mo id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.1" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.1.cmml">−</mo><msub id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.cmml"><mi id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.2" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.2.cmml">l</mi><mi id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.3" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.3.cmml">p</mi></msub></mrow><mn id="S4.SS2.p1.3.m3.4.4.1.1.1.3.3" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.3.cmml">9</mn></mfrac></mrow></mrow><mo id="S4.SS2.p1.3.m3.5.5.2.3" xref="S4.SS2.p1.3.m3.5.5.3a.cmml">,</mo><mrow id="S4.SS2.p1.3.m3.5.5.2.2" xref="S4.SS2.p1.3.m3.5.5.2.2.cmml"><mi id="S4.SS2.p1.3.m3.5.5.2.2.2" xref="S4.SS2.p1.3.m3.5.5.2.2.2.cmml">i</mi><mo id="S4.SS2.p1.3.m3.5.5.2.2.1" xref="S4.SS2.p1.3.m3.5.5.2.2.1.cmml">∈</mo><mrow id="S4.SS2.p1.3.m3.5.5.2.2.3.2" xref="S4.SS2.p1.3.m3.5.5.2.2.3.1.cmml"><mo id="S4.SS2.p1.3.m3.5.5.2.2.3.2.1" stretchy="false" xref="S4.SS2.p1.3.m3.5.5.2.2.3.1.cmml">{</mo><mn id="S4.SS2.p1.3.m3.1.1" xref="S4.SS2.p1.3.m3.1.1.cmml">1</mn><mo id="S4.SS2.p1.3.m3.5.5.2.2.3.2.2" xref="S4.SS2.p1.3.m3.5.5.2.2.3.1.cmml">,</mo><mi id="S4.SS2.p1.3.m3.2.2" mathvariant="normal" xref="S4.SS2.p1.3.m3.2.2.cmml">…</mi><mo id="S4.SS2.p1.3.m3.5.5.2.2.3.2.3" xref="S4.SS2.p1.3.m3.5.5.2.2.3.1.cmml">,</mo><mn id="S4.SS2.p1.3.m3.3.3" xref="S4.SS2.p1.3.m3.3.3.cmml">10</mn><mo id="S4.SS2.p1.3.m3.5.5.2.2.3.2.4" stretchy="false" xref="S4.SS2.p1.3.m3.5.5.2.2.3.1.cmml">}</mo></mrow></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.SS2.p1.3.m3.5b"><apply id="S4.SS2.p1.3.m3.5.5.3.cmml" xref="S4.SS2.p1.3.m3.5.5.2"><csymbol cd="ambiguous" id="S4.SS2.p1.3.m3.5.5.3a.cmml" xref="S4.SS2.p1.3.m3.5.5.2.3">formulae-sequence</csymbol><apply id="S4.SS2.p1.3.m3.4.4.1.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1"><eq id="S4.SS2.p1.3.m3.4.4.1.1.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.2"></eq><apply id="S4.SS2.p1.3.m3.4.4.1.1.3.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.3"><csymbol cd="ambiguous" id="S4.SS2.p1.3.m3.4.4.1.1.3.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.3">subscript</csymbol><ci id="S4.SS2.p1.3.m3.4.4.1.1.3.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.3.2">𝐼</ci><ci id="S4.SS2.p1.3.m3.4.4.1.1.3.3.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.3.3">𝑖</ci></apply><apply id="S4.SS2.p1.3.m3.4.4.1.1.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1"><times id="S4.SS2.p1.3.m3.4.4.1.1.1.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.2"></times><apply id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1"><minus id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.1"></minus><ci id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.2">𝑖</ci><cn id="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.3.cmml" type="integer" xref="S4.SS2.p1.3.m3.4.4.1.1.1.1.1.1.3">1</cn></apply><apply id="S4.SS2.p1.3.m3.4.4.1.1.1.3.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3"><divide id="S4.SS2.p1.3.m3.4.4.1.1.1.3.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3"></divide><apply id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2"><minus id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.1"></minus><apply id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2"><csymbol cd="ambiguous" id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2">subscript</csymbol><ci id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.2">𝑙</ci><ci id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.3.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.2.3">𝑑</ci></apply><apply id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3"><csymbol cd="ambiguous" id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.1.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3">subscript</csymbol><ci id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.2.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.2">𝑙</ci><ci id="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.3.cmml" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.2.3.3">𝑝</ci></apply></apply><cn id="S4.SS2.p1.3.m3.4.4.1.1.1.3.3.cmml" type="integer" xref="S4.SS2.p1.3.m3.4.4.1.1.1.3.3">9</cn></apply></apply></apply><apply id="S4.SS2.p1.3.m3.5.5.2.2.cmml" xref="S4.SS2.p1.3.m3.5.5.2.2"><in id="S4.SS2.p1.3.m3.5.5.2.2.1.cmml" xref="S4.SS2.p1.3.m3.5.5.2.2.1"></in><ci id="S4.SS2.p1.3.m3.5.5.2.2.2.cmml" xref="S4.SS2.p1.3.m3.5.5.2.2.2">𝑖</ci><set id="S4.SS2.p1.3.m3.5.5.2.2.3.1.cmml" xref="S4.SS2.p1.3.m3.5.5.2.2.3.2"><cn id="S4.SS2.p1.3.m3.1.1.cmml" type="integer" xref="S4.SS2.p1.3.m3.1.1">1</cn><ci id="S4.SS2.p1.3.m3.2.2.cmml" xref="S4.SS2.p1.3.m3.2.2">…</ci><cn id="S4.SS2.p1.3.m3.3.3.cmml" type="integer" xref="S4.SS2.p1.3.m3.3.3">10</cn></set></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.SS2.p1.3.m3.5c">I_{i}=(i-1)\frac{l_{d}-l_{p}}{9},i\in\{1,...,10\}</annotation></semantics></math>.</p>
+</div>
+<figure class="ltx_figure" id="S4.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="338" id="S4.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>Performance of 2K-T5 and RepLLaMA. Full lines represent the unchanged version of the documents. Dashed lines represent the variation obtained when the relevant passage is moved to a different position.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS2.p2">
+<p class="ltx_p" id="S4.SS2.p2.1">The performance of our model after one training episode (i.e., before the first ANCE negative refreshing) is depicted in the blue line of Figure <a class="ltx_ref" href="#S4.F1" title="Figure 1 ‣ 4.2 Impact of Relevant Passage Position ‣ 4 Experiments ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">1</span></a>. We see that when the relevant passage is moved to the beginning of the document, the performance increases when compared to the default setting (i.e., unchanged documents). Conversely, if the passage is moved anywhere else, the performance drops. The green line shows that the same pattern also holds for RepLLaMA-7B<span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span><a class="ltx_ref ltx_href" href="https://huggingface.co/castorini/repllama-v1-7b-lora-doc" target="_blank" title="">huggingface.co/castorini/repllama-v1-7b-lora-doc</a></span></span></span> <cite class="ltx_cite ltx_citemacro_citep">(Ma et al., <a class="ltx_ref" href="#bib.bib19" title="">2023</a>)</cite>, a version of LLaMA-2 fine-tuned for dense retrieval on MS-MARCO for 1 epoch, although showing even higher biases. In other words, a <span class="ltx_text ltx_font_italic" id="S4.SS2.p2.1.1">dwell in the beginning</span> effect is observed, where the initial positions are heavily preferred when compared to later ones. This differs from the <span class="ltx_text ltx_font_italic" id="S4.SS2.p2.1.2">lost in the middle</span> <cite class="ltx_cite ltx_citemacro_citep">(Liu et al., <a class="ltx_ref" href="#bib.bib16" title="">2023</a>)</cite> phenomena, where performance would drop more significantly only in middle sections. We also note that further fine-tuning on MS-MARCO data will aggravate the behavior, as shown by the orange lines, given the larger performance mismatch between the default setting and later positions.</p>
+</div>
+<figure class="ltx_figure" id="S4.F2"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="75" id="S4.F2.g1" src="./media/x2.png" width="415"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>Violin plot distribution of starting position (characters) of relevant passages within 75,000 documents from MS-MARCO training split.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS2.p3">
+<p class="ltx_p" id="S4.SS2.p3.1">To better understand this behavior, we look at the distribution in Figure <a class="ltx_ref" href="#S4.F2" title="Figure 2 ‣ 4.2 Impact of Relevant Passage Position ‣ 4 Experiments ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">2</span></a>, which shows that MS-MARCO documents tend to contain the relevant passage earlier in the document, with the median starting position being at 746 characters. While this can be impactful for the biases in Figure <a class="ltx_ref" href="#S4.F1" title="Figure 1 ‣ 4.2 Impact of Relevant Passage Position ‣ 4 Experiments ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">1</span></a>, the performance drop on later parts of the input shouldn’t be as noticeable. Hence, the next sub-sections explore the locality of the pre-training tasks to address potential impacts on long-context modeling.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>Contrastive Pre-training Location Bias</h3>
+<figure class="ltx_figure" id="S4.F3"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="317" id="S4.F3.g1" src="./media/x3.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>Cosine similarity distribution for exact matching of sub-strings in different locations, using a sample of 24,000 MS-MARCO documents.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS3.p1">
+<p class="ltx_p" id="S4.SS3.p1.4">In order to estimate positional biases after the contrastive pre-training step, we evaluate the performance of the model on exact matching sub-strings from different locations. For instance, given a document <math alttext="d" class="ltx_Math" display="inline" id="S4.SS3.p1.1.m1.1"><semantics id="S4.SS3.p1.1.m1.1a"><mi id="S4.SS3.p1.1.m1.1.1" xref="S4.SS3.p1.1.m1.1.1.cmml">d</mi><annotation-xml encoding="MathML-Content" id="S4.SS3.p1.1.m1.1b"><ci id="S4.SS3.p1.1.m1.1.1.cmml" xref="S4.SS3.p1.1.m1.1.1">𝑑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.SS3.p1.1.m1.1c">d</annotation></semantics></math>, 10 sub-strings are sampled by segmenting <math alttext="d" class="ltx_Math" display="inline" id="S4.SS3.p1.2.m2.1"><semantics id="S4.SS3.p1.2.m2.1a"><mi id="S4.SS3.p1.2.m2.1.1" xref="S4.SS3.p1.2.m2.1.1.cmml">d</mi><annotation-xml encoding="MathML-Content" id="S4.SS3.p1.2.m2.1b"><ci id="S4.SS3.p1.2.m2.1.1.cmml" xref="S4.SS3.p1.2.m2.1.1">𝑑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.SS3.p1.2.m2.1c">d</annotation></semantics></math> in 10 sequential groups with uniform token length. In other words, the first sub-string contains the first 10% tokens of <math alttext="d" class="ltx_Math" display="inline" id="S4.SS3.p1.3.m3.1"><semantics id="S4.SS3.p1.3.m3.1a"><mi id="S4.SS3.p1.3.m3.1.1" xref="S4.SS3.p1.3.m3.1.1.cmml">d</mi><annotation-xml encoding="MathML-Content" id="S4.SS3.p1.3.m3.1b"><ci id="S4.SS3.p1.3.m3.1.1.cmml" xref="S4.SS3.p1.3.m3.1.1">𝑑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.SS3.p1.3.m3.1c">d</annotation></semantics></math>, while the last sub-string contains the last 10% tokens. Then, the embedding generated for <math alttext="d" class="ltx_Math" display="inline" id="S4.SS3.p1.4.m4.1"><semantics id="S4.SS3.p1.4.m4.1a"><mi id="S4.SS3.p1.4.m4.1.1" xref="S4.SS3.p1.4.m4.1.1.cmml">d</mi><annotation-xml encoding="MathML-Content" id="S4.SS3.p1.4.m4.1b"><ci id="S4.SS3.p1.4.m4.1.1.cmml" xref="S4.SS3.p1.4.m4.1.1">𝑑</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.SS3.p1.4.m4.1c">d</annotation></semantics></math> is compared with the embedding of each sub-string using the cosine similarity. Figure <a class="ltx_ref" href="#S4.F3" title="Figure 3 ‣ 4.3 Contrastive Pre-training Location Bias ‣ 4 Experiments ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">3</span></a> shows that the similarity values tend to decrease when the position of the sub-string moves from the beginning, and that this behavior holds for both decoder and average pooling.</p>
+</div>
+<div class="ltx_para" id="S4.SS3.p2">
+<p class="ltx_p" id="S4.SS3.p2.1">This indicates that the representation generated for a document is better at capturing its earlier contents. While in the previous sub-section similar behavior could be justified by the data’s underlying distribution, the pseudo-queries and documents for this task were independently sampled from the same uniform distribution over the input. This suggests that the bias is intrinsic to the model, e.g. by overfitting to information distributions commonly found in web documents where earlier paragraphs are often more representative, i.e., follow the <span class="ltx_text ltx_font_italic" id="S4.SS3.p2.1.1">inverted pyramid</span> writing style <cite class="ltx_cite ltx_citemacro_citep">(Koupaee and Wang, <a class="ltx_ref" href="#bib.bib12" title="">2018</a>)</cite>. Since web documents are the most common source of pre-training data <cite class="ltx_cite ltx_citemacro_citep">(Overwijk et al., <a class="ltx_ref" href="#bib.bib24" title="">2022</a>; Raffel et al., <a class="ltx_ref" href="#bib.bib26" title="">2020</a>)</cite>, this is problematic for tasks where the whole input must be accurately captured, for instance retrieval augmented generation <cite class="ltx_cite ltx_citemacro_citep">(Chevalier et al., <a class="ltx_ref" href="#bib.bib3" title="">2023</a>; Mu et al., <a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite></p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.4 </span>Span Corruption Location Bias</h3>
+<figure class="ltx_figure" id="S4.F4"><svg class="ltx_picture ltx_centering" height="260.92" id="S4.F4.pic1" overflow="visible" version="1.1" width="589.14"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,260.92) matrix(1 0 0 -1 0 0) translate(51.13,0) translate(0,97.58) matrix(1.0 0.0 0.0 1.0 -51.13 -97.58)"><g class="ltx_nestedsvg" transform="matrix(1 0 0 1 0 0) translate(51.13,0) translate(0,97.58)"><g color="#BFBFBF" fill="#BFBFBF" stroke="#BFBFBF" stroke-width="0.4pt"><path d="M 0 0 L 537.73 0 M 0 38.57 L 537.73 38.57 M 0 77.13 L 537.73 77.13 M 0 115.7 L 537.73 115.7 M 0 154.26 L 537.73 154.26" style="fill:none"></path></g><g color="#808080" fill="#808080" stroke="#808080" stroke-width="0.2pt"><path d="M 74.68 0 L 74.68 5.91 M 134.43 0 L 134.43 5.91 M 194.18 0 L 194.18 5.91 M 253.93 0 L 253.93 5.91 M 313.67 0 L 313.67 5.91 M 373.42 0 L 373.42 5.91 M 433.17 0 L 433.17 5.91 M 492.91 0 L 492.91 5.91 M 74.68 154.26 L 74.68 148.36 M 134.43 154.26 L 134.43 148.36 M 194.18 154.26 L 194.18 148.36 M 253.93 154.26 L 253.93 148.36 M 313.67 154.26 L 313.67 148.36 M 373.42 154.26 L 373.42 148.36 M 433.17 154.26 L 433.17 148.36 M 492.91 154.26 L 492.91 148.36" style="fill:none"></path></g><g color="#808080" fill="#808080" stroke="#808080" stroke-width="0.2pt"><path d="M 0 0 L 5.91 0 M 0 38.57 L 5.91 38.57 M 0 77.13 L 5.91 77.13 M 0 115.7 L 5.91 115.7 M 0 154.26 L 5.91 154.26 M 537.73 0 L 531.82 0 M 537.73 38.57 L 531.82 38.57 M 537.73 77.13 L 531.82 77.13 M 537.73 115.7 L 531.82 115.7 M 537.73 154.26 L 531.82 154.26" style="fill:none"></path></g><g fill="#000000" stroke="#000000" stroke-width="0.4pt"><path d="M 0 0 L 0 154.26 L 537.73 154.26 L 537.73 0 L 0 0 Z" style="fill:none"></path><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 60.13 -47.39)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="42.28"><span class="ltx_text" id="S4.F4.pic1.6.6.6.6.6.1.1">(0,256)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 111.95 -58.73)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="56.12"><span class="ltx_text" id="S4.F4.pic1.7.7.7.7.7.1.1">(256,512)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 171.69 -58.73)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="56.12"><span class="ltx_text" id="S4.F4.pic1.8.8.8.8.8.1.1">(512,768)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 227.47 -64.4)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="63.04"><span class="ltx_text" id="S4.F4.pic1.9.9.9.9.9.1.1">(768,1024)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 283.25 -70.06)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="69.95"><span class="ltx_text" id="S4.F4.pic1.10.10.10.10.10.1.1">(1024,1280)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 343 -70.06)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="69.95"><span class="ltx_text" id="S4.F4.pic1.11.11.11.11.11.1.1">(1280,1536)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 402.74 -70.06)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="69.95"><span class="ltx_text" id="S4.F4.pic1.12.12.12.12.12.1.1">(1536,1702)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.57358 0.81915 -0.81915 0.57358 462.49 -70.06)"><foreignobject height="13.84" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="69.95"><span class="ltx_text" id="S4.F4.pic1.13.13.13.13.13.1.1">(1702,2048)</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 -24.88 -4.46)"><foreignobject height="8.92" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="19.99"><math alttext="0.2" class="ltx_Math" display="inline" id="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1"><semantics id="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1a"><mn id="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1" xref="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.cmml">0.2</mn><annotation-xml encoding="MathML-Content" id="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1b"><cn id="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1.cmml" type="float" xref="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1.1">0.2</cn></annotation-xml><annotation encoding="application/x-tex" id="S4.F4.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.m1.1c">0.2</annotation></semantics></math></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 -24.88 34.11)"><foreignobject height="8.92" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="19.99"><math alttext="0.4" class="ltx_Math" display="inline" id="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1"><semantics id="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1a"><mn id="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1.1" xref="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1.1.cmml">0.4</mn><annotation-xml encoding="MathML-Content" id="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1b"><cn id="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1.1.cmml" type="float" xref="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1.1">0.4</cn></annotation-xml><annotation encoding="application/x-tex" id="S4.F4.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.1.1.1.1.1.1.1.1.m1.1c">0.4</annotation></semantics></math></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 -24.88 72.67)"><foreignobject height="8.92" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="19.99"><math alttext="0.6" class="ltx_Math" display="inline" id="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1"><semantics id="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1a"><mn id="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1.1" xref="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1.1.cmml">0.6</mn><annotation-xml encoding="MathML-Content" id="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1b"><cn id="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1.1.cmml" type="float" xref="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1.1">0.6</cn></annotation-xml><annotation encoding="application/x-tex" id="S4.F4.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.1.1.1.1.1.1.1.1.1.m1.1c">0.6</annotation></semantics></math></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 -24.88 111.24)"><foreignobject height="8.92" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="19.99"><math alttext="0.8" class="ltx_Math" display="inline" id="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1"><semantics id="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1a"><mn id="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1.1" xref="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1.1.cmml">0.8</mn><annotation-xml encoding="MathML-Content" id="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1b"><cn id="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1.1.cmml" type="float" xref="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1.1">0.8</cn></annotation-xml><annotation encoding="application/x-tex" id="S4.F4.pic1.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.4.1.1.1.1.1.1.1.1.1.m1.1c">0.8</annotation></semantics></math></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 -11.81 149.81)"><foreignobject height="8.92" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="6.92"><math alttext="1" class="ltx_Math" display="inline" id="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1"><semantics id="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1a"><mn id="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1.1" xref="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1.1.cmml">1</mn><annotation-xml encoding="MathML-Content" id="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1b"><cn id="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1.1.cmml" type="integer" xref="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1.1">1</cn></annotation-xml><annotation encoding="application/x-tex" id="S4.F4.pic1.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.5.1.1.1.1.1.1.1.1.1.m1.1c">1</annotation></semantics></math></foreignobject></g><clippath id="pgfcp1"><path d="M 0 0 L 537.73 0 L 537.73 154.26 L 0 154.26 Z"></path></clippath><g clip-path="url(#pgfcp1)"><g color="#C69EC5" fill="#C69EC5" stroke="#C69EC5"><path d="M 59.75 105.25 L 119.49 106.61 L 179.24 107.69 L 238.99 107.07 L 298.74 107.01 L 358.48 107.35 L 418.23 106.96 L 477.98 104.2" style="fill:none"></path><g stroke-width="0.4pt"><path d="M 59.75 105.25 L 59.75 150.18" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 62.51 147.87)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 59.75 105.25 L 59.75 60.33" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 56.98 62.63)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 119.49 106.61 L 119.49 151.72" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 122.26 149.42)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 119.49 106.61 L 119.49 61.5" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 116.73 63.8)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 179.24 107.69 L 179.24 152.74" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 182.01 150.43)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 179.24 107.69 L 179.24 62.64" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 176.47 64.94)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 238.99 107.07 L 238.99 151.62" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 241.76 149.31)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 238.99 107.07 L 238.99 62.52" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 236.22 64.82)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 298.74 107.01 L 298.74 151.74" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 301.5 149.43)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 298.74 107.01 L 298.74 62.28" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 295.97 64.59)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 358.48 107.35 L 358.48 152.32" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 361.25 150.01)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 358.48 107.35 L 358.48 62.38" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 355.72 64.69)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 418.23 106.96 L 418.23 152.18" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 421 149.87)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 418.23 106.96 L 418.23 61.73" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 415.46 64.04)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 477.98 104.2 L 477.98 150.1" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 480.75 147.79)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 477.98 104.2 L 477.98 58.31" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 475.21 60.61)"><g class="ltx_nestedsvg" fill="#C69EC5" stroke="#C69EC5" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g></g></g><g></g><g color="#4FFF80" fill="#4FFF80" stroke="#4FFF80"><path d="M 89.62 80.47 L 149.37 83.15 L 209.12 84.57 L 268.86 85.85 L 328.61 85.62 L 388.36 87.29 L 448.1 87 L 507.85 86.34" style="fill:none"></path><g stroke-width="0.4pt"><path d="M 89.62 80.47 L 89.62 132.33" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 92.39 130.02)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 89.62 80.47 L 89.62 28.61" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 86.85 30.91)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 149.37 83.15 L 149.37 133.95" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 152.14 131.64)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 149.37 83.15 L 149.37 32.35" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 146.6 34.66)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 209.12 84.57 L 209.12 135.28" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 211.88 132.97)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 209.12 84.57 L 209.12 33.87" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 206.35 36.18)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 268.86 85.85 L 268.86 136.83" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 271.63 134.52)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 268.86 85.85 L 268.86 34.88" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 266.1 37.19)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 328.61 85.62 L 328.61 135.87" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 331.38 133.57)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 328.61 85.62 L 328.61 35.37" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 325.84 37.67)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 388.36 87.29 L 388.36 137.41" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 391.12 135.1)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 388.36 87.29 L 388.36 37.17" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 385.59 39.47)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 448.1 87 L 448.1 136.8" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 450.87 134.49)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 448.1 87 L 448.1 37.2" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 445.34 39.51)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 507.85 86.34 L 507.85 136.46" style="fill:none"></path><g transform="matrix(0.0 1.0 -1.0 0.0 510.62 134.15)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g><path d="M 507.85 86.34 L 507.85 36.23" style="fill:none"></path><g transform="matrix(0.0 -1.0 1.0 0.0 505.08 38.54)"><g class="ltx_nestedsvg" fill="#4FFF80" stroke="#4FFF80" stroke-width="0.4pt" transform="matrix(1 0 0 1 0 0) translate(0,2.77)"><path d="M 0 2.77 L 0 -2.77" style="fill:none"></path></g></g></g></g><g></g></g><g color="#C69EC5" fill="#C69EC5" stroke="#C69EC5"><path d="M 62.51 105.25 C 62.51 106.78 61.28 108.02 59.75 108.02 C 58.22 108.02 56.98 106.78 56.98 105.25 C 56.98 103.73 58.22 102.49 59.75 102.49 C 61.28 102.49 62.51 103.73 62.51 105.25 Z M 59.75 105.25"></path><path d="M 122.26 106.61 C 122.26 108.14 121.02 109.38 119.49 109.38 C 117.97 109.38 116.73 108.14 116.73 106.61 C 116.73 105.08 117.97 103.84 119.49 103.84 C 121.02 103.84 122.26 105.08 122.26 106.61 Z M 119.49 106.61"></path><path d="M 182.01 107.69 C 182.01 109.22 180.77 110.46 179.24 110.46 C 177.71 110.46 176.47 109.22 176.47 107.69 C 176.47 106.16 177.71 104.92 179.24 104.92 C 180.77 104.92 182.01 106.16 182.01 107.69 Z M 179.24 107.69"></path><path d="M 241.76 107.07 C 241.76 108.59 240.52 109.83 238.99 109.83 C 237.46 109.83 236.22 108.59 236.22 107.07 C 236.22 105.54 237.46 104.3 238.99 104.3 C 240.52 104.3 241.76 105.54 241.76 107.07 Z M 238.99 107.07"></path><path d="M 301.5 107.01 C 301.5 108.54 300.26 109.78 298.74 109.78 C 297.21 109.78 295.97 108.54 295.97 107.01 C 295.97 105.48 297.21 104.24 298.74 104.24 C 300.26 104.24 301.5 105.48 301.5 107.01 Z M 298.74 107.01"></path><path d="M 361.25 107.35 C 361.25 108.88 360.01 110.12 358.48 110.12 C 356.95 110.12 355.72 108.88 355.72 107.35 C 355.72 105.82 356.95 104.58 358.48 104.58 C 360.01 104.58 361.25 105.82 361.25 107.35 Z M 358.48 107.35"></path><path d="M 421 106.96 C 421 108.48 419.76 109.72 418.23 109.72 C 416.7 109.72 415.46 108.48 415.46 106.96 C 415.46 105.43 416.7 104.19 418.23 104.19 C 419.76 104.19 421 105.43 421 106.96 Z M 418.23 106.96"></path><path d="M 480.75 104.2 C 480.75 105.73 479.51 106.97 477.98 106.97 C 476.45 106.97 475.21 105.73 475.21 104.2 C 475.21 102.67 476.45 101.44 477.98 101.44 C 479.51 101.44 480.75 102.67 480.75 104.2 Z M 477.98 104.2"></path></g><g color="#4FFF80" fill="#4FFF80" stroke="#4FFF80"><path d="M 92.39 80.47 C 92.39 81.99 91.15 83.23 89.62 83.23 C 88.09 83.23 86.85 81.99 86.85 80.47 C 86.85 78.94 88.09 77.7 89.62 77.7 C 91.15 77.7 92.39 78.94 92.39 80.47 Z M 89.62 80.47"></path><path d="M 152.14 83.15 C 152.14 84.68 150.9 85.92 149.37 85.92 C 147.84 85.92 146.6 84.68 146.6 83.15 C 146.6 81.62 147.84 80.38 149.37 80.38 C 150.9 80.38 152.14 81.62 152.14 83.15 Z M 149.37 83.15"></path><path d="M 211.88 84.57 C 211.88 86.1 210.64 87.34 209.12 87.34 C 207.59 87.34 206.35 86.1 206.35 84.57 C 206.35 83.05 207.59 81.81 209.12 81.81 C 210.64 81.81 211.88 83.05 211.88 84.57 Z M 209.12 84.57"></path><path d="M 271.63 85.85 C 271.63 87.38 270.39 88.62 268.86 88.62 C 267.33 88.62 266.1 87.38 266.1 85.85 C 266.1 84.33 267.33 83.09 268.86 83.09 C 270.39 83.09 271.63 84.33 271.63 85.85 Z M 268.86 85.85"></path><path d="M 331.38 85.62 C 331.38 87.15 330.14 88.39 328.61 88.39 C 327.08 88.39 325.84 87.15 325.84 85.62 C 325.84 84.09 327.08 82.85 328.61 82.85 C 330.14 82.85 331.38 84.09 331.38 85.62 Z M 328.61 85.62"></path><path d="M 391.12 87.29 C 391.12 88.81 389.89 90.05 388.36 90.05 C 386.83 90.05 385.59 88.81 385.59 87.29 C 385.59 85.76 386.83 84.52 388.36 84.52 C 389.89 84.52 391.12 85.76 391.12 87.29 Z M 388.36 87.29"></path><path d="M 450.87 87 C 450.87 88.53 449.63 89.77 448.1 89.77 C 446.58 89.77 445.34 88.53 445.34 87 C 445.34 85.47 446.58 84.23 448.1 84.23 C 449.63 84.23 450.87 85.47 450.87 87 Z M 448.1 87"></path><path d="M 510.62 86.34 C 510.62 87.87 509.38 89.11 507.85 89.11 C 506.32 89.11 505.08 87.87 505.08 86.34 C 505.08 84.82 506.32 83.58 507.85 83.58 C 509.38 83.58 510.62 84.82 510.62 86.34 Z M 507.85 86.34"></path></g><g fill="#000000" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 225.43 -92.97)"><foreignobject height="9.61" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="86.87"><span class="ltx_text" id="S4.F4.pic1.14.14.14.14.14.1.1">Token window</span></foreignobject></g><g fill="#000000" stroke="#000000" transform="matrix(0.0 1.0 -1.0 0.0 -37.07 49.05)"><foreignobject height="12.15" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="56.16"><span class="ltx_text" id="S4.F4.pic1.15.15.15.15.15.1.1">Accuracy</span></foreignobject></g><g fill="#FFFFFF" stroke="#000000"><path d="M 435.22 4.9 h 86.1 v 39.82 h -86.1 Z"></path></g><g fill="#FFFFFF" stroke="#000000" transform="matrix(1.0 0.0 0.0 1.0 439.37 7.67)"><g class="ltx_tikzmatrix" transform="matrix(1 0 0 -1 0 25.67)"><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 8.53)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 0 0) translate(0.28,0)"><g color="#C69EC5" fill="#C69EC5" stroke="#C69EC5"><path d="M 0 0 L 11.81 0 L 23.62 0" style="fill:none"></path></g><g color="#C69EC5" fill="#C69EC5" stroke="#C69EC5"><path d="M 14.58 0 C 14.58 1.53 13.34 2.77 11.81 2.77 C 10.28 2.77 9.04 1.53 9.04 0 C 9.04 -1.53 10.28 -2.77 11.81 -2.77 C 13.34 -2.77 14.58 -1.53 14.58 0 Z M 11.81 0"></path></g></g><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" fill="#000000" stroke="#000000" transform="matrix(1 0 0 -1 24.18 0) translate(26.81,0) matrix(1.0 0.0 0.0 1.0 -24.04 -3.69)"><foreignobject height="12.15" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="48.08"><span class="ltx_text" id="S4.F4.pic1.16.16.16.16.16.1.1.1.1.1">T5-rope</span></foreignobject></g></g><g class="ltx_tikzmatrix_row" transform="matrix(1 0 0 1 0 25.68)"><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" transform="matrix(1 0 0 -1 0 0) translate(0.28,0)"><g color="#4FFF80" fill="#4FFF80" stroke="#4FFF80"><path d="M 0 0 L 11.81 0 L 23.62 0" style="fill:none"></path></g><g color="#4FFF80" fill="#4FFF80" stroke="#4FFF80"><path d="M 14.58 0 C 14.58 1.53 13.34 2.77 11.81 2.77 C 10.28 2.77 9.04 1.53 9.04 0 C 9.04 -1.53 10.28 -2.77 11.81 -2.77 C 13.34 -2.77 14.58 -1.53 14.58 0 Z M 11.81 0"></path></g></g><g class="ltx_tikzmatrix_col ltx_nopad_l ltx_nopad_r" fill="#000000" stroke="#000000" transform="matrix(1 0 0 -1 24.35 0) translate(26.64,0) matrix(1.0 0.0 0.0 1.0 -23.87 -3.77)"><foreignobject height="9.61" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="47.74"><span class="ltx_text" id="S4.F4.pic1.17.17.17.17.17.2.2.1.1.1">T5-base</span></foreignobject></g></g></g></g></g></g></g></svg>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span>Span prediction accuracy on different zones of the input, using 7000 random 3-token spans per window.</figcaption>
+</figure>
+<div class="ltx_para" id="S4.SS4.p1">
+<p class="ltx_p" id="S4.SS4.p1.1">Finally, we look into the language model pre-training task. We evaluate on the original task, by independently corrupting spans of 3 tokens across multiple parts of the input. Through this, we can see if the accuracy of the model, when predicting the corresponding correct spans, varies across the different parts of the input. Figure <a class="ltx_ref" href="#S4.F4" title="Figure 4 ‣ 4.4 Span Corruption Location Bias ‣ 4 Experiments ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">4</span></a> shows uniform performance, suggesting no inherent bias in this task using RoPE. We also evaluate the original T5-base, and see that although it shows a slightly higher performance on predicting later positions, it is still rather uniform. As none of the models display the <span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.1">dwell in the beginning</span> effect, we conclude that the language modeling pre-training did not induce any meaningful biases, and that this behavior emerged as soon as an information bottleneck was added to the training pipeline, by means of a pooled representation during contrastive pre-training.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Conclusions</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">This study investigated the <span class="ltx_text ltx_font_italic" id="S5.p1.1.1">dwell in the beginning</span> effect on Transformer-based models for document retrieval. Through experiments with a T5 model and RepLLaMA, we observed that the models tend to favor information located at the beginning of the input, leading to decreased performance when relevant information is elsewhere in the document. We investigate each step in the training pipeline, showing that biases can emerge in a contrastive pre-training step, and that they persist throughout the fine-tuning process. Our findings emphasize the importance of considering the quality of embeddings for long inputs, particularly in contexts where effectively capturing the entire sequence can result in increased performance on downstream tasks such as retrieval augmented generation.</p>
+</div>
+<div class="ltx_para" id="S5.p2">
+<p class="ltx_p" id="S5.p2.1">Addressing these biases may involve devising more robust pre-training tasks, or leveraging regularization techniques that force the model to capture information from various positions within input sequences, while considering evaluation on benchmarks that require long-context modeling <cite class="ltx_cite ltx_citemacro_citep">(Wang et al., <a class="ltx_ref" href="#bib.bib32" title="">2023</a>; Saad-Falcon et al., <a class="ltx_ref" href="#bib.bib27" title="">2024</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitations and Ethical Considerations</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1">All the datasets and models used in our experiments are publicly available, and we will provide the source code that allows for the reproduction of results, as well as model checkpoints.</p>
+</div>
+<div class="ltx_para" id="Sx1.p2">
+<p class="ltx_p" id="Sx1.p2.1">By using large pre-trained language models, we acknowledge the risks associated with the presence of inherent biases embedded within the models, which may inadvertently perpetuate or amplify societal biases present in the training data.</p>
+</div>
+<div class="ltx_para" id="Sx1.p3">
+<p class="ltx_p" id="Sx1.p3.1">One limitation in the work reported on this paper relates to the fact that our tests have only used English data. Other languages can expose different phenomena in terms of how document-context is handled, and future work can perhaps consider other datasets such as the one from the NeuCLIR competition. Doing a similar analysis on other domains besides web documents would also be interesting, and we encourage the research community to further study document-context modeling in connection to retrieval tasks.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">This research was supported by the Portuguese Recovery and Resilience Plan through project C645008882-00000055 (i.e., the Center For Responsible AI), and also by Fundação para a Ciência e Tecnologia (FCT), through the project with reference UIDB/50021/2020 (DOI:10.54499/UIDB/50021/2020), project NOVA LINCS
+with reference UIDP/04516/2020, and also the Ph.D. scholarship with reference PRT/BD/153683/2021 under the CMU-PT Program.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Beltagy et al. (2020)</span>
+<span class="ltx_bibblock">
+Iz Beltagy, Matthew E. Peters, and Arman Cohan. 2020.
+
+</span>
+<span class="ltx_bibblock">Longformer: The long-document transformer.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib1.1.1">CoRR</em>, abs/2004.05150.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Boytsov et al. (2022)</span>
+<span class="ltx_bibblock">
+Leonid Boytsov, Tianyi Lin, Fangwei Gao, Yutian Zhao, Jeffrey Huang, and Eric Nyberg. 2022.
+
+</span>
+<span class="ltx_bibblock">Understanding Performance of Long-Document Ranking Models through Comprehensive Evaluation and Leaderboardi.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib2.1.1">ArXiv</em>, abs/2207.01262.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chevalier et al. (2023)</span>
+<span class="ltx_bibblock">
+Alexis Chevalier, Alexander Wettig, Anirudh Ajith, and Danqi Chen. 2023.
+
+</span>
+<span class="ltx_bibblock">Adapting Language Models to Compress Contexts.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib3.1.1">Conference on Empirical Methods in Natural Language Processing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dai and Callan (2019)</span>
+<span class="ltx_bibblock">
+Zhuyun Dai and Jamie Callan. 2019.
+
+</span>
+<span class="ltx_bibblock">Deeper text understanding for IR with contextual neural language modeling.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">International ACM SIGIR Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dao (2023)</span>
+<span class="ltx_bibblock">
+Tri Dao. 2023.
+
+</span>
+<span class="ltx_bibblock">FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">ArXiv</em>, abs/2307.08691.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dao et al. (2022)</span>
+<span class="ltx_bibblock">
+Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra, and Christopher Ré. 2022.
+
+</span>
+<span class="ltx_bibblock">FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Annual Conference on Neural Information Processing Systems</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Doddapaneni et al. (2024)</span>
+<span class="ltx_bibblock">
+Sumanth Doddapaneni, Krishna Sayana, Ambarish Jash, Sukhdeep S. Sodhi, and Dima Kuzmin. 2024.
+
+</span>
+<span class="ltx_bibblock">User Embedding Model for Personalized Language Prompting.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">ArXiv</em>, abs/2401.04858.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao and Callan (2022)</span>
+<span class="ltx_bibblock">
+Luyu Gao and Jamie Callan. 2022.
+
+</span>
+<span class="ltx_bibblock">Unsupervised Corpus Aware Language Model Pre-training for Dense Passage Retrieval.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">Annual Meeting of the Association for Computational Linguistics</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao et al. (2021)</span>
+<span class="ltx_bibblock">
+Luyu Gao, Yunyi Zhang, Jiawei Han, and Jamie Callan. 2021.
+
+</span>
+<span class="ltx_bibblock">Scaling Deep Contrastive Learning Batch Size under Memory Limited Setup.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">Workshop on Representation Learning for NLP</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Izacard et al. (2022)</span>
+<span class="ltx_bibblock">
+Gautier Izacard, Mathilde Caron, Lucas Hosseini, Sebastian Riedel, Piotr Bojanowski, Armand Joulin, and Edouard Grave. 2022.
+
+</span>
+<span class="ltx_bibblock">Unsupervised Dense Information Retrieval with Contrastive Learning.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">Transactions on Machine Learning Research</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kitaev et al. (2020)</span>
+<span class="ltx_bibblock">
+Nikita Kitaev, Lukasz Kaiser, and Anselm Levskaya. 2020.
+
+</span>
+<span class="ltx_bibblock">Reformer: The efficient transformer.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Koupaee and Wang (2018)</span>
+<span class="ltx_bibblock">
+Mahnaz Koupaee and William Yang Wang. 2018.
+
+</span>
+<span class="ltx_bibblock">WikiHow: A Large Scale Text Summarization Dataset.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">ArXiv</em>, abs/1810.09305.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lee et al. (2019)</span>
+<span class="ltx_bibblock">
+Kenton Lee, Ming-Wei Chang, and Kristina Toutanova. 2019.
+
+</span>
+<span class="ltx_bibblock">Latent Retrieval for Weakly Supervised Open Domain Question Answering.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">Conference of the Association for Computational Linguistics</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al. (2020)</span>
+<span class="ltx_bibblock">
+Canjia Li, Andrew Yates, Sean MacAvaney, Ben He, and Yingfei Sun. 2020.
+
+</span>
+<span class="ltx_bibblock">PARADE: passage representation aggregation for document reranking.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">ArXiv</em>, abs/2008.09093.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al. (2023)</span>
+<span class="ltx_bibblock">
+Chaofan Li, Zheng Liu, Shitao Xiao, and Yingxia Shao. 2023.
+
+</span>
+<span class="ltx_bibblock">Making Large Language Models A Better Foundation For Dense Retrieval.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">ArXiv</em>, abs/2312.15503.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2023)</span>
+<span class="ltx_bibblock">
+Nelson F. Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni, and Percy Liang. 2023.
+
+</span>
+<span class="ltx_bibblock">Lost in the Middle: How Language Models Use Long Contexts.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">ArXiv</em>, abs/2307.03172.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lu et al. (2021)</span>
+<span class="ltx_bibblock">
+Shuqi Lu, Di He, Chenyan Xiong, Guolin Ke, Waleed Malik, Zhicheng Dou, Paul Bennett, Tie-Yan Liu, and Arnold Overwijk. 2021.
+
+</span>
+<span class="ltx_bibblock">Less is More: Pretrain a Strong Siamese Encoder for Dense Text Retrieval Using a Weak Decode.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">Conference on Empirical Methods in Natural Language Processing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2022)</span>
+<span class="ltx_bibblock">
+Xinyu Ma, Jiafeng Guo, Ruqing Zhang, Yixing Fan, and Xueqi Cheng. 2022.
+
+</span>
+<span class="ltx_bibblock">Pre-train a Discriminative Text Encoder for Dense Retrieval via Contrastive Span Prediction.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">International Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2023)</span>
+<span class="ltx_bibblock">
+Xueguang Ma, Liang Wang, Nan Yang, Furu Wei, and Jimmy Lin. 2023.
+
+</span>
+<span class="ltx_bibblock">Fine-Tuning LLaMA for Multi-Stage Text Retrieval.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">ArXiv</em>, abs/2310.08319.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mu et al. (2023)</span>
+<span class="ltx_bibblock">
+Jesse Mu, Xiang Lisa Li, and Noah D. Goodman. 2023.
+
+</span>
+<span class="ltx_bibblock">Learning to Compress Prompts with Gist Tokens.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">ArXiv</em>, abs/2304.08467.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Muennighoff et al. (2023)</span>
+<span class="ltx_bibblock">
+Niklas Muennighoff, Nouamane Tazi, Loïc Magne, and Nils Reimers. 2023.
+
+</span>
+<span class="ltx_bibblock">MTEB: massive text embedding benchmark.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">Conference of the European Chapter of the Association for Computational Linguistics</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nguyen et al. (2016)</span>
+<span class="ltx_bibblock">
+Tri Nguyen, Mir Rosenberg, Xia Song, Jianfeng Gao, Saurabh Tiwary, Rangan Majumder, and Li Deng. 2016.
+
+</span>
+<span class="ltx_bibblock">MS MARCO: A human generated machine reading comprehension dataset.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">Workshop on Cognitive Computation: Integrating Neural and Symbolic Approaches</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ni et al. (2022)</span>
+<span class="ltx_bibblock">
+Jianmo Ni, Gustavo Hernández Ábrego, Noah Constant, Ji Ma, Keith B. Hall, Daniel Cer, and Yinfei Yang. 2022.
+
+</span>
+<span class="ltx_bibblock">Sentence-T5: Scalable Sentence Encoders from Pre-trained Text-to-Text Models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">Findings of the Association for Computational Linguistics</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Overwijk et al. (2022)</span>
+<span class="ltx_bibblock">
+Arnold Overwijk, Chenyan Xiong, and Jamie Callan. 2022.
+
+</span>
+<span class="ltx_bibblock">ClueWeb22: 10 Billion Web Documents with Rich Information.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">International ACM SIGIR Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Press et al. (2022)</span>
+<span class="ltx_bibblock">
+Ofir Press, Noah A. Smith, and Mike Lewis. 2022.
+
+</span>
+<span class="ltx_bibblock">Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib25.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Raffel et al. (2020)</span>
+<span class="ltx_bibblock">
+Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter J. Liu. 2020.
+
+</span>
+<span class="ltx_bibblock">Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">Journal of Machine Learning Research</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Saad-Falcon et al. (2024)</span>
+<span class="ltx_bibblock">
+Jon Saad-Falcon, Daniel Y. Fu, Simran Arora, Neel Guha, and Christopher Ré. 2024.
+
+</span>
+<span class="ltx_bibblock">Benchmarking and Building Long-Context Retrieval Models with LoCo and M2-BERT.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">ArXiv</em>, abs/2402.07440.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Su et al. (2024)</span>
+<span class="ltx_bibblock">
+Jianlin Su, Murtadha H. M. Ahmed, Yu Lu, Shengfeng Pan, Wen Bo, and Yunfeng Liu. 2024.
+
+</span>
+<span class="ltx_bibblock">RoFormer: Enhanced transformer with Rotary Position Embedding.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib28.1.1">Neurocomputing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sun et al. (2022)</span>
+<span class="ltx_bibblock">
+Zhiqing Sun, Yiming Yang, and Shinjae Yoo. 2022.
+
+</span>
+<span class="ltx_bibblock">Sparse Attention with Learning to Hash.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Thakur et al. (2021)</span>
+<span class="ltx_bibblock">
+Nandan Thakur, Nils Reimers, Andreas Rücklé, Abhishek Srivastava, and Iryna Gurevych. 2021.
+
+</span>
+<span class="ltx_bibblock">BEIR: A heterogeneous benchmark for zero-shot evaluation of information retrieval models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">Annual Conference on Neural Information Processing Systems</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Touvron et al. (2023)</span>
+<span class="ltx_bibblock">
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, Aurélien Rodriguez, Armand Joulin, Edouard Grave, and Guillaume Lample. 2023.
+
+</span>
+<span class="ltx_bibblock">LLaMA: Open and Efficient Foundation Language Models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib31.1.1">ArXiv</em>, abs/2302.13971.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2023)</span>
+<span class="ltx_bibblock">
+Kexin Wang, Nils Reimers, and Iryna Gurevych. 2023.
+
+</span>
+<span class="ltx_bibblock">DAPR: A benchmark on document-aware passage retrieval.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">ArXiv</em>, abs/2305.13915.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2022)</span>
+<span class="ltx_bibblock">
+Liang Wang, Nan Yang, Xiaolong Huang, Binxing Jiao, Linjun Yang, Daxin Jiang, Rangan Majumder, and Furu Wei. 2022.
+
+</span>
+<span class="ltx_bibblock">Text Embeddings by Weakly-Supervised Contrastive Pre-training.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib33.1.1">ArXiv</em>, abs/2212.03533.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xiao et al. (2022)</span>
+<span class="ltx_bibblock">
+Shitao Xiao, Zheng Liu, Yingxia Shao, and Zhao Cao. 2022.
+
+</span>
+<span class="ltx_bibblock">RetroMAE: Pre-Training Retrieval-oriented Language Models Via Masked Auto-Encoder.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib34.1.1">Conference on Empirical Methods in Natural Language Processing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xiong et al. (2021)</span>
+<span class="ltx_bibblock">
+Lee Xiong, Chenyan Xiong, Ye Li, Kwok-Fung Tang, Jialin Liu, Paul N. Bennett, Junaid Ahmed, and Arnold Overwijk. 2021.
+
+</span>
+<span class="ltx_bibblock">Approximate Nearest Neighbor Negative Contrastive Learning for Dense Text Retrieval.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib35.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xiong et al. (2023)</span>
+<span class="ltx_bibblock">
+Wenhan Xiong, Jingyu Liu, Igor Molybog, Hejia Zhang, Prajjwal Bhargava, Rui Hou, Louis Martin, Rashi Rungta, Karthik Abinav Sankararaman, Barlas Oguz, Madian Khabsa, Han Fang, Yashar Mehdad, Sharan Narang, Kshitiz Malik, Angela Fan, Shruti Bhosale, Sergey Edunov, Mike Lewis, Sinong Wang, and Hao Ma. 2023.
+
+</span>
+<span class="ltx_bibblock">Effective Long-Context Scaling of Foundation Models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">ArXiv</em>, abs/2309.16039.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yang et al. (2023)</span>
+<span class="ltx_bibblock">
+Junhan Yang, Zheng Liu, Chaozhuo Li, Guangzhong Sun, and Xing Xie. 2023.
+
+</span>
+<span class="ltx_bibblock">Longtriever: a Pre-trained Long Text Encoder for Dense Document Retrieval.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">Conference on Empirical Methods in Natural Language Processing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yates et al. (2021)</span>
+<span class="ltx_bibblock">
+Andrew Yates, Rodrigo Nogueira, and Jimmy Lin. 2021.
+
+</span>
+<span class="ltx_bibblock">Pretrained transformers for text ranking: BERT and beyond.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">International ACM SIGIR Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yilmaz et al. (2019)</span>
+<span class="ltx_bibblock">
+Zeynep Akkalyoncu Yilmaz, Shengjin Wang, Wei Yang, Haotian Zhang, and Jimmy Lin. 2019.
+
+</span>
+<span class="ltx_bibblock">Applying BERT to Document Retrieval with Birch.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib39.1.1">Conference on Empirical Methods in Natural Language Processing and the International Joint Conference on Natural Language Processing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zaheer et al. (2020)</span>
+<span class="ltx_bibblock">
+Manzil Zaheer, Guru Guruganesh, Kumar Avinava Dubey, Joshua Ainslie, Chris Alberti, Santiago Ontañón, Philip Pham, Anirudh Ravula, Qifan Wang, Li Yang, and Amr Ahmed. 2020.
+
+</span>
+<span class="ltx_bibblock">Big Bird: Transformers for Longer Sequences.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib40.1.1">Annual Conference on Neural Information Processing Systems</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhan et al. (2021)</span>
+<span class="ltx_bibblock">
+Jingtao Zhan, Jiaxin Mao, Yiqun Liu, Jiafeng Guo, Min Zhang, and Shaoping Ma. 2021.
+
+</span>
+<span class="ltx_bibblock">Optimizing Dense Retrieval Model Training with Hard Negatives.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">International Conference on Research and Development in Information Retrieval</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2023)</span>
+<span class="ltx_bibblock">
+Xin Zhang, Zehan Li, Yanzhao Zhang, Dingkun Long, Pengjun Xie, Meishan Zhang, and Min Zhang. 2023.
+
+</span>
+<span class="ltx_bibblock">Language Models are Universal Embedders.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib42.1.1">ArXiv</em>, abs/2310.08232.
+
+</span>
+</li>
+</ul>
+</section>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix A </span>Training Details</h2>
+<section class="ltx_subsection" id="A1.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.1 </span>Hyperparameters</h3>
+<div class="ltx_para" id="A1.SS1.p1">
+<p class="ltx_p" id="A1.SS1.p1.1">The following subsections detail the hyperparameters used for training. If a certain element is not stated, the default from a Huggingface Trainer was used. All models were trained in the same computational setup of 4x A100 40GB GPUs.</p>
+</div>
+<section class="ltx_subsubsection" id="A1.SS1.SSS1">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">A.1.1 </span>Span Corruption Pre-training</h4>
+<div class="ltx_para" id="A1.SS1.SSS1.p1">
+<ol class="ltx_enumerate" id="A1.I1">
+<li class="ltx_item" id="A1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">1.</span>
+<div class="ltx_para" id="A1.I1.i1.p1">
+<p class="ltx_p" id="A1.I1.i1.p1.1">Optimizer: AdamW</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">2.</span>
+<div class="ltx_para" id="A1.I1.i2.p1">
+<p class="ltx_p" id="A1.I1.i2.p1.1">Learning rate: cosine annealing, base value 2e-2, final value 1e-5.</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">3.</span>
+<div class="ltx_para" id="A1.I1.i3.p1">
+<p class="ltx_p" id="A1.I1.i3.p1.1">Batch size: 80</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">4.</span>
+<div class="ltx_para" id="A1.I1.i4.p1">
+<p class="ltx_p" id="A1.I1.i4.p1.1">Gradient accumulation: 16</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">5.</span>
+<div class="ltx_para" id="A1.I1.i5.p1">
+<p class="ltx_p" id="A1.I1.i5.p1.1">Gradient clipping: 1</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">6.</span>
+<div class="ltx_para" id="A1.I1.i6.p1">
+<p class="ltx_p" id="A1.I1.i6.p1.1">Weight decay: 0</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">7.</span>
+<div class="ltx_para" id="A1.I1.i7.p1">
+<p class="ltx_p" id="A1.I1.i7.p1.1">Total steps: 49152</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I1.i8" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">8.</span>
+<div class="ltx_para" id="A1.I1.i8.p1">
+<p class="ltx_p" id="A1.I1.i8.p1.1">Warm-up steps: 10%</p>
+</div>
+</li>
+</ol>
+</div>
+</section>
+<section class="ltx_subsubsection" id="A1.SS1.SSS2">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">A.1.2 </span>Contrastive Pre-training</h4>
+<div class="ltx_para" id="A1.SS1.SSS2.p1">
+<ol class="ltx_enumerate" id="A1.I2">
+<li class="ltx_item" id="A1.I2.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">1.</span>
+<div class="ltx_para" id="A1.I2.i1.p1">
+<p class="ltx_p" id="A1.I2.i1.p1.1">Optimizer: AdamW</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I2.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">2.</span>
+<div class="ltx_para" id="A1.I2.i2.p1">
+<p class="ltx_p" id="A1.I2.i2.p1.1">Learning rate: linear, base value 5e-6.</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I2.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">3.</span>
+<div class="ltx_para" id="A1.I2.i3.p1">
+<p class="ltx_p" id="A1.I2.i3.p1.1">Gradient cache chunk size: 24</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I2.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">4.</span>
+<div class="ltx_para" id="A1.I2.i4.p1">
+<p class="ltx_p" id="A1.I2.i4.p1.1">Gradient accumulation: 1</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I2.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">5.</span>
+<div class="ltx_para" id="A1.I2.i5.p1">
+<p class="ltx_p" id="A1.I2.i5.p1.1">Batch size: 128</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I2.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">6.</span>
+<div class="ltx_para" id="A1.I2.i6.p1">
+<p class="ltx_p" id="A1.I2.i6.p1.1">Hard negatives per query: 0</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I2.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">7.</span>
+<div class="ltx_para" id="A1.I2.i7.p1">
+<p class="ltx_p" id="A1.I2.i7.p1.1">Epochs: 1</p>
+</div>
+</li>
+</ol>
+</div>
+</section>
+<section class="ltx_subsubsection" id="A1.SS1.SSS3">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">A.1.3 </span>Fine-tuning</h4>
+<div class="ltx_para" id="A1.SS1.SSS3.p1">
+<ol class="ltx_enumerate" id="A1.I3">
+<li class="ltx_item" id="A1.I3.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">1.</span>
+<div class="ltx_para" id="A1.I3.i1.p1">
+<p class="ltx_p" id="A1.I3.i1.p1.1">Optimizer: AdamW</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I3.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">2.</span>
+<div class="ltx_para" id="A1.I3.i2.p1">
+<p class="ltx_p" id="A1.I3.i2.p1.1">Learning rate: linear, base value 5e-6.</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I3.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">3.</span>
+<div class="ltx_para" id="A1.I3.i3.p1">
+<p class="ltx_p" id="A1.I3.i3.p1.1">GradCache chunk size: 24</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I3.i4" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">4.</span>
+<div class="ltx_para" id="A1.I3.i4.p1">
+<p class="ltx_p" id="A1.I3.i4.p1.1">Gradient accumulation: 1</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I3.i5" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">5.</span>
+<div class="ltx_para" id="A1.I3.i5.p1">
+<p class="ltx_p" id="A1.I3.i5.p1.1">Batch size: 128</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I3.i6" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">6.</span>
+<div class="ltx_para" id="A1.I3.i6.p1">
+<p class="ltx_p" id="A1.I3.i6.p1.1">Hard negatives per query: 9</p>
+</div>
+</li>
+<li class="ltx_item" id="A1.I3.i7" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">7.</span>
+<div class="ltx_para" id="A1.I3.i7.p1">
+<p class="ltx_p" id="A1.I3.i7.p1.1">Epochs: 8</p>
+</div>
+</li>
+</ol>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="A1.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">A.2 </span>Impact of each Training Step</h3>
+<figure class="ltx_table" id="A1.T2">
+<div class="ltx_inline-block ltx_transformed_outer" id="A1.T2.1" style="width:433.6pt;height:171.4pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(73.3pt,-29.0pt) scale(1.51116126267068,1.51116126267068) ;">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="A1.T2.1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="A1.T2.1.1.1.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A1.T2.1.1.1.1.1">
+<table class="ltx_tabular ltx_align_middle" id="A1.T2.1.1.1.1.1.1">
+<tr class="ltx_tr" id="A1.T2.1.1.1.1.1.1.1">
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="A1.T2.1.1.1.1.1.1.1.1">LM</td>
+</tr>
+<tr class="ltx_tr" id="A1.T2.1.1.1.1.1.1.2">
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="A1.T2.1.1.1.1.1.1.2.1">Pre-training</td>
+</tr>
+</table>
+</th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A1.T2.1.1.1.1.2">
+<table class="ltx_tabular ltx_align_middle" id="A1.T2.1.1.1.1.2.1">
+<tr class="ltx_tr" id="A1.T2.1.1.1.1.2.1.1">
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="A1.T2.1.1.1.1.2.1.1.1">Contrastive</td>
+</tr>
+<tr class="ltx_tr" id="A1.T2.1.1.1.1.2.1.2">
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="A1.T2.1.1.1.1.2.1.2.1">Pre-training</td>
+</tr>
+</table>
+</th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A1.T2.1.1.1.1.3">Fine-tuning</th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A1.T2.1.1.1.1.4">MRR</th>
+<th class="ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A1.T2.1.1.1.1.5">R@100</th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A1.T2.1.1.2.1">
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T2.1.1.2.1.1"><span class="ltx_text" id="A1.T2.1.1.2.1.1.1">✗</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T2.1.1.2.1.2"><span class="ltx_text" id="A1.T2.1.1.2.1.2.1">✗</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A1.T2.1.1.2.1.3">1 episode</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="A1.T2.1.1.2.1.4">0.177</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_t" id="A1.T2.1.1.2.1.5">0.632</td>
+</tr>
+<tr class="ltx_tr" id="A1.T2.1.1.3.2">
+<td class="ltx_td ltx_align_center" id="A1.T2.1.1.3.2.1"><span class="ltx_text" id="A1.T2.1.1.3.2.1.1">✓</span></td>
+<td class="ltx_td ltx_align_center" id="A1.T2.1.1.3.2.2"><span class="ltx_text" id="A1.T2.1.1.3.2.2.1">✗</span></td>
+<td class="ltx_td ltx_align_center" id="A1.T2.1.1.3.2.3">1 episode</td>
+<td class="ltx_td ltx_align_left" id="A1.T2.1.1.3.2.4">0.350</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="A1.T2.1.1.3.2.5">0.872</td>
+</tr>
+<tr class="ltx_tr" id="A1.T2.1.1.4.3">
+<td class="ltx_td ltx_align_center" id="A1.T2.1.1.4.3.1"><span class="ltx_text" id="A1.T2.1.1.4.3.1.1">✓</span></td>
+<td class="ltx_td ltx_align_center" id="A1.T2.1.1.4.3.2"><span class="ltx_text" id="A1.T2.1.1.4.3.2.1">✓</span></td>
+<td class="ltx_td ltx_align_center" id="A1.T2.1.1.4.3.3">1 episode</td>
+<td class="ltx_td ltx_align_left" id="A1.T2.1.1.4.3.4">0.372</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left" id="A1.T2.1.1.4.3.5">0.889</td>
+</tr>
+<tr class="ltx_tr" id="A1.T2.1.1.5.4">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="A1.T2.1.1.5.4.1"><span class="ltx_text" id="A1.T2.1.1.5.4.1.1">✓</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="A1.T2.1.1.5.4.2"><span class="ltx_text" id="A1.T2.1.1.5.4.2.1">✓</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="A1.T2.1.1.5.4.3">4 episodes</td>
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_t" id="A1.T2.1.1.5.4.4">0.414</td>
+<td class="ltx_td ltx_nopad_r ltx_align_left ltx_border_bb ltx_border_t" id="A1.T2.1.1.5.4.5">0.915</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 2: </span>Performance on MS-MARCO for different combinations of pre-training tasks, and after fine-tuning.</figcaption>
+</figure>
+<div class="ltx_para" id="A1.SS2.p1">
+<p class="ltx_p" id="A1.SS2.p1.1">Table <a class="ltx_ref" href="#A1.T2" title="Table 2 ‣ A.2 Impact of each Training Step ‣ Appendix A Training Details ‣ Dwell in the Beginning: How Language Models Embed Long Documents for Dense Retrieval"><span class="ltx_text ltx_ref_tag">2</span></a> aligns our training pipeline with previous work, showing the importance of the pre-training tasks, and the benefits of multiple fine-tuning steps with negative refreshing. Note that the performance without any pre-training is particularly low since the model had no previous exposure to the new rotary embeddings.</p>
+</div>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</section>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2404.04162">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2404.04163">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2404.04163" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2404.04163">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2404.04164">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Sun May  5 21:51:16 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

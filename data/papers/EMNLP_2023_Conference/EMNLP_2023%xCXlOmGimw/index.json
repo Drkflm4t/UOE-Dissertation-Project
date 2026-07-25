@@ -1,0 +1,622 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        5,
+        8
+    ],
+    "sections": {
+        "1 Introduction": [
+            9,
+            26
+        ],
+        "2 Related Work": [
+            27,
+            44
+        ],
+        "3 Method": [
+            45,
+            90
+        ],
+        "4 Experiments": [
+            91,
+            658
+        ],
+        "5 Ablation Study": [
+            659,
+            822
+        ],
+        "6 Conclusion": [
+            823,
+            826
+        ],
+        "Limitations": [
+            827,
+            830
+        ],
+        "Ethics Statement": [
+            831,
+            834
+        ],
+        "Acknowledgements": [
+            835,
+            838
+        ],
+        "References": [
+            839,
+            884
+        ],
+        "Appendix": [
+            885,
+            886
+        ],
+        "Appendix A Further Analysis on Evaluation Model": [
+            887,
+            1063
+        ],
+        "Appendix B Diversity Exploration": [
+            1064,
+            1137
+        ],
+        "Appendix C Decoding Method and Model Selection": [
+            1138,
+            1244
+        ],
+        "Appendix D Weighting Factor Impact on Performance": [
+            1245,
+            1451
+        ],
+        "Appendix E Another Rouge-L Calculation": [
+            1452,
+            1455
+        ],
+        "Appendix F Implementation Details": [
+            1456,
+            1459
+        ],
+        "Appendix G Examples of Generated Questions": [
+            1460,
+            1799
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "2.1 Question Generation": [
+                29,
+                40
+            ],
+            "2.2 Diversity": [
+                41,
+                44
+            ]
+        },
+        "3 Method": {
+            "3.1 Task Formulation": [
+                49,
+                57
+            ],
+            "3.2 Diversity Enhanced Training": [
+                58,
+                75
+            ],
+            "3.3 Recursive Generation Framework": [
+                76,
+                90
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Dataset": [
+                93,
+                96
+            ],
+            "4.2 Baselines": [
+                97,
+                100
+            ],
+            "4.3 Automatic Evaluation": [
+                101,
+                102
+            ],
+            "4.3.1 Evaluation Metrics": [
+                103,
+                313
+            ],
+            "4.3.2 Answerability Evaluation Model": [
+                314,
+                319
+            ],
+            "4.3.3 Results": [
+                320,
+                325
+            ],
+            "4.4 Human Evaluation": [
+                326,
+                417
+            ],
+            "4.5 Zero-shot Performance Evaluation": [
+                418,
+                421
+            ],
+            "4.5.1 Dataset": [
+                422,
+                650
+            ],
+            "4.5.2 Zero-shot Results": [
+                651,
+                658
+            ]
+        },
+        "5 Ablation Study": {
+            "5.1 Setting of Question Number": [
+                815,
+                818
+            ],
+            "5.2 Analysis of Maximum Question Similarity Loss and Recursive Framework": [
+                819,
+                822
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Further Analysis on Evaluation Model": {
+            "A.1 Preprocessing Dataset": [
+                889,
+                932
+            ],
+            "A.2 Evaluation Model Postprocessing": [
+                933,
+                989
+            ],
+            "A.3 Evaluation Model Results": [
+                990,
+                993
+            ],
+            "A.4 Classified Questions Analysis": [
+                994,
+                1063
+            ]
+        },
+        "Appendix B Diversity Exploration": {},
+        "Appendix C Decoding Method and Model Selection": {},
+        "Appendix D Weighting Factor Impact on Performance": {},
+        "Appendix E Another Rouge-L Calculation": {},
+        "Appendix F Implementation Details": {},
+        "Appendix G Examples of Generated Questions": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                25
+            ]
+        ],
+        "2 Related Work": [
+            [
+                31,
+                31
+            ],
+            [
+                43,
+                43
+            ]
+        ],
+        "3 Method": [
+            [
+                47,
+                47
+            ],
+            [
+                51,
+                51
+            ],
+            [
+                53,
+                54
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                67
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                71,
+                72
+            ],
+            [
+                74,
+                74
+            ],
+            [
+                87,
+                87
+            ],
+            [
+                89,
+                89
+            ]
+        ],
+        "4 Experiments": [
+            [
+                95,
+                95
+            ],
+            [
+                99,
+                99
+            ],
+            [
+                105,
+                105
+            ],
+            [
+                316,
+                316
+            ],
+            [
+                318,
+                318
+            ],
+            [
+                322,
+                322
+            ],
+            [
+                324,
+                324
+            ],
+            [
+                328,
+                328
+            ],
+            [
+                330,
+                330
+            ],
+            [
+                332,
+                332
+            ],
+            [
+                420,
+                420
+            ],
+            [
+                424,
+                424
+            ],
+            [
+                653,
+                653
+            ],
+            [
+                655,
+                655
+            ],
+            [
+                657,
+                657
+            ]
+        ],
+        "5 Ablation Study": [
+            [
+                817,
+                817
+            ],
+            [
+                821,
+                821
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                825,
+                825
+            ]
+        ],
+        "Limitations": [
+            [
+                829,
+                829
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                833,
+                833
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                837,
+                837
+            ]
+        ],
+        "References": [
+            [
+                841,
+                883
+            ]
+        ],
+        "Appendix": [],
+        "Appendix A Further Analysis on Evaluation Model": [
+            [
+                891,
+                891
+            ],
+            [
+                935,
+                935
+            ],
+            [
+                937,
+                938
+            ],
+            [
+                940,
+                940
+            ],
+            [
+                992,
+                992
+            ],
+            [
+                1062,
+                1062
+            ]
+        ],
+        "Appendix B Diversity Exploration": [
+            [
+                1136,
+                1136
+            ]
+        ],
+        "Appendix C Decoding Method and Model Selection": [
+            [
+                1243,
+                1243
+            ]
+        ],
+        "Appendix D Weighting Factor Impact on Performance": [
+            [
+                1445,
+                1445
+            ],
+            [
+                1447,
+                1448
+            ],
+            [
+                1450,
+                1450
+            ]
+        ],
+        "Appendix E Another Rouge-L Calculation": [
+            [
+                1454,
+                1454
+            ]
+        ],
+        "Appendix F Implementation Details": [
+            [
+                1458,
+                1458
+            ]
+        ],
+        "Appendix G Examples of Generated Questions": [
+            [
+                1462,
+                1462
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "[FIGURE S2.F1.1.1.g1]": [
+                33,
+                39
+            ]
+        },
+        "3 Method": {
+            "[FIGURE S3.F2.g1]": [
+                78,
+                85
+            ]
+        },
+        "4 Experiments": {},
+        "5 Ablation Study": {
+            "[FIGURE S5.F3.g1]": [
+                661,
+                668
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Further Analysis on Evaluation Model": {
+            "[FIGURE A1.F4.g1]": [
+                893,
+                897
+            ],
+            "[FIGURE A1.F5.g1]": [
+                926,
+                931
+            ]
+        },
+        "Appendix B Diversity Exploration": {},
+        "Appendix C Decoding Method and Model Selection": {},
+        "Appendix D Weighting Factor Impact on Performance": {},
+        "Appendix E Another Rouge-L Calculation": {},
+        "Appendix F Implementation Details": {},
+        "Appendix G Examples of Generated Questions": {
+            "[FIGURE A7.F6.g1]": [
+                1785,
+                1790
+            ],
+            "[FIGURE A7.F7.g1]": [
+                1792,
+                1797
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                107,
+                312
+            ],
+            "[TABLE S4.T2]": [
+                334,
+                374
+            ],
+            "[TABLE S4.T3]": [
+                376,
+                416
+            ],
+            "[TABLE S4.T4]": [
+                426,
+                537
+            ],
+            "[TABLE S4.T5]": [
+                539,
+                649
+            ]
+        },
+        "5 Ablation Study": {
+            "[TABLE S5.T6]": [
+                670,
+                813
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Further Analysis on Evaluation Model": {
+            "[TABLE A1.T7]": [
+                899,
+                924
+            ],
+            "[TABLE A1.T8]": [
+                942,
+                988
+            ],
+            "[TABLE A1.T9]": [
+                996,
+                1060
+            ]
+        },
+        "Appendix B Diversity Exploration": {
+            "[TABLE A2.T10]": [
+                1066,
+                1134
+            ]
+        },
+        "Appendix C Decoding Method and Model Selection": {
+            "[TABLE A3.T11]": [
+                1140,
+                1241
+            ]
+        },
+        "Appendix D Weighting Factor Impact on Performance": {
+            "[TABLE A4.T12]": [
+                1247,
+                1358
+            ],
+            "[TABLE A4.T13]": [
+                1360,
+                1443
+            ]
+        },
+        "Appendix E Another Rouge-L Calculation": {},
+        "Appendix F Implementation Details": {},
+        "Appendix G Examples of Generated Questions": {
+            "[TABLE A7.T14]": [
+                1464,
+                1626
+            ],
+            "[TABLE A7.T15]": [
+                1628,
+                1783
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {},
+        "5 Ablation Study": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix": {},
+        "Appendix A Further Analysis on Evaluation Model": {},
+        "Appendix B Diversity Exploration": {},
+        "Appendix C Decoding Method and Model Selection": {},
+        "Appendix D Weighting Factor Impact on Performance": {},
+        "Appendix E Another Rouge-L Calculation": {},
+        "Appendix F Implementation Details": {},
+        "Appendix G Examples of Generated Questions": {}
+    }
+}

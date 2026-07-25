@@ -1,0 +1,530 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            28
+        ],
+        "2 Related Work": [
+            29,
+            61
+        ],
+        "3 Editing Multimodal LLMs": [
+            62,
+            430
+        ],
+        "4 Experiments": [
+            431,
+            474
+        ],
+        "5 Conclusion": [
+            475,
+            478
+        ],
+        "Acknowledgment": [
+            479,
+            482
+        ],
+        "6 Limitations": [
+            483,
+            492
+        ],
+        "References": [
+            493,
+            557
+        ],
+        "Appendix A Appendix": [
+            558,
+            809
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "2.1 Multimodal Language Models": [
+                31,
+                43
+            ],
+            "2.2 Model Editing": [
+                44,
+                47
+            ],
+            "Meta-learning Method.": [
+                48,
+                51
+            ],
+            "Locate-Then-Edit Method.": [
+                52,
+                55
+            ],
+            "In-Context Knowledge Editing Method.": [
+                56,
+                61
+            ]
+        },
+        "3 Editing Multimodal LLMs": {
+            "3.1 Task Definition": [
+                66,
+                76
+            ],
+            "Reliability.": [
+                77,
+                85
+            ],
+            "Locality.": [
+                86,
+                99
+            ],
+            "Generality.": [
+                100,
+                150
+            ],
+            "3.2 Datasets": [
+                151,
+                154
+            ],
+            "3.2.1 Reliability Dataset Construction": [
+                155,
+                166
+            ],
+            "3.2.2 Locality Dataset Construction": [
+                167,
+                170
+            ],
+            "Textual Locality Dataset.": [
+                171,
+                174
+            ],
+            "MultiModal Locality Dataset.": [
+                175,
+                178
+            ],
+            "3.2.3 Generality Dataset Construction": [
+                179,
+                182
+            ],
+            "Textual Generality Dataset.": [
+                183,
+                186
+            ],
+            "Visual Generality Dataset.": [
+                187,
+                190
+            ],
+            "3.3 Multimodal Language Models": [
+                191,
+                192
+            ],
+            "BLIP-2 OPT.": [
+                193,
+                196
+            ],
+            "MiniGPT-4.": [
+                197,
+                408
+            ],
+            "3.4 Baselines": [
+                409,
+                410
+            ],
+            "Finetune.": [
+                411,
+                414
+            ],
+            "MEND.": [
+                415,
+                418
+            ],
+            "Knowledge Editor.": [
+                419,
+                422
+            ],
+            "SERAC.": [
+                423,
+                426
+            ],
+            "In-Context Knowledge Editing.": [
+                427,
+                430
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Results": [
+                433,
+                436
+            ],
+            "Reliability.": [
+                437,
+                448
+            ],
+            "Locality.": [
+                449,
+                464
+            ],
+            "Generality.": [
+                465,
+                468
+            ],
+            "4.2 Editing Different Component": [
+                469,
+                474
+            ]
+        },
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "6 Limitations": {
+            "Models.": [
+                485,
+                488
+            ],
+            "Efficient Vision Editing.": [
+                489,
+                492
+            ]
+        },
+        "References": {},
+        "Appendix A Appendix": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                27
+            ]
+        ],
+        "2 Related Work": [
+            [
+                33,
+                33
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                58,
+                58
+            ],
+            [
+                60,
+                60
+            ]
+        ],
+        "3 Editing Multimodal LLMs": [
+            [
+                64,
+                64
+            ],
+            [
+                75,
+                75
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                82
+            ],
+            [
+                84,
+                84
+            ],
+            [
+                88,
+                88
+            ],
+            [
+                90,
+                91
+            ],
+            [
+                93,
+                93
+            ],
+            [
+                95,
+                96
+            ],
+            [
+                98,
+                98
+            ],
+            [
+                102,
+                102
+            ],
+            [
+                104,
+                105
+            ],
+            [
+                107,
+                108
+            ],
+            [
+                110,
+                110
+            ],
+            [
+                153,
+                153
+            ],
+            [
+                163,
+                163
+            ],
+            [
+                165,
+                165
+            ],
+            [
+                169,
+                169
+            ],
+            [
+                173,
+                173
+            ],
+            [
+                177,
+                177
+            ],
+            [
+                181,
+                181
+            ],
+            [
+                185,
+                185
+            ],
+            [
+                189,
+                189
+            ],
+            [
+                195,
+                195
+            ],
+            [
+                199,
+                199
+            ],
+            [
+                413,
+                413
+            ],
+            [
+                417,
+                417
+            ],
+            [
+                421,
+                421
+            ],
+            [
+                425,
+                425
+            ],
+            [
+                429,
+                429
+            ]
+        ],
+        "4 Experiments": [
+            [
+                435,
+                435
+            ],
+            [
+                439,
+                439
+            ],
+            [
+                447,
+                447
+            ],
+            [
+                451,
+                451
+            ],
+            [
+                467,
+                467
+            ],
+            [
+                471,
+                471
+            ],
+            [
+                473,
+                473
+            ]
+        ],
+        "5 Conclusion": [
+            [
+                477,
+                477
+            ]
+        ],
+        "Acknowledgment": [
+            [
+                481,
+                481
+            ]
+        ],
+        "6 Limitations": [
+            [
+                487,
+                487
+            ],
+            [
+                491,
+                491
+            ]
+        ],
+        "References": [
+            [
+                495,
+                556
+            ]
+        ],
+        "Appendix A Appendix": [
+            [
+                560,
+                560
+            ],
+            [
+                660,
+                660
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                11,
+                17
+            ]
+        },
+        "2 Related Work": {
+            "[FIGURE S2.F2.g1]": [
+                35,
+                42
+            ]
+        },
+        "3 Editing Multimodal LLMs": {
+            "[FIGURE S3.F3.g1]": [
+                68,
+                73
+            ],
+            "[FIGURE S3.F4.g1]": [
+                157,
+                161
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F5.g1]": [
+                441,
+                445
+            ],
+            "[FIGURE S4.F6.g1]": [
+                453,
+                457
+            ],
+            "[FIGURE S4.F7.g1]": [
+                459,
+                463
+            ]
+        },
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "6 Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Editing Multimodal LLMs": {
+            "[TABLE S3.T1]": [
+                112,
+                149
+            ],
+            "[TABLE S3.T2]": [
+                201,
+                407
+            ]
+        },
+        "4 Experiments": {},
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "6 Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "[TABLE A1.T3]": [
+                562,
+                609
+            ],
+            "[TABLE A1.T4]": [
+                611,
+                658
+            ],
+            "[TABLE A1.T5]": [
+                662,
+                709
+            ],
+            "[TABLE A1.T6]": [
+                711,
+                758
+            ],
+            "[TABLE A1.T7]": [
+                760,
+                807
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Editing Multimodal LLMs": {},
+        "4 Experiments": {},
+        "5 Conclusion": {},
+        "Acknowledgment": {},
+        "6 Limitations": {},
+        "References": {},
+        "Appendix A Appendix": {}
+    }
+}

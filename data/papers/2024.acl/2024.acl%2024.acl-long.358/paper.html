@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2402.12786] Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations</title><meta content="In spoken dialogue, even if two current turns are the same sentence, their responses might still differ when they are spoken in different styles.
+The spoken styles, containing paralinguistic and prosodic information, m…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2402.12786" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2402.12786" rel="canonical" target="_blank"/>
+<!--Generated on Tue Mar  5 17:15:47 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id3.id1">In spoken dialogue, even if two current turns are the same sentence, their responses might still differ when they are spoken in different styles.
+The spoken styles, containing paralinguistic and prosodic information, mark the most significant difference between text and speech modality.
+When using text-only LLMs to model spoken dialogue, text-only LLMs cannot give different responses based on the speaking style of the current turn.
+In this paper, we focus on enabling LLMs to <span class="ltx_text ltx_font_italic" id="id3.id1.1">listen to</span> the speaking styles and respond properly.
+Our goal is to teach the LLM that "<span class="ltx_text ltx_font_italic" id="id3.id1.2">even if the sentences are identical if they are spoken in different styles, their corresponding responses might be different</span>".
+Since there is no suitable dataset for achieving this goal, we collect a speech-to-speech dataset, <span class="ltx_text ltx_font_bold" id="id3.id1.3">StyleTalk</span>, with the following desired characteristics: when two current speeches have the same content but are spoken in different styles, their responses will be different.
+To teach LLMs to understand and respond properly to the speaking styles, we propose the <span class="ltx_text ltx_font_bold" id="id3.id1.4">Spoken-LLM</span> framework that can model the linguistic content and the speaking styles.
+We train Spoken-LLM using the StyleTalk dataset and devise a two-stage training pipeline to help the Spoken-LLM better learn the speaking styles.
+Based on extensive experiments, we show that Spoken-LLM outperforms text-only baselines and prior speech LLMs methods.
+<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span>Demo of the StyleTalk dataset and output of Spoken-LLM are at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://sites.google.com/view/spoken-llm/home" target="_blank" title="">https://sites.google.com/view/spoken-llm/home</a>.</span></span></span></p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Large Language Models (LLMs) have demonstrated remarkable capabilities in dialogue generation, natural language understanding, and commonsense reasoning <cite class="ltx_cite ltx_citemacro_citep">(Wei et al., <a class="ltx_ref" href="#bib.bib44" title="">2022</a>; OpenAI, <a class="ltx_ref" href="#bib.bib33" title="">2023</a>)</cite>. While LLMs mostly focus on text modality, speech represents the most natural form of human communication in our daily lives. In this work, we aim to inject speech modality for modeling <span class="ltx_text ltx_font_italic" id="S1.p1.1.1">spoken conversation</span> with Multi-modal LLMs (MM-LLMs). The main goal is to develop a humanizing agent capable of listening, understanding, and engaging in dialogue with humans, ultimately leading to higher user satisfaction.</p>
+</div>
+<figure class="ltx_figure" id="S1.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_square" height="487" id="S1.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>The overview framework of Spoken-LLM. (<span class="ltx_text ltx_font_typewriter" id="S1.F1.7.1">c1</span>,<span class="ltx_text ltx_font_typewriter" id="S1.F1.8.2">r1</span>) and (<span class="ltx_text ltx_font_typewriter" id="S1.F1.9.3">c2</span>,<span class="ltx_text ltx_font_typewriter" id="S1.F1.10.4">r2</span>) are the current and response speech sample pairs. <span class="ltx_text ltx_font_typewriter" id="S1.F1.11.5">c1</span> and <span class="ltx_text ltx_font_typewriter" id="S1.F1.12.6">c2</span> are fed into the model individually.</figcaption>
+</figure>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Speech signals contain linguistic aspects (words, phonetics, syntax, and semantics), paralinguistic elements (emotions and speaker characteristics), and prosodic factors (speaking style, emphasis, and attitude). In human conversation, while the dialogue primarily relies on the lexical aspect, the speaking styles convey rich information beyond text, and can even alter the semantics of the spoken sentences <cite class="ltx_cite ltx_citemacro_citep">(Castro et al., <a class="ltx_ref" href="#bib.bib5" title="">2019</a>)</cite>. Neglecting spoken styles can lead to misinterpretation of communication or unnatural human interaction. For example, as shown in Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">1</span></a>, the current speech with the same current text (<span class="ltx_text ltx_font_italic" id="S1.p2.1.1">Looks like it might rain later this week though.</span>) but different speaking styles. The friendly speaking style leads to a cheerful response while speaking in a slow and neutral tone leans toward a sad and negative response.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">Although there are recent studies on MM-LLMs for speech/audio and text, most of the existing studies focus on <span class="ltx_text ltx_font_italic" id="S1.p3.1.1">content-centric</span> Spoken Language Modeling (SLM) <cite class="ltx_cite ltx_citemacro_cite">Lakhotia et al. (<a class="ltx_ref" href="#bib.bib21" title="">2021</a>); Kharitonov et al. (<a class="ltx_ref" href="#bib.bib19" title="">2022</a>)</cite>, joint text and speech processing tasks <cite class="ltx_cite ltx_citemacro_citep">(Rubenstein et al., <a class="ltx_ref" href="#bib.bib38" title="">2023</a>; Chou et al., <a class="ltx_ref" href="#bib.bib7" title="">2023</a>; Maiti et al., <a class="ltx_ref" href="#bib.bib27" title="">2023</a>; Nachmani et al., <a class="ltx_ref" href="#bib.bib31" title="">2023</a>; Zhang et al., <a class="ltx_ref" href="#bib.bib52" title="">2023</a>)</cite> or general audio perception and hearing ability <cite class="ltx_cite ltx_citemacro_citep">(Tang et al., <a class="ltx_ref" href="#bib.bib40" title="">2023</a>; Gong et al., <a class="ltx_ref" href="#bib.bib13" title="">2023a</a>; Deshmukh et al., <a class="ltx_ref" href="#bib.bib10" title="">2023</a>)</cite>. There is less attention on spoken dialogue with advanced methods and suitable datasets for modeling paralinguistics and speaking styles of spoken responses.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">To model spoken dialogue with a generative language model, dGSLM <cite class="ltx_cite ltx_citemacro_citep">(Nguyen et al., <a class="ltx_ref" href="#bib.bib32" title="">2023</a>)</cite> proposes a dual-tower SLM on discrete speech units to model two-channel spoken dialogue, but the generated spoken sentences lack semantic meaning. ParalinGPT <cite class="ltx_cite ltx_citemacro_citep">(Lin et al., <a class="ltx_ref" href="#bib.bib25" title="">2023b</a>)</cite> organizes tasks in the sequence of current paralinguistic attribute prediction, response paralinguistic attribute prediction, and response text generation with autoregressive conditioning. However, it only uses the speech sentiment as speaking style, which might be primarily based on textual information, and how the speaking styles affect the spoken response is unclear. A concurrent work E-chat <cite class="ltx_cite ltx_citemacro_citep">(Xue et al., <a class="ltx_ref" href="#bib.bib47" title="">2023</a>)</cite> enhances LLM to generate responses in different emotional contexts, but the training and evaluation data are entirely generated by GPT-3.5 without human supervision, equivalent to distillation and prompting of GPT-3.5. It can only generate response text, constraining its capacity to control response style or speech-to-speech modeling.</p>
+</div>
+<div class="ltx_para" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1">To overcome the current limitation, we collect a novel speech-to-speech conversational dataset named <span class="ltx_text ltx_font_bold" id="S1.p5.1.1">StyleTalk</span>. This dataset is the first spoken conversation benchmark with <span class="ltx_text ltx_font_italic" id="S1.p5.1.2">the same dialogue context and input sentence in different speaking styles, accompanied by corresponding expressive spoken responses</span> for speech-to-speech modeling. The dataset will be released upon the paper’s acceptance.</p>
+</div>
+<div class="ltx_para" id="S1.p6">
+<p class="ltx_p" id="S1.p6.1">Based upon the StyleTalk dataset, we propose a multi-modal two-stage training method named <span class="ltx_text ltx_font_bold" id="S1.p6.1.1">Spoken-LLM</span> for spoken dialogue modeling. Spoken-LLM is a fusion of the widely-used open-sourced LLM (Llama 2-Chat <cite class="ltx_cite ltx_citemacro_citep">(Touvron et al., <a class="ltx_ref" href="#bib.bib41" title="">2023</a>)</cite>) and a self-supervised speech emotion representation model (emotion2vec <cite class="ltx_cite ltx_citemacro_citep">(Ma et al., <a class="ltx_ref" href="#bib.bib26" title="">2023</a>)</cite>). The proposed model can predict response speaking style and text, enabling the subsequent expressive Text-to-Speech (TTS) model to generate natural and diverse speech responses. We validate the performance through objective and subjective evaluations of spoken responses. With the same backbone model, the proposed method outperforms the text and speech LLM baseline in lexical/semantic similarity and response style F1 score. The human evaluation also indicates that the proposed method yields more reasonable and proper response speech than the text-only LLM baseline approach.</p>
+</div>
+<figure class="ltx_table" id="S1.T1">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S1.T1.2" style="width:337.9pt;height:216pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S1.T1.2.2"><span class="ltx_text" id="S1.T1.2.2.2">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S1.T1.2.2.2.2">
+<span class="ltx_thead">
+<span class="ltx_tr" id="S1.T1.2.2.2.2.3.1">
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" id="S1.T1.2.2.2.2.3.1.1"><span class="ltx_text ltx_font_bold" id="S1.T1.2.2.2.2.3.1.1.1">Dataset</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" id="S1.T1.2.2.2.2.3.1.2"><span class="ltx_text ltx_font_bold" id="S1.T1.2.2.2.2.3.1.2.1">S2S</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" id="S1.T1.2.2.2.2.3.1.3"><span class="ltx_text ltx_font_bold" id="S1.T1.2.2.2.2.3.1.3.1">Expressive</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" id="S1.T1.2.2.2.2.3.1.4"><span class="ltx_text ltx_font_bold" id="S1.T1.2.2.2.2.3.1.4.1">Purpose</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt" id="S1.T1.2.2.2.2.3.1.5"><span class="ltx_text ltx_font_bold" id="S1.T1.2.2.2.2.3.1.5.1">Diff styles&amp;resp</span></span></span>
+</span>
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S1.T1.2.2.2.2.4.1">
+<span class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.2.2.2.2.4.1.1">IEMOCAP</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.2.2.2.2.4.1.2">✓</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.2.2.2.2.4.1.3">✓</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.2.2.2.2.4.1.4">recognition</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S1.T1.2.2.2.2.4.1.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.5.2">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.5.2.1">Switchboard</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.5.2.2">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.5.2.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.5.2.4">recognition</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.5.2.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.6.3">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.6.3.1">MUStARD</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.6.3.2">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.6.3.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.6.3.4">recognition</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.6.3.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.7.4">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.7.4.1">SEMAINE</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.7.4.2">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.7.4.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.7.4.4">recognition</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.7.4.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.8.5">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.8.5.1">MELD</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.8.5.2">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.8.5.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.8.5.4">recognition</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.8.5.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.9.6">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.9.6.1">MEISD</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.9.6.2">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.9.6.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.9.6.4">recognition</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.9.6.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.10.7">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.10.7.1">SCQA</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.10.7.2">✗</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.10.7.3">✗</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.10.7.4">question answering</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.10.7.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.11.8">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.11.8.1">NMSQA</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.11.8.2">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.11.8.3">✗</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.11.8.4">question answering</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.11.8.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.1.1.1.1.1">
+<span class="ltx_td ltx_align_center" id="S1.T1.1.1.1.1.1.1">OpenSAQA<sup class="ltx_sup" id="S1.T1.1.1.1.1.1.1.1">∗</sup></span>
+<span class="ltx_td ltx_align_center" id="S1.T1.1.1.1.1.1.2">✗</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.1.1.1.1.1.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.1.1.1.1.1.4">question answering</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.1.1.1.1.1.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.2">
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.2.1">E-chat200<sup class="ltx_sup" id="S1.T1.2.2.2.2.2.1.1">∗</sup></span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.2.2">✗</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.2.3">✓</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.2.4">dialogue generation</span>
+<span class="ltx_td ltx_align_center" id="S1.T1.2.2.2.2.2.5">✗</span></span>
+<span class="ltx_tr" id="S1.T1.2.2.2.2.12.9">
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S1.T1.2.2.2.2.12.9.1"><span class="ltx_text ltx_font_bold" id="S1.T1.2.2.2.2.12.9.1.1">StyleTalk</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S1.T1.2.2.2.2.12.9.2">✓</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S1.T1.2.2.2.2.12.9.3">✓</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S1.T1.2.2.2.2.12.9.4">dialogue generation</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S1.T1.2.2.2.2.12.9.5">✓</span></span>
+</span>
+</span></span></p>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span>The list of spoken conversation datasets. “S2S" means speech-to-speech, and “Diff styles&amp;resp" stands for <span class="ltx_text ltx_font_italic" id="S1.T1.7.1">the same sentence in different speaking styles and responses</span>. In the “Purpose" column, “recognition" refers to recognizing the speaking style attributes in the speech, “question answering" means the task is formulated as the (question, answer) pair, and “dialogue generation" is the general chatbot agent to response any kinds of input. The datasets noted with <sup class="ltx_sup" id="S1.T1.8.2">∗</sup> are purely generated by LLM. </figcaption>
+</figure>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Dataset: StyleTalk</h2>
+<section class="ltx_subsection" id="S2.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.1 </span>Overview</h3>
+<div class="ltx_para" id="S2.SS1.p1">
+<p class="ltx_p" id="S2.SS1.p1.1">StyleTalk is a speech-to-speech conversation dataset.
+Each sample in the dataset comprises dialogue context (in text), current turn in speech (annotated with speaking style), and the response turn in speech (annotated with speaking style) (illustrated in Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">1</span></a>).</p>
+</div>
+<div class="ltx_para" id="S2.SS1.p2">
+<p class="ltx_p" id="S2.SS1.p2.1">StyleTalk features the following characteristics:
+Multiple samples in StyleTalk share the same dialogue context, the text of the current input turn, but they have different responses speech since the speaking style of the current turn is different.
+To the best of our knowledge, no existing corpora focus on such a characteristic.</p>
+</div>
+<div class="ltx_para" id="S2.SS1.p3">
+<p class="ltx_p" id="S2.SS1.p3.1">By training on this dataset, we hope the LLM can learn to use the dialogue context and current turn, specifically, the speaking style, to predict the next turn.
+Given that speaking styles convey additional information beyond text, incorporating style modeling helps to disambiguate human intent and facilitates dialogue engagement.</p>
+</div>
+<figure class="ltx_figure" id="S2.F2"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_square" height="495" id="S2.F2.g1" src="./media/x2.png" width="438"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>Data collection pipeline of StyleTalk. The details of instruction and prompt template are in the Appendix.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S2.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.2 </span>Data Collection</h3>
+<div class="ltx_para" id="S2.SS2.p1">
+<p class="ltx_p" id="S2.SS2.p1.1">In this section, we introduce how the dataset is collected.
+The data collection pipeline includes three stages: (1) using LLM for data generation text dialogue with style annotation, (2) using an expressive TTS model to synthesize speech from text dialogue, and (3) recruiting human annotators to filter the dataset.
+We illustrate the data collection pipeline in Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.1 Overview ‣ 2 Dataset: StyleTalk ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">2</span></a>.</p>
+</div>
+<section class="ltx_subsubsection" id="S2.SS2.SSS1">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">2.2.1 </span>LLM for Data Generation</h4>
+<div class="ltx_para" id="S2.SS2.SSS1.p1">
+<p class="ltx_p" id="S2.SS2.SSS1.p1.1">Crafting a scenario with the same context and words but expressed in different speaking styles is a non-trivial task. Most dialogue corpora typically consist of one style, making it challenging to study the impact of various speaking styles on spoken responses.</p>
+</div>
+<div class="ltx_para" id="S2.SS2.SSS1.p2">
+<p class="ltx_p" id="S2.SS2.SSS1.p2.1">Recently, LLMs have demonstrated human-level knowledge and powerful data generation capabilities when provided with well-designed prompts and instructions. In light of this, we propose leveraging GPT-4 <cite class="ltx_cite ltx_citemacro_citep">(OpenAI, <a class="ltx_ref" href="#bib.bib33" title="">2023</a>)</cite> to generate spoken <span class="ltx_text ltx_font_bold" id="S2.SS2.SSS1.p2.1.1">dialogue set</span> consisting of a dialogue context, the same sentence presented in three different speaking styles, and three corresponding responses. To let LLM understand the speaking style information, the speaking style is represented in text by surrounded by special marker, for example, &lt;<span class="ltx_text ltx_font_italic" id="S2.SS2.SSS1.p2.1.2">emotion, speed, volume</span>&gt;.
+To increase the diversity of the dialogue, we prompt the GPT-4 with 17 common daily dialogue topics:
+School, work, family, health, entertainment, travel, food, sports, finance, technology, music, movies, books, games, beauty, shopping, and weather.
+Additionally, we use decoding with temperature sampling to ensure diversity in the dataset.
+The prompt template is shown in the appendix <a class="ltx_ref" href="#A7.F6" title="Figure 6 ‣ Appendix G Prompting GPT-4 for Data Generation ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+</section>
+<section class="ltx_subsubsection" id="S2.SS2.SSS2">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">2.2.2 </span>Expressive Speech Synthesis</h4>
+<div class="ltx_para" id="S2.SS2.SSS2.p1">
+<p class="ltx_p" id="S2.SS2.SSS2.p1.1">To generate high-quality speech with style and prosody control, we utilize an <a class="ltx_ref ltx_href" href="https://azure.microsoft.com/en-us/products/ai-services/text-to-speech" target="_blank" title="">industrial-grade Microsoft Azure Text-to-Speech (TTS) system</a><span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span>https://azure.microsoft.com/en-us/products/ai-services/text-to-speech</span></span></span>. For the speaking style, we employ <span class="ltx_text ltx_font_bold" id="S2.SS2.SSS2.p1.1.1">emotion</span> (neutral, cheerful, sad, friendly, unfriendly), <span class="ltx_text ltx_font_bold" id="S2.SS2.SSS2.p1.1.2">speeds</span> (slow, medium, fast), and <span class="ltx_text ltx_font_bold" id="S2.SS2.SSS2.p1.1.3">volumes</span> (quiet, medium, loud) for prosodic control. There are nine speakers, with four male and five female speakers.</p>
+</div>
+</section>
+<section class="ltx_subsubsection" id="S2.SS2.SSS3">
+<h4 class="ltx_title ltx_title_subsubsection">
+<span class="ltx_tag ltx_tag_subsubsection">2.2.3 </span>Human Annotator Filtering</h4>
+<div class="ltx_para" id="S2.SS2.SSS3.p1">
+<p class="ltx_p" id="S2.SS2.SSS3.p1.1">While LLMs can effectively follow instructions and generate reasonably coherent dialogue samples, LLMs are trained on textual data and lack exposure to human-human spoken dialogue. Additionally, the expressive TTS system may not achieve perfect naturalness and style-following in synthesizing speech under style conditions. The automatically generated data may exhibit unnatural characteristics for human speakers. Therefore, additional examination is necessary to check the quality of the speech data and the overall naturalness of spoken dialogue sample pairs.</p>
+</div>
+<div class="ltx_para" id="S2.SS2.SSS3.p2">
+<p class="ltx_p" id="S2.SS2.SSS3.p2.1">To ensure data quality, we request human listeners to participate in a listening test conducted on the Amazon Mechanical Turk platform. An illustration of the listening test is provided in Figure <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.1 Overview ‣ 2 Dataset: StyleTalk ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">2</span></a>. In this evaluation, participants are presented with a dialogue context text, the current spoken turn and three response spoken turns. They are then instructed to choose the most suitable response among the three options. Alternatively, if they perceive all three responses as unnatural, they can select the option "None of the above is natural." Participants need to be aware of the style of the current turn and <span class="ltx_text ltx_font_italic" id="S2.SS2.SSS3.p2.1.1">differentiate between the three response turns to identify the most natural one</span>. Through this evaluation, we aim to filter out sample pairs that are deemed unnatural or indistinguishable. Details are shown in Appendix <a class="ltx_ref" href="#A1" title="Appendix A Details of human annotators filtering ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">A</span></a>. We found out that only around 33% samples successfully passed the human filtering process. This suggests that LLM-generated spoken samples are either <span class="ltx_text ltx_font_italic" id="S2.SS2.SSS3.p2.1.2">not natural to human perception</span> or <span class="ltx_text ltx_font_italic" id="S2.SS2.SSS3.p2.1.3">the speaking style does not distinctly influence spoken responses</span>.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S2.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.3 </span>Data split</h3>
+<div class="ltx_para" id="S2.SS3.p1">
+<p class="ltx_p" id="S2.SS3.p1.1">After manual filtering, we split the filtered data into training and evaluation sets with dialogue sets. “Sample" means a current and response speech pair. The detailed data statistics are shown in Appendix Table <a class="ltx_ref" href="#A5.T7" title="Table 7 ‣ Appendix E Diversity of current and responding styles ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">7</span></a>.
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S2.SS3.p1.1.1">Train set</span>: The training set is carefully curated through manual filtering, resulting in 1,878 dialogue sets and 1,986 samples. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S2.SS3.p1.1.2">Evaluation set</span>: The evaluation set contains 486 dialogue sets and 981 samples, most of the dialogue sets have two to three speaking styles for the current text. 
+<br class="ltx_break"/>In addition to the train and evaluation set, a fully LLM-generated <span class="ltx_text ltx_font_bold" id="S2.SS3.p1.1.3">unfiltered set</span> is introduced for data augmentation since the size of the training set is limited. The unfiltered set consists of 5,777 dialogue sets and 16,472 samples. It is crucial to note that this data is not subject to human supervision, and as such, the samples may not align perfectly with human standards.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Spoken-LLM framework</h2>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Overview</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.2">The framework of Spoken-LLM is illustrated in Figure <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">1</span></a>. The main components include the large language models, speaking style encoder, speech-to-text conversion, and expressive TTS system. <math alttext="D_{s}" class="ltx_Math" display="inline" id="S3.SS1.p1.1.m1.1"><semantics id="S3.SS1.p1.1.m1.1a"><msub id="S3.SS1.p1.1.m1.1.1" xref="S3.SS1.p1.1.m1.1.1.cmml"><mi id="S3.SS1.p1.1.m1.1.1.2" xref="S3.SS1.p1.1.m1.1.1.2.cmml">D</mi><mi id="S3.SS1.p1.1.m1.1.1.3" xref="S3.SS1.p1.1.m1.1.1.3.cmml">s</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p1.1.m1.1b"><apply id="S3.SS1.p1.1.m1.1.1.cmml" xref="S3.SS1.p1.1.m1.1.1"><csymbol cd="ambiguous" id="S3.SS1.p1.1.m1.1.1.1.cmml" xref="S3.SS1.p1.1.m1.1.1">subscript</csymbol><ci id="S3.SS1.p1.1.m1.1.1.2.cmml" xref="S3.SS1.p1.1.m1.1.1.2">𝐷</ci><ci id="S3.SS1.p1.1.m1.1.1.3.cmml" xref="S3.SS1.p1.1.m1.1.1.3">𝑠</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p1.1.m1.1c">D_{s}</annotation></semantics></math> and <math alttext="D_{t}" class="ltx_Math" display="inline" id="S3.SS1.p1.2.m2.1"><semantics id="S3.SS1.p1.2.m2.1a"><msub id="S3.SS1.p1.2.m2.1.1" xref="S3.SS1.p1.2.m2.1.1.cmml"><mi id="S3.SS1.p1.2.m2.1.1.2" xref="S3.SS1.p1.2.m2.1.1.2.cmml">D</mi><mi id="S3.SS1.p1.2.m2.1.1.3" xref="S3.SS1.p1.2.m2.1.1.3.cmml">t</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p1.2.m2.1b"><apply id="S3.SS1.p1.2.m2.1.1.cmml" xref="S3.SS1.p1.2.m2.1.1"><csymbol cd="ambiguous" id="S3.SS1.p1.2.m2.1.1.1.cmml" xref="S3.SS1.p1.2.m2.1.1">subscript</csymbol><ci id="S3.SS1.p1.2.m2.1.1.2.cmml" xref="S3.SS1.p1.2.m2.1.1.2">𝐷</ci><ci id="S3.SS1.p1.2.m2.1.1.3.cmml" xref="S3.SS1.p1.2.m2.1.1.3">𝑡</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p1.2.m2.1c">D_{t}</annotation></semantics></math> denote the dimension of the speech encoder’s output and LLM’s input space, respectively.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p2">
+<p class="ltx_p" id="S3.SS1.p2.9">We formulate the task as follows: given a multi-turn spoken dialog with dialogue context <math alttext="H" class="ltx_Math" display="inline" id="S3.SS1.p2.1.m1.1"><semantics id="S3.SS1.p2.1.m1.1a"><mi id="S3.SS1.p2.1.m1.1.1" xref="S3.SS1.p2.1.m1.1.1.cmml">H</mi><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.1.m1.1b"><ci id="S3.SS1.p2.1.m1.1.1.cmml" xref="S3.SS1.p2.1.m1.1.1">𝐻</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.1.m1.1c">H</annotation></semantics></math> in text <math alttext="T_{h}" class="ltx_Math" display="inline" id="S3.SS1.p2.2.m2.1"><semantics id="S3.SS1.p2.2.m2.1a"><msub id="S3.SS1.p2.2.m2.1.1" xref="S3.SS1.p2.2.m2.1.1.cmml"><mi id="S3.SS1.p2.2.m2.1.1.2" xref="S3.SS1.p2.2.m2.1.1.2.cmml">T</mi><mi id="S3.SS1.p2.2.m2.1.1.3" xref="S3.SS1.p2.2.m2.1.1.3.cmml">h</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.2.m2.1b"><apply id="S3.SS1.p2.2.m2.1.1.cmml" xref="S3.SS1.p2.2.m2.1.1"><csymbol cd="ambiguous" id="S3.SS1.p2.2.m2.1.1.1.cmml" xref="S3.SS1.p2.2.m2.1.1">subscript</csymbol><ci id="S3.SS1.p2.2.m2.1.1.2.cmml" xref="S3.SS1.p2.2.m2.1.1.2">𝑇</ci><ci id="S3.SS1.p2.2.m2.1.1.3.cmml" xref="S3.SS1.p2.2.m2.1.1.3">ℎ</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.2.m2.1c">T_{h}</annotation></semantics></math>, a current turn <math alttext="C" class="ltx_Math" display="inline" id="S3.SS1.p2.3.m3.1"><semantics id="S3.SS1.p2.3.m3.1a"><mi id="S3.SS1.p2.3.m3.1.1" xref="S3.SS1.p2.3.m3.1.1.cmml">C</mi><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.3.m3.1b"><ci id="S3.SS1.p2.3.m3.1.1.cmml" xref="S3.SS1.p2.3.m3.1.1">𝐶</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.3.m3.1c">C</annotation></semantics></math> comprising speech <math alttext="S_{c}" class="ltx_Math" display="inline" id="S3.SS1.p2.4.m4.1"><semantics id="S3.SS1.p2.4.m4.1a"><msub id="S3.SS1.p2.4.m4.1.1" xref="S3.SS1.p2.4.m4.1.1.cmml"><mi id="S3.SS1.p2.4.m4.1.1.2" xref="S3.SS1.p2.4.m4.1.1.2.cmml">S</mi><mi id="S3.SS1.p2.4.m4.1.1.3" xref="S3.SS1.p2.4.m4.1.1.3.cmml">c</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.4.m4.1b"><apply id="S3.SS1.p2.4.m4.1.1.cmml" xref="S3.SS1.p2.4.m4.1.1"><csymbol cd="ambiguous" id="S3.SS1.p2.4.m4.1.1.1.cmml" xref="S3.SS1.p2.4.m4.1.1">subscript</csymbol><ci id="S3.SS1.p2.4.m4.1.1.2.cmml" xref="S3.SS1.p2.4.m4.1.1.2">𝑆</ci><ci id="S3.SS1.p2.4.m4.1.1.3.cmml" xref="S3.SS1.p2.4.m4.1.1.3">𝑐</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.4.m4.1c">S_{c}</annotation></semantics></math> and text <math alttext="T_{c}" class="ltx_Math" display="inline" id="S3.SS1.p2.5.m5.1"><semantics id="S3.SS1.p2.5.m5.1a"><msub id="S3.SS1.p2.5.m5.1.1" xref="S3.SS1.p2.5.m5.1.1.cmml"><mi id="S3.SS1.p2.5.m5.1.1.2" xref="S3.SS1.p2.5.m5.1.1.2.cmml">T</mi><mi id="S3.SS1.p2.5.m5.1.1.3" xref="S3.SS1.p2.5.m5.1.1.3.cmml">c</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.5.m5.1b"><apply id="S3.SS1.p2.5.m5.1.1.cmml" xref="S3.SS1.p2.5.m5.1.1"><csymbol cd="ambiguous" id="S3.SS1.p2.5.m5.1.1.1.cmml" xref="S3.SS1.p2.5.m5.1.1">subscript</csymbol><ci id="S3.SS1.p2.5.m5.1.1.2.cmml" xref="S3.SS1.p2.5.m5.1.1.2">𝑇</ci><ci id="S3.SS1.p2.5.m5.1.1.3.cmml" xref="S3.SS1.p2.5.m5.1.1.3">𝑐</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.5.m5.1c">T_{c}</annotation></semantics></math>. The prediction response speech <math alttext="R" class="ltx_Math" display="inline" id="S3.SS1.p2.6.m6.1"><semantics id="S3.SS1.p2.6.m6.1a"><mi id="S3.SS1.p2.6.m6.1.1" xref="S3.SS1.p2.6.m6.1.1.cmml">R</mi><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.6.m6.1b"><ci id="S3.SS1.p2.6.m6.1.1.cmml" xref="S3.SS1.p2.6.m6.1.1">𝑅</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.6.m6.1c">R</annotation></semantics></math> includes response style <math alttext="L_{r}" class="ltx_Math" display="inline" id="S3.SS1.p2.7.m7.1"><semantics id="S3.SS1.p2.7.m7.1a"><msub id="S3.SS1.p2.7.m7.1.1" xref="S3.SS1.p2.7.m7.1.1.cmml"><mi id="S3.SS1.p2.7.m7.1.1.2" xref="S3.SS1.p2.7.m7.1.1.2.cmml">L</mi><mi id="S3.SS1.p2.7.m7.1.1.3" xref="S3.SS1.p2.7.m7.1.1.3.cmml">r</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.7.m7.1b"><apply id="S3.SS1.p2.7.m7.1.1.cmml" xref="S3.SS1.p2.7.m7.1.1"><csymbol cd="ambiguous" id="S3.SS1.p2.7.m7.1.1.1.cmml" xref="S3.SS1.p2.7.m7.1.1">subscript</csymbol><ci id="S3.SS1.p2.7.m7.1.1.2.cmml" xref="S3.SS1.p2.7.m7.1.1.2">𝐿</ci><ci id="S3.SS1.p2.7.m7.1.1.3.cmml" xref="S3.SS1.p2.7.m7.1.1.3">𝑟</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.7.m7.1c">L_{r}</annotation></semantics></math> and response text <math alttext="T_{r}" class="ltx_Math" display="inline" id="S3.SS1.p2.8.m8.1"><semantics id="S3.SS1.p2.8.m8.1a"><msub id="S3.SS1.p2.8.m8.1.1" xref="S3.SS1.p2.8.m8.1.1.cmml"><mi id="S3.SS1.p2.8.m8.1.1.2" xref="S3.SS1.p2.8.m8.1.1.2.cmml">T</mi><mi id="S3.SS1.p2.8.m8.1.1.3" xref="S3.SS1.p2.8.m8.1.1.3.cmml">r</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.8.m8.1b"><apply id="S3.SS1.p2.8.m8.1.1.cmml" xref="S3.SS1.p2.8.m8.1.1"><csymbol cd="ambiguous" id="S3.SS1.p2.8.m8.1.1.1.cmml" xref="S3.SS1.p2.8.m8.1.1">subscript</csymbol><ci id="S3.SS1.p2.8.m8.1.1.2.cmml" xref="S3.SS1.p2.8.m8.1.1.2">𝑇</ci><ci id="S3.SS1.p2.8.m8.1.1.3.cmml" xref="S3.SS1.p2.8.m8.1.1.3">𝑟</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.8.m8.1c">T_{r}</annotation></semantics></math>. Note that we use the ground truth transcripts <math alttext="T_{c}" class="ltx_Math" display="inline" id="S3.SS1.p2.9.m9.1"><semantics id="S3.SS1.p2.9.m9.1a"><msub id="S3.SS1.p2.9.m9.1.1" xref="S3.SS1.p2.9.m9.1.1.cmml"><mi id="S3.SS1.p2.9.m9.1.1.2" xref="S3.SS1.p2.9.m9.1.1.2.cmml">T</mi><mi id="S3.SS1.p2.9.m9.1.1.3" xref="S3.SS1.p2.9.m9.1.1.3.cmml">c</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS1.p2.9.m9.1b"><apply id="S3.SS1.p2.9.m9.1.1.cmml" xref="S3.SS1.p2.9.m9.1.1"><csymbol cd="ambiguous" id="S3.SS1.p2.9.m9.1.1.1.cmml" xref="S3.SS1.p2.9.m9.1.1">subscript</csymbol><ci id="S3.SS1.p2.9.m9.1.1.2.cmml" xref="S3.SS1.p2.9.m9.1.1.2">𝑇</ci><ci id="S3.SS1.p2.9.m9.1.1.3.cmml" xref="S3.SS1.p2.9.m9.1.1.3">𝑐</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS1.p2.9.m9.1c">T_{c}</annotation></semantics></math> of the current turn, since addressing speech recognition errors is not the focus of this work. The discussion of using ASR prediction is in section <a class="ltx_ref" href="#A3" title="Appendix C ASR prediction as input ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">C</span></a>.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Large Language Model</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1">This study adopts the open-sourced Llama 2-Chat 7B model, derived from the fine-tuned version of Llama 2 <cite class="ltx_cite ltx_citemacro_citep">(Touvron et al., <a class="ltx_ref" href="#bib.bib41" title="">2023</a>)</cite>, exhibiting optimized dialogue generation capabilities. Throughout the training process, the Llama 2-Chat model remains frozen, and we introduce the trainable LoRA adapter <cite class="ltx_cite ltx_citemacro_citep">(Hu et al., <a class="ltx_ref" href="#bib.bib17" title="">2021</a>)</cite> for parameter-efficient fine-tuning.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.3 </span>Speech Style Encoder</h3>
+<div class="ltx_para" id="S3.SS3.p1">
+<p class="ltx_p" id="S3.SS3.p1.1">Among the self-supervised speech models <cite class="ltx_cite ltx_citemacro_citep">(Yang et al., <a class="ltx_ref" href="#bib.bib49" title="">2021</a>; Lin et al., <a class="ltx_ref" href="#bib.bib24" title="">2023a</a>)</cite>, emotion2vec <cite class="ltx_cite ltx_citemacro_citep">(Ma et al., <a class="ltx_ref" href="#bib.bib26" title="">2023</a>)</cite> achieves state-of-the-art performance on diverse paralinguistics-related tasks. Precisely, it extends the data2vec 2.0 <cite class="ltx_cite ltx_citemacro_citep">(Baevski et al., <a class="ltx_ref" href="#bib.bib1" title="">2023</a>)</cite> with both utterance-level and frame-level loss using emotional speech data, and extra chunk token embeddings are used to capture utterance-wise information.</p>
+</div>
+<div class="ltx_para" id="S3.SS3.p2">
+<p class="ltx_p" id="S3.SS3.p2.2">We choose emotion2vec as the speech encoder to extract universal paralinguistic and prosody embeddings. Two approaches are used for feature extraction. (1) <span class="ltx_text ltx_font_italic" id="S3.SS3.p2.2.1">Utterance-level averaging embedding (utt)</span>: which involves a simple averaging of frame-wise representations to create an utterance-level embedding. The embedding is in <math alttext="1\times D_{s}" class="ltx_Math" display="inline" id="S3.SS3.p2.1.m1.1"><semantics id="S3.SS3.p2.1.m1.1a"><mrow id="S3.SS3.p2.1.m1.1.1" xref="S3.SS3.p2.1.m1.1.1.cmml"><mn id="S3.SS3.p2.1.m1.1.1.2" xref="S3.SS3.p2.1.m1.1.1.2.cmml">1</mn><mo id="S3.SS3.p2.1.m1.1.1.1" lspace="0.222em" rspace="0.222em" xref="S3.SS3.p2.1.m1.1.1.1.cmml">×</mo><msub id="S3.SS3.p2.1.m1.1.1.3" xref="S3.SS3.p2.1.m1.1.1.3.cmml"><mi id="S3.SS3.p2.1.m1.1.1.3.2" xref="S3.SS3.p2.1.m1.1.1.3.2.cmml">D</mi><mi id="S3.SS3.p2.1.m1.1.1.3.3" xref="S3.SS3.p2.1.m1.1.1.3.3.cmml">s</mi></msub></mrow><annotation-xml encoding="MathML-Content" id="S3.SS3.p2.1.m1.1b"><apply id="S3.SS3.p2.1.m1.1.1.cmml" xref="S3.SS3.p2.1.m1.1.1"><times id="S3.SS3.p2.1.m1.1.1.1.cmml" xref="S3.SS3.p2.1.m1.1.1.1"></times><cn id="S3.SS3.p2.1.m1.1.1.2.cmml" type="integer" xref="S3.SS3.p2.1.m1.1.1.2">1</cn><apply id="S3.SS3.p2.1.m1.1.1.3.cmml" xref="S3.SS3.p2.1.m1.1.1.3"><csymbol cd="ambiguous" id="S3.SS3.p2.1.m1.1.1.3.1.cmml" xref="S3.SS3.p2.1.m1.1.1.3">subscript</csymbol><ci id="S3.SS3.p2.1.m1.1.1.3.2.cmml" xref="S3.SS3.p2.1.m1.1.1.3.2">𝐷</ci><ci id="S3.SS3.p2.1.m1.1.1.3.3.cmml" xref="S3.SS3.p2.1.m1.1.1.3.3">𝑠</ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.p2.1.m1.1c">1\times D_{s}</annotation></semantics></math> dimension. (2) <span class="ltx_text ltx_font_italic" id="S3.SS3.p2.2.2">Chunk embedding</span>: emotion2vec learns 10 extra chunk token embeddings to capture both fine-grained and global speech information. Chunk embeddings are in <math alttext="10\times D_{s}" class="ltx_Math" display="inline" id="S3.SS3.p2.2.m2.1"><semantics id="S3.SS3.p2.2.m2.1a"><mrow id="S3.SS3.p2.2.m2.1.1" xref="S3.SS3.p2.2.m2.1.1.cmml"><mn id="S3.SS3.p2.2.m2.1.1.2" xref="S3.SS3.p2.2.m2.1.1.2.cmml">10</mn><mo id="S3.SS3.p2.2.m2.1.1.1" lspace="0.222em" rspace="0.222em" xref="S3.SS3.p2.2.m2.1.1.1.cmml">×</mo><msub id="S3.SS3.p2.2.m2.1.1.3" xref="S3.SS3.p2.2.m2.1.1.3.cmml"><mi id="S3.SS3.p2.2.m2.1.1.3.2" xref="S3.SS3.p2.2.m2.1.1.3.2.cmml">D</mi><mi id="S3.SS3.p2.2.m2.1.1.3.3" xref="S3.SS3.p2.2.m2.1.1.3.3.cmml">s</mi></msub></mrow><annotation-xml encoding="MathML-Content" id="S3.SS3.p2.2.m2.1b"><apply id="S3.SS3.p2.2.m2.1.1.cmml" xref="S3.SS3.p2.2.m2.1.1"><times id="S3.SS3.p2.2.m2.1.1.1.cmml" xref="S3.SS3.p2.2.m2.1.1.1"></times><cn id="S3.SS3.p2.2.m2.1.1.2.cmml" type="integer" xref="S3.SS3.p2.2.m2.1.1.2">10</cn><apply id="S3.SS3.p2.2.m2.1.1.3.cmml" xref="S3.SS3.p2.2.m2.1.1.3"><csymbol cd="ambiguous" id="S3.SS3.p2.2.m2.1.1.3.1.cmml" xref="S3.SS3.p2.2.m2.1.1.3">subscript</csymbol><ci id="S3.SS3.p2.2.m2.1.1.3.2.cmml" xref="S3.SS3.p2.2.m2.1.1.3.2">𝐷</ci><ci id="S3.SS3.p2.2.m2.1.1.3.3.cmml" xref="S3.SS3.p2.2.m2.1.1.3.3">𝑠</ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.p2.2.m2.1c">10\times D_{s}</annotation></semantics></math> dimension.</p>
+</div>
+<div class="ltx_para" id="S3.SS3.p3">
+<p class="ltx_p" id="S3.SS3.p3.2">A lightweight <span class="ltx_text ltx_font_italic" id="S3.SS3.p3.2.1">Connector</span> module with layer normalization and a linear model is utilized to project the speech embeddings into the dimension of the language model’s input space (from <math alttext="D_{s}" class="ltx_Math" display="inline" id="S3.SS3.p3.1.m1.1"><semantics id="S3.SS3.p3.1.m1.1a"><msub id="S3.SS3.p3.1.m1.1.1" xref="S3.SS3.p3.1.m1.1.1.cmml"><mi id="S3.SS3.p3.1.m1.1.1.2" xref="S3.SS3.p3.1.m1.1.1.2.cmml">D</mi><mi id="S3.SS3.p3.1.m1.1.1.3" xref="S3.SS3.p3.1.m1.1.1.3.cmml">s</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS3.p3.1.m1.1b"><apply id="S3.SS3.p3.1.m1.1.1.cmml" xref="S3.SS3.p3.1.m1.1.1"><csymbol cd="ambiguous" id="S3.SS3.p3.1.m1.1.1.1.cmml" xref="S3.SS3.p3.1.m1.1.1">subscript</csymbol><ci id="S3.SS3.p3.1.m1.1.1.2.cmml" xref="S3.SS3.p3.1.m1.1.1.2">𝐷</ci><ci id="S3.SS3.p3.1.m1.1.1.3.cmml" xref="S3.SS3.p3.1.m1.1.1.3">𝑠</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.p3.1.m1.1c">D_{s}</annotation></semantics></math> to <math alttext="D_{t}" class="ltx_Math" display="inline" id="S3.SS3.p3.2.m2.1"><semantics id="S3.SS3.p3.2.m2.1a"><msub id="S3.SS3.p3.2.m2.1.1" xref="S3.SS3.p3.2.m2.1.1.cmml"><mi id="S3.SS3.p3.2.m2.1.1.2" xref="S3.SS3.p3.2.m2.1.1.2.cmml">D</mi><mi id="S3.SS3.p3.2.m2.1.1.3" xref="S3.SS3.p3.2.m2.1.1.3.cmml">t</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS3.p3.2.m2.1b"><apply id="S3.SS3.p3.2.m2.1.1.cmml" xref="S3.SS3.p3.2.m2.1.1"><csymbol cd="ambiguous" id="S3.SS3.p3.2.m2.1.1.1.cmml" xref="S3.SS3.p3.2.m2.1.1">subscript</csymbol><ci id="S3.SS3.p3.2.m2.1.1.2.cmml" xref="S3.SS3.p3.2.m2.1.1.2">𝐷</ci><ci id="S3.SS3.p3.2.m2.1.1.3.cmml" xref="S3.SS3.p3.2.m2.1.1.3">𝑡</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.p3.2.m2.1c">D_{t}</annotation></semantics></math>). Only the parameters of the connector are updated, while the emotion2vec model remains frozen. The number of trainable parameters for utterance and chunk embeddings are the same.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.4 </span>Spoken Dialogue Modeling</h3>
+<div class="ltx_para" id="S3.SS4.p1">
+<p class="ltx_p" id="S3.SS4.p1.2"><span class="ltx_text ltx_font_bold" id="S3.SS4.p1.2.1">1st-stage: style alignment</span>: The first-stage training is used to align the speech embedding with LLM input space. To achieve this, the frozen LLM has to predict the current input style. Only the connector <math alttext="\phi" class="ltx_Math" display="inline" id="S3.SS4.p1.1.m1.1"><semantics id="S3.SS4.p1.1.m1.1a"><mi id="S3.SS4.p1.1.m1.1.1" xref="S3.SS4.p1.1.m1.1.1.cmml">ϕ</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.1.m1.1b"><ci id="S3.SS4.p1.1.m1.1.1.cmml" xref="S3.SS4.p1.1.m1.1.1">italic-ϕ</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.1.m1.1c">\phi</annotation></semantics></math> is trained. The training objective is to minimize the cross-entropy loss for classifying <math alttext="L_{c}" class="ltx_Math" display="inline" id="S3.SS4.p1.2.m2.1"><semantics id="S3.SS4.p1.2.m2.1a"><msub id="S3.SS4.p1.2.m2.1.1" xref="S3.SS4.p1.2.m2.1.1.cmml"><mi id="S3.SS4.p1.2.m2.1.1.2" xref="S3.SS4.p1.2.m2.1.1.2.cmml">L</mi><mi id="S3.SS4.p1.2.m2.1.1.3" xref="S3.SS4.p1.2.m2.1.1.3.cmml">c</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.2.m2.1b"><apply id="S3.SS4.p1.2.m2.1.1.cmml" xref="S3.SS4.p1.2.m2.1.1"><csymbol cd="ambiguous" id="S3.SS4.p1.2.m2.1.1.1.cmml" xref="S3.SS4.p1.2.m2.1.1">subscript</csymbol><ci id="S3.SS4.p1.2.m2.1.1.2.cmml" xref="S3.SS4.p1.2.m2.1.1.2">𝐿</ci><ci id="S3.SS4.p1.2.m2.1.1.3.cmml" xref="S3.SS4.p1.2.m2.1.1.3">𝑐</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.2.m2.1c">L_{c}</annotation></semantics></math>:</p>
+<table class="ltx_equationgroup ltx_eqn_eqnarray ltx_eqn_table" id="A9.EGx1">
+<tbody id="S3.E1"><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_td ltx_align_right ltx_eqn_cell"><math alttext="\displaystyle\mathcal{P}(L_{c}|C,I_{1};\phi)," class="ltx_Math" display="inline" id="S3.E1.m1.3"><semantics id="S3.E1.m1.3a"><mrow id="S3.E1.m1.3.3.1" xref="S3.E1.m1.3.3.1.1.cmml"><mrow id="S3.E1.m1.3.3.1.1" xref="S3.E1.m1.3.3.1.1.cmml"><mi class="ltx_font_mathcaligraphic" id="S3.E1.m1.3.3.1.1.3" xref="S3.E1.m1.3.3.1.1.3.cmml">𝒫</mi><mo id="S3.E1.m1.3.3.1.1.2" lspace="0em" rspace="0em" xref="S3.E1.m1.3.3.1.1.2.cmml">​</mo><mrow id="S3.E1.m1.3.3.1.1.1.1" xref="S3.E1.m1.3.3.1.1.1.1.1.cmml"><mo id="S3.E1.m1.3.3.1.1.1.1.2" stretchy="false" xref="S3.E1.m1.3.3.1.1.1.1.1.cmml">(</mo><mrow id="S3.E1.m1.3.3.1.1.1.1.1" xref="S3.E1.m1.3.3.1.1.1.1.1.cmml"><msub id="S3.E1.m1.3.3.1.1.1.1.1.3" xref="S3.E1.m1.3.3.1.1.1.1.1.3.cmml"><mi id="S3.E1.m1.3.3.1.1.1.1.1.3.2" xref="S3.E1.m1.3.3.1.1.1.1.1.3.2.cmml">L</mi><mi id="S3.E1.m1.3.3.1.1.1.1.1.3.3" xref="S3.E1.m1.3.3.1.1.1.1.1.3.3.cmml">c</mi></msub><mo fence="false" id="S3.E1.m1.3.3.1.1.1.1.1.2" xref="S3.E1.m1.3.3.1.1.1.1.1.2.cmml">|</mo><mrow id="S3.E1.m1.3.3.1.1.1.1.1.1.1" xref="S3.E1.m1.3.3.1.1.1.1.1.1.2.cmml"><mi id="S3.E1.m1.1.1" xref="S3.E1.m1.1.1.cmml">C</mi><mo id="S3.E1.m1.3.3.1.1.1.1.1.1.1.2" xref="S3.E1.m1.3.3.1.1.1.1.1.1.2.cmml">,</mo><msub id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.cmml"><mi id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.2" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.2.cmml">I</mi><mn id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.3" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.3.cmml">1</mn></msub><mo id="S3.E1.m1.3.3.1.1.1.1.1.1.1.3" xref="S3.E1.m1.3.3.1.1.1.1.1.1.2.cmml">;</mo><mi id="S3.E1.m1.2.2" xref="S3.E1.m1.2.2.cmml">ϕ</mi></mrow></mrow><mo id="S3.E1.m1.3.3.1.1.1.1.3" stretchy="false" xref="S3.E1.m1.3.3.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.3.3.1.2" xref="S3.E1.m1.3.3.1.1.cmml">,</mo></mrow><annotation-xml encoding="MathML-Content" id="S3.E1.m1.3b"><apply id="S3.E1.m1.3.3.1.1.cmml" xref="S3.E1.m1.3.3.1"><times id="S3.E1.m1.3.3.1.1.2.cmml" xref="S3.E1.m1.3.3.1.1.2"></times><ci id="S3.E1.m1.3.3.1.1.3.cmml" xref="S3.E1.m1.3.3.1.1.3">𝒫</ci><apply id="S3.E1.m1.3.3.1.1.1.1.1.cmml" xref="S3.E1.m1.3.3.1.1.1.1"><csymbol cd="latexml" id="S3.E1.m1.3.3.1.1.1.1.1.2.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.2">conditional</csymbol><apply id="S3.E1.m1.3.3.1.1.1.1.1.3.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.3"><csymbol cd="ambiguous" id="S3.E1.m1.3.3.1.1.1.1.1.3.1.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.3">subscript</csymbol><ci id="S3.E1.m1.3.3.1.1.1.1.1.3.2.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.3.2">𝐿</ci><ci id="S3.E1.m1.3.3.1.1.1.1.1.3.3.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.3.3">𝑐</ci></apply><list id="S3.E1.m1.3.3.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1"><ci id="S3.E1.m1.1.1.cmml" xref="S3.E1.m1.1.1">𝐶</ci><apply id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1">subscript</csymbol><ci id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.2">𝐼</ci><cn id="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.3.cmml" type="integer" xref="S3.E1.m1.3.3.1.1.1.1.1.1.1.1.3">1</cn></apply><ci id="S3.E1.m1.2.2.cmml" xref="S3.E1.m1.2.2">italic-ϕ</ci></list></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.E1.m1.3c">\displaystyle\mathcal{P}(L_{c}|C,I_{1};\phi),</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(1)</span></td>
+</tr></tbody>
+</table>
+<p class="ltx_p" id="S3.SS4.p1.4">where <math alttext="C=\{T_{c},S_{c}\}" class="ltx_Math" display="inline" id="S3.SS4.p1.3.m1.2"><semantics id="S3.SS4.p1.3.m1.2a"><mrow id="S3.SS4.p1.3.m1.2.2" xref="S3.SS4.p1.3.m1.2.2.cmml"><mi id="S3.SS4.p1.3.m1.2.2.4" xref="S3.SS4.p1.3.m1.2.2.4.cmml">C</mi><mo id="S3.SS4.p1.3.m1.2.2.3" xref="S3.SS4.p1.3.m1.2.2.3.cmml">=</mo><mrow id="S3.SS4.p1.3.m1.2.2.2.2" xref="S3.SS4.p1.3.m1.2.2.2.3.cmml"><mo id="S3.SS4.p1.3.m1.2.2.2.2.3" stretchy="false" xref="S3.SS4.p1.3.m1.2.2.2.3.cmml">{</mo><msub id="S3.SS4.p1.3.m1.1.1.1.1.1" xref="S3.SS4.p1.3.m1.1.1.1.1.1.cmml"><mi id="S3.SS4.p1.3.m1.1.1.1.1.1.2" xref="S3.SS4.p1.3.m1.1.1.1.1.1.2.cmml">T</mi><mi id="S3.SS4.p1.3.m1.1.1.1.1.1.3" xref="S3.SS4.p1.3.m1.1.1.1.1.1.3.cmml">c</mi></msub><mo id="S3.SS4.p1.3.m1.2.2.2.2.4" xref="S3.SS4.p1.3.m1.2.2.2.3.cmml">,</mo><msub id="S3.SS4.p1.3.m1.2.2.2.2.2" xref="S3.SS4.p1.3.m1.2.2.2.2.2.cmml"><mi id="S3.SS4.p1.3.m1.2.2.2.2.2.2" xref="S3.SS4.p1.3.m1.2.2.2.2.2.2.cmml">S</mi><mi id="S3.SS4.p1.3.m1.2.2.2.2.2.3" xref="S3.SS4.p1.3.m1.2.2.2.2.2.3.cmml">c</mi></msub><mo id="S3.SS4.p1.3.m1.2.2.2.2.5" stretchy="false" xref="S3.SS4.p1.3.m1.2.2.2.3.cmml">}</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.3.m1.2b"><apply id="S3.SS4.p1.3.m1.2.2.cmml" xref="S3.SS4.p1.3.m1.2.2"><eq id="S3.SS4.p1.3.m1.2.2.3.cmml" xref="S3.SS4.p1.3.m1.2.2.3"></eq><ci id="S3.SS4.p1.3.m1.2.2.4.cmml" xref="S3.SS4.p1.3.m1.2.2.4">𝐶</ci><set id="S3.SS4.p1.3.m1.2.2.2.3.cmml" xref="S3.SS4.p1.3.m1.2.2.2.2"><apply id="S3.SS4.p1.3.m1.1.1.1.1.1.cmml" xref="S3.SS4.p1.3.m1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.SS4.p1.3.m1.1.1.1.1.1.1.cmml" xref="S3.SS4.p1.3.m1.1.1.1.1.1">subscript</csymbol><ci id="S3.SS4.p1.3.m1.1.1.1.1.1.2.cmml" xref="S3.SS4.p1.3.m1.1.1.1.1.1.2">𝑇</ci><ci id="S3.SS4.p1.3.m1.1.1.1.1.1.3.cmml" xref="S3.SS4.p1.3.m1.1.1.1.1.1.3">𝑐</ci></apply><apply id="S3.SS4.p1.3.m1.2.2.2.2.2.cmml" xref="S3.SS4.p1.3.m1.2.2.2.2.2"><csymbol cd="ambiguous" id="S3.SS4.p1.3.m1.2.2.2.2.2.1.cmml" xref="S3.SS4.p1.3.m1.2.2.2.2.2">subscript</csymbol><ci id="S3.SS4.p1.3.m1.2.2.2.2.2.2.cmml" xref="S3.SS4.p1.3.m1.2.2.2.2.2.2">𝑆</ci><ci id="S3.SS4.p1.3.m1.2.2.2.2.2.3.cmml" xref="S3.SS4.p1.3.m1.2.2.2.2.2.3">𝑐</ci></apply></set></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.3.m1.2c">C=\{T_{c},S_{c}\}</annotation></semantics></math>. <math alttext="I_{1}" class="ltx_Math" display="inline" id="S3.SS4.p1.4.m2.1"><semantics id="S3.SS4.p1.4.m2.1a"><msub id="S3.SS4.p1.4.m2.1.1" xref="S3.SS4.p1.4.m2.1.1.cmml"><mi id="S3.SS4.p1.4.m2.1.1.2" xref="S3.SS4.p1.4.m2.1.1.2.cmml">I</mi><mn id="S3.SS4.p1.4.m2.1.1.3" xref="S3.SS4.p1.4.m2.1.1.3.cmml">1</mn></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.4.m2.1b"><apply id="S3.SS4.p1.4.m2.1.1.cmml" xref="S3.SS4.p1.4.m2.1.1"><csymbol cd="ambiguous" id="S3.SS4.p1.4.m2.1.1.1.cmml" xref="S3.SS4.p1.4.m2.1.1">subscript</csymbol><ci id="S3.SS4.p1.4.m2.1.1.2.cmml" xref="S3.SS4.p1.4.m2.1.1.2">𝐼</ci><cn id="S3.SS4.p1.4.m2.1.1.3.cmml" type="integer" xref="S3.SS4.p1.4.m2.1.1.3">1</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.4.m2.1c">I_{1}</annotation></semantics></math> is the task instruction shown in Appendix <a class="ltx_ref" href="#A6" title="Appendix F Instruction ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">F</span></a>. Since this training stage requires a reasonable amount of data to have better alignment, we use the current speech from the unfiltered set for training.
+<br class="ltx_break"/></p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS4.p2">
+<p class="ltx_p" id="S3.SS4.p2.4"><span class="ltx_text ltx_font_bold" id="S3.SS4.p2.4.1">2nd-stage: spoken response modeling</span>: After the LLM can understand the speech embedding, the LLM is optimized to predict the response style and response text by training the LoRA adapter <math alttext="\theta" class="ltx_Math" display="inline" id="S3.SS4.p2.1.m1.1"><semantics id="S3.SS4.p2.1.m1.1a"><mi id="S3.SS4.p2.1.m1.1.1" xref="S3.SS4.p2.1.m1.1.1.cmml">θ</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.1.m1.1b"><ci id="S3.SS4.p2.1.m1.1.1.cmml" xref="S3.SS4.p2.1.m1.1.1">𝜃</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.1.m1.1c">\theta</annotation></semantics></math> and speech connector <math alttext="\phi" class="ltx_Math" display="inline" id="S3.SS4.p2.2.m2.1"><semantics id="S3.SS4.p2.2.m2.1a"><mi id="S3.SS4.p2.2.m2.1.1" xref="S3.SS4.p2.2.m2.1.1.cmml">ϕ</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.2.m2.1b"><ci id="S3.SS4.p2.2.m2.1.1.cmml" xref="S3.SS4.p2.2.m2.1.1">italic-ϕ</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.2.m2.1c">\phi</annotation></semantics></math>. The second-stage training objective is the causal language modeling cross-entropy loss to predict the response style <math alttext="L_{r}" class="ltx_Math" display="inline" id="S3.SS4.p2.3.m3.1"><semantics id="S3.SS4.p2.3.m3.1a"><msub id="S3.SS4.p2.3.m3.1.1" xref="S3.SS4.p2.3.m3.1.1.cmml"><mi id="S3.SS4.p2.3.m3.1.1.2" xref="S3.SS4.p2.3.m3.1.1.2.cmml">L</mi><mi id="S3.SS4.p2.3.m3.1.1.3" xref="S3.SS4.p2.3.m3.1.1.3.cmml">r</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.3.m3.1b"><apply id="S3.SS4.p2.3.m3.1.1.cmml" xref="S3.SS4.p2.3.m3.1.1"><csymbol cd="ambiguous" id="S3.SS4.p2.3.m3.1.1.1.cmml" xref="S3.SS4.p2.3.m3.1.1">subscript</csymbol><ci id="S3.SS4.p2.3.m3.1.1.2.cmml" xref="S3.SS4.p2.3.m3.1.1.2">𝐿</ci><ci id="S3.SS4.p2.3.m3.1.1.3.cmml" xref="S3.SS4.p2.3.m3.1.1.3">𝑟</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.3.m3.1c">L_{r}</annotation></semantics></math> then response text <math alttext="T_{r}" class="ltx_Math" display="inline" id="S3.SS4.p2.4.m4.1"><semantics id="S3.SS4.p2.4.m4.1a"><msub id="S3.SS4.p2.4.m4.1.1" xref="S3.SS4.p2.4.m4.1.1.cmml"><mi id="S3.SS4.p2.4.m4.1.1.2" xref="S3.SS4.p2.4.m4.1.1.2.cmml">T</mi><mi id="S3.SS4.p2.4.m4.1.1.3" xref="S3.SS4.p2.4.m4.1.1.3.cmml">r</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.4.m4.1b"><apply id="S3.SS4.p2.4.m4.1.1.cmml" xref="S3.SS4.p2.4.m4.1.1"><csymbol cd="ambiguous" id="S3.SS4.p2.4.m4.1.1.1.cmml" xref="S3.SS4.p2.4.m4.1.1">subscript</csymbol><ci id="S3.SS4.p2.4.m4.1.1.2.cmml" xref="S3.SS4.p2.4.m4.1.1.2">𝑇</ci><ci id="S3.SS4.p2.4.m4.1.1.3.cmml" xref="S3.SS4.p2.4.m4.1.1.3">𝑟</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.4.m4.1c">T_{r}</annotation></semantics></math>:</p>
+</div>
+<div class="ltx_para" id="S3.SS4.p3">
+<table class="ltx_equationgroup ltx_eqn_eqnarray ltx_eqn_table" id="A9.EGx2">
+<tbody id="S3.E2">
+<tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_td ltx_align_right ltx_eqn_cell"><math alttext="\displaystyle\mathcal{P}(R|H,C,I_{2};\theta,\phi)" class="ltx_Math" display="inline" id="S3.Ex1.m1.5"><semantics id="S3.Ex1.m1.5a"><mrow id="S3.Ex1.m1.5.5" xref="S3.Ex1.m1.5.5.cmml"><mi class="ltx_font_mathcaligraphic" id="S3.Ex1.m1.5.5.3" xref="S3.Ex1.m1.5.5.3.cmml">𝒫</mi><mo id="S3.Ex1.m1.5.5.2" lspace="0em" rspace="0em" xref="S3.Ex1.m1.5.5.2.cmml">​</mo><mrow id="S3.Ex1.m1.5.5.1.1" xref="S3.Ex1.m1.5.5.1.1.1.cmml"><mo id="S3.Ex1.m1.5.5.1.1.2" stretchy="false" xref="S3.Ex1.m1.5.5.1.1.1.cmml">(</mo><mrow id="S3.Ex1.m1.5.5.1.1.1" xref="S3.Ex1.m1.5.5.1.1.1.cmml"><mi id="S3.Ex1.m1.5.5.1.1.1.3" xref="S3.Ex1.m1.5.5.1.1.1.3.cmml">R</mi><mo fence="false" id="S3.Ex1.m1.5.5.1.1.1.2" xref="S3.Ex1.m1.5.5.1.1.1.2.cmml">|</mo><mrow id="S3.Ex1.m1.5.5.1.1.1.1.1" xref="S3.Ex1.m1.5.5.1.1.1.1.2.cmml"><mi id="S3.Ex1.m1.1.1" xref="S3.Ex1.m1.1.1.cmml">H</mi><mo id="S3.Ex1.m1.5.5.1.1.1.1.1.2" xref="S3.Ex1.m1.5.5.1.1.1.1.2.cmml">,</mo><mi id="S3.Ex1.m1.2.2" xref="S3.Ex1.m1.2.2.cmml">C</mi><mo id="S3.Ex1.m1.5.5.1.1.1.1.1.3" xref="S3.Ex1.m1.5.5.1.1.1.1.2.cmml">,</mo><msub id="S3.Ex1.m1.5.5.1.1.1.1.1.1" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1.cmml"><mi id="S3.Ex1.m1.5.5.1.1.1.1.1.1.2" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1.2.cmml">I</mi><mn id="S3.Ex1.m1.5.5.1.1.1.1.1.1.3" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1.3.cmml">2</mn></msub><mo id="S3.Ex1.m1.5.5.1.1.1.1.1.4" xref="S3.Ex1.m1.5.5.1.1.1.1.2.cmml">;</mo><mi id="S3.Ex1.m1.3.3" xref="S3.Ex1.m1.3.3.cmml">θ</mi><mo id="S3.Ex1.m1.5.5.1.1.1.1.1.5" xref="S3.Ex1.m1.5.5.1.1.1.1.2.cmml">,</mo><mi id="S3.Ex1.m1.4.4" xref="S3.Ex1.m1.4.4.cmml">ϕ</mi></mrow></mrow><mo id="S3.Ex1.m1.5.5.1.1.3" stretchy="false" xref="S3.Ex1.m1.5.5.1.1.1.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.Ex1.m1.5b"><apply id="S3.Ex1.m1.5.5.cmml" xref="S3.Ex1.m1.5.5"><times id="S3.Ex1.m1.5.5.2.cmml" xref="S3.Ex1.m1.5.5.2"></times><ci id="S3.Ex1.m1.5.5.3.cmml" xref="S3.Ex1.m1.5.5.3">𝒫</ci><apply id="S3.Ex1.m1.5.5.1.1.1.cmml" xref="S3.Ex1.m1.5.5.1.1"><csymbol cd="latexml" id="S3.Ex1.m1.5.5.1.1.1.2.cmml" xref="S3.Ex1.m1.5.5.1.1.1.2">conditional</csymbol><ci id="S3.Ex1.m1.5.5.1.1.1.3.cmml" xref="S3.Ex1.m1.5.5.1.1.1.3">𝑅</ci><list id="S3.Ex1.m1.5.5.1.1.1.1.2.cmml" xref="S3.Ex1.m1.5.5.1.1.1.1.1"><ci id="S3.Ex1.m1.1.1.cmml" xref="S3.Ex1.m1.1.1">𝐻</ci><ci id="S3.Ex1.m1.2.2.cmml" xref="S3.Ex1.m1.2.2">𝐶</ci><apply id="S3.Ex1.m1.5.5.1.1.1.1.1.1.cmml" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.Ex1.m1.5.5.1.1.1.1.1.1.1.cmml" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1">subscript</csymbol><ci id="S3.Ex1.m1.5.5.1.1.1.1.1.1.2.cmml" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1.2">𝐼</ci><cn id="S3.Ex1.m1.5.5.1.1.1.1.1.1.3.cmml" type="integer" xref="S3.Ex1.m1.5.5.1.1.1.1.1.1.3">2</cn></apply><ci id="S3.Ex1.m1.3.3.cmml" xref="S3.Ex1.m1.3.3">𝜃</ci><ci id="S3.Ex1.m1.4.4.cmml" xref="S3.Ex1.m1.4.4">italic-ϕ</ci></list></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.Ex1.m1.5c">\displaystyle\mathcal{P}(R|H,C,I_{2};\theta,\phi)</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_eqn_cell"><math alttext="\displaystyle=" class="ltx_Math" display="inline" id="S3.Ex1.m2.1"><semantics id="S3.Ex1.m2.1a"><mo id="S3.Ex1.m2.1.1" xref="S3.Ex1.m2.1.1.cmml">=</mo><annotation-xml encoding="MathML-Content" id="S3.Ex1.m2.1b"><eq id="S3.Ex1.m2.1.1.cmml" xref="S3.Ex1.m2.1.1"></eq></annotation-xml><annotation encoding="application/x-tex" id="S3.Ex1.m2.1c">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_eqn_cell"><math alttext="\displaystyle\mathcal{P}(L_{r}|H,C,I_{2};\theta,\phi)" class="ltx_Math" display="inline" id="S3.Ex1.m3.5"><semantics id="S3.Ex1.m3.5a"><mrow id="S3.Ex1.m3.5.5" xref="S3.Ex1.m3.5.5.cmml"><mi class="ltx_font_mathcaligraphic" id="S3.Ex1.m3.5.5.3" xref="S3.Ex1.m3.5.5.3.cmml">𝒫</mi><mo id="S3.Ex1.m3.5.5.2" lspace="0em" rspace="0em" xref="S3.Ex1.m3.5.5.2.cmml">​</mo><mrow id="S3.Ex1.m3.5.5.1.1" xref="S3.Ex1.m3.5.5.1.1.1.cmml"><mo id="S3.Ex1.m3.5.5.1.1.2" stretchy="false" xref="S3.Ex1.m3.5.5.1.1.1.cmml">(</mo><mrow id="S3.Ex1.m3.5.5.1.1.1" xref="S3.Ex1.m3.5.5.1.1.1.cmml"><msub id="S3.Ex1.m3.5.5.1.1.1.3" xref="S3.Ex1.m3.5.5.1.1.1.3.cmml"><mi id="S3.Ex1.m3.5.5.1.1.1.3.2" xref="S3.Ex1.m3.5.5.1.1.1.3.2.cmml">L</mi><mi id="S3.Ex1.m3.5.5.1.1.1.3.3" xref="S3.Ex1.m3.5.5.1.1.1.3.3.cmml">r</mi></msub><mo fence="false" id="S3.Ex1.m3.5.5.1.1.1.2" xref="S3.Ex1.m3.5.5.1.1.1.2.cmml">|</mo><mrow id="S3.Ex1.m3.5.5.1.1.1.1.1" xref="S3.Ex1.m3.5.5.1.1.1.1.2.cmml"><mi id="S3.Ex1.m3.1.1" xref="S3.Ex1.m3.1.1.cmml">H</mi><mo id="S3.Ex1.m3.5.5.1.1.1.1.1.2" xref="S3.Ex1.m3.5.5.1.1.1.1.2.cmml">,</mo><mi id="S3.Ex1.m3.2.2" xref="S3.Ex1.m3.2.2.cmml">C</mi><mo id="S3.Ex1.m3.5.5.1.1.1.1.1.3" xref="S3.Ex1.m3.5.5.1.1.1.1.2.cmml">,</mo><msub id="S3.Ex1.m3.5.5.1.1.1.1.1.1" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1.cmml"><mi id="S3.Ex1.m3.5.5.1.1.1.1.1.1.2" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1.2.cmml">I</mi><mn id="S3.Ex1.m3.5.5.1.1.1.1.1.1.3" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1.3.cmml">2</mn></msub><mo id="S3.Ex1.m3.5.5.1.1.1.1.1.4" xref="S3.Ex1.m3.5.5.1.1.1.1.2.cmml">;</mo><mi id="S3.Ex1.m3.3.3" xref="S3.Ex1.m3.3.3.cmml">θ</mi><mo id="S3.Ex1.m3.5.5.1.1.1.1.1.5" xref="S3.Ex1.m3.5.5.1.1.1.1.2.cmml">,</mo><mi id="S3.Ex1.m3.4.4" xref="S3.Ex1.m3.4.4.cmml">ϕ</mi></mrow></mrow><mo id="S3.Ex1.m3.5.5.1.1.3" stretchy="false" xref="S3.Ex1.m3.5.5.1.1.1.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.Ex1.m3.5b"><apply id="S3.Ex1.m3.5.5.cmml" xref="S3.Ex1.m3.5.5"><times id="S3.Ex1.m3.5.5.2.cmml" xref="S3.Ex1.m3.5.5.2"></times><ci id="S3.Ex1.m3.5.5.3.cmml" xref="S3.Ex1.m3.5.5.3">𝒫</ci><apply id="S3.Ex1.m3.5.5.1.1.1.cmml" xref="S3.Ex1.m3.5.5.1.1"><csymbol cd="latexml" id="S3.Ex1.m3.5.5.1.1.1.2.cmml" xref="S3.Ex1.m3.5.5.1.1.1.2">conditional</csymbol><apply id="S3.Ex1.m3.5.5.1.1.1.3.cmml" xref="S3.Ex1.m3.5.5.1.1.1.3"><csymbol cd="ambiguous" id="S3.Ex1.m3.5.5.1.1.1.3.1.cmml" xref="S3.Ex1.m3.5.5.1.1.1.3">subscript</csymbol><ci id="S3.Ex1.m3.5.5.1.1.1.3.2.cmml" xref="S3.Ex1.m3.5.5.1.1.1.3.2">𝐿</ci><ci id="S3.Ex1.m3.5.5.1.1.1.3.3.cmml" xref="S3.Ex1.m3.5.5.1.1.1.3.3">𝑟</ci></apply><list id="S3.Ex1.m3.5.5.1.1.1.1.2.cmml" xref="S3.Ex1.m3.5.5.1.1.1.1.1"><ci id="S3.Ex1.m3.1.1.cmml" xref="S3.Ex1.m3.1.1">𝐻</ci><ci id="S3.Ex1.m3.2.2.cmml" xref="S3.Ex1.m3.2.2">𝐶</ci><apply id="S3.Ex1.m3.5.5.1.1.1.1.1.1.cmml" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.Ex1.m3.5.5.1.1.1.1.1.1.1.cmml" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1">subscript</csymbol><ci id="S3.Ex1.m3.5.5.1.1.1.1.1.1.2.cmml" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1.2">𝐼</ci><cn id="S3.Ex1.m3.5.5.1.1.1.1.1.1.3.cmml" type="integer" xref="S3.Ex1.m3.5.5.1.1.1.1.1.1.3">2</cn></apply><ci id="S3.Ex1.m3.3.3.cmml" xref="S3.Ex1.m3.3.3">𝜃</ci><ci id="S3.Ex1.m3.4.4.cmml" xref="S3.Ex1.m3.4.4">italic-ϕ</ci></list></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.Ex1.m3.5c">\displaystyle\mathcal{P}(L_{r}|H,C,I_{2};\theta,\phi)</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="2"><span class="ltx_tag ltx_tag_equation ltx_align_right">(2)</span></td>
+</tr>
+<tr class="ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_td ltx_eqn_cell"></td>
+<td class="ltx_td ltx_eqn_cell"></td>
+<td class="ltx_td ltx_align_left ltx_eqn_cell"><math alttext="\displaystyle\mathcal{P}(T_{r}|H,C,L_{r},I_{2};\theta,\phi)" class="ltx_Math" display="inline" id="S3.E2.m1.5"><semantics id="S3.E2.m1.5a"><mrow id="S3.E2.m1.5.5" xref="S3.E2.m1.5.5.cmml"><mi class="ltx_font_mathcaligraphic" id="S3.E2.m1.5.5.3" xref="S3.E2.m1.5.5.3.cmml">𝒫</mi><mo id="S3.E2.m1.5.5.2" lspace="0em" rspace="0em" xref="S3.E2.m1.5.5.2.cmml">​</mo><mrow id="S3.E2.m1.5.5.1.1" xref="S3.E2.m1.5.5.1.1.1.cmml"><mo id="S3.E2.m1.5.5.1.1.2" stretchy="false" xref="S3.E2.m1.5.5.1.1.1.cmml">(</mo><mrow id="S3.E2.m1.5.5.1.1.1" xref="S3.E2.m1.5.5.1.1.1.cmml"><msub id="S3.E2.m1.5.5.1.1.1.4" xref="S3.E2.m1.5.5.1.1.1.4.cmml"><mi id="S3.E2.m1.5.5.1.1.1.4.2" xref="S3.E2.m1.5.5.1.1.1.4.2.cmml">T</mi><mi id="S3.E2.m1.5.5.1.1.1.4.3" xref="S3.E2.m1.5.5.1.1.1.4.3.cmml">r</mi></msub><mo fence="false" id="S3.E2.m1.5.5.1.1.1.3" xref="S3.E2.m1.5.5.1.1.1.3.cmml">|</mo><mrow id="S3.E2.m1.5.5.1.1.1.2.2" xref="S3.E2.m1.5.5.1.1.1.2.3.cmml"><mi id="S3.E2.m1.1.1" xref="S3.E2.m1.1.1.cmml">H</mi><mo id="S3.E2.m1.5.5.1.1.1.2.2.3" xref="S3.E2.m1.5.5.1.1.1.2.3.cmml">,</mo><mi id="S3.E2.m1.2.2" xref="S3.E2.m1.2.2.cmml">C</mi><mo id="S3.E2.m1.5.5.1.1.1.2.2.4" xref="S3.E2.m1.5.5.1.1.1.2.3.cmml">,</mo><msub id="S3.E2.m1.5.5.1.1.1.1.1.1" xref="S3.E2.m1.5.5.1.1.1.1.1.1.cmml"><mi id="S3.E2.m1.5.5.1.1.1.1.1.1.2" xref="S3.E2.m1.5.5.1.1.1.1.1.1.2.cmml">L</mi><mi id="S3.E2.m1.5.5.1.1.1.1.1.1.3" xref="S3.E2.m1.5.5.1.1.1.1.1.1.3.cmml">r</mi></msub><mo id="S3.E2.m1.5.5.1.1.1.2.2.5" xref="S3.E2.m1.5.5.1.1.1.2.3.cmml">,</mo><msub id="S3.E2.m1.5.5.1.1.1.2.2.2" xref="S3.E2.m1.5.5.1.1.1.2.2.2.cmml"><mi id="S3.E2.m1.5.5.1.1.1.2.2.2.2" xref="S3.E2.m1.5.5.1.1.1.2.2.2.2.cmml">I</mi><mn id="S3.E2.m1.5.5.1.1.1.2.2.2.3" xref="S3.E2.m1.5.5.1.1.1.2.2.2.3.cmml">2</mn></msub><mo id="S3.E2.m1.5.5.1.1.1.2.2.6" xref="S3.E2.m1.5.5.1.1.1.2.3.cmml">;</mo><mi id="S3.E2.m1.3.3" xref="S3.E2.m1.3.3.cmml">θ</mi><mo id="S3.E2.m1.5.5.1.1.1.2.2.7" xref="S3.E2.m1.5.5.1.1.1.2.3.cmml">,</mo><mi id="S3.E2.m1.4.4" xref="S3.E2.m1.4.4.cmml">ϕ</mi></mrow></mrow><mo id="S3.E2.m1.5.5.1.1.3" stretchy="false" xref="S3.E2.m1.5.5.1.1.1.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.E2.m1.5b"><apply id="S3.E2.m1.5.5.cmml" xref="S3.E2.m1.5.5"><times id="S3.E2.m1.5.5.2.cmml" xref="S3.E2.m1.5.5.2"></times><ci id="S3.E2.m1.5.5.3.cmml" xref="S3.E2.m1.5.5.3">𝒫</ci><apply id="S3.E2.m1.5.5.1.1.1.cmml" xref="S3.E2.m1.5.5.1.1"><csymbol cd="latexml" id="S3.E2.m1.5.5.1.1.1.3.cmml" xref="S3.E2.m1.5.5.1.1.1.3">conditional</csymbol><apply id="S3.E2.m1.5.5.1.1.1.4.cmml" xref="S3.E2.m1.5.5.1.1.1.4"><csymbol cd="ambiguous" id="S3.E2.m1.5.5.1.1.1.4.1.cmml" xref="S3.E2.m1.5.5.1.1.1.4">subscript</csymbol><ci id="S3.E2.m1.5.5.1.1.1.4.2.cmml" xref="S3.E2.m1.5.5.1.1.1.4.2">𝑇</ci><ci id="S3.E2.m1.5.5.1.1.1.4.3.cmml" xref="S3.E2.m1.5.5.1.1.1.4.3">𝑟</ci></apply><list id="S3.E2.m1.5.5.1.1.1.2.3.cmml" xref="S3.E2.m1.5.5.1.1.1.2.2"><ci id="S3.E2.m1.1.1.cmml" xref="S3.E2.m1.1.1">𝐻</ci><ci id="S3.E2.m1.2.2.cmml" xref="S3.E2.m1.2.2">𝐶</ci><apply id="S3.E2.m1.5.5.1.1.1.1.1.1.cmml" xref="S3.E2.m1.5.5.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S3.E2.m1.5.5.1.1.1.1.1.1.1.cmml" xref="S3.E2.m1.5.5.1.1.1.1.1.1">subscript</csymbol><ci id="S3.E2.m1.5.5.1.1.1.1.1.1.2.cmml" xref="S3.E2.m1.5.5.1.1.1.1.1.1.2">𝐿</ci><ci id="S3.E2.m1.5.5.1.1.1.1.1.1.3.cmml" xref="S3.E2.m1.5.5.1.1.1.1.1.1.3">𝑟</ci></apply><apply id="S3.E2.m1.5.5.1.1.1.2.2.2.cmml" xref="S3.E2.m1.5.5.1.1.1.2.2.2"><csymbol cd="ambiguous" id="S3.E2.m1.5.5.1.1.1.2.2.2.1.cmml" xref="S3.E2.m1.5.5.1.1.1.2.2.2">subscript</csymbol><ci id="S3.E2.m1.5.5.1.1.1.2.2.2.2.cmml" xref="S3.E2.m1.5.5.1.1.1.2.2.2.2">𝐼</ci><cn id="S3.E2.m1.5.5.1.1.1.2.2.2.3.cmml" type="integer" xref="S3.E2.m1.5.5.1.1.1.2.2.2.3">2</cn></apply><ci id="S3.E2.m1.3.3.cmml" xref="S3.E2.m1.3.3">𝜃</ci><ci id="S3.E2.m1.4.4.cmml" xref="S3.E2.m1.4.4">italic-ϕ</ci></list></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.E2.m1.5c">\displaystyle\mathcal{P}(T_{r}|H,C,L_{r},I_{2};\theta,\phi)</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+</tr>
+</tbody>
+</table>
+<p class="ltx_p" id="S3.SS4.p3.6">where <math alttext="H=T_{h}" class="ltx_Math" display="inline" id="S3.SS4.p3.1.m1.1"><semantics id="S3.SS4.p3.1.m1.1a"><mrow id="S3.SS4.p3.1.m1.1.1" xref="S3.SS4.p3.1.m1.1.1.cmml"><mi id="S3.SS4.p3.1.m1.1.1.2" xref="S3.SS4.p3.1.m1.1.1.2.cmml">H</mi><mo id="S3.SS4.p3.1.m1.1.1.1" xref="S3.SS4.p3.1.m1.1.1.1.cmml">=</mo><msub id="S3.SS4.p3.1.m1.1.1.3" xref="S3.SS4.p3.1.m1.1.1.3.cmml"><mi id="S3.SS4.p3.1.m1.1.1.3.2" xref="S3.SS4.p3.1.m1.1.1.3.2.cmml">T</mi><mi id="S3.SS4.p3.1.m1.1.1.3.3" xref="S3.SS4.p3.1.m1.1.1.3.3.cmml">h</mi></msub></mrow><annotation-xml encoding="MathML-Content" id="S3.SS4.p3.1.m1.1b"><apply id="S3.SS4.p3.1.m1.1.1.cmml" xref="S3.SS4.p3.1.m1.1.1"><eq id="S3.SS4.p3.1.m1.1.1.1.cmml" xref="S3.SS4.p3.1.m1.1.1.1"></eq><ci id="S3.SS4.p3.1.m1.1.1.2.cmml" xref="S3.SS4.p3.1.m1.1.1.2">𝐻</ci><apply id="S3.SS4.p3.1.m1.1.1.3.cmml" xref="S3.SS4.p3.1.m1.1.1.3"><csymbol cd="ambiguous" id="S3.SS4.p3.1.m1.1.1.3.1.cmml" xref="S3.SS4.p3.1.m1.1.1.3">subscript</csymbol><ci id="S3.SS4.p3.1.m1.1.1.3.2.cmml" xref="S3.SS4.p3.1.m1.1.1.3.2">𝑇</ci><ci id="S3.SS4.p3.1.m1.1.1.3.3.cmml" xref="S3.SS4.p3.1.m1.1.1.3.3">ℎ</ci></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p3.1.m1.1c">H=T_{h}</annotation></semantics></math> and <math alttext="I_{2}" class="ltx_Math" display="inline" id="S3.SS4.p3.2.m2.1"><semantics id="S3.SS4.p3.2.m2.1a"><msub id="S3.SS4.p3.2.m2.1.1" xref="S3.SS4.p3.2.m2.1.1.cmml"><mi id="S3.SS4.p3.2.m2.1.1.2" xref="S3.SS4.p3.2.m2.1.1.2.cmml">I</mi><mn id="S3.SS4.p3.2.m2.1.1.3" xref="S3.SS4.p3.2.m2.1.1.3.cmml">2</mn></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p3.2.m2.1b"><apply id="S3.SS4.p3.2.m2.1.1.cmml" xref="S3.SS4.p3.2.m2.1.1"><csymbol cd="ambiguous" id="S3.SS4.p3.2.m2.1.1.1.cmml" xref="S3.SS4.p3.2.m2.1.1">subscript</csymbol><ci id="S3.SS4.p3.2.m2.1.1.2.cmml" xref="S3.SS4.p3.2.m2.1.1.2">𝐼</ci><cn id="S3.SS4.p3.2.m2.1.1.3.cmml" type="integer" xref="S3.SS4.p3.2.m2.1.1.3">2</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p3.2.m2.1c">I_{2}</annotation></semantics></math> is the task instruction shown in Appendix <a class="ltx_ref" href="#A6" title="Appendix F Instruction ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">F</span></a>. The speaking style label <math alttext="L_{r}" class="ltx_Math" display="inline" id="S3.SS4.p3.3.m3.1"><semantics id="S3.SS4.p3.3.m3.1a"><msub id="S3.SS4.p3.3.m3.1.1" xref="S3.SS4.p3.3.m3.1.1.cmml"><mi id="S3.SS4.p3.3.m3.1.1.2" xref="S3.SS4.p3.3.m3.1.1.2.cmml">L</mi><mi id="S3.SS4.p3.3.m3.1.1.3" xref="S3.SS4.p3.3.m3.1.1.3.cmml">r</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p3.3.m3.1b"><apply id="S3.SS4.p3.3.m3.1.1.cmml" xref="S3.SS4.p3.3.m3.1.1"><csymbol cd="ambiguous" id="S3.SS4.p3.3.m3.1.1.1.cmml" xref="S3.SS4.p3.3.m3.1.1">subscript</csymbol><ci id="S3.SS4.p3.3.m3.1.1.2.cmml" xref="S3.SS4.p3.3.m3.1.1.2">𝐿</ci><ci id="S3.SS4.p3.3.m3.1.1.3.cmml" xref="S3.SS4.p3.3.m3.1.1.3">𝑟</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p3.3.m3.1c">L_{r}</annotation></semantics></math> is integrated into the text through special bracket markers with the format &lt;<span class="ltx_text ltx_font_italic" id="S3.SS4.p3.6.1">emotion, speed, volume</span>&gt;.
+<math alttext="T_{h}" class="ltx_Math" display="inline" id="S3.SS4.p3.4.m4.1"><semantics id="S3.SS4.p3.4.m4.1a"><msub id="S3.SS4.p3.4.m4.1.1" xref="S3.SS4.p3.4.m4.1.1.cmml"><mi id="S3.SS4.p3.4.m4.1.1.2" xref="S3.SS4.p3.4.m4.1.1.2.cmml">T</mi><mi id="S3.SS4.p3.4.m4.1.1.3" xref="S3.SS4.p3.4.m4.1.1.3.cmml">h</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p3.4.m4.1b"><apply id="S3.SS4.p3.4.m4.1.1.cmml" xref="S3.SS4.p3.4.m4.1.1"><csymbol cd="ambiguous" id="S3.SS4.p3.4.m4.1.1.1.cmml" xref="S3.SS4.p3.4.m4.1.1">subscript</csymbol><ci id="S3.SS4.p3.4.m4.1.1.2.cmml" xref="S3.SS4.p3.4.m4.1.1.2">𝑇</ci><ci id="S3.SS4.p3.4.m4.1.1.3.cmml" xref="S3.SS4.p3.4.m4.1.1.3">ℎ</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p3.4.m4.1c">T_{h}</annotation></semantics></math> and <math alttext="T_{c}" class="ltx_Math" display="inline" id="S3.SS4.p3.5.m5.1"><semantics id="S3.SS4.p3.5.m5.1a"><msub id="S3.SS4.p3.5.m5.1.1" xref="S3.SS4.p3.5.m5.1.1.cmml"><mi id="S3.SS4.p3.5.m5.1.1.2" xref="S3.SS4.p3.5.m5.1.1.2.cmml">T</mi><mi id="S3.SS4.p3.5.m5.1.1.3" xref="S3.SS4.p3.5.m5.1.1.3.cmml">c</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p3.5.m5.1b"><apply id="S3.SS4.p3.5.m5.1.1.cmml" xref="S3.SS4.p3.5.m5.1.1"><csymbol cd="ambiguous" id="S3.SS4.p3.5.m5.1.1.1.cmml" xref="S3.SS4.p3.5.m5.1.1">subscript</csymbol><ci id="S3.SS4.p3.5.m5.1.1.2.cmml" xref="S3.SS4.p3.5.m5.1.1.2">𝑇</ci><ci id="S3.SS4.p3.5.m5.1.1.3.cmml" xref="S3.SS4.p3.5.m5.1.1.3">𝑐</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p3.5.m5.1c">T_{c}</annotation></semantics></math> are fed into LLM subword embedding, and <math alttext="S_{c}" class="ltx_Math" display="inline" id="S3.SS4.p3.6.m6.1"><semantics id="S3.SS4.p3.6.m6.1a"><msub id="S3.SS4.p3.6.m6.1.1" xref="S3.SS4.p3.6.m6.1.1.cmml"><mi id="S3.SS4.p3.6.m6.1.1.2" xref="S3.SS4.p3.6.m6.1.1.2.cmml">S</mi><mi id="S3.SS4.p3.6.m6.1.1.3" xref="S3.SS4.p3.6.m6.1.1.3.cmml">c</mi></msub><annotation-xml encoding="MathML-Content" id="S3.SS4.p3.6.m6.1b"><apply id="S3.SS4.p3.6.m6.1.1.cmml" xref="S3.SS4.p3.6.m6.1.1"><csymbol cd="ambiguous" id="S3.SS4.p3.6.m6.1.1.1.cmml" xref="S3.SS4.p3.6.m6.1.1">subscript</csymbol><ci id="S3.SS4.p3.6.m6.1.1.2.cmml" xref="S3.SS4.p3.6.m6.1.1.2">𝑆</ci><ci id="S3.SS4.p3.6.m6.1.1.3.cmml" xref="S3.SS4.p3.6.m6.1.1.3">𝑐</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p3.6.m6.1c">S_{c}</annotation></semantics></math> is passed through the speech encoder plus the connector. We concatenate the resulting continuous embeddings as the input prompt for LLM.</p>
+</div>
+<figure class="ltx_table" id="S3.T2">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S3.T2.5" style="width:443.5pt;height:163pt;vertical-align:-1.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S3.T2.5.5"><span class="ltx_text" id="S3.T2.5.5.5">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S3.T2.5.5.5.5">
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S3.T2.5.5.5.5.6.1">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_tt ltx_rowspan ltx_rowspan_2" id="S3.T2.5.5.5.5.6.1.1"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.6.1.1.1">Method</span></span>
+<span class="ltx_td ltx_align_center ltx_border_tt ltx_colspan ltx_colspan_4" id="S3.T2.5.5.5.5.6.1.2"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.6.1.2.1">Response text</span></span>
+<span class="ltx_td ltx_align_center ltx_border_l ltx_border_tt ltx_colspan ltx_colspan_3" id="S3.T2.5.5.5.5.6.1.3"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.6.1.3.1">Response style</span></span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.5">
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.5.6"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.5.6.1">BLEU</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S3.T2.1.1.1.1.1.1.1">ROUGE<sub class="ltx_sub" id="S3.T2.1.1.1.1.1.1.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S3.T2.1.1.1.1.1.1.1.1.1">l</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.5.7"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.5.7.1">METEOR</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S3.T2.2.2.2.2.2.2"><span class="ltx_text ltx_font_bold" id="S3.T2.2.2.2.2.2.2.1">BERT<sub class="ltx_sub" id="S3.T2.2.2.2.2.2.2.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S3.T2.2.2.2.2.2.2.1.1.1">f1</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.3.3.3.3.3.3"><span class="ltx_text ltx_font_bold" id="S3.T2.3.3.3.3.3.3.1">F1<sub class="ltx_sub" id="S3.T2.3.3.3.3.3.3.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S3.T2.3.3.3.3.3.3.1.1.1">emotion</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.4.4.4.4.4.4"><span class="ltx_text ltx_font_bold" id="S3.T2.4.4.4.4.4.4.1">F1<sub class="ltx_sub" id="S3.T2.4.4.4.4.4.4.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S3.T2.4.4.4.4.4.4.1.1.1">speed</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.5.5"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.5.5.1">F1<sub class="ltx_sub" id="S3.T2.5.5.5.5.5.5.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S3.T2.5.5.5.5.5.5.1.1.1">volume</span></sub></span></span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.7.2">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S3.T2.5.5.5.5.7.2.1">Text-LLM (text-only)</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.7.2.2">3.1</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.7.2.3">16.2</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.7.2.4">17.4</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S3.T2.5.5.5.5.7.2.5">75.3</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.7.2.6">17.5</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.7.2.7">37.1</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.7.2.8">41.9</span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.8.3">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r" id="S3.T2.5.5.5.5.8.3.1">Text-LLM (cascaded)</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.8.3.2">3.2</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.8.3.3">17.3</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.8.3.4">19.1</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S3.T2.5.5.5.5.8.3.5">76.0</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.8.3.6">37.5</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.8.3.7">52.9</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.8.3.8">65.6</span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.9.4">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r" id="S3.T2.5.5.5.5.9.4.1"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.1.1" style="color:#808080;">Text-LLM (upper bound)</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.9.4.2"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.2.1" style="color:#808080;">4.0</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.9.4.3"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.3.1" style="color:#808080;">17.9</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.9.4.4"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.4.1" style="color:#808080;">19.6</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S3.T2.5.5.5.5.9.4.5"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.5.1" style="color:#808080;">76.3</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.9.4.6"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.6.1" style="color:#808080;">40.2</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.9.4.7"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.7.1" style="color:#808080;">53.5</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.9.4.8"><span class="ltx_text" id="S3.T2.5.5.5.5.9.4.8.1" style="color:#808080;">65.8</span></span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.10.5">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S3.T2.5.5.5.5.10.5.1">ParalinGPT-<span class="ltx_text ltx_font_italic" id="S3.T2.5.5.5.5.10.5.1.1">utt</span></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.10.5.2">3.1</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.10.5.3">16.8</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.10.5.4">18.5</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S3.T2.5.5.5.5.10.5.5">75.9</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.10.5.6">32.3</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.10.5.7">51.9</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.10.5.8">64.8</span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.11.6">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r" id="S3.T2.5.5.5.5.11.6.1">ParalinGPT-<span class="ltx_text ltx_font_italic" id="S3.T2.5.5.5.5.11.6.1.1">chunk</span></span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.11.6.2">3.1</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.11.6.3">16.5</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.11.6.4">18.2</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S3.T2.5.5.5.5.11.6.5">75.8</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.11.6.6">34.0</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.11.6.7">54.8</span>
+<span class="ltx_td ltx_align_center" id="S3.T2.5.5.5.5.11.6.8"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.11.6.8.1">65.8</span></span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.12.7">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S3.T2.5.5.5.5.12.7.1">Spoken-LLM-<span class="ltx_text ltx_font_italic" id="S3.T2.5.5.5.5.12.7.1.1">utt</span></span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.12.7.2">2.8</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.12.7.3">16.6</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.12.7.4"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.12.7.4.1">20.2</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S3.T2.5.5.5.5.12.7.5">75.8</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.12.7.6">47.4</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.12.7.7">61.5</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S3.T2.5.5.5.5.12.7.8">56.5</span></span>
+<span class="ltx_tr" id="S3.T2.5.5.5.5.13.8">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb ltx_border_r" id="S3.T2.5.5.5.5.13.8.1">Spoken-LLM-<span class="ltx_text ltx_font_italic" id="S3.T2.5.5.5.5.13.8.1.1">chunk</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.5.5.5.5.13.8.2"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.13.8.2.1">4.0</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.5.5.5.5.13.8.3"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.13.8.3.1">17.8</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.5.5.5.5.13.8.4">19.4</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S3.T2.5.5.5.5.13.8.5"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.13.8.5.1">76.3</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.5.5.5.5.13.8.6"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.13.8.6.1">49.6</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.5.5.5.5.13.8.7"><span class="ltx_text ltx_font_bold" id="S3.T2.5.5.5.5.13.8.7.1">62.1</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.5.5.5.5.13.8.8">61.1</span></span>
+</span>
+</span></span></p>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 2: </span>Main results comparing text-LLM, ParalinGPT, and Spoken-LLM. <span class="ltx_text ltx_font_italic" id="S3.T2.8.1">utt</span> and <span class="ltx_text ltx_font_italic" id="S3.T2.9.2">chunk</span> refer to utterance-wise and chunk-wise speech embedding from emotion2vec. The Text-LLM (upper bound) method is the cascaded text-LLM with ground truth style labels.</figcaption>
+</figure>
+<div class="ltx_para ltx_noindent" id="S3.SS4.p4">
+<p class="ltx_p" id="S3.SS4.p4.1"><span class="ltx_text ltx_font_bold" id="S3.SS4.p4.1.1">Warmup pre-training</span>: Given the limited size of the human-annotated training set, we propose leveraging the unfiltered set for model warmup pre-training. This allows the model to grasp general knowledge and understand the structure of the dialogue modeling task. Subsequently, we fine-tune the model on the training set to align with human perception, utilizing a smaller learning rate for stable training. This warmup training strategy is designed to mitigate overfitting on the small training data while maintaining good performance.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS5">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.5 </span>Inference</h3>
+<div class="ltx_para" id="S3.SS5.p1">
+<p class="ltx_p" id="S3.SS5.p1.1">Once the model has completed training, when presented with a dialogue context and current speech input, the initial step involves converting the speech into text through either ground truth text in the oracle setup or an Automatic Speech Recognition (ASR) model in the ASR setup. Then, the Spoken-LLM generates response style and response text sequentially. The representation of the response style is surrounded by special bracket tokens, designed to enable the decoding of both the response style and text. Leveraging the capability of an expressive TTS model to control the response speaking style, we can synthesize the generated response back into speech. This synthesis takes into account the identified response style, and the generated response text, resulting in a synthesized speech output that is not only coherent but also aligns with the desired style and content.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Experiments</h2>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Baseline method</h3>
+<div class="ltx_para" id="S4.SS1.p1">
+<p class="ltx_p" id="S4.SS1.p1.1">All baseline methods are fine-tuned on the same amount of training data and warmup pre-training, with the identical LLM backbone and speech style encoder for ParalinGPT. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S4.SS1.p1.1.1">Text-LLM (text-only)</span>: The initial simple baseline is built by simply fine-tuning text-to-text LLM on StyleTalk. This serves as a performance reference to evaluate the model’s capability without knowing any explicit speaking style information. Since the model cannot predict the response style, A randomly selected response style is assigned for this method to synthesize expressive speech.
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S4.SS1.p1.1.2">Text-LLM (cascaded)</span>: One can represent the style information in text to enable the model to better predict the response style and text. This approach, referred to as the cascaded pipeline method, involves cascading a style recognition model<span class="ltx_note ltx_role_footnote" id="footnote3"><sup class="ltx_note_mark">3</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">3</sup><span class="ltx_tag ltx_tag_note">3</span>We use the Spoken-LLM-<span class="ltx_text ltx_font_italic" id="footnote3.1">chunk</span> 1st-stage model as the style recognition model, which achieves 86.8, 99.2, 64.0 f1 scores on current emotion, speed, volume prediction, respectively.</span></span></span> with the text LLM. The Text-LLM (upper bound) method is the cascaded text-LLM with ground truth style labels. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S4.SS1.p1.1.3">ParalinGPT <cite class="ltx_cite ltx_citemacro_citep">(Lin et al., <a class="ltx_ref" href="#bib.bib25" title="">2023b</a>)</cite></span>: The <span class="ltx_text ltx_font_italic" id="S4.SS1.p1.1.4">serialized multitasking</span> approach proposed by ParalinGPT is a sequential conditioning mechanism, unifying current style prediction, response style prediction, and response text generation within an auto-regressive chain. The main difference between ParalinGPT and Spoken-LLM is that Spoken-LLM performs two-stage training (style alignment for current speech then focus on the response speech), but ParalinGPT directly models them in an auto-regressive chain, which might be prone to error propagation if the incorrect current style prediction or focusing too much on the current style.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Evaluation Metrics</h3>
+<div class="ltx_para" id="S4.SS2.p1">
+<p class="ltx_p" id="S4.SS2.p1.1"><span class="ltx_text ltx_font_bold" id="S4.SS2.p1.1.1">Objective evaluation</span>: For automatic evaluation of response text, we adopt the widely-used text generation metric, including lexical-level score (BLEU <cite class="ltx_cite ltx_citemacro_citep">(Papineni et al., <a class="ltx_ref" href="#bib.bib35" title="">2002</a>)</cite>, ROUGE <cite class="ltx_cite ltx_citemacro_citep">(Lin, <a class="ltx_ref" href="#bib.bib22" title="">2004</a>)</cite>, METEOR <cite class="ltx_cite ltx_citemacro_citep">(Banerjee and Lavie, <a class="ltx_ref" href="#bib.bib2" title="">2005</a>)</cite>), and semantic-level (BERT Score <cite class="ltx_cite ltx_citemacro_citep">(Zhang et al., <a class="ltx_ref" href="#bib.bib53" title="">2019</a>)</cite>)<span class="ltx_note ltx_role_footnote" id="footnote4"><sup class="ltx_note_mark">4</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">4</sup><span class="ltx_tag ltx_tag_note">4</span>Score calculated by <a class="ltx_ref ltx_href" href="https://huggingface.co/docs/evaluate/" target="_blank" title="">Hugging face Evaluate package</a></span></span></span>. For response style evaluation, since the style attributes are categorical, we calculate the Weighted F1 score for speaking emotion, speed, and volume. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S4.SS2.p1.1.2">Subjective evaluation</span>: We perform the human evaluation on a set of 200 samples using an A/B test for model comparison. Three human evaluators are assigned to each sample, and they are instructed to rate the model based on both the generated text and speech. The details of subjection evaluation are in Appendix <a class="ltx_ref" href="#A8" title="Appendix H Subjective evaluation ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">H</span></a>.</p>
+</div>
+<figure class="ltx_figure" id="S4.F3"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="382" id="S4.F3.g1" src="./media/human_evaluation.png" width="509"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>Human evaluation result comparing Spoken-LLM-chunk with Text-LLM (text-only) and Text-LLM (cascaded).</figcaption>
+</figure>
+<figure class="ltx_table" id="S4.T3">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T3.6" style="width:402.7pt;height:90pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S4.T3.6.6"><span class="ltx_text" id="S4.T3.6.6.6">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S4.T3.6.6.6.6">
+<span class="ltx_thead">
+<span class="ltx_tr" id="S4.T3.6.6.6.6.7.1">
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_tt ltx_rowspan ltx_rowspan_2" id="S4.T3.6.6.6.6.7.1.1"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.7.1.1.1">Training data</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt ltx_colspan ltx_colspan_4" id="S4.T3.6.6.6.6.7.1.2"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.7.1.2.1">Response text</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_l ltx_border_tt ltx_colspan ltx_colspan_3" id="S4.T3.6.6.6.6.7.1.3"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.7.1.3.1">Response style</span></span></span>
+<span class="ltx_tr" id="S4.T3.5.5.5.5.5">
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S4.T3.5.5.5.5.5.6"><span class="ltx_text ltx_font_bold" id="S4.T3.5.5.5.5.5.6.1">BLEU</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S4.T3.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S4.T3.1.1.1.1.1.1.1">ROUGE<sub class="ltx_sub" id="S4.T3.1.1.1.1.1.1.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S4.T3.1.1.1.1.1.1.1.1.1">l</span></sub></span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S4.T3.5.5.5.5.5.7"><span class="ltx_text ltx_font_bold" id="S4.T3.5.5.5.5.5.7.1">METEOR</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r" id="S4.T3.2.2.2.2.2.2"><span class="ltx_text ltx_font_bold" id="S4.T3.2.2.2.2.2.2.1">BERT<sub class="ltx_sub" id="S4.T3.2.2.2.2.2.2.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S4.T3.2.2.2.2.2.2.1.1.1">f1</span></sub></span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S4.T3.3.3.3.3.3.3"><span class="ltx_text ltx_font_bold" id="S4.T3.3.3.3.3.3.3.1">F1<sub class="ltx_sub" id="S4.T3.3.3.3.3.3.3.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S4.T3.3.3.3.3.3.3.1.1.1">emotion</span></sub></span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S4.T3.4.4.4.4.4.4"><span class="ltx_text ltx_font_bold" id="S4.T3.4.4.4.4.4.4.1">F1<sub class="ltx_sub" id="S4.T3.4.4.4.4.4.4.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S4.T3.4.4.4.4.4.4.1.1.1">speed</span></sub></span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S4.T3.5.5.5.5.5.5"><span class="ltx_text ltx_font_bold" id="S4.T3.5.5.5.5.5.5.1">F1<sub class="ltx_sub" id="S4.T3.5.5.5.5.5.5.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="S4.T3.5.5.5.5.5.5.1.1.1">volume</span></sub></span></span></span>
+</span>
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S4.T3.6.6.6.6.8.1">
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.6.6.6.6.8.1.1">train</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.6.6.6.6.8.1.2">2.9</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.6.6.6.6.8.1.3">15.7</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.6.6.6.6.8.1.4">17.8</span>
+<span class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T3.6.6.6.6.8.1.5">75.5</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.6.6.6.6.8.1.6">45.5</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.6.6.6.6.8.1.7">61.6</span>
+<span class="ltx_td ltx_align_center ltx_border_t" id="S4.T3.6.6.6.6.8.1.8"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.8.1.8.1">61.7</span></span></span>
+<span class="ltx_tr" id="S4.T3.6.6.6.6.9.2">
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.6.6.6.6.9.2.1">unfiltered</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.6.6.6.6.9.2.2">3.4</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.6.6.6.6.9.2.3">17.0</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.6.6.6.6.9.2.4">18.7</span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="S4.T3.6.6.6.6.9.2.5">75.7</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.6.6.6.6.9.2.6">44.1</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.6.6.6.6.9.2.7">61.2</span>
+<span class="ltx_td ltx_align_center" id="S4.T3.6.6.6.6.9.2.8">56.5</span></span>
+<span class="ltx_tr" id="S4.T3.6.6.6.6.6">
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T3.6.6.6.6.6.1">unfiltered<math alttext="\rightarrow" class="ltx_Math" display="inline" id="S4.T3.6.6.6.6.6.1.m1.1"><semantics id="S4.T3.6.6.6.6.6.1.m1.1a"><mo id="S4.T3.6.6.6.6.6.1.m1.1.1" stretchy="false" xref="S4.T3.6.6.6.6.6.1.m1.1.1.cmml">→</mo><annotation-xml encoding="MathML-Content" id="S4.T3.6.6.6.6.6.1.m1.1b"><ci id="S4.T3.6.6.6.6.6.1.m1.1.1.cmml" xref="S4.T3.6.6.6.6.6.1.m1.1.1">→</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T3.6.6.6.6.6.1.m1.1c">\rightarrow</annotation></semantics></math>train</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T3.6.6.6.6.6.2"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.6.2.1">4.0</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T3.6.6.6.6.6.3"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.6.3.1">17.8</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T3.6.6.6.6.6.4">19.4</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T3.6.6.6.6.6.5"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.6.5.1">76.3</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T3.6.6.6.6.6.6"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.6.6.1">49.6</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T3.6.6.6.6.6.7"><span class="ltx_text ltx_font_bold" id="S4.T3.6.6.6.6.6.7.1">62.1</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="S4.T3.6.6.6.6.6.8">61.1</span></span>
+</span>
+</span></span></p>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 3: </span>Different training strategy and data usages on Spoken LLM-<span class="ltx_text ltx_font_italic" id="S4.T3.10.1">chunk</span> method. “<math alttext="\rightarrow" class="ltx_Math" display="inline" id="S4.T3.8.m1.1"><semantics id="S4.T3.8.m1.1b"><mo id="S4.T3.8.m1.1.1" stretchy="false" xref="S4.T3.8.m1.1.1.cmml">→</mo><annotation-xml encoding="MathML-Content" id="S4.T3.8.m1.1c"><ci id="S4.T3.8.m1.1.1.cmml" xref="S4.T3.8.m1.1.1">→</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.T3.8.m1.1d">\rightarrow</annotation></semantics></math>" indicates the two-stage warmup training pipeline.
+</figcaption>
+</figure>
+<figure class="ltx_table" id="S4.T4">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T4.1" style="width:171.4pt;height:108pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S4.T4.1.1"><span class="ltx_text" id="S4.T4.1.1.1">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S4.T4.1.1.1.1">
+<span class="ltx_thead">
+<span class="ltx_tr" id="S4.T4.1.1.1.1.1.1">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="S4.T4.1.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S4.T4.1.1.1.1.1.1.1.1">Method</span></span>
+<span class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="S4.T4.1.1.1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S4.T4.1.1.1.1.1.1.2.1">self-BLEU</span></span></span>
+</span>
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S4.T4.1.1.1.1.2.1">
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T4.1.1.1.1.2.1.1"><span class="ltx_text" id="S4.T4.1.1.1.1.2.1.1.1" style="color:#808080;">Ground truth</span></span>
+<span class="ltx_td ltx_align_left ltx_border_t" id="S4.T4.1.1.1.1.2.1.2"><span class="ltx_text" id="S4.T4.1.1.1.1.2.1.2.1" style="color:#808080;">8.2</span></span></span>
+<span class="ltx_tr" id="S4.T4.1.1.1.1.3.2">
+<span class="ltx_td ltx_align_left" id="S4.T4.1.1.1.1.3.2.1">Text-LLM (text-only)</span>
+<span class="ltx_td ltx_align_left" id="S4.T4.1.1.1.1.3.2.2">100.0</span></span>
+<span class="ltx_tr" id="S4.T4.1.1.1.1.4.3">
+<span class="ltx_td ltx_align_left" id="S4.T4.1.1.1.1.4.3.1">Text-LLM (cascaded)</span>
+<span class="ltx_td ltx_align_left" id="S4.T4.1.1.1.1.4.3.2">11.2</span></span>
+<span class="ltx_tr" id="S4.T4.1.1.1.1.5.4">
+<span class="ltx_td ltx_align_left" id="S4.T4.1.1.1.1.5.4.1">ParalinGPT-<span class="ltx_text ltx_font_italic" id="S4.T4.1.1.1.1.5.4.1.1">chunk</span></span>
+<span class="ltx_td ltx_align_left" id="S4.T4.1.1.1.1.5.4.2">11.3</span></span>
+<span class="ltx_tr" id="S4.T4.1.1.1.1.6.5">
+<span class="ltx_td ltx_align_left ltx_border_bb" id="S4.T4.1.1.1.1.6.5.1">Spoken-LLM-<span class="ltx_text ltx_font_italic" id="S4.T4.1.1.1.1.6.5.1.1">chunk</span></span>
+<span class="ltx_td ltx_align_left ltx_border_bb" id="S4.T4.1.1.1.1.6.5.2"><span class="ltx_text ltx_font_bold" id="S4.T4.1.1.1.1.6.5.2.1">10.9</span></span></span>
+</span>
+</span></span></p>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 4: </span>The dialogue set-level self-BLEU score for different methods on the evaluation set.</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>Main Results</h3>
+<div class="ltx_para" id="S4.SS3.p1">
+<p class="ltx_p" id="S4.SS3.p1.1"><span class="ltx_text ltx_font_bold" id="S4.SS3.p1.1.1">Spoken-LLM outperforms speech and text baselines</span>: Table <a class="ltx_ref" href="#S3.T2" title="Table 2 ‣ 3.4 Spoken Dialogue Modeling ‣ 3 Spoken-LLM framework ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">2</span></a> shows the result on objective evaluation. Firstly, for the text-LLM baseline on response text metrics, we observe that adding current speech style information yields significantly better performance than the text-only method, indicating that recognizing the style information is beneficial to predict textual response. Next, we compare the Text-LLM and speech ParlinGPT baseline. ParalinGPT consistently outperforms the Text-LLM method on the response text metrics. However, on the response style, the text-LLM (cascaded) is better than ParalinGPT-<span class="ltx_text ltx_font_italic" id="S4.SS3.p1.1.2">utt</span>. In contrast, our proposed Spoken-LLM methods perform slightly better than ParalinGPT on response text, with significantly superior performance on response style. Specifically, the Spoken-LLM-<span class="ltx_text ltx_font_italic" id="S4.SS3.p1.1.3">chunk</span> achieves 49.6 F1 score on response emotion with 62.1 F1 score on response speaking speed. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S4.SS3.p1.1.4">Chunk vs. utterance-level embedding</span>: We compare the granularity of speech embedding on both ParalinGPT and Spoken-LLM methods. Results show that the use of chunk embedding achieves better performance on response style prediction. As for response text, the Spoken-LLM benefits significantly from chunk embedding while ParalinGPT performs similarly. In general, chunk embedding extracts richer style-related information than average-pooling embedding, which is more helpful in modeling response speech.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.4 </span>Subjective evaluation</h3>
+<div class="ltx_para" id="S4.SS4.p1">
+<p class="ltx_p" id="S4.SS4.p1.1">We perform the human listening evaluation to compare the generated samples of two methods. Specifically, we compare the proposed Spoken-LLM-<span class="ltx_text ltx_font_italic" id="S4.SS4.p1.1.1">chunk</span> with Text-LLM (text-only) and Text-LLM (cascaded) baseline. As shown in Figure <a class="ltx_ref" href="#S4.F3" title="Figure 3 ‣ 4.2 Evaluation Metrics ‣ 4 Experiments ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">3</span></a>, Spoken-LLM wins over the Text-LLM (text-only) method by a large margin, demonstrating that it is important to consider the speaking style information to respond properly. On the other hand, human listeners slightly prefer more on Text-LLM (cascaded) than Spoken-LLM. This result can be explained in two ways: 1) From the objective evaluation of response text, the performance of Spoken-LLM and Text-LLM (cascade) is similar, so the human listeners might not differentiate the content difference, and 2) for the response style, it is possible to respond with more than one response style but still sounds reasonably natural. Therefore, the current and response speaking style is not a one-to-one but a one-to-many relation. Future efforts should consider modeling with more than one response style for better performance and evaluation.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Analyses</h2>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Same sentence in different speaking styles induce diverse responses</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<p class="ltx_p" id="S5.SS1.p1.1">Since the proposed StyleTalk evaluation set provides sets of the same dialogue context and current input content with two or three distinct speaking styles, we can analyze how diverse are the responses for each input speaking style. To measure the response text diversity, we adopt the self-BLEU <cite class="ltx_cite ltx_citemacro_citep">(Zhu et al., <a class="ltx_ref" href="#bib.bib54" title="">2018</a>)</cite> score to measure the diversity of each dialogue set. Precisely, we average the BLEU score of two response sentences given two speaking styles as the <span class="ltx_text ltx_font_bold" id="S5.SS1.p1.1.1">dialogue set-level self-BLEU score</span>. The lower self-BLEU score indicates the generated text is more diverse according to different speaking styles. The results are shown in Table <a class="ltx_ref" href="#S4.T4" title="Table 4 ‣ 4.2 Evaluation Metrics ‣ 4 Experiments ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">4</span></a>. We observe that Spoken-LLM generates the most diverse response content compared to Text-LLM (cascaded) and ParalinGPT. In contrast, the Text-LLM (text-only) baseline generates the same content regardless of different speaking styles, yielding 100% self-BLEU score.</p>
+</div>
+<figure class="ltx_table" id="S5.T5">
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S5.T5.1" style="width:589.7pt;height:264.4pt;vertical-align:-0.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="S5.T5.1.1"><span class="ltx_text" id="S5.T5.1.1.1">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="S5.T5.1.1.1.1">
+<span class="ltx_tbody">
+<span class="ltx_tr" id="S5.T5.1.1.1.1.1.1">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt ltx_border_tt" id="S5.T5.1.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.1.1.1.1">Dialogue context</span></span>
+<span class="ltx_td ltx_align_left ltx_border_tt ltx_border_tt" id="S5.T5.1.1.1.1.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="S5.T5.1.1.1.1.1.1.2.1">
+<span class="ltx_tr" id="S5.T5.1.1.1.1.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.1.1.2.1.1.1">A : I’ve finally hit my goal of running five miles every day!</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.1.1.2.1.2.1">B : That’s amazing, hard work really does pay off, doesn’t it?</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.1.1.2.1.3">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.1.1.2.1.3.1">A : Absolutely, and I’ve never felt more alive!</span></span>
+</span></span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.2.2">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S5.T5.1.1.1.1.2.2.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.2.2.1.1">Current text</span></span>
+<span class="ltx_td ltx_align_left ltx_border_t" id="S5.T5.1.1.1.1.2.2.2">B: I really need to get back into exercising too.</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.3.3">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt" id="S5.T5.1.1.1.1.3.3.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.3.3.1.1">Not knowing current style</span></span>
+<span class="ltx_td ltx_align_left ltx_border_tt" id="S5.T5.1.1.1.1.3.3.2"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.3.3.2.1">Text-LLM (text-only)</span>: Totally understand, let’s start small together, maybe a walk or something?</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.4.4">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="S5.T5.1.1.1.1.4.4.1">
+<span class="ltx_tabular ltx_align_middle" id="S5.T5.1.1.1.1.4.4.1.1">
+<span class="ltx_tr" id="S5.T5.1.1.1.1.4.4.1.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.4.4.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.4.4.1.1.1.1.1">Current style in</span></span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.4.4.1.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.4.4.1.1.2.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.4.4.1.1.2.1.1">&lt;neutral, normal, quiet&gt;</span></span></span>
+</span></span>
+<span class="ltx_td ltx_align_left ltx_border_t" id="S5.T5.1.1.1.1.4.4.2">
+<span class="ltx_tabular ltx_align_middle" id="S5.T5.1.1.1.1.4.4.2.1">
+<span class="ltx_tr" id="S5.T5.1.1.1.1.4.4.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.4.4.2.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.4.4.2.1.1.1.1">Text-LLM (cascaded)</span>: &lt;friendly, normal, normal&gt;Definitely! Let’s find a day when we can go together; I could use the company.</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.4.4.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.4.4.2.1.2.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.4.4.2.1.2.1.1">Spoken-LLM</span>: &lt;cheerful, normal, normal&gt;That’s the spirit! Let me know if you want any tips or company on your runs!</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.4.4.2.1.3">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.4.4.2.1.3.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.4.4.2.1.3.1.1">Ground truth</span>: &lt;friendly, normal, normal&gt;Hey, we could be workout buddies if you want, I can help you get started!</span></span>
+</span></span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.5.5">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb ltx_border_bb ltx_border_t" id="S5.T5.1.1.1.1.5.5.1">
+<span class="ltx_tabular ltx_align_middle" id="S5.T5.1.1.1.1.5.5.1.1">
+<span class="ltx_tr" id="S5.T5.1.1.1.1.5.5.1.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.5.5.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.5.5.1.1.1.1.1">Current style in</span></span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.5.5.1.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.5.5.1.1.2.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.5.5.1.1.2.1.1">&lt;unfriendly, fast, loud&gt;</span></span></span>
+</span></span>
+<span class="ltx_td ltx_align_left ltx_border_bb ltx_border_bb ltx_border_t" id="S5.T5.1.1.1.1.5.5.2">
+<span class="ltx_tabular ltx_align_middle" id="S5.T5.1.1.1.1.5.5.2.1">
+<span class="ltx_tr" id="S5.T5.1.1.1.1.5.5.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.5.5.2.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.5.5.2.1.1.1.1">Text-LLM (cascaded)</span>: &lt;neutral, normal, normal&gt;Hey, no pressure though, take things at your own pace, you know?</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.5.5.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.5.5.2.1.2.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.5.5.2.1.2.1.1">Spoken-LLM</span>: &lt;unfriendly, normal, normal&gt;Whoa, no need to stress out about it, we can start with something small if you want.</span></span>
+<span class="ltx_tr" id="S5.T5.1.1.1.1.5.5.2.1.3">
+<span class="ltx_td ltx_nopad_r ltx_align_left" id="S5.T5.1.1.1.1.5.5.2.1.3.1"><span class="ltx_text ltx_font_bold" id="S5.T5.1.1.1.1.5.5.2.1.3.1.1">Ground truth</span>: &lt;unfriendly, normal, normal&gt;Whoa there, no need to get upset, maybe we can find a way to ease you into a routine?</span></span>
+</span></span></span>
+</span>
+</span></span></p>
+</span></div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 5: </span>A qualitative example. The model outputs the response of speaker A’s turn. </figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S5.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.2 </span>Warmup pre-training and data quality</h3>
+<div class="ltx_para" id="S5.SS2.p1">
+<p class="ltx_p" id="S5.SS2.p1.1">Table <a class="ltx_ref" href="#S4.T3" title="Table 3 ‣ 4.2 Evaluation Metrics ‣ 4 Experiments ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">3</span></a> discusses different training strategies. Firstly, when we only utilize LLM-generated unfiltered data for training, despite the data amount being abundant compared to the train set, the performance of the response style is worse than the train set. Meanwhile, we observe that training on the unfiltered set can achieve better performance on response text, probably because the data amount of the train set is too small and prone to overfitting. We reveal that pre-training on the unfiltered set and fine-tuning on the train set (unfiltered<math alttext="\rightarrow" class="ltx_Math" display="inline" id="S5.SS2.p1.1.m1.1"><semantics id="S5.SS2.p1.1.m1.1a"><mo id="S5.SS2.p1.1.m1.1.1" stretchy="false" xref="S5.SS2.p1.1.m1.1.1.cmml">→</mo><annotation-xml encoding="MathML-Content" id="S5.SS2.p1.1.m1.1b"><ci id="S5.SS2.p1.1.m1.1.1.cmml" xref="S5.SS2.p1.1.m1.1.1">→</ci></annotation-xml><annotation encoding="application/x-tex" id="S5.SS2.p1.1.m1.1c">\rightarrow</annotation></semantics></math>train) can boost the performance significantly, which enables the model to learn the task and the common language usage first and then align the human standard with the train set.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S5.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.3 </span>Qualitative analysis</h3>
+<div class="ltx_para" id="S5.SS3.p1">
+<p class="ltx_p" id="S5.SS3.p1.1">We show the qualitative example in Table <a class="ltx_ref" href="#S5.T5" title="Table 5 ‣ 5.1 Same sentence in different speaking styles induce diverse responses ‣ 5 Analyses ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">5</span></a> with different models’ outputs. This example shows that the Text-LLM (text-only) baseline predicts a more neutral sentiment response text, while the text-LLM (cascaded) and Spoken-LLM model generate text with a more aggressive and engaging tone, and the predicted response speaking styles are similar to the ground truth.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Related works</h2>
+<div class="ltx_para ltx_noindent" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1"><span class="ltx_text ltx_font_bold" id="S6.p1.1.1">Speech-text Multimodal LLM</span>: The progress in speech Self-supervised Learning (SSL) <cite class="ltx_cite ltx_citemacro_citep">(Mohamed et al., <a class="ltx_ref" href="#bib.bib30" title="">2022</a>; Yang et al., <a class="ltx_ref" href="#bib.bib49" title="">2021</a>; Tsai et al., <a class="ltx_ref" href="#bib.bib42" title="">2022</a>; Lin et al., <a class="ltx_ref" href="#bib.bib24" title="">2023a</a>)</cite> and neural audio codec <cite class="ltx_cite ltx_citemacro_citep">(Zeghidour et al., <a class="ltx_ref" href="#bib.bib51" title="">2021</a>; Défossez et al., <a class="ltx_ref" href="#bib.bib9" title="">2022</a>; Wu et al., <a class="ltx_ref" href="#bib.bib46" title="">2023b</a>; Yang et al., <a class="ltx_ref" href="#bib.bib48" title="">2023</a>; Kumar et al., <a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite> enable extracting discrete speech units, drawing attention to generative spoken language modeling. Specifically, the discrete speech units are treated as a special language for unit language modeling <cite class="ltx_cite ltx_citemacro_citep">(Borsos et al., <a class="ltx_ref" href="#bib.bib3" title="">2023</a>; Lakhotia et al., <a class="ltx_ref" href="#bib.bib21" title="">2021</a>; Kharitonov et al., <a class="ltx_ref" href="#bib.bib19" title="">2022</a>; Nguyen et al., <a class="ltx_ref" href="#bib.bib32" title="">2023</a>; Hassid et al., <a class="ltx_ref" href="#bib.bib15" title="">2023</a>)</cite>, further enabling multiple speech processing tasks in single multimodal LLM <cite class="ltx_cite ltx_citemacro_citep">(Rubenstein et al., <a class="ltx_ref" href="#bib.bib38" title="">2023</a>; Zhang et al., <a class="ltx_ref" href="#bib.bib52" title="">2023</a>; Chou et al., <a class="ltx_ref" href="#bib.bib7" title="">2023</a>; Maiti et al., <a class="ltx_ref" href="#bib.bib27" title="">2023</a>; Wang et al., <a class="ltx_ref" href="#bib.bib43" title="">2023</a>; Wu et al., <a class="ltx_ref" href="#bib.bib45" title="">2023a</a>; Pan et al., <a class="ltx_ref" href="#bib.bib34" title="">2023</a>; Nachmani et al., <a class="ltx_ref" href="#bib.bib31" title="">2023</a>)</cite>. However, these works mostly leverage content information in speech, due to the speech unit clustering and the use of speech-transcript pairs for modality alignment. The multimodal LLM itself does not learn to model speaking style, and the models are mostly trained with single-turn utterances.</p>
+</div>
+<div class="ltx_para" id="S6.p2">
+<p class="ltx_p" id="S6.p2.1">The other line of work aims for the universal speech and audio understanding model to have general audio perception and hearing ability, either leveraging off-the-shelf expert models <cite class="ltx_cite ltx_citemacro_citep">(Huang et al., <a class="ltx_ref" href="#bib.bib18" title="">2023</a>; Shen et al., <a class="ltx_ref" href="#bib.bib39" title="">2023</a>)</cite>, or with a single MM-LLM <cite class="ltx_cite ltx_citemacro_citep">(Chu et al., <a class="ltx_ref" href="#bib.bib8" title="">2023</a>; Tang et al., <a class="ltx_ref" href="#bib.bib40" title="">2023</a>; Gong et al., <a class="ltx_ref" href="#bib.bib14" title="">2023b</a>, <a class="ltx_ref" href="#bib.bib13" title="">a</a>; Deshmukh et al., <a class="ltx_ref" href="#bib.bib10" title="">2023</a>)</cite>. Those methods are mainly trained to perform comprehensive speech and audio understanding tasks and then fine-tuned for audio-based instruction-following data generated by off-the-shelf LLM like GPT-3.5. However, they are <span class="ltx_text ltx_font_italic" id="S6.p2.1.1">limited to only generating text responses without considering responding styles</span>, and the <span class="ltx_text ltx_font_italic" id="S6.p2.1.2">data quality from LLM is unknown</span>. In contrast, we focus on modeling speaking style in speech-to-speech conversation with a manual-filtered dataset.</p>
+</div>
+<div class="ltx_para" id="S6.p3">
+<p class="ltx_p" id="S6.p3.1"><span class="ltx_text ltx_font_bold" id="S6.p3.1.1">Modeling Speaking Style in Spoken Dialogue</span>: Speaking style is important for <span class="ltx_text ltx_font_italic" id="S6.p3.1.2">speech understanding</span> and <span class="ltx_text ltx_font_italic" id="S6.p3.1.3">response generation</span> in spoken dialogue. The understanding of speaking styles in spoken dialogue is crucial for extracting style attributes such as emotion, sentiment, sarcasm, and more. Representative corpora for studying speaking styles in spoken conversations include IEMOCAP <cite class="ltx_cite ltx_citemacro_citep">(Busso et al., <a class="ltx_ref" href="#bib.bib4" title="">2008</a>)</cite>, SEMAINE <cite class="ltx_cite ltx_citemacro_citep">(McKeown et al., <a class="ltx_ref" href="#bib.bib28" title="">2010</a>)</cite>, MUStARD <cite class="ltx_cite ltx_citemacro_citep">(Castro et al., <a class="ltx_ref" href="#bib.bib5" title="">2019</a>)</cite>, Switchboard-sentiment <cite class="ltx_cite ltx_citemacro_citep">(Chen et al., <a class="ltx_ref" href="#bib.bib6" title="">2020</a>)</cite>, MELD <cite class="ltx_cite ltx_citemacro_citep">(Poria et al., <a class="ltx_ref" href="#bib.bib36" title="">2019</a>)</cite>, and MEISD <cite class="ltx_cite ltx_citemacro_citep">(Firdaus et al., <a class="ltx_ref" href="#bib.bib12" title="">2020</a>)</cite>. These datasets are primarily constructed based on label annotations from real speech conversations (e.g., TV series) or acted spoken conversations.</p>
+</div>
+<div class="ltx_para" id="S6.p4">
+<p class="ltx_p" id="S6.p4.1">Another research direction involves <span class="ltx_text ltx_font_italic" id="S6.p4.1.1">spoken conversation in the form of spoken question answering</span>. Datasets in this category include NMSQA <cite class="ltx_cite ltx_citemacro_citep">(Lin et al., <a class="ltx_ref" href="#bib.bib23" title="">2022</a>)</cite>, SCQA <cite class="ltx_cite ltx_citemacro_citep">(You et al., <a class="ltx_ref" href="#bib.bib50" title="">2022</a>)</cite>, OpenSAQA <cite class="ltx_cite ltx_citemacro_citep">(Gong et al., <a class="ltx_ref" href="#bib.bib13" title="">2023a</a>)</cite>, and E-chat200 <cite class="ltx_cite ltx_citemacro_citep">(Xue et al., <a class="ltx_ref" href="#bib.bib47" title="">2023</a>)</cite>, where the data sample is presented as a tuple of (question, answer). Specifically, for style-related questions and answers, OpenSAQA employs GPT-3.5 to generate textual questions based on the speech content and metadata style information, while E-chat considers text with emotion labels as the question for GPT-3.5 to generate the responding answer as gold answers.</p>
+</div>
+<div class="ltx_para" id="S6.p5">
+<p class="ltx_p" id="S6.p5.1">In all existing datasets, only one style is attached to the speech, and one corresponding response speech exists for each conversational context. Thus, prohibiting researchers from investigating the impact of different styles given the same context and the same words. Additionally, the SQA data in OpenSAQA and E-chat are fully generated by GPT-3.5 and not carefully checked by humans, resembling distillation and prompting of GPT-3.5, which is concerning whether the sample follows a human standard as spoken conversation. Our work provides the spoken dialogue data with the same context, the same current text with different speaking styles, and the corresponding response speech with human annotator filtering.</p>
+</div>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>Conclusion</h2>
+<div class="ltx_para" id="S7.p1">
+<p class="ltx_p" id="S7.p1.1">This paper focuses on enhancing LLM by modeling how the same sentence spoken with different speaking styles causes different responses in speech, in the spoken conversation scenario. Due to the absence of a suitable dataset, we first collect the speech-to-speech StyleTalk dataset that contains the same dialogue context the same sentence spoken in different styles, and the corresponding different response speech. Next, we propose Spoken-LLM, a two-stage multi-modal training framework to capture different speaking styles and respond properly. The proposed method yields better performance than the text and speech baseline on objective metrics and performs better than text-only LLM on subjective evaluation. We encourage the research community to use the released StyleTalk for joint speaking style and language modeling.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitation</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1"><span class="ltx_text ltx_font_bold" id="Sx1.p1.1.1">Data scale</span>: The current StyleTalk training set consists of only around 2K samples, which may lead to training instability and overfitting. Utilizing a larger-scale dataset could alleviate these issues and eliminate the need for a pre-training stage on unfiltered LLM-generated data. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="Sx1.p1.1.2">Real speech with diverse and mixed styles</span>: The speech data in StyleTalk is synthesized from the Azure TTS system with style control. However, incorporating spontaneous speech with even more diverse styles is preferable. Moreover, the current one-hot emotion simplified the problem since speech emotion may by expressed multi-label distribution. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="Sx1.p1.1.3">Direct speech-to-speech modeling</span>: The Spoken-LLM generates predefined style attributes for inputting into the expressive TTS system. Future work on directly modeling responding speech has the potential to eliminate the need for explicit style labels. 
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="Sx1.p1.1.4">Toward human-like spoken dialogue:</span> Real-world human communication includes backchannel, laughter, and turn-taking behaviors, which is beyond the turn-based spoken dialogue system <cite class="ltx_cite ltx_citemacro_citep">(Nguyen et al., <a class="ltx_ref" href="#bib.bib32" title="">2023</a>; Mitsui et al., <a class="ltx_ref" href="#bib.bib29" title="">2023</a>)</cite>. Future endeavors to explore speaking style with those behaviors can make the spoken dialogue model closer to human conversation.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Baevski et al. (2023)</span>
+<span class="ltx_bibblock">
+Alexei Baevski, Arun Babu, Wei-Ning Hsu, and Michael Auli. 2023.
+
+</span>
+<span class="ltx_bibblock">Efficient self-supervised learning with contextualized target representations for vision, speech and language.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib1.1.1">International Conference on Machine Learning</em>, pages 1416–1429. PMLR.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Banerjee and Lavie (2005)</span>
+<span class="ltx_bibblock">
+Satanjeev Banerjee and Alon Lavie. 2005.
+
+</span>
+<span class="ltx_bibblock">Meteor: An automatic metric for mt evaluation with improved correlation with human judgments.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib2.1.1">Proceedings of the acl workshop on intrinsic and extrinsic evaluation measures for machine translation and/or summarization</em>, pages 65–72.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Borsos et al. (2023)</span>
+<span class="ltx_bibblock">
+Zalán Borsos, Raphaël Marinier, Damien Vincent, Eugene Kharitonov, Olivier Pietquin, Matt Sharifi, Dominik Roblek, Olivier Teboul, David Grangier, Marco Tagliasacchi, et al. 2023.
+
+</span>
+<span class="ltx_bibblock">Audiolm: a language modeling approach to audio generation.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib3.1.1">IEEE/ACM Transactions on Audio, Speech, and Language Processing</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Busso et al. (2008)</span>
+<span class="ltx_bibblock">
+Carlos Busso, Murtaza Bulut, Chi-Chun Lee, Abe Kazemzadeh, Emily Mower, Samuel Kim, Jeannette N Chang, Sungbok Lee, and Shrikanth S Narayanan. 2008.
+
+</span>
+<span class="ltx_bibblock">Iemocap: Interactive emotional dyadic motion capture database.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">Language resources and evaluation</em>, 42:335–359.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Castro et al. (2019)</span>
+<span class="ltx_bibblock">
+Santiago Castro, Devamanyu Hazarika, Verónica Pérez-Rosas, Roger Zimmermann, Rada Mihalcea, and Soujanya Poria. 2019.
+
+</span>
+<span class="ltx_bibblock">Towards multimodal sarcasm detection (an _obviously_ perfect paper).
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics</em>, pages 4619–4629.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chen et al. (2020)</span>
+<span class="ltx_bibblock">
+Eric Chen, Zhiyun Lu, Hao Xu, Liangliang Cao, Yu Zhang, and James Fan. 2020.
+
+</span>
+<span class="ltx_bibblock">A large scale speech sentiment corpus.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">Proc. LREC</em>, pages 6549–6555.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chou et al. (2023)</span>
+<span class="ltx_bibblock">
+Ju-Chieh Chou, Chung-Ming Chien, Wei-Ning Hsu, Karen Livescu, Arun Babu, Alexis Conneau, Alexei Baevski, and Michael Auli. 2023.
+
+</span>
+<span class="ltx_bibblock">Toward joint language modeling for speech units and text.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">Findings of the Association for Computational Linguistics: EMNLP 2023</em>, pages 6582–6593.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chu et al. (2023)</span>
+<span class="ltx_bibblock">
+Yunfei Chu, Jin Xu, Xiaohuan Zhou, Qian Yang, Shiliang Zhang, Zhijie Yan, Chang Zhou, and Jingren Zhou. 2023.
+
+</span>
+<span class="ltx_bibblock">Qwen-audio: Advancing universal audio understanding via unified large-scale audio-language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">arXiv preprint arXiv:2311.07919</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Défossez et al. (2022)</span>
+<span class="ltx_bibblock">
+Alexandre Défossez, Jade Copet, Gabriel Synnaeve, and Yossi Adi. 2022.
+
+</span>
+<span class="ltx_bibblock">High fidelity neural audio compression.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">arXiv preprint arXiv:2210.13438</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Deshmukh et al. (2023)</span>
+<span class="ltx_bibblock">
+Soham Deshmukh, Benjamin Elizalde, Rita Singh, and Huaming Wang. 2023.
+
+</span>
+<span class="ltx_bibblock">Pengi: An audio language model for audio tasks.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">arXiv preprint arXiv:2305.11834</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Everson et al. (2024)</span>
+<span class="ltx_bibblock">
+Kevin Everson, Yile Gu, Huck Yang, Prashanth Gurunath Shivakumar, Guan-Ting Lin, Jari Kolehmainen, Ivan Bulyko, Ankur Gandhe, Shalini Ghosh, Wael Hamza, et al. 2024.
+
+</span>
+<span class="ltx_bibblock">Towards asr robust spoken language understanding through in-context learning with word confusion networks.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">arXiv preprint arXiv:2401.02921</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Firdaus et al. (2020)</span>
+<span class="ltx_bibblock">
+Mauajama Firdaus, Hardik Chauhan, Asif Ekbal, and Pushpak Bhattacharyya. 2020.
+
+</span>
+<span class="ltx_bibblock">Meisd: A multimodal multi-label emotion, intensity and sentiment dialogue dataset for emotion recognition and sentiment analysis in conversations.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">Proceedings of the 28th international conference on computational linguistics</em>, pages 4441–4453.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gong et al. (2023a)</span>
+<span class="ltx_bibblock">
+Yuan Gong, Alexander H Liu, Hongyin Luo, Leonid Karlinsky, and James Glass. 2023a.
+
+</span>
+<span class="ltx_bibblock">Joint audio and speech understanding.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">2023 IEEE Automatic Speech Recognition and Understanding Workshop (ASRU)</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gong et al. (2023b)</span>
+<span class="ltx_bibblock">
+Yuan Gong, Hongyin Luo, Alexander H Liu, Leonid Karlinsky, and James Glass. 2023b.
+
+</span>
+<span class="ltx_bibblock">Listen, think, and understand.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">arXiv preprint arXiv:2305.10790</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hassid et al. (2023)</span>
+<span class="ltx_bibblock">
+Michael Hassid, Tal Remez, Tu Anh Nguyen, Itai Gat, Alexis Conneau, Felix Kreuk, Jade Copet, Alexandre Défossez, Gabriel Synnaeve, Emmanuel Dupoux, Roy Schwartz, and Yossi Adi. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://openreview.net/forum?id=UlHueVjAKr" target="_blank" title="">Textually pretrained speech language models</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">Thirty-seventh Conference on Neural Information Processing Systems</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">He and Garner (2023)</span>
+<span class="ltx_bibblock">
+Mutian He and Philip N. Garner. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.21437/Interspeech.2023-1799" target="_blank" title="">Can ChatGPT Detect Intent? Evaluating Large Language Models for Spoken Language Understanding</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">Proc. INTERSPEECH 2023</em>, pages 1109–1113.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hu et al. (2021)</span>
+<span class="ltx_bibblock">
+Edward J Hu, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, Weizhu Chen, et al. 2021.
+
+</span>
+<span class="ltx_bibblock">Lora: Low-rank adaptation of large language models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Huang et al. (2023)</span>
+<span class="ltx_bibblock">
+Rongjie Huang, Mingze Li, Dongchao Yang, Jiatong Shi, Xuankai Chang, Zhenhui Ye, Yuning Wu, Zhiqing Hong, Jiawei Huang, Jinglin Liu, et al. 2023.
+
+</span>
+<span class="ltx_bibblock">Audiogpt: Understanding and generating speech, music, sound, and talking head.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">arXiv preprint arXiv:2304.12995</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kharitonov et al. (2022)</span>
+<span class="ltx_bibblock">
+Eugene Kharitonov, Ann Lee, Adam Polyak, Yossi Adi, Jade Copet, Kushal Lakhotia, Tu-Anh Nguyen, Morgane Riviere, Abdelrahman Mohamed, Emmanuel Dupoux, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Text-free prosody-aware generative spoken language modeling.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</em>, pages 8666–8681.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kumar et al. (2023)</span>
+<span class="ltx_bibblock">
+Rithesh Kumar, Prem Seetharaman, Alejandro Luebs, Ishaan Kumar, and Kundan Kumar. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://openreview.net/forum?id=qjnl1QUnFA" target="_blank" title="">High-fidelity audio compression with improved RVQGAN</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">Thirty-seventh Conference on Neural Information Processing Systems</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lakhotia et al. (2021)</span>
+<span class="ltx_bibblock">
+Kushal Lakhotia, Evgeny Kharitonov, Wei-Ning Hsu, Yossi Adi, Adam Polyak, Benjamin Bolte, Tu-Anh Nguyen, Jade Copet, Alexei Baevski, Abdelrahman Mohamed, et al. 2021.
+
+</span>
+<span class="ltx_bibblock">On generative spoken language modeling from raw audio.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">Transactions of the Association for Computational Linguistics</em>, 9:1336–1354.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin (2004)</span>
+<span class="ltx_bibblock">
+Chin-Yew Lin. 2004.
+
+</span>
+<span class="ltx_bibblock">Rouge: A package for automatic evaluation of summaries.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">Text summarization branches out</em>, pages 74–81.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin et al. (2022)</span>
+<span class="ltx_bibblock">
+Guan-Ting Lin, Yung-Sung Chuang, Ho-Lam Chung, Shu wen Yang, Hsuan-Jui Chen, Shuyan Annie Dong, Shang-Wen Li, Abdelrahman Mohamed, Hung yi Lee, and Lin shan Lee. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.21437/Interspeech.2022-612" target="_blank" title="">DUAL: Discrete Spoken Unit Adaptive Learning for Textless Spoken Question Answering</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">Proc. Interspeech 2022</em>, pages 5165–5169.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin et al. (2023a)</span>
+<span class="ltx_bibblock">
+Guan-Ting Lin, Chi-Luen Feng, Wei-Ping Huang, Yuan Tseng, Tzu-Han Lin, Chen-An Li, Hung-yi Lee, and Nigel G Ward. 2023a.
+
+</span>
+<span class="ltx_bibblock">On the utility of self-supervised models for prosody-related tasks.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">2022 IEEE Spoken Language Technology Workshop (SLT)</em>, pages 1104–1111. IEEE.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lin et al. (2023b)</span>
+<span class="ltx_bibblock">
+Guan-Ting Lin, Prashanth Gurunath Shivakumar, Ankur Gandhe, Chao-Han Huck Yang, Yile Gu, Shalini Ghosh, Andreas Stolcke, Hung-yi Lee, and Ivan Bulyko. 2023b.
+
+</span>
+<span class="ltx_bibblock">Paralinguistics-enhanced large language modeling of spoken dialogue.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib25.1.1">arXiv preprint arXiv:2312.15316</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2023)</span>
+<span class="ltx_bibblock">
+Ziyang Ma, Zhisheng Zheng, Jiaxin Ye, Jinchao Li, Zhifu Gao, Shiliang Zhang, and Xie Chen. 2023.
+
+</span>
+<span class="ltx_bibblock">emotion2vec: Self-supervised pre-training for speech emotion representation.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">arXiv preprint arXiv:2312.15185</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Maiti et al. (2023)</span>
+<span class="ltx_bibblock">
+Soumi Maiti, Yifan Peng, Shukjae Choi, Jee-weon Jung, Xuankai Chang, and Shinji Watanabe. 2023.
+
+</span>
+<span class="ltx_bibblock">Voxtlm: unified decoder-only models for consolidating speech recognition/synthesis and speech/text continuation tasks.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">arXiv preprint arXiv:2309.07937</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">McKeown et al. (2010)</span>
+<span class="ltx_bibblock">
+Gary McKeown, Michel F Valstar, Roderick Cowie, and Maja Pantic. 2010.
+
+</span>
+<span class="ltx_bibblock">The semaine corpus of emotionally coloured character interactions.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib28.1.1">2010 IEEE International Conference on Multimedia and Expo</em>, pages 1079–1084. IEEE.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mitsui et al. (2023)</span>
+<span class="ltx_bibblock">
+Kentaro Mitsui, Yukiya Hono, and Kei Sawada. 2023.
+
+</span>
+<span class="ltx_bibblock">Towards human-like spoken dialogue generation between ai agents from written dialogue.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">arXiv preprint arXiv:2310.01088</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mohamed et al. (2022)</span>
+<span class="ltx_bibblock">
+Abdelrahman Mohamed, Hung-yi Lee, Lasse Borgholt, Jakob D. Havtorn, Joakim Edin, Christian Igel, Katrin Kirchhoff, Shang-Wen Li, Karen Livescu, Lars Maaløe, Tara N. Sainath, and Shinji Watanabe. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1109/JSTSP.2022.3207050" target="_blank" title="">Self-supervised speech representation learning: A review</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">IEEE Journal of Selected Topics in Signal Processing</em>, 16(6):1179–1210.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nachmani et al. (2023)</span>
+<span class="ltx_bibblock">
+Eliya Nachmani, Alon Levkovitch, Julian Salazar, Chulayutsh Asawaroengchai, Soroosh Mariooryad, RJ Skerry-Ryan, and Michelle Tadmor Ramanovich. 2023.
+
+</span>
+<span class="ltx_bibblock">Lms with a voice: Spoken language modeling beyond speech tokens.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib31.1.1">arXiv preprint arXiv:2305.15255</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nguyen et al. (2023)</span>
+<span class="ltx_bibblock">
+Tu Anh Nguyen, Eugene Kharitonov, Jade Copet, Yossi Adi, Wei-Ning Hsu, Ali Elkahky, Paden Tomasello, Robin Algayres, Benoit Sagot, Abdelrahman Mohamed, et al. 2023.
+
+</span>
+<span class="ltx_bibblock">Generative spoken dialogue language modeling.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">Transactions of the Association for Computational Linguistics</em>, 11:250–266.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">OpenAI (2023)</span>
+<span class="ltx_bibblock">
+OpenAI. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/2303.08774" target="_blank" title="">Gpt-4 technical report</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pan et al. (2023)</span>
+<span class="ltx_bibblock">
+Jing Pan, Jian Wu, Yashesh Gaur, Sunit Sivasankaran, Zhuo Chen, Shujie Liu, and Jinyu Li. 2023.
+
+</span>
+<span class="ltx_bibblock">Cosmic: Data efficient instruction-tuning for speech in-context learning.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib34.1.1">arXiv preprint arXiv:2311.02248</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Papineni et al. (2002)</span>
+<span class="ltx_bibblock">
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
+
+</span>
+<span class="ltx_bibblock">Bleu: a method for automatic evaluation of machine translation.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib35.1.1">Proceedings of the 40th annual meeting of the Association for Computational Linguistics</em>, pages 311–318.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Poria et al. (2019)</span>
+<span class="ltx_bibblock">
+Soujanya Poria, Devamanyu Hazarika, Navonil Majumder, Gautam Naik, Erik Cambria, and Rada Mihalcea. 2019.
+
+</span>
+<span class="ltx_bibblock">Meld: A multimodal multi-party dataset for emotion recognition in conversations.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics</em>, pages 527–536.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Radford et al. (2023)</span>
+<span class="ltx_bibblock">
+Alec Radford, Jong Wook Kim, Tao Xu, Greg Brockman, Christine Mcleavey, and Ilya Sutskever. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://proceedings.mlr.press/v202/radford23a.html" target="_blank" title="">Robust speech recognition via large-scale weak supervision</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">Proceedings of the 40th International Conference on Machine Learning</em>, volume 202 of <em class="ltx_emph ltx_font_italic" id="bib.bib37.2.2">Proceedings of Machine Learning Research</em>, pages 28492–28518. PMLR.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rubenstein et al. (2023)</span>
+<span class="ltx_bibblock">
+Paul K Rubenstein, Chulayuth Asawaroengchai, Duc Dung Nguyen, Ankur Bapna, Zalán Borsos, Félix de Chaumont Quitry, Peter Chen, Dalia El Badawy, Wei Han, Eugene Kharitonov, et al. 2023.
+
+</span>
+<span class="ltx_bibblock">Audiopalm: A large language model that can speak and listen.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">arXiv preprint arXiv:2306.12925</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Shen et al. (2023)</span>
+<span class="ltx_bibblock">
+Yongliang Shen, Kaitao Song, Xu Tan, Dongsheng Li, Weiming Lu, and Yueting Zhuang. 2023.
+
+</span>
+<span class="ltx_bibblock">Hugginggpt: Solving ai tasks with chatgpt and its friends in huggingface.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib39.1.1">arXiv preprint arXiv:2303.17580</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tang et al. (2023)</span>
+<span class="ltx_bibblock">
+Changli Tang, Wenyi Yu, Guangzhi Sun, Xianzhao Chen, Tian Tan, Wei Li, Lu Lu, Zejun Ma, and Chao Zhang. 2023.
+
+</span>
+<span class="ltx_bibblock">Salmonn: Towards generic hearing abilities for large language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib40.1.1">arXiv preprint arXiv:2310.13289</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Touvron et al. (2023)</span>
+<span class="ltx_bibblock">
+Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, et al. 2023.
+
+</span>
+<span class="ltx_bibblock">Llama 2: Open foundation and fine-tuned chat models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">arXiv preprint arXiv:2307.09288</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tsai et al. (2022)</span>
+<span class="ltx_bibblock">
+Hsiang-Sheng Tsai, Heng-Jui Chang, Wen-Chin Huang, Zili Huang, Kushal Lakhotia, Shu-wen Yang, Shuyan Dong, Andy Liu, Cheng-I Lai, Jiatong Shi, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Superb-sg: Enhanced speech processing universal performance benchmark for semantic and generative capabilities.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib42.1.1">Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</em>, pages 8479–8492.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2023)</span>
+<span class="ltx_bibblock">
+Tianrui Wang, Long Zhou, Ziqiang Zhang, Yu Wu, Shujie Liu, Yashesh Gaur, Zhuo Chen, Jinyu Li, and Furu Wei. 2023.
+
+</span>
+<span class="ltx_bibblock">Viola: Unified codec language models for speech recognition, synthesis, and translation.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib43.1.1">arXiv preprint arXiv:2305.16107</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wei et al. (2022)</span>
+<span class="ltx_bibblock">
+Jason Wei, Yi Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Emergent abilities of large language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib44.1.1">arXiv preprint arXiv:2206.07682</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib45">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wu et al. (2023a)</span>
+<span class="ltx_bibblock">
+Jian Wu, Yashesh Gaur, Zhuo Chen, Long Zhou, Yimeng Zhu, Tianrui Wang, Jinyu Li, Shujie Liu, Bo Ren, Linquan Liu, et al. 2023a.
+
+</span>
+<span class="ltx_bibblock">On decoder-only architecture for speech-to-text and large language model integration.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib45.1.1">2023 IEEE Automatic Speech Recognition and Understanding Workshop (ASRU)</em>, pages 1–8. IEEE.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib46">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wu et al. (2023b)</span>
+<span class="ltx_bibblock">
+Yi-Chiao Wu, Israel D Gebru, Dejan Marković, and Alexander Richard. 2023b.
+
+</span>
+<span class="ltx_bibblock">Audiodec: An open-source streaming high-fidelity neural audio codec.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib46.1.1">ICASSP 2023-2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)</em>, pages 1–5. IEEE.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib47">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xue et al. (2023)</span>
+<span class="ltx_bibblock">
+Hongfei Xue, Yuhao Liang, Bingshen Mu, Shiliang Zhang, Qian Chen, and Lei Xie. 2023.
+
+</span>
+<span class="ltx_bibblock">E-chat: Emotion-sensitive spoken dialogue system with large language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib47.1.1">arXiv preprint arXiv:2401.00475</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib48">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yang et al. (2023)</span>
+<span class="ltx_bibblock">
+Dongchao Yang, Songxiang Liu, Rongjie Huang, Jinchuan Tian, Chao Weng, and Yuexian Zou. 2023.
+
+</span>
+<span class="ltx_bibblock">Hifi-codec: Group-residual vector quantization for high fidelity audio codec.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib48.1.1">arXiv preprint arXiv:2305.02765</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib49">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yang et al. (2021)</span>
+<span class="ltx_bibblock">
+Shu-Wen Yang, Po-Han Chi, Yung-Sung Chuang, Cheng-I Jeff Lai, Kushal Lakhotia, Yist Y. Lin, Andy T. Liu, Jiatong Shi, Xuankai Chang, Guan-Ting Lin, Tzu-Hsien Huang, Wei-Cheng Tseng, Ko tik Lee, Da-Rong Liu, Zili Huang, Shuyan Dong, Shang-Wen Li, Shinji Watanabe, Abdelrahman Mohamed, and Hung yi Lee. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.21437/Interspeech.2021-1775" target="_blank" title="">SUPERB: Speech Processing Universal PERformance Benchmark</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib49.1.1">Proc. Interspeech 2021</em>, pages 1194–1198.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib50">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">You et al. (2022)</span>
+<span class="ltx_bibblock">
+Chenyu You, Nuo Chen, Fenglin Liu, Shen Ge, Xian Wu, and Yuexian Zou. 2022.
+
+</span>
+<span class="ltx_bibblock">End-to-end spoken conversational question answering: Task, dataset and model.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib50.1.1">Findings of the Association for Computational Linguistics: NAACL 2022</em>, pages 1219–1232.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib51">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zeghidour et al. (2021)</span>
+<span class="ltx_bibblock">
+Neil Zeghidour, Alejandro Luebs, Ahmed Omran, Jan Skoglund, and Marco Tagliasacchi. 2021.
+
+</span>
+<span class="ltx_bibblock">Soundstream: An end-to-end neural audio codec.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib51.1.1">IEEE/ACM Transactions on Audio, Speech, and Language Processing</em>, 30:495–507.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib52">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2023)</span>
+<span class="ltx_bibblock">
+Dong Zhang, Shimin Li, Xin Zhang, Jun Zhan, Pengyu Wang, Yaqian Zhou, and Xipeng Qiu. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2023.findings-emnlp.1055" target="_blank" title="">SpeechGPT: Empowering large language models with intrinsic cross-modal conversational abilities</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib52.1.1">Findings of the Association for Computational Linguistics: EMNLP 2023</em>, pages 15757–15773, Singapore. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib53">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2019)</span>
+<span class="ltx_bibblock">
+Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian Q Weinberger, and Yoav Artzi. 2019.
+
+</span>
+<span class="ltx_bibblock">Bertscore: Evaluating text generation with bert.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib53.1.1">International Conference on Learning Representations</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib54">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhu et al. (2018)</span>
+<span class="ltx_bibblock">
+Yaoming Zhu, Sidi Lu, Lei Zheng, Jiaxian Guo, Weinan Zhang, Jun Wang, and Yong Yu. 2018.
+
+</span>
+<span class="ltx_bibblock">Texygen: A benchmarking platform for text generation models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib54.1.1">The 41st international ACM SIGIR conference on research &amp; development in information retrieval</em>, pages 1097–1100.
+
+</span>
+</li>
+</ul>
+</section>
+<section class="ltx_appendix" id="Ax1">
+<h2 class="ltx_title ltx_title_appendix">Appendix</h2>
+<figure class="ltx_table" id="Ax1.T6">
+<div class="ltx_inline-block ltx_transformed_outer" id="Ax1.T6.5" style="width:504.0pt;height:73pt;vertical-align:-1.0pt;"><span class="ltx_transformed_inner" style="transform:translate(0.0pt,0.0pt) scale(1,1) ;">
+<p class="ltx_p" id="Ax1.T6.5.5"><span class="ltx_text" id="Ax1.T6.5.5.5">
+<span class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="Ax1.T6.5.5.5.5">
+<span class="ltx_tbody">
+<span class="ltx_tr" id="Ax1.T6.5.5.5.5.6.1">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_tt ltx_rowspan ltx_rowspan_2" id="Ax1.T6.5.5.5.5.6.1.1"><span class="ltx_text ltx_font_bold" id="Ax1.T6.5.5.5.5.6.1.1.1">Method</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt ltx_colspan ltx_colspan_4" id="Ax1.T6.5.5.5.5.6.1.2"><span class="ltx_text ltx_font_bold" id="Ax1.T6.5.5.5.5.6.1.2.1">Response text</span></span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_l ltx_border_tt ltx_colspan ltx_colspan_3" id="Ax1.T6.5.5.5.5.6.1.3"><span class="ltx_text ltx_font_bold" id="Ax1.T6.5.5.5.5.6.1.3.1">Response style</span></span></span>
+<span class="ltx_tr" id="Ax1.T6.5.5.5.5.5">
+<span class="ltx_td ltx_align_center" id="Ax1.T6.5.5.5.5.5.6"><span class="ltx_text ltx_font_bold" id="Ax1.T6.5.5.5.5.5.6.1">BLEU</span></span>
+<span class="ltx_td ltx_align_center" id="Ax1.T6.1.1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="Ax1.T6.1.1.1.1.1.1.1">ROUGE<sub class="ltx_sub" id="Ax1.T6.1.1.1.1.1.1.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="Ax1.T6.1.1.1.1.1.1.1.1.1">l</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="Ax1.T6.5.5.5.5.5.7"><span class="ltx_text ltx_font_bold" id="Ax1.T6.5.5.5.5.5.7.1">METEOR</span></span>
+<span class="ltx_td ltx_align_center ltx_border_r" id="Ax1.T6.2.2.2.2.2.2"><span class="ltx_text ltx_font_bold" id="Ax1.T6.2.2.2.2.2.2.1">BERT<sub class="ltx_sub" id="Ax1.T6.2.2.2.2.2.2.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="Ax1.T6.2.2.2.2.2.2.1.1.1">f1</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="Ax1.T6.3.3.3.3.3.3"><span class="ltx_text ltx_font_bold" id="Ax1.T6.3.3.3.3.3.3.1">F1<sub class="ltx_sub" id="Ax1.T6.3.3.3.3.3.3.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="Ax1.T6.3.3.3.3.3.3.1.1.1">emotion</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="Ax1.T6.4.4.4.4.4.4"><span class="ltx_text ltx_font_bold" id="Ax1.T6.4.4.4.4.4.4.1">F1<sub class="ltx_sub" id="Ax1.T6.4.4.4.4.4.4.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="Ax1.T6.4.4.4.4.4.4.1.1.1">speed</span></sub></span></span>
+<span class="ltx_td ltx_align_center" id="Ax1.T6.5.5.5.5.5.5"><span class="ltx_text ltx_font_bold" id="Ax1.T6.5.5.5.5.5.5.1">F1<sub class="ltx_sub" id="Ax1.T6.5.5.5.5.5.5.1.1"><span class="ltx_text ltx_font_medium ltx_font_italic" id="Ax1.T6.5.5.5.5.5.5.1.1.1">volume</span></sub></span></span></span>
+<span class="ltx_tr" id="Ax1.T6.5.5.5.5.7.2">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.1">Text-LLM (cascaded)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.2">3.1 (-0.1)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.3">16.9 (-0.4)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.4">18.5 (-0.6)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_r ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.5">75.9 (-0.1)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.6">37.0 (-0.5)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.7">52.5 (-0.4)</span>
+<span class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="Ax1.T6.5.5.5.5.7.2.8">63.7 (-2.1)</span></span>
+<span class="ltx_tr" id="Ax1.T6.5.5.5.5.8.3">
+<span class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb ltx_border_r" id="Ax1.T6.5.5.5.5.8.3.1">Spoken-LLM-<span class="ltx_text ltx_font_italic" id="Ax1.T6.5.5.5.5.8.3.1.1">chunk</span></span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="Ax1.T6.5.5.5.5.8.3.2">3.3 (-0.7)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="Ax1.T6.5.5.5.5.8.3.3">17.1 (-0.9)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="Ax1.T6.5.5.5.5.8.3.4">19.0 (-0.4)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="Ax1.T6.5.5.5.5.8.3.5">75.9 (-0.4)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="Ax1.T6.5.5.5.5.8.3.6">47.5 (-2.1)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="Ax1.T6.5.5.5.5.8.3.7">60.3 (-1.8)</span>
+<span class="ltx_td ltx_align_center ltx_border_bb" id="Ax1.T6.5.5.5.5.8.3.8">57.4 (-3.7)</span></span>
+</span>
+</span></span></p>
+</span></div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 6: </span>The results of using whisper base ASR model’s prediction as input current text on text-LLM (cascaded) and Spoken-LLM-<span class="ltx_text ltx_font_italic" id="Ax1.T6.7.1">chunk</span>.</figcaption>
+</figure>
+</section>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix A </span>Details of human annotators filtering</h2>
+<div class="ltx_para" id="A1.p1">
+<p class="ltx_p" id="A1.p1.1">We assign three listeners for each test. All listeners are based in the United States with HIT approval rate higher than 95%, given that the corpus is in American English. Only the pairs that receive a majority vote and do not have anyone choosing "None of the above is natural" are retained in our corpus. Each test contains 20 samples for evaluation. The example of the annotation interface is shown in Figure <a class="ltx_ref" href="#A7.F7" title="Figure 7 ‣ Appendix G Prompting GPT-4 for Data Generation ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">7</span></a>. We pay the annotators 3 USD for each test. On average, based on the time of playing audio (if played twice for each sample) and reading the content, it takes 10 minutes on one test, so the hourly wage is around 18 USD.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A2">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix B </span>Implementation details</h2>
+<div class="ltx_para" id="A2.p1">
+<p class="ltx_p" id="A2.p1.1">The model is trained using a two-stage approach with distinct learning rates. The learning rate is 1e-3 and 2e-4 during the 1-stage and 2-stage, respectively. The batch size is 128, and LoRA (r=8) is utilized for efficient fine-tuning of the LLM. To facilitate stable training, a warmup learning rate strategy is with 100 initial steps then linear decay. We use 10% of the training samples as the validation data to assess model performance during training. Model checkpoint is selected based on the validation set performance. In the inference stage, a temperature of 0.7 was applied to control the randomness of generated outputs, and top-p sampling with a probability threshold of 0.95 was used. The number of trainable parameters is 7.8M (0.11% for total parameters). All experiments are run with a single A40 48G GPU.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A3">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix C </span>ASR prediction as input</h2>
+<div class="ltx_para" id="A3.p1">
+<p class="ltx_p" id="A3.p1.1">In this particular setup, we use the Whisper base ASR <cite class="ltx_cite ltx_citemacro_citep">(Radford et al., <a class="ltx_ref" href="#bib.bib37" title="">2023</a>)</cite> model to transcribe the current speech into text, which is then input into the trained model for inference. The Word Error Rate (WER) on the current turn speech within the evaluation set is 3.21%. In this setup, we test with the text-LLM (cascaded) and Spoken-LLM-<span class="ltx_text ltx_font_italic" id="A3.p1.1.1">chunk</span> models. In Table <a class="ltx_ref" href="#Ax1.T6" title="Table 6 ‣ Appendix ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">6</span></a>, compared to using the ground truth transcripts, we observe slight performance degradation in response text and style for both the Spoken-LLM-<span class="ltx_text ltx_font_italic" id="A3.p1.1.2">chunk</span> and text-LLM (cascaded). It’s important to note that addressing ASR error propagation on LLM is beyond the scope of this paper. However, several previous efforts have delved into investigating methods to mitigate such issues <cite class="ltx_cite ltx_citemacro_citep">(He and Garner, <a class="ltx_ref" href="#bib.bib16" title="">2023</a>; Everson et al., <a class="ltx_ref" href="#bib.bib11" title="">2024</a>)</cite>, which may be one of the further directions especially when the more expressive and spontaneous speech as current input speech.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A4">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix D </span>Style transition</h2>
+<div class="ltx_para" id="A4.p1">
+<p class="ltx_p" id="A4.p1.1">In this section, we delve into an analysis of the correlation between input and output emotions. While the dataset comprises diverse samples with varying dialogue contexts and inputs, human responses exhibit discernible patterns associated with specific styles. Notably, individuals are inclined to respond with particular styles given a certain current style, and conversely, they are less likely to adopt certain styles in their responses. For instance, in cases where the input style is cheerful, the corresponding response style is more inclined towards positivity, such as cheerful and friendly emotions, as opposed to styles such as unfriendly or sad.</p>
+</div>
+<figure class="ltx_figure" id="A4.F4"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="449" id="A4.F4.g1" src="./media/input_output_speaking_tone_distribution.png" width="598"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span>The output emotion distribution given input emotion. Each row is the probability distribution for an input-output pair.</figcaption>
+</figure>
+<div class="ltx_para" id="A4.p2">
+<p class="ltx_p" id="A4.p2.1">In Figure <a class="ltx_ref" href="#A4.F4" title="Figure 4 ‣ Appendix D Style transition ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">4</span></a>, we present a visual representation of the output style distribution corresponding to different input styles. The visualization reveals that for each input style, certain response styles are markedly more prevalent than others, underscoring the nuanced relationship between input and output emotions.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A5">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix E </span>Diversity of current and responding styles</h2>
+<div class="ltx_para" id="A5.p1">
+<p class="ltx_p" id="A5.p1.1">In exploring human responses across varied styles, individuals may employ more assertive or passive speaking approaches, resulting in potential differences in content. In this context, we delve into an examination of how the interplay between input and output styles influences response diversity. Specifically, we seek to determine whether the transition between styles in certain scenarios leads to responses characterized by increased diversity or a tendency to adopt simpler, more predictable patterns. This investigation sheds light on the intricate dynamics of style transitions and their impact on the richness and complexity of response text.</p>
+</div>
+<div class="ltx_para" id="A5.p2">
+<p class="ltx_p" id="A5.p2.1">In Figure <a class="ltx_ref" href="#A5.F5" title="Figure 5 ‣ Appendix E Diversity of current and responding styles ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">5</span></a>, we present the result of the top-5 and bottom-5 diverse pairs, organized according to their self-BLEU scores. The self-BLEU score represents the average BLEU score for each style transition pair, with lower scores indicating greater diversity in the responses. Notably, we observe that the top-5 diverse pairs frequently involve responses characterized by positive and excitement styles such as cheerfulness. Conversely, the bottom-5 non-diverse pairs are associated with empathy, particularly when the input style is sad. This analysis provides insights into the response diversity across various style transition scenarios, emphasizing notable patterns in the use of distinct emotional styles.</p>
+</div>
+<figure class="ltx_figure" id="A5.F5"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="427" id="A5.F5.g1" src="./media/diverse_self_bleu.png" width="598"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 5: </span>Top-5 and Bottom-5 diverse pairs in the train and evaluation set. The self-BLEU is normalized for each style transition pair to make a fair comparison. The pairs with fewer than 5 pairs are removed. The lower the self-BLEU score, the more diverse the lexical response given different dialogue contexts and input. </figcaption>
+</figure>
+<figure class="ltx_table" id="A5.T7">
+<table class="ltx_tabular ltx_guessed_headers ltx_align_middle" id="A5.T7.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="A5.T7.1.1.1">
+<th class="ltx_td ltx_th ltx_th_row ltx_border_tt" id="A5.T7.1.1.1.1"></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A5.T7.1.1.1.2"><span class="ltx_text ltx_font_bold" id="A5.T7.1.1.1.2.1">eval</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A5.T7.1.1.1.3"><span class="ltx_text ltx_font_bold" id="A5.T7.1.1.1.3.1">train</span></th>
+<th class="ltx_td ltx_align_left ltx_th ltx_th_column ltx_border_tt" id="A5.T7.1.1.1.4"><span class="ltx_text ltx_font_bold" id="A5.T7.1.1.1.4.1">unfiltered</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="A5.T7.1.2.1">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t" id="A5.T7.1.2.1.1"># dialogue set 1</th>
+<td class="ltx_td ltx_align_left ltx_border_t" id="A5.T7.1.2.1.2">16</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="A5.T7.1.2.1.3">1,770</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="A5.T7.1.2.1.4">0</td>
+</tr>
+<tr class="ltx_tr" id="A5.T7.1.3.2">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A5.T7.1.3.2.1"># dialogue set 2</th>
+<td class="ltx_td ltx_align_left" id="A5.T7.1.3.2.2">445</td>
+<td class="ltx_td ltx_align_left" id="A5.T7.1.3.2.3">108</td>
+<td class="ltx_td ltx_align_left" id="A5.T7.1.3.2.4">859</td>
+</tr>
+<tr class="ltx_tr" id="A5.T7.1.4.3">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row" id="A5.T7.1.4.3.1"># dialogue set 3</th>
+<td class="ltx_td ltx_align_left" id="A5.T7.1.4.3.2">25</td>
+<td class="ltx_td ltx_align_left" id="A5.T7.1.4.3.3">0</td>
+<td class="ltx_td ltx_align_left" id="A5.T7.1.4.3.4">4,918</td>
+</tr>
+<tr class="ltx_tr" id="A5.T7.1.5.4">
+<th class="ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb" id="A5.T7.1.5.4.1"># sample</th>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="A5.T7.1.5.4.2">981</td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="A5.T7.1.5.4.3">1,986</td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="A5.T7.1.5.4.4">16,472</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 7: </span>Data statistics of StyleTalk. The # dialogue set 1, 2, and 3 mean the amount of different speaking styles for the current speech. # sample is the number of current and response speech pairs.</figcaption>
+</figure>
+</section>
+<section class="ltx_appendix" id="A6">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix F </span>Instruction</h2>
+<div class="ltx_para" id="A6.p1">
+<p class="ltx_p" id="A6.p1.2"><math alttext="I_{1}" class="ltx_Math" display="inline" id="A6.p1.1.m1.1"><semantics id="A6.p1.1.m1.1a"><msub id="A6.p1.1.m1.1.1" xref="A6.p1.1.m1.1.1.cmml"><mi id="A6.p1.1.m1.1.1.2" xref="A6.p1.1.m1.1.1.2.cmml">I</mi><mn id="A6.p1.1.m1.1.1.3" xref="A6.p1.1.m1.1.1.3.cmml">1</mn></msub><annotation-xml encoding="MathML-Content" id="A6.p1.1.m1.1b"><apply id="A6.p1.1.m1.1.1.cmml" xref="A6.p1.1.m1.1.1"><csymbol cd="ambiguous" id="A6.p1.1.m1.1.1.1.cmml" xref="A6.p1.1.m1.1.1">subscript</csymbol><ci id="A6.p1.1.m1.1.1.2.cmml" xref="A6.p1.1.m1.1.1.2">𝐼</ci><cn id="A6.p1.1.m1.1.1.3.cmml" type="integer" xref="A6.p1.1.m1.1.1.3">1</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.p1.1.m1.1c">I_{1}</annotation></semantics></math>: Instruction: Classify speaking style of speech. The speaking style is represented in (emotion, speed, volume).
+<br class="ltx_break"/><math alttext="I_{2}" class="ltx_Math" display="inline" id="A6.p1.2.m2.1"><semantics id="A6.p1.2.m2.1a"><msub id="A6.p1.2.m2.1.1" xref="A6.p1.2.m2.1.1.cmml"><mi id="A6.p1.2.m2.1.1.2" xref="A6.p1.2.m2.1.1.2.cmml">I</mi><mn id="A6.p1.2.m2.1.1.3" xref="A6.p1.2.m2.1.1.3.cmml">2</mn></msub><annotation-xml encoding="MathML-Content" id="A6.p1.2.m2.1b"><apply id="A6.p1.2.m2.1.1.cmml" xref="A6.p1.2.m2.1.1"><csymbol cd="ambiguous" id="A6.p1.2.m2.1.1.1.cmml" xref="A6.p1.2.m2.1.1">subscript</csymbol><ci id="A6.p1.2.m2.1.1.2.cmml" xref="A6.p1.2.m2.1.1.2">𝐼</ci><cn id="A6.p1.2.m2.1.1.3.cmml" type="integer" xref="A6.p1.2.m2.1.1.3">2</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="A6.p1.2.m2.1c">I_{2}</annotation></semantics></math>: Instruction: Generate human-like response given context. speaking style is represented in (emotion, speed, volume).</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A7">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix G </span>Prompting GPT-4 for Data Generation</h2>
+<div class="ltx_para" id="A7.p1">
+<p class="ltx_p" id="A7.p1.1">We utilize <span class="ltx_text ltx_font_typewriter" id="A7.p1.1.1">gpt-4-1106-preview</span> and the prompt template in Figure <a class="ltx_ref" href="#A7.F6" title="Figure 6 ‣ Appendix G Prompting GPT-4 for Data Generation ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">6</span></a>.</p>
+</div>
+<figure class="ltx_figure" id="A7.F6">
+<span class="ltx_inline-block ltx_align_center ltx_framed ltx_framed_rectangle" id="A7.F6.1" style="border-color: #000000;"><img alt="Refer to caption" class="ltx_graphics ltx_img_portrait" height="677" id="A7.F6.1.g1" src="./media/x3.png" width="461"/>
+</span>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 6: </span>Prompt template. {TOPIC} and {HISTORY_NUM} are variables. The system message and user message are sent to GPT-4 (<span class="ltx_text ltx_font_typewriter" id="A7.F6.3.1">gpt-4-1106-preview</span>) API.</figcaption>
+</figure>
+<figure class="ltx_figure" id="A7.F7">
+<span class="ltx_inline-block ltx_align_center ltx_framed ltx_framed_rectangle" id="A7.F7.1" style="border-color: #000000;"><img alt="Refer to caption" class="ltx_graphics ltx_img_portrait" height="591" id="A7.F7.1.g1" src="./media/x4.png" width="461"/>
+</span>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 7: </span>Human annotators filtering template.</figcaption>
+</figure>
+<figure class="ltx_figure" id="A7.F8">
+<span class="ltx_inline-block ltx_align_center ltx_framed ltx_framed_rectangle" id="A7.F8.1" style="border-color: #000000;"><img alt="Refer to caption" class="ltx_graphics ltx_img_portrait" height="816" id="A7.F8.1.g1" src="./media/human_eval_template.png" width="598"/>
+</span>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 8: </span>Subjective evaluation template.</figcaption>
+</figure>
+</section>
+<section class="ltx_appendix" id="A8">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix H </span>Subjective evaluation</h2>
+<div class="ltx_para" id="A8.p1">
+<p class="ltx_p" id="A8.p1.1">Each test contains 10 samples for evaluation. The example of subjective evaluation interface is shown in Figure <a class="ltx_ref" href="#A7.F8" title="Figure 8 ‣ Appendix G Prompting GPT-4 for Data Generation ‣ Advancing Large Language Models to Capture Varied Speaking Styles and Respond Properly in Spoken Conversations"><span class="ltx_text ltx_ref_tag">8</span></a>. We pay the annotators 3 USD for each test. On average, based on the time of listening to audio (if played three times for each sample) and reading the content, it takes 10 minutes on one test. The hourly wage is around 18 USD.</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A9">
+<h2 class="ltx_title ltx_title_appendix">
+<span class="ltx_tag ltx_tag_appendix">Appendix I </span>Dataset license</h2>
+<div class="ltx_para" id="A9.p1">
+<p class="ltx_p" id="A9.p1.1">We plan to release the StyleTalk dataset under the MIT license.</p>
+</div>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</section>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2402.12785">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2402.12786">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2402.12786" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2402.12786">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2402.12787">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Tue Mar  5 17:15:47 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

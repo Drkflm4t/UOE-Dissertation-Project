@@ -1,0 +1,768 @@
+{
+    "o_paper": "2024.acl%2024.acl-long.311",
+    "cf_paper": {
+        "id": "2024.acl%2024.acl-long.311",
+        "meta": {
+            "venue": "2024.acl",
+            "authors": [
+                "Megh Thakkar",
+                "Quentin Fournier",
+                "Matthew D Riemer",
+                "Pin-Yu Chen",
+                "Amal Zouaq",
+                "Payel Das",
+                "Sarath Chandar"
+            ],
+            "categories": [
+                "cs.CL"
+            ],
+            "entry_id": "http://arxiv.org/abs/2406.04879v1",
+            "links": [
+                "http://arxiv.org/abs/2406.04879v1",
+                "http://arxiv.org/pdf/2406.04879v1"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2406.04879v1",
+            "published": "2024-06-07T12:25:51+00:00",
+            "updated": "2024-06-07T12:25:51+00:00",
+            "primary_category": "cs.CL",
+            "title": "A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques",
+            "summary": "Large language models are first pre-trained on trillions of tokens and then\ninstruction-tuned or aligned to specific preferences. While pre-training\nremains out of reach for most researchers due to the compute required,\nfine-tuning has become affordable thanks to parameter-efficient methods such as\nLoRA and QLoRA. Alignment is known to be sensitive to the many factors\ninvolved, including the quantity and quality of data, the alignment method, and\nthe adapter rank. However, there has not yet been an extensive study of their\neffect on downstream performance. To address this gap, we conduct an in-depth\ninvestigation of the impact of popular choices for three crucial axes: (i) the\nalignment dataset (HH-RLHF and BeaverTails), (ii) the alignment technique (SFT\nand DPO), and (iii) the model (LLaMA-1, Vicuna-v1.3, Mistral-7b, and\nMistral-7b-Instruct). Our extensive setup spanning over 300 experiments reveals\nconsistent trends and unexpected findings. We observe how more informative data\nhelps with preference alignment, cases where supervised fine-tuning outperforms\npreference optimization, and how aligning to a distinct preference boosts\nperformance on downstream tasks. Through our in-depth analyses, we put forward\nkey guidelines to help researchers perform more effective parameter-efficient\nLLM alignment.",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "venue_config": {
+                "id": "2024.acl",
+                "name": "Association for Computational Linguistics Conferences of 2024",
+                "type": "Association for Computational Linguistics Conference",
+                "description": "The ACL (Association for Computational Linguistics) Conference is a premier international conference focused on natural language processing (NLP) and computational linguistics. Computational linguistics is the scientific study of language from a computational perspective. Computational linguists are interested in providing computational models of various kinds of linguistic phenomena. These models may be \"knowledge-based\" (\"hand-crafted\") or \"data-driven\" (\"statistical\" or \"empirical\").",
+                "guidelines": "## Review Guidelines:\n\n1. Be Specific:\n\tFlag issues with clear, detailed examples (e.g., \"X misses factor Y\" instead of \"X is wrong\").\n\tEnsure your points are understandable without requiring additional context.\n\n2. Avoid Common Review Pitfalls:\n\t* Avoid overused heuristics like \"Results are not surprising\" or \"The paper lacks novelty\" without clear justification.\n\t* Be open-minded about unexpected results, simpler methods, and niche topics.\n\n3. Watch for Common Issues in NLP Papers:\n\t* Methodology: Ensure valid evaluation, reproducibility, and clear assumptions.\n\t* Artifacts: Check for ethics issues and clear licensing.\n\t* Experimental Results: Avoid misleading framing, unsubstantiated claims, or statistical flaws.\n\t* General: Ensure clear research questions, proper citations, and accurate terminology.\n\n4. Ensure Consistency in Scores:\n\t* Justify low soundness scores with detailed explanations.\n\t* Use excitement scores for personal preferences and overall assessment for the paper\u2019s recommendation.\n\n5. Maintain a Professional, Neutral Tone:\n\t* Write reviews that help authors improve, avoiding sarcasm or dismissiveness.\n\t* Treat authors with respect, considering they may be early-career researchers or under stress.",
+                "guidelines_detailed": "## Write a strong review\n\n### 1. Be specific\n\nIf you would like to flag any issues, it should be specific and ideally understandable to the chairs without reading the full paper. Let us consider a few examples.\n\n* Instead of \"The paper is missing relevant references\" use \"The paper is missing references XYZ\"\n* Instead of \"X is not clear\" use \"Y and Z are missing from the description of X\"\n* Instead of \"The formulation of X is wrong\" use \"The formulation of X misses the factor Y\"\n* Instead of \"The contribution is not novel\" use \"Highly similar work X and Y has been published 3+ months prior to submission deadline\"\n* Instead of \"The paper is missing recent baselines\" use \"The proposed method should be compared against recent methods X, Y and Z\"\n* Instead of \"X was done in the way Y\" use \"X was done in the way Y which has the disadvantage Z\"\n* Instead of \"The algorithm's interaction with dataset is problematic\" use \"It's possible that when using the decoding (line 723) on the dataset 3 (line 512), there might not be enough training data to rely on the n-best list.\"\n\nThe advantage of the last version is that it can be understood by an area chair (who has expertise in the subarea) without looking for line numbers.\n\n### 2. Check for common review issues\n\nJudging whether a research paper is \u201cgood\u201d is an objectively hard task, and over the past conferences, we collected a list of common problems, which is presented below. Such comments may point at legitimate problems with the paper, but they are not always \u201cweaknesses\u201d. This can happen even to experienced reviewers, and it\u2019s worth checking your review for these problems before submitting.\n| Heuristic  | Why this is problematic |\n|------------|------------------------|\n| **H1. The results are not surprising** | Just because findings seem obvious doesn\u2019t mean they are known or useless. Empirical validation is still valuable. |\n| **H2. The results contradict what I would expect** | Avoid confirmation bias\u2014unexpected results can challenge assumptions and contribute to progress. |\n| **H3. The results are not novel** | If claiming lack of novelty, provide references. Contributions like analysis or reproduction are valid under CFP. |\n| **H4. This has no precedent in the existing literature** | Novel ideas can be harder to publish, but that doesn\u2019t make them invalid. Avoid excessive conservatism. |\n| **H5. The results do not surpass the latest SOTA** | SOTA is not required for a contribution. Improvements in efficiency, interpretability, or fairness also matter. |\n| **H6. The results are negative** | Negative results prevent hype and overclaiming. Knowing what doesn\u2019t work is as important as knowing what does. |\n| **H7. This method is too simple** | Simpler methods are often preferable\u2014effective, robust, and easier to deploy. Complexity isn\u2019t inherently better. |\n| **H8. The paper doesn't use [my preferred methodology]** | NLP includes diverse contributions beyond specific methodologies. Methodological diversity is essential. |\n| **H9. The topic is too niche** | Specialized research can have a significant impact within its subfield and contribute to broader understanding. |\n| **H10. The approach is tested only on [not English]** | Research on any language is valuable, both practically and theoretically, just as English-only studies are. |\n| **H11. The paper has language errors** | Clarity is more important than perfect language. Scientific content matters more than writing style. |\n| **H12. The paper is missing the [reference X]** | Missing key references is a concern only if the work was published 3+ months before the deadline. Otherwise, suggest rather than criticize. |\n| **H13. The authors could also do [extra experiment X]** | Extra experiments are always possible but not always necessary. If critical, justify why. Otherwise, suggest rather than reject. |\n| **H14. The authors should compare to a 'closed' model X** | Closed-model comparisons are useful only if relevant to the claim. Lack of transparency can make them unreliable. |\n| **H15. The authors should have done [X] instead** | Different approaches exist. Only critique if the chosen method prevents answering the research question or is misleading. |\n| **H16. Limitations != weaknesses** | Acknowledging limitations is required; listing them as weaknesses without justification is unfair. Argue why they invalidate the work if relevant. |\n\nIf you have something like the above listed as a \u201cweakness\u201d of the paper, do try to revisit the paper with an open mind. Both the authors and the ACs will be aware of these guidelines and can refer to them in discussion/meta-review.\n\n### 3. Check for common problems in NLP papers\n\nAs a counter to common problems with reviews, there are also common problems with NLP papers. We do ask you to watch out for these and point them out when you see them. Above all else, published research should at least be technically sound and appropriately scoped. As with the above reviewer issues, it\u2019s a case-by-case evaluation: some things in the list below may be appropriate in a given context, given that they are sufficiently motivated. We provide codes for different types of issues (e.g. M1, G2\u2026) that can be referenced in discussions.\n\n#### Issues with methodology (M)\n\n- **M1. LLM-only evaluation without validation**: If LLMs are used as evaluators, their reliability must be validated in this context.  \n\n- **M2. Reproducibility issues**: Are there enough details to reproduce the experiments, including hyperparameters? Is code or data provided for reviewer evaluation? Reproducibility refers to rerunning experiments with similar results, not reimplementing them.  \n\n- **M3. Undisclosed data quality issues**: If the paper provides datasets or samples, any quality issues should be disclosed. If undisclosed issues exist, it's a serious concern.  \n\n- **M4. Unmotivated selection**: The paper should justify its choice of models and benchmarks in relation to its claims. Even if you would have chosen differently, their selection must be reasonable.  \n\n- **M5. Incomplete assumptions or proofs**: Assumptions should be clearly stated, and formal statements (theorems, lemmas, etc.) must be backed by complete, correct proofs, even if placed in an appendix.  \n\n#### Issues with artifact sourcing or release (T)\n\n- **T1. Ethics issues with data collection**: If human data collection is involved, ethical considerations (e.g., approval, compensation) should be addressed. Major concerns can be flagged for ethics review.\n\n- **T2. Unclear license/release terms**: If a dataset or model is released, the terms should be explicitly stated. Reviewers should check clarity, not make legal judgments.  \n\n#### Issues with experimental results (R)\n\n- **R1. Analysis issues**: Issues include misleading statistics, cherry-picked results, or poorly tuned baselines that affect fairness in comparisons.  \n\n- **R2. Inappropriate scope of claims**: Claims should be based on representative samples. Evaluating a few benchmarks does not justify broad statements about reasoning, understanding, or LLM capabilities.  \n\n- **R3. Hypotheses/speculations as conclusions**: Claims must be supported by evidence or marked as speculation, not presented as established facts.  \n\n- **R4. Misleading framing or overclaiming**: Overgeneralized conclusions, such as stating that LLMs \"understand\" language based only on benchmark results, should be avoided.  \n\n- **R5. Missing statistical significance assessment**: Key results should include error bars, confidence intervals, and statistical significance tests, with details on variability and assumptions.  \n\n#### General issues (G)\n\n- **G1. Unclear research question or contribution**: The paper should clearly state the problem it addresses, its contributions, and its limitations in the abstract and introduction.  \n\n- **G2. Reliance on a bad precedent**: Justifying methods by citing flawed or outdated work is problematic. If precedent is questionable, reviewers should clarify their stance.  \n\n- **G3. Missing/misrepresented related work**: Authors should fairly represent previous research, ensuring novelty claims are justified and related work is accurately cited.  \n\n- **G4. Key terms too vague and undefined**: If an important term is unclear or undefined, the paper should specify or reference its meaning.  \n\n- **G5. Misleading/incorrect citations**: Citations must accurately reflect the referenced work. Increasing reliance on LLM-generated summaries makes this issue more prevalent.  \n\n\n### 4. Check that your scores reflect the review\n\nARR reviewers are asked to provide three scores: soundness, excitement, and overall recommendation.\n\nThe soundness scores must be justified by the text of the review . If you give a low Soundness score without finding any major faults, this means that your review is not a faithful explanation of your recommendation, and you need to revise it. One possible reason for low soundness scores without sufficient justification could be reliance on some unconscious bias or heuristic, like the ones listed in the previous section. Likewise, low reproducibility scores should be justified.\n\nSometimes you may find the work sound, but not something that is interesting for you personally. Such preferences are more subjective and should be reflected in a separate excitement score, which is orthogonal to the assessment of the soundness of the paper. Excitement scores reflect our personal taste, and so do not necessarily come with explicit reasons.\n\nThe Overall assessment score is an explicit recommendation for the outcome of this paper, if it were committed to an *ACL venue. This is a composite score reflecting your assessment of soundness, excitement, and also other factors like novelty and impact. All papers recommended for Findings and main conferences are expected to be sufficiently sound and reproducible, but you may consider a paper worthy of the main conference even if you personally are not excited about it. For example, improvements in efficiency of some algorithm, or creating a high-quality resource for a language/domain that does not yet have resources of that type may not sound very novel or exciting, but you may still consider it a significant contribution due to its potential impact (for its target community).\n\n\n### 5. Check that the tone is professional and neutral\n\nAbove all, a good review should be professional and neutral, if not kind. A key goal of peer review is to help the authors improve their papers. As an anonymous reviewer, you are in a position of power, and the written medium makes it easier to be more dismissive and sarcastic than if you were communicating with the authors face-to-face. Unfortunately such reviews are not uncommon.\n\nConsider that you may well be addressing someone who is only starting on the research path. And/or someone struggling with stress and other mental health issues. And/or someone who has been less lucky with their school and advisors. Academic lives are already stressful enough, and we do not need to inflict extra damage on the mental health of our colleagues with sarcastic or insulting reviews. Write the review you would like to get yourself.\n\nThe fact is, authors and reviewers are actually the same people: the conference crowd lining up for coffee, happily chatting with each other about the grand problems even if they do not always agree. Why can\u2019t we do peer review in the same spirit of fun intellectual interaction with colleagues?\n\nJust like the conference coffee break chats, reviewing is in fact, mutually beneficial: in exchange for feedback, the reviewers get to have the first look at cutting-edge research. Just like the coffee breaks, where you do not necessarily meet only the people working in your subsubfield, peer review may expose you to new techniques. Since there is careful written communication in the authors\u2019 response, you may even find that you were wrong about something, which is a much faster way to learn than making the same mistake in your own research.\n\nNot to mention, someone out there is reviewing your papers too. The more rude or dismissive reviews there are, the more of a norm they become, and the higher the chances you will get one yourself in the future.",
+                "template_field_semantics": {
+                    "summary": "Paper Summary",
+                    "strengths": "Summary of Strengths",
+                    "weaknesses": "Summary of Weaknesses",
+                    "suggestions": "Comments/Suggestions/Typos"
+                },
+                "review_template": {
+                    "Paper Summary": "Describe what this paper is about. This should help action editors and area chairs to understand the topic of the work and highlight any possible misunderstandings.",
+                    "Summary of Strengths": "What are the major reasons to publish this paper at a selective *ACL venue? These could include novel and useful methodology, insightful empirical results or theoretical analysis, clear organization of related literature, or any other reason why interested readers of *ACL papers may find the paper useful.",
+                    "Summary of Weaknesses": "What are the concerns that you have about the paper that would cause you to favor prioritizing other high-quality papers that are also under consideration for publication? These could include concerns about correctness of the results or argumentation, limited perceived impact of the methods or findings (note that impact can be significant both in broad or in narrow sub-fields), lack of clarity in exposition, or any other reason why interested readers of *ACL papers may gain less from this paper than they would from other papers under consideration. Where possible, please number your concerns so authors may respond to them individually.",
+                    "Comments/Suggestions/Typos": "If you have any comments to the authors about how they may improve their paper, other than addressing the concerns above, please list them here."
+                },
+                "overall_score_name": "Overall Assessment",
+                "review_scores": {
+                    "Reviewer Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "Positive that my evaluation is correct. I read the paper very carefully and am familiar with related work.",
+                            "4": "Quite sure. I tried to check the important points carefully. It\u2019s unlikely, though conceivable, that I missed something that should affect my ratings.",
+                            "3": "Pretty sure, but there\u2019s a chance I missed something. Although I have a good feel for this area in general, I did not carefully check the paper\u2019s details, e.g., the math or experimental design.",
+                            "2": "Willing to defend my evaluation, but it is fairly likely that I missed some details, didn\u2019t understand some central points, or can\u2019t be sure about the novelty of the work.",
+                            "1": "Not my area, or paper is very hard to understand. My evaluation is just an educated guess."
+                        }
+                    },
+                    "Soundness": {
+                        "meaning": "Given that this is a short/long paper, is it sufficiently sound and thorough? Does it clearly state scientific claims and provide adequate support for them? For experimental papers: consider the depth and/or breadth of the research questions investigated, technical soundness of experiments, methodological validity of evaluation. For position papers, surveys: consider whether the current state of the field is adequately represented and main counter-arguments acknowledged. For resource papers: consider the data collection methodology, resulting data & the difference from existing resources are described in sufficient detail.",
+                        "scores": {
+                            "5": "Excellent: This study is one of the most thorough I have seen, given its type.",
+                            "4": "Strong: This study provides sufficient support for all of its claims. Some extra experiments could be nice, but not essential.",
+                            "3": "Acceptable: This study provides sufficient support for its main claims. Some minor points may need extra support or details.",
+                            "2": "Poor: Some of the main claims are not sufficiently supported. There are major technical/methodological problems.",
+                            "1": "Major Issues: This study is not yet sufficiently thorough to warrant publication or is not relevant to ACL."
+                        }
+                    },
+                    "Excitement": {
+                        "meaning": "How exciting is this paper for you? Excitement is subjective, and does not necessarily follow what is popular in the field. We may perceive papers as transformational/innovative/surprising, e.g. because they present conceptual breakthroughs or evidence challenging common assumptions/methods/datasets/metrics. We may be excited about the possible impact of the paper on some community (not necessarily large or our own), e.g. lowering barriers, reducing costs, enabling new applications. We may be excited for papers that are relevant, inspiring, or useful for our own research. These factors may combine in different ways for different reviewers.",
+                        "scores": {
+                            "5": "Highly Exciting: I would recommend this paper to others and/or attend its presentation in a conference.",
+                            "4": "Exciting: I would mention this paper to others and/or make an effort to attend its presentation in a conference.",
+                            "3": "Interesting: I might mention some points of this paper to others and/or attend its presentation in a conference if there\u2019s time.",
+                            "2": "Potentially Interesting: this paper does not resonate with me, but it might with others in the *ACL community.",
+                            "1": "Not Exciting: this paper does not resonate with me, and I don\u2019t think it would with others in the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    },
+                    "Overall Assessment": {
+                        "meaning": "If this paper was committed to an *ACL conference, do you believe it should be accepted? If you recommend conference, Findings and or even award consideration, you can still suggest minor revisions (e.g. typos, non-core missing refs, etc.). Outstanding papers should be either fascinating, controversial, surprising, impressive, or potentially field-changing. Awards will be decided based on the camera-ready version of the paper. Main vs Findings papers: the main criteria for Findings are soundness and reproducibility. Conference recommendations may also consider novelty, impact and other factors.",
+                        "scores": {
+                            "5": "Consider for Award: I think this paper could be considered for an outstanding paper award at an *ACL conference (up to top 2.5% papers).",
+                            "4.5": "Borderline Award",
+                            "4": "Conference: I think this paper could be accepted to an *ACL conference.",
+                            "3.5": "Borderline Conference",
+                            "3": "Findings: I think this paper could be accepted to the Findings of the ACL.",
+                            "2.5": "Borderline Findings",
+                            "2": "Resubmit next cycle: I think this paper needs substantial revisions that can be completed by the next ARR cycle.",
+                            "1.5": "Resubmit after next cycle: I think this paper needs substantial revisions that cannot be completed by the next ARR cycle.",
+                            "1": "Do not resubmit: This paper has to be fully redone, or it is not relevant to the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    }
+                }
+            },
+            "oid": "2024.acl%2024.acl-long.311",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/2024.acl/2024.acl%2024.acl-long.311/media"
+        },
+        "md": "\n\n\n# A Deep Dive into the Trade-Offs of Parameter-Efficient \n\n\nPreference Alignment Techniques\n\n\n\n\n\n###### Abstract\n\n\n\n\n\nLarge language models are first pre-trained on trillions of tokens and then instruction-tuned or aligned to specific preferences. While pre-training remains out of reach for most researchers due to the compute required, fine-tuning has become affordable thanks to parameter-efficient methods such as LoRA and QLoRA. Alignment is known to be sensitive to the many factors involved, including the quantity and quality of data, the alignment method, and the adapter rank. However, there has not yet been an extensive study of their effect on downstream performance. To address this gap, we conduct an in-depth investigation of the impact of popular choices for three crucial axes: (i) the alignment dataset (HH-RLHF and BeaverTails), (ii) the alignment technique (SFT and DPO), and (iii) the model (LLaMA-1, Vicuna-v1.3, Mistral-7b, and Mistral-7b-Instruct). Our extensive setup spanning over 300 experiments reveals consistent trends and unexpected findings. We observe how more informative data helps with preference alignment, cases where supervised fine-tuning outperforms preference optimization, and how aligning to a distinct preference boosts performance on downstream tasks. Through our in-depth analyses, we put forward key guidelines to help researchers perform more effective parameter-efficient LLM alignment.  \n\n\n\n\n\n## 1 Introduction\n\n\n\n\n\nLarge Language Models (LLMs) have achieved human-like performance across various tasks such as summarization, commonsense reasoning, and open-ended generation\u00a0(Zhao et\u00a0al., [2023](#bib.bib28)). These LLMs have billions of parameters and are pre-trained on trillions of tokens scraped from the web. A lucrative utilization of LLMs is in the form of autonomous agents, to make them follow user instructions and adhere to specific preference requirements\u00a0(Wang et\u00a0al., [2023a](#bib.bib23)). However, the pre-trained models are often incapable of following instructions, and they need to be aligned using specially curated preference alignment datasets and methods for generalization\u00a0(Mishra et\u00a0al., [2021](#bib.bib16)).  \n\n\n\n\n\nAlignment methods either involve fine-tuning the pre-trained model using auto-regressive language modeling over the ground truth completions (supervised fine-tuning or SFT)\u00a0(Taori et\u00a0al., [2023](#bib.bib21)) or using specialized alignment methods such as reinforcement learning from human feedback (RLHF)\u00a0(Christiano et\u00a0al., [2023](#bib.bib4)), direct preference optimization (DPO)\u00a0(Rafailov et\u00a0al., [2023](#bib.bib17)), or prompt tuning\u00a0(Xue et\u00a0al., [2023](#bib.bib25)). However, applying these methods to the full models is computationally expensive due to their large sizes. Parameter-efficient training (PEFT) methods such as Low-Rank Adaptation (LoRA)\u00a0(Hu et\u00a0al., [2022](#bib.bib10)) and QLoRA\u00a0(Dettmers et\u00a0al., [2023](#bib.bib5)) have achieved comparable performance to full fine-tuning of LLMs at a much lower cost. This has enabled researchers to experiment with preference alignment datasets, methods, and models on systems with a single GPU. However, alignment is sensitive to numerous factors and design choices involved in the training\u00a0(Wang et\u00a0al., [2023b](#bib.bib24)).  \n\n\n\n\n\n\n\n\n\n\n\nThe design choices to align LLMs fit into one of the following three broad, crucial axes: (i) the quality and quantity of the alignment dataset, (ii) the preference alignment method, and (iii) the nature of the base model. Given the increasing interest in preference alignment, an in-depth analysis of the effect of these axes on downstream performance is required. To the best of our knowledge, no extensive study has investigated them, especially in a PEFT setting. We fill this important gap by attempting to answer various key research questions across these three axes:  \n\n\n\n\n\nAlignment Dataset How do the informativeness and quality, number of samples, and content of the preference dataset impact the downstream performance?  \n\n\n\n\n\nAlignment Method How do different alignment methods affect pre-trained and instruction-tuned models over complementary preferences?  \n\n\n\n\n\nNature of the Base Model How does the downstream performance compare between pre-trained models, instruction-tuned models, and their merged variants?  \n\n\n\n\n\nThough our study covers all three axes, given the rapidly growing number of options for each, we restrict the studied choices to the most popular ones. Specifically, we perform our experiments on two commonly used preferences in literature to study alignment trade-offs: harmlessness and helpfulness. We use the (i) two most popular preference alignment datasets with harmlessness and helpfulness annotations: HH-RLHF\u00a0(Bai et\u00a0al., [2022](#bib.bib1)) and BeaverTails\u00a0(Ji et\u00a0al., [2023](#bib.bib11)), with (ii) the two most widely-used alignment methods: SFT\u00a0(Taori et\u00a0al., [2023](#bib.bib21)) and DPO\u00a0(Rafailov et\u00a0al., [2023](#bib.bib17)), and (iii) two commonly used LLMs, LLaMA-1\u00a0(Touvron et\u00a0al., [2023](#bib.bib22)) and Mistral-7b\u00a0(Jiang et\u00a0al., [2023](#bib.bib12)) along with their instruction-tuned versions, Vicuna-v1.3\u00a0(Chiang et\u00a0al., [2023](#bib.bib3)) and Mistral-7b-Instruct. For an in-depth study of PEFT methods, we conducted all experiments using both LoRA and QLoRA. Our extensive analysis across these core axes reveals certain consistent trends and unexpected findings, as shown in Table\u00a0[1](#S1.T1 \"Table 1 \u2023 1 Introduction \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"). We hope that consolidating the key findings into guidelines will benefit the community in conducting impactful research toward LLM alignment. Our contributions can be summarized as:  \n\n\n\n\n\n* We provide an in-depth study into the trade-offs of parameter-efficient preference alignment training, particularly when using LoRA and QLoRA. \n\n\n* We conduct over 300 experiments across three core axes of preference alignment: the dataset, the alignment method, and the model. \n\n\n* Through experiments on $5$ evaluation benchmarks across harmlessness and helpfulness, we consolidate our key findings as guidelines for more effective preference alignment practices. \n\n\n\n\n\n## 2 Background\n\n\n\n\n\n#### Alignment Methods\n\n\n\n\n\nreduce the mismatch between an LLM\u2019s pre-training and preference requirements of users, as LLMs are not pre-trained on human preference objectives. We describe the two most widely used alignment methods.  \n\n\n\n\n\nSupervised Fine-Tuning (SFT) uses a pair of input instructions and corresponding outputs to fine-tune the LLM using autoregressive language modeling. SFT is often used at the \u201cinstruction-tuning\u201d stage of models such as Alpaca\u00a0(Taori et\u00a0al., [2023](#bib.bib21)) and Mistral-Instruct\u00a0(Jiang et\u00a0al., [2023](#bib.bib12)).  \n\n\n\n\n\nDirect Preference Optimization (DPO)\u00a0(Rafailov et\u00a0al., [2023](#bib.bib17)) is a stable and optimized alternative to reinforcement learning algorithms such as RLHF\u00a0(Christiano et\u00a0al., [2023](#bib.bib4)). These methods have been used to align LLMs better using paired human preference data: data consisting of accepted and rejected outputs given an instruction.  \n\n\n\n\n\n#### Parameter-Efficient Training (PEFT)\n\n\n\n\n\nmethods require updating only a fraction of the parameters of the full model while achieving performance close to that of full fine-tuning. Examples of these methods include adapters\u00a0(Houlsby et\u00a0al., [2019](#bib.bib9)), prefix-tuning\u00a0(Li and Liang, [2021](#bib.bib14)), and prompt-tuning\u00a0(Lester et\u00a0al., [2021](#bib.bib13)). Low-Rank Adaptation (LoRA)\u00a0(Hu et\u00a0al., [2022](#bib.bib10)) is another popular method that inserts a smaller number of new weights into the model, the only trainable parameters. QLoRA\u00a0(Dettmers et\u00a0al., [2023](#bib.bib5)) improves the efficiency of LoRA by reducing the memory footprint and storage requirements for training while getting similar performance.  \n\n\n\n\n\n## 3 Experimental Setup\n\n\n\n\n\n#### Preferences and Preference Alignment Datasets\n\n\n\n\n\nWe focus on two distinct preferences commonly used to study performance trade-offs in alignment: harmlessness and helpfulness. When a model is aligned on a preference, there is often a performance trade-off on complementary preferences\u00a0(Bai et\u00a0al., [2022](#bib.bib1)). Hence, these preferences enable us to study these trade-offs in-depth across multiple axes. We use the two most popular datasets for these preferences: HH-RLHF\u00a0(Bai et\u00a0al., [2022](#bib.bib1)) and BeaverTails\u00a0(Ji et\u00a0al., [2023](#bib.bib11)). HH-RLHF has explicit splits for harmlessness and helpfulness, and each dataset sample consists of a prompt, a chosen sample, and a rejected sample. However, many \u201charmless\u201d responses in the dataset involve the model refraining from giving a response altogether\u00a0(Ji et\u00a0al., [2023](#bib.bib11)). BeaverTails addresses this issue by providing more informative and elaborate responses. Each dataset sample consists of a prompt, two responses, a safety label for each response, and a label for the preferred response.  \n\n\n\n\n\n#### Base Models\n\n\n\n\n\nWe investigate the preference alignment trade-offs using pre-trained and instruction-tuned models. We use the two most popular 7 billion parameter pre-trained models, LLaMA-1\u00a0(Touvron et\u00a0al., [2023](#bib.bib22)) and Mistral-7b\u00a0(Jiang et\u00a0al., [2023](#bib.bib12)). For completeness, we use their instruction-tuned counterparts, Vicuna-v1.3\u00a0(Chiang et\u00a0al., [2023](#bib.bib3)) and Mistral-7b-Instruct\u00a0(Jiang et\u00a0al., [2023](#bib.bib12)). The models trained on the harmless preferences are denoted by the suffix \u201c-Harmless\u201d (e.g., Mistral-7b-Harmless), and those trained on the helpful preferences are denoted by \u201c-Helpful\u201d.  \n\n\n\n\n\n\n\n\n\n\n\n#### Evaluation Tasks and Metrics\n\n\n\n\n\nFor evaluating helpfulness, we use (i) MMLU\u00a0(Hendrycks et\u00a0al., [2021](#bib.bib8)), a dataset consisting of 57 tasks to test the knowledge acquired by the models, (ii) Big-bench hard (BBH)\u00a0(Suzgun et\u00a0al., [2022](#bib.bib20)), a diverse evaluation suite of 23 tasks, and (iii) Alpaca Eval\u00a0(Li et\u00a0al., [2023](#bib.bib15)), a human-curated suite of 805 questions across different tasks evaluated against GPT-4. For harmlessness evaluation, we use (i) RealToxicity\u00a0(Gehman et\u00a0al., [2020](#bib.bib6)), a prompt dataset to measure toxic generation in language models. We choose the $1000$ most severe prompts from the dataset, and (ii) Red-Instruct\u2019s\u00a0(Bhardwaj and Poria, [2023](#bib.bib2)) DangerousQA with chain-of-utterance, a dataset comprising 200 harmful questions across six adjectives\u2014racist, stereotypical, sexist, illegal, toxic, and harmful. Following existing work, we evaluate MMLU using accuracy, BBH using exact match, and Alpaca-Eval using win rate against GPT-4. For RealToxicity, we use the score given by a reward model trained to classify toxic generations111<https://huggingface.co/nicholasKluge/ToxicityModel>, and 100-Attack Success Rate for Red-Instruct.  \n\n\n\n\n\n#### Training Setup\n\n\n\n\n\nWe experiment with both QLoRA and LoRA for alignment training. For SFT, we keep the rank of the LoRA/QLoRA matrix as $64$ and LoRA/QLoRA alpha as $16$. For DPO, we keep the rank of the LoRA/QLoRA matrix as $16$ and LoRA/QLoRA alpha as $32$. We use a batch size of $16$, a learning rate of $2e-4$ for SFT and $5e-5$ for DPO, and train the models for $700$ steps. We perform all our experiments on a single $40$GB A100 GPU and run 5 seeds for all experiments.  \n\n\n\n\n\n## 4 Effects of the Alignment Dataset\n\n\n\n\n\nWe investigate the effects of the alignment dataset in terms of its informativeness and quality, the number of samples used, and the preference sets and mixtures used for alignment.  \n\n\n\n\n\n### 4.1 Impact of Quality\n\n\n\n\n\nPrevious works have shown that more informative and high-quality responses improve the alignment of models\u00a0(Ji et\u00a0al., [2023](#bib.bib11)). However, this has only been explored for instruction-tuned LLMs, fully fine-tuned with RLHF, and with limited downstream evaluation. We extend this analysis to pre-trained and instruction-tuned models using parameter-efficient SFT and DPO.  \n\n\n\n\n\n#### Setup\n\n\n\n\n\nTo probe the impact of the informativeness and quality of the preference dataset on alignment and downstream performance, we compare the performance of training our models using the two preference datasets, HH-RLHF and BeaverTails, on their harmless and helpful splits. BeaverTails is supposedly more informative and of better quality than HH-RLHF, particularly for the harmlessness and safe prompts. For detailed analysis, we show comparisons using supervised fine-tuning (SFT) and DPO over the pre-trained Mistral-7b and instruction-tuned Mistral-7b-Instruct models. We also probe the impact of the dataset quality as the training progresses, analyzing the effect on the stability of the training.  \n\n\n\n\n\n#### Results and Observations\n\n\n\n\n\nWe compare the performance of the models across helpfulness and harmlessness when aligned using a preference dataset of lower quality with a higher quality dataset using SFT and DPO in Figure\u00a0[1](#S3.F1 \"Figure 1 \u2023 Base Models \u2023 3 Experimental Setup \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"). The helpfulness benchmarks indicate that a higher quality and more informative preference dataset leads to overall more helpful behavior of the aligned model across both the alignment methods. When using the helpful preference subsets, there are bigger gains on general-purpose NLP tasks (such as MMLU) and instruction-following benchmarks (such as Alpaca Eval) when SFT is used. This suggests that SFT is more sensitive to the dataset quality when the downstream task and preference dataset are of a similar nature. When using the orthogonal harmless preference for alignment, relatively lower quality datasets such as HH-RLHF lead to overfitting when using alignment methods like DPO and experience significant performance degradation. However, since BeaverTails ensures that the safe and harmless responses are informative, there is no degradation in performance when used with DPO.  \n\n\n\n\n\nThe harmlessness benchmarks reveal that using a more informative and safer dataset makes the model less harmful. However, DPO leads to a significant degeneration of the model when BeaverTails is used with Mistral-7b. As Mistral-7b is not instruction-tuned, we hypothesize that this degradation might be due to the inability of the base model to effectively represent the reward for preference optimization, specifically for samples targeted towards more objective preferences such as harmlessness and safety compared to broader preferences such as helpfulness. We also observe that harmless alignment using higher-quality datasets is more faithful than lower-quality datasets, especially when using SFT.  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWe also present the progress of the model performances at various training steps in Figure\u00a0[2](#S4.F2 \"Figure 2 \u2023 Results and Observations \u2023 4.1 Impact of Quality \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"). We observe that when using a more informative preference dataset, the alignment either leads to faster learning and more gains or achieves comparable performance to the base model. When using a relatively lower-quality dataset, either the learning is slower or deterioration is observed during the course of the alignment training. Overall, better quality and informative datasets are better for alignment across methods and preferences when using PEFT.  \n\n\n\n\n\n### 4.2 Impact of Quantity\n\n\n\n\n\nTo the best of our knowledge, no studies have investigated the relationship between the number of alignment samples used across methods, models, and alignment preferences.  \n\n\n\n\n\n#### Setup\n\n\n\n\n\nWe evaluate the relationship between the number of preference alignment samples used for SFT and DPO with the downstream performance. We use Mistral-7b and Mistral-7b-Instruct as the model due to their superior performance, and BeaverTails as our preferred dataset due to its more diverse samples. We evaluate the performance at multiple training steps over helpfulness and harmlessness benchmarks.  \n\n\n\n\n\n#### Results and Observations\n\n\n\n\n\nFigure\u00a0[3](#S4.F3 \"Figure 3 \u2023 Results and Observations \u2023 4.1 Impact of Quality \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\") indicates that instruction-tuned models are more robust to further alignment when using SFT. Furthermore, since the preference data does not directly contain examples of the downstream tasks, the performance of the models is reduced. It is interesting to note here that Mistral-7b-Instruct performs worse than the base model on MMLU, indicating that continued supervised fine-tuning is sensitive to the dataset samples used for training, particularly for general-purpose NLP tasks.  \n\n\n\n\n\nHowever, using DPO over the instruction-tuned models for instruction-following tasks gives consistent improvement, which aligns with previous works applying DPO as an alignment method\u00a0(Rafailov et\u00a0al., [2023](#bib.bib17)). Models trained with DPO are also much more faithful to the preferences they are aligned with, particularly for harmlessness. This might be due to harmlessness being a relatively objective preference compared to helpfulness, which is much broader. However, as observed previously, the pre-trained models are sensitive to the preference alignment used over DPO, and since they are not strong inherent reward models, using DPO leads to a considerable degradation in their performance. A combination of SFT-based instruction tuning followed by DPO would make up for the optimal training strategy in case of alignment to explicit preferences such as safety and harmlessness.  \n\n\n\n\n\nOverall, instruction-tuned models are robust to additional samples when aligned with SFT and often regress but benefit from DPO. Furthermore, instruction-tuned models might require fewer samples to adapt to preferences compared to pre-trained models, as more samples might degrade their performance on general-purpose tasks. Pre-trained models generally get better at alignment and instruction-following both. Accordingly, there might be a sweet spot in the number of samples used for alignment.  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n### 4.3 Impact of Data Mixtures\n\n\n\n\n\nPrevious studies have shown that optimizing for individual preferences can result in trade-offs in performance\u00a0(Bai et\u00a0al., [2022](#bib.bib1)). We extend this study and evaluate models trained on a mixture of distinct preferences with PEFT against those trained on individual preferences.  \n\n\n\n\n\n#### Setup\n\n\n\n\n\nWe use both SFT and DPO to align our models on the harmless and helpful preferences of BeaverTails. We then combine both the preference sets and align models on a mix of the preferences for our comparison.  \n\n\n\n\n\n#### Results and Observations\n\n\n\n\n\nFrom Table\u00a0[2](#S4.T2 \"Table 2 \u2023 Results and Observations \u2023 4.2 Impact of Quantity \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"), we see that when both SFT and DPO are used to align the models using a mixture of preferences, the model performs worse than models trained on individual preferences. This trend is consistent across both pre-trained and instruction-tuned models across the preferences. This might arise because the model encounters conflicting responses for prompts that might be similar to each other when orthogonal preferences are used for alignment, leading to non-optimal training. We observe larger degradations when using DPO with a mixture of the preferences compared to SFT, suggesting that DPO is more sensitive to the type of samples used for alignment and requires more uniform preference samples. Overall, better curation of dataset mixtures when using alignment methods is necessary to achieve optimal performance.  \n\n\n\n\n\n### 4.4 Key Takeaways\n\n\n\n\n\n* Higher quality and more informative datasets lead to better alignment when using both SFT and DPO, with more significant gains when using SFT. \n\n\n* Performing SFT on strong instruction-tuned models might not lead to gains as there is performance saturation, and it can even lead to degradation depending on the dataset. \n\n\n* Training on a mixture of diverse preferences often leads to performance trade-offs and degradation across them. \n\n\n\n\n\n## 5 Effects of the Alignment Method\n\n\n\n\n\nPrevious works have shown that preference optimization methods, such as RLHF and DPO, are better than methods like SFT for full fine-tuning of models on standard preference datasets\u00a0(Christiano et\u00a0al., [2023](#bib.bib4); Rafailov et\u00a0al., [2023](#bib.bib17)). We validate this claim using PEFT across the different preferences.  \n\n\n\n\n\n\n\n\n\n\n\n#### Setup\n\n\n\n\n\nWe compare the performance attained when using SFT and DPO to train our models across preferences. We use all four models in our study to align with the harmless and helpful preferences of the BeaverTails dataset.  \n\n\n\n\n\n#### Results\n\n\n\n\n\nWe present the results comparing SFT and DPO in Figure\u00a0[4](#S4.F4 \"Figure 4 \u2023 Results and Observations \u2023 4.2 Impact of Quantity \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"). We observe that, on average, DPO leads to better performance when aligned with the helpful preferences compared to SFT for instruction-tuned models. This might stem from the fact that DPO takes into consideration both the chosen and the rejected samples and is able to extract more learnings from the preference dataset. When evaluating the harmlessness, we observe very interesting results. Using DPO is significantly better than SFT, indicating that DPO makes the model alignment much more faithful to the preferences than SFT. This is more pronounced when the preferences are more objective, such as harmlessness, compared to relatively broader preferences like helpfulness. This observation also holds for models such as LLaMA-1, where DPO performs worse than SFT on helpfulness benchmarks. Furthermore, it is not always the case that aligning using the harmless preference dataset leads to more harmlessness in the case of SFT, further showing that it is not as faithful as DPO. Given the inability of pre-trained models to inherently provide rewards for broader preferences, we can say that generally, if the base model can be expected to be a good reward model, using DPO leads to better downstream performance and more faithfully aligned models.  \n\n\n\n\n\nWe also make another interesting observation that contradicts logical deductions. Oftentimes, using harmless data performs better than helpful data. This might be a characteristic of the BeaverTails dataset as it specifically contains helpful and safe responses, but this should be an important consideration when curating datasets for preference alignment.  \n\n\n\n\n\n### 5.1 Key Takeaways\n\n\n\n\n\n* DPO performs better than SFT and is more faithful to explicit preferences, such as harmlessness, compared to broader preferences, such as helpfulness. \n\n\n* It is beneficial to instruction-tune models first with SFT and then apply DPO. \n\n\n\n\n\n## 6 Effects of the Nature of Base Models\n\n\n\n\n\n### 6.1 Contrasting Pre-trained and Instruction-Tuned Models\n\n\n\n\n\nMost of the works using DPO for alignment use it over instruction-tuned models. We perform a study comparing the effects of applying alignment methods over pre-trained and instruction-tuned models.  \n\n\n\n\n\n#### Setup\n\n\n\n\n\nWe investigate the effect of the nature of the underlying model trained for alignment to different preferences on the downstream tasks. We consider LLaMA-1 as the pre-trained model and Vicuna-v1.3 as the instruction-tuned variant. We compare the downstream performance when the models are aligned with SFT and DPO using the harmless and helpful preferences of BeaverTails.  \n\n\n\n\n\n\n\n\n\n\n\n#### Results and Observations\n\n\n\n\n\nWe present the results of aligning the pre-trained models and the instruction-tuned models with SFT and DPO in Fig\u00a0[5](#S5.F5 \"Figure 5 \u2023 5 Effects of the Alignment Method \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"). Considering SFT, we observe that when applied over instruction-tuned models, it generally leads to degradation of performance when using both the helpful and harmless preferences. This might be because the models being aligned are already robust due to extensive instruction-tuning using datasets similar to the datasets used for downstream evaluation. Since BeaverTails is different from downstream datasets, models aligned on the dataset regress in performance. However, when we align the pre-trained models, we observe decent improvements in the performance of the downstream tasks. This is in line with studies showing that instruction-tuning, especially on the helpful preferences, makes the model follow the instructions of the downstream task more effectively.  \n\n\n\n\n\nWhen aligning the pre-trained and instruction-tuned models with DPO, we observe that the alignment stability depends on the base model itself, as it also acts like a reward model. For strong base models, such as the instruction-tuned models, DPO leads to better gains. These gains are more significant for instruction-following tasks like Alpaca Eval. However, for weaker base models like LLaMA-1, using DPO leads to degradation in performance in contrast to SFT. Hence, instruction-tuned models overall seem to fare more coherently and are more faithful to the preferences when DPO is used, but with relatively weaker base models, an initial stage of instruction-tuning using SFT followed by DPO would be more beneficial.  \n\n\n\n\n\n### 6.2 Effect of using Merged Models\n\n\n\n\n\nModel merging methods via interpolations have recently proven to be effective\u00a0(Yadav et\u00a0al., [2023](#bib.bib26)). We investigate the effects of merging models that are aligned on distinct preferences and trained with different methods.  \n\n\n\n\n\n#### Setup\n\n\n\n\n\nTo study the effect of various combinations of merging models across the preferences and alignment methods, we experiment with two recent merge methods: Spherical interpolation (Slerp)\u00a0(Shoemake, [1985](#bib.bib19)) and DARE\u00a0(Yu et\u00a0al., [2023](#bib.bib27)). We experiment with merging models aligned on the harmless and helpful preferences using DPO and SFT (for example, Slerp-SFT refers to the merging of harmless and helpful models aligned with SFT). As DARE allows merging any number of models, we also experiment with merging all four aligned models, i.e. harmless and helpful alignments using SFT and DPO together (DARE-SFT+DPO).  \n\n\n\n\n\n#### Results and Observations\n\n\n\n\n\nFrom Table\u00a0[3](#S6.T3 \"Table 3 \u2023 Setup \u2023 6.1 Contrasting Pre-trained and Instruction-Tuned Models \u2023 6 Effects of the Nature of Base Models \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"), we see that models aligned to preferences with SFT and DPO seem to perform better than the individual models when merged using DARE TIES, while merging with Slerp leads to performance degradation. The best performance is obtained when we merge all four models, which is very interesting. Overall, the performance of the merged model depends on the individual models, with the performance of strong models regressing when merged with very weak models. We leave this exploration of using elaborate merging methods as future work.  \n\n\n\n\n\n### 6.3 Key Takeaways\n\n\n\n\n\n* Pre-trained models generally align better with SFT, whereas instruction-tuned models align better with DPO. \n\n\n* Instruction-tuned models have reduced performance if the SFT dataset is not similar to the evaluation task. \n\n\n* Merged models can effectively mitigate performance trade-offs when aligning to diverging preferences. \n\n\n\n\n\n\n\n\n\n\n\n## 7 Comparing QLoRA with LoRA\n\n\n\n\n\nWe compare the performance trends observed when using QLoRA as the PEFT method with LoRA as the PEFT method in Figure [6](#S6.F6 \"Figure 6 \u2023 6.3 Key Takeaways \u2023 6 Effects of the Nature of Base Models \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\"). We observe similar patterns as observed when using QLoRA across the three axes of our study, and also observe similar performance as expected. We provide the extended results of using QLoRA and LoRA across the training setup in the Appendix [A](#A1 \"Appendix A Extended Results \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\").  \n\n\n\n\n\n## 8 Key Takeaways\n\n\n\n\n\nConsolidating our findings and conclusions, we present key takeaways across the three core axes of preference alignment in PEFT settings.  \n\n\n\n\n\n* Alignment Dataset: Higher quality and informative datasets lead to better alignment when using both SFT and DPO, with more significant gains when using SFT. However, for instruction-tuned models, there might be performance saturation on certain tasks, and only a few samples might be required to gain improvements with SFT. Furthermore, in certain cases, aligning on high-quality distinct preferences can lead to improvements compared to aligning on the same preference. \n\n\n* Alignment Method: DPO performs better than SFT and is more faithful to explicit preferences, such as harmlessness, compared to broader preferences, such as helpfulness. However, it fails or overfits when applied over pre-trained models. We suggest instruction-tuning models first with SFT and then apply DPO. \n\n\n* Nature of Base Model: Pre-trained models generally align better with SFT, whereas instruction-tuned models align better with DPO. Instruction-tuned models have reduced performance if the SFT dataset is not similar to the evaluation task. Models merged across distinct preferences generally perform better than the models aligned on individual preferences. \n\n\n\n\n\n## 9 Conclusion and Future Work\n\n\n\n\n\nIn this work, we perform an extensive analysis of the trade-offs of downstream performance of models over distinct preferences across three core alignment axes: the alignment dataset, the preference alignment method, and the nature of the base model, particularly when using PEFT. We use the two most widely-used 7 billion parameter models, LLaMA-1 and Mistral-7b, along with their instruction-tuned variants, two popular preference alignment datasets, HH-RLHF and BeaverTails, two commonly used alignment methods, SFT and DPO, and evaluate on $5$ benchmarks across helpfulness and harmlessness. By conducting over 300 experiments with QLoRA and LoRA, our findings reveal interesting trends that address the limitations of existing literature and often deviate from them. We consolidate our findings into key takeaways and hope that our guidelines will help researchers perform more effective parameter-efficient preference alignment.  \n\n\n\n\n\nAs future work, we aim to extend our study on trade-offs across multiple preferences, spanning various domains for alignment. We also plan to explore PEFT methods, such as model merging and mixture-of-experts, to mitigate these trade-offs.  \n\n\n\n\n\n## Limitations\n\n\n\n\n\nWe acknowledge the limitations of our work:  \n\n\n\n\n\n* We selected LoRA and QLoRA as parameter-efficient training methods for our experiments because of their relatively small performance degradation over massive compute savings. We repeatedly point this out throughout our work to avoid confusion; however, other PEFT methods exist, such as adapters and prompt- and prefix-tuning. \n\n\n* Since we focus on analyzing settings accessible to diverse researchers, we focus on models with 7B parameters. Our findings may or may not extend to models of smaller or larger sizes. \n\n\n* We conduct experiments to identify the trade-offs across only two preferences. Based on existing literature, we use the most widely used preferences, harmlessness and helpfulness. However, the findings might not extend when more than two preferences or domains are involved for alignment. These more complicated settings might require a separate in-depth study. \n\n\n\n\n\n## Ethics Statement\n\n\n\n\n\nOur research studies various LLMs, parameter-efficient methods, and datasets for preference alignment. We recognize that ensuring the safety of LLMs is a crucial concern and believe that they must be thoroughly vetted before being deployed. Our investigation aims to assist the diverse community of researchers and individuals seeking to align models for safety. Such a research direction is especially important since each person and community has their own perception of safety.  \n\n\n\n\n\nWe also acknowledge that training and evaluating LLMs for safety is a sensitive issue. No method can guarantee the complete safety of models, and a comprehensive evaluation of models should be carried out even after using the techniques and results described in our work before deploying them in real-world human-facing situations.  \n\n\n\n\n\n## Acknowledgements\n\n\n\n\n\nSarath Chandar is supported by the Canada CIFAR AI Chairs program, the Canada Research Chair in Lifelong Machine Learning, and the NSERC Discovery Grant. The project was also supported by the IBM-Mila collaboration grant. The authors acknowledge the computational resources provided by the Digital Research Alliance of Canada. The authors would also like to Shravan Nayak for his inputs and experimental analysis.  \n\n\n\n\n\n## References\n\n\n\n\n\n* Bai et\u00a0al. (2022)  Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, Nicholas Joseph, Saurav Kadavath, Jackson Kernion, Tom Conerly, Sheer El-Showk, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Tristan Hume, Scott Johnston, Shauna Kravec, Liane Lovitt, Neel Nanda, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish, Chris Olah, Ben Mann, and Jared Kaplan. 2022.   [Training a helpful and harmless assistant with reinforcement learning from human feedback](http://arxiv.org/abs/2204.05862). \n\n\n* Bhardwaj and Poria (2023)  Rishabh Bhardwaj and Soujanya Poria. 2023.   [Red-teaming large language models using chain of utterances for safety-alignment](http://arxiv.org/abs/2308.09662). \n\n\n* Chiang et\u00a0al. (2023)  Wei-Lin Chiang, Zhuohan Li, Zi\u00a0Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph\u00a0E. Gonzalez, Ion Stoica, and Eric\u00a0P. Xing. 2023.   [Vicuna: An open-source chatbot impressing gpt-4 with 90%\\* chatgpt quality](https://lmsys.org/blog/2023-03-30-vicuna/). \n\n\n* Christiano et\u00a0al. (2023)  Paul Christiano, Jan Leike, Tom\u00a0B. Brown, Miljan Martic, Shane Legg, and Dario Amodei. 2023.   [Deep reinforcement learning from human preferences](http://arxiv.org/abs/1706.03741). \n\n\n* Dettmers et\u00a0al. (2023)  Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer. 2023.   Qlora: Efficient finetuning of quantized llms.   *arXiv preprint arXiv:2305.14314*. \n\n\n* Gehman et\u00a0al. (2020)  Samuel Gehman, Suchin Gururangan, Maarten Sap, Yejin Choi, and Noah\u00a0A. Smith. 2020.   [RealToxicityPrompts: Evaluating neural toxic degeneration in language models](https://doi.org/10.18653/v1/2020.findings-emnlp.301).   In *Findings of the Association for Computational Linguistics: EMNLP 2020*, pages 3356\u20133369, Online. Association for Computational Linguistics. \n\n\n* Glaese et\u00a0al. (2022)  Amelia Glaese, Nat McAleese, Maja Trebacz, John Aslanides, Vlad Firoiu, Timo Ewalds, Maribeth Rauh, Laura Weidinger, Martin Chadwick, Phoebe Thacker, Lucy Campbell-Gillingham, Jonathan Uesato, Po-Sen Huang, Ramona Comanescu, Fan Yang, Abigail See, Sumanth Dathathri, Rory Greig, Charlie Chen, Doug Fritz, Jaume\u00a0Sanchez Elias, Richard Green, So\u0148a Mokr\u00e1, Nicholas Fernando, Boxi Wu, Rachel Foley, Susannah Young, Iason Gabriel, William Isaac, John Mellor, Demis Hassabis, Koray Kavukcuoglu, Lisa\u00a0Anne Hendricks, and Geoffrey Irving. 2022.   [Improving alignment of dialogue agents via targeted human judgements](http://arxiv.org/abs/2209.14375). \n\n\n* Hendrycks et\u00a0al. (2021)  Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. 2021.   [Measuring massive multitask language understanding](http://arxiv.org/abs/2009.03300). \n\n\n* Houlsby et\u00a0al. (2019)  Neil Houlsby, Andrei Giurgiu, Stanislaw Jastrzebski, Bruna Morrone, Quentin De\u00a0Laroussilhe, Andrea Gesmundo, Mona Attariyan, and Sylvain Gelly. 2019.   Parameter-efficient transfer learning for nlp.   In *International Conference on Machine Learning*, pages 2790\u20132799. PMLR. \n\n\n* Hu et\u00a0al. (2022)  Edward\u00a0J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu\u00a0Wang, and Weizhu Chen. 2022.   [LoRA: Low-rank adaptation of large language models](https://openreview.net/forum?id=nZeVKeeFYf9).   In *International Conference on Learning Representations*. \n\n\n* Ji et\u00a0al. (2023)  Jiaming Ji, Mickel Liu, Juntao Dai, Xuehai Pan, Chi Zhang, Ce\u00a0Bian, Chi Zhang, Ruiyang Sun, Yizhou Wang, and Yaodong Yang. 2023.   [Beavertails: Towards improved safety alignment of llm via a human-preference dataset](http://arxiv.org/abs/2307.04657). \n\n\n* Jiang et\u00a0al. (2023)  Albert\u00a0Q. Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra\u00a0Singh Chaplot, Diego de\u00a0las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, L\u00e9lio\u00a0Renard Lavaud, Marie-Anne Lachaux, Pierre Stock, Teven\u00a0Le Scao, Thibaut Lavril, Thomas Wang, Timoth\u00e9e Lacroix, and William\u00a0El Sayed. 2023.   [Mistral 7b](http://arxiv.org/abs/2310.06825). \n\n\n* Lester et\u00a0al. (2021)  Brian Lester, Rami Al-Rfou, and Noah Constant. 2021.   [The power of scale for parameter-efficient prompt tuning](https://doi.org/10.18653/v1/2021.emnlp-main.243).   In *Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing*, pages 3045\u20133059, Online and Punta Cana, Dominican Republic. Association for Computational Linguistics. \n\n\n* Li and Liang (2021)  Xiang\u00a0Lisa Li and Percy Liang. 2021.   [Prefix-tuning: Optimizing continuous prompts for generation](https://doi.org/10.18653/v1/2021.acl-long.353).   In *Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)*, pages 4582\u20134597, Online. Association for Computational Linguistics. \n\n\n* Li et\u00a0al. (2023)  Xuechen Li, Tianyi Zhang, Yann Dubois, Rohan Taori, Ishaan Gulrajani, Carlos Guestrin, Percy Liang, and Tatsunori\u00a0B. Hashimoto. 2023.   Alpacaeval: An automatic evaluator of instruction-following models.   <https://github.com/tatsu-lab/alpaca_eval>. \n\n\n* Mishra et\u00a0al. (2021)  Swaroop Mishra, Daniel Khashabi, Chitta Baral, and Hannaneh Hajishirzi. 2021.   [Cross-task generalization via natural language crowdsourcing instructions](https://api.semanticscholar.org/CorpusID:237421373).   In *Annual Meeting of the Association for Computational Linguistics*. \n\n\n* Rafailov et\u00a0al. (2023)  Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano Ermon, Christopher\u00a0D. Manning, and Chelsea Finn. 2023.   [Direct preference optimization: Your language model is secretly a reward model](http://arxiv.org/abs/2305.18290). \n\n\n* Schulman et\u00a0al. (2017)  John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. 2017.   [Proximal policy optimization algorithms](http://arxiv.org/abs/1707.06347). \n\n\n* Shoemake (1985)  Ken Shoemake. 1985.   [Animating rotation with quaternion curves](https://doi.org/10.1145/325165.325242).   *SIGGRAPH Comput. Graph.*, 19(3):245\u2013254. \n\n\n* Suzgun et\u00a0al. (2022)  Mirac Suzgun, Nathan Scales, Nathanael Sch\u00e4rli, Sebastian Gehrmann, Yi\u00a0Tay, Hyung\u00a0Won Chung, Aakanksha Chowdhery, Quoc\u00a0V Le, Ed\u00a0H Chi, Denny Zhou, , and Jason Wei. 2022.   Challenging big-bench tasks and whether chain-of-thought can solve them.   *arXiv preprint arXiv:2210.09261*. \n\n\n* Taori et\u00a0al. (2023)  Rohan Taori, Ishaan Gulrajani, Tianyi Zhang, Yann Dubois, Xuechen Li, Carlos Guestrin, Percy Liang, and Tatsunori\u00a0B. Hashimoto. 2023.   Stanford alpaca: An instruction-following llama model.   <https://github.com/tatsu-lab/stanford_alpaca>. \n\n\n* Touvron et\u00a0al. (2023)  Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timoth\u00e9e Lacroix, Baptiste Rozi\u00e8re, Naman Goyal, Eric Hambro, Faisal Azhar, Aurelien Rodriguez, Armand Joulin, Edouard Grave, and Guillaume Lample. 2023.   [Llama: Open and efficient foundation language models](http://arxiv.org/abs/2302.13971). \n\n\n* Wang et\u00a0al. (2023a)  Lei Wang, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan Chen, Jiakai Tang, Xu\u00a0Chen, Yankai Lin, Wayne\u00a0Xin Zhao, Zhewei Wei, and Ji-Rong Wen. 2023a.   [A survey on large language model based autonomous agents](http://arxiv.org/abs/2308.11432). \n\n\n* Wang et\u00a0al. (2023b)  Yufei Wang, Wanjun Zhong, Liangyou Li, Fei Mi, Xingshan Zeng, Wenyong Huang, Lifeng Shang, Xin Jiang, and Qun Liu. 2023b.   [Aligning large language models with human: A survey](http://arxiv.org/abs/2307.12966). \n\n\n* Xue et\u00a0al. (2023)  Tianci Xue, Ziqi Wang, and Heng Ji. 2023.   [Parameter-efficient tuning helps language model alignment](http://arxiv.org/abs/2310.00819). \n\n\n* Yadav et\u00a0al. (2023)  Prateek Yadav, Derek Tam, Leshem Choshen, Colin Raffel, and Mohit Bansal. 2023.   [TIES-merging: Resolving interference when merging models](https://openreview.net/forum?id=xtaX3WyCj1).   In *Thirty-seventh Conference on Neural Information Processing Systems*. \n\n\n* Yu et\u00a0al. (2023)  Le\u00a0Yu, Bowen Yu, Haiyang Yu, Fei Huang, and Yongbin Li. 2023.   Language models are super mario: Absorbing abilities from homologous models as a free lunch.   *arXiv preprint arXiv:2311.03099*. \n\n\n* Zhao et\u00a0al. (2023)  Wayne\u00a0Xin Zhao, Kun Zhou, Junyi Li, Tianyi Tang, Xiaolei Wang, Yupeng Hou, Yingqian Min, Beichen Zhang, Junjie Zhang, Zican Dong, Yifan Du, Chen Yang, Yushuo Chen, Zhipeng Chen, Jinhao Jiang, Ruiyang Ren, Yifan Li, Xinyu Tang, Zikang Liu, Peiyu Liu, Jian-Yun Nie, and Ji-Rong Wen. 2023.   [A survey of large language models](http://arxiv.org/abs/2303.18223). \n\n\n* Ziegler et\u00a0al. (2019)  Daniel\u00a0M. Ziegler, Nisan Stiennon, Jeffrey Wu, Tom\u00a0B. Brown, Alec Radford, Dario Amodei, Paul Christiano, and Geoffrey Irving. 2019.   [Fine-tuning language models from human preferences](https://arxiv.org/abs/1909.08593).   *arXiv preprint arXiv:1909.08593*. \n\n\n\n\n\n\n\n\n## Figures and Tables\n\n\n\n\n\n[FIGURE S3.F1.g1]\n\n\n![Figure S3.F1.g1](./media/x1.png)\n\n\n\n\n\nFigure 1:  Performance comparison for helpful and harmless benchmarks when models are aligned using QLoRA over HH-RLHF (in red) and BeaverTails (in blue). We observe better performance when using a more informative and high-quality preference alignment dataset, albeit it is often overfitting for non-instruction tuned models when aligned using DPO (Section\u00a0[4.1](#S4.SS1 \"4.1 Impact of Quality \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")).\n\n\n[/FIGURE]\n\n\n\n\n\n[FIGURE S4.F2.g1]\n\n\n![Figure S4.F2.g1](./media/x2.png)\n\n\n\n\n\nFigure 2:  Performance trends w.r.t number of samples of HH-RLHf and BeaverTails used for SFT alignment (Section\u00a0[4.1](#S4.SS1 \"4.1 Impact of Quality \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")). Models aligned with a higher-quality dataset seem to learn faster or regress slower.\n\n\n[/FIGURE]\n\n\n\n\n\n[FIGURE S4.F3.g1]\n\n\n![Figure S4.F3.g1](./media/x3.png)\n\n\n\n\n\nFigure 3:  Relationship of the number of samples used for alignment using SFT and DPO with Mistral (Section\u00a0[4.2](#S4.SS2 \"4.2 Impact of Quantity \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")). The performance here is shown in % relative to the performance when using 1600 samples.\n\n\n[/FIGURE]\n\n\n\n\n\n[FIGURE S4.F4.g1]\n\n\n![Figure S4.F4.g1](./media/x4.png)\n\n\n\n\n\nFigure 4:  Comparing the downstream performance when aligning using SFT (in light blue) and DPO (in pink) with QLoRA. SFT outperforms DPO generally when used over pre-trained models, significantly for instruction following tasks. DPO is more faithful to explicit preferences such as harmlessness and performs significantly better for instruction-tuned models (Section\u00a0[5](#S5 \"5 Effects of the Alignment Method \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")).\n\n\n[/FIGURE]\n\n\n\n\n\n[FIGURE S5.F5.g1]\n\n\n![Figure S5.F5.g1](./media/x5.png)\n\n\n\n\n\nFigure 5:  Comparing the effect of applying alignment methods on pre-trained models with instruction-tuned models using LLaMA-1 (Section\u00a0[6.1](#S6.SS1 \"6.1 Contrasting Pre-trained and Instruction-Tuned Models \u2023 6 Effects of the Nature of Base Models \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")). SFT helps more for pre-trained models, while DPO helps more for instruction-tuned models. However, when aligning to objective preferences like harmlessness, DPO leads to more faithful alignment across both pre-trained and instruction-tuned models.\n\n\n[/FIGURE]\n\n\n\n\n\n[FIGURE S6.F6.g1]\n\n\n![Figure S6.F6.g1](./media/x6.png)\n\n\n\n\n\nFigure 6:  Comparing the performance when using QLoRA and LoRA as the PEFT method (Section\u00a0[7](#S7 \"7 Comparing QLoRA with LoRA \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")). We observe similar trends and performance across the two methods.\n\n\n[/FIGURE]\n\n\n\n\n\n[TABLE S1.T1]\n\n\n\n\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\"><span class=\"ltx_text ltx_font_bold\">Existing works</span></span>\n\n\n</span>\n\n\n</th>\n\n\n<th class=\"ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\"><span class=\"ltx_text ltx_font_bold\">Limitations</span></span>\n\n\n</span>\n\n\n</th>\n\n\n<th class=\"ltx_td ltx_align_justify ltx_align_top ltx_th ltx_th_column ltx_border_tt\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\"><span class=\"ltx_text ltx_font_bold\">This work</span></span>\n\n\n</span>\n\n\n</th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">DPO is better at alignment than SFT\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Rafailov et\u00a0al., <a class=\"ltx_ref\">2023</a>)</cite></span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">Evaluated with full model training of instruction-tuned models on limited NLP tasks</span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">We compare SFT and DPO over distinct preferences using pre-trained and instruction-tuned models and find that\n\n\n<span class=\"ltx_text ltx_font_italic\">DPO is suited for instruction-tuned models, but SFT is suited for pre-trained models</span></span>\n\n\n</span>\n\n\n</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">Mixing two preferences for preference alignment has trade-offs\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Bai et\u00a0al., <a class=\"ltx_ref\">2022</a>)</cite></span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">Evaluated with RLHF in full fine-tuning settings on limited tasks</span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">We analyze trade-offs for SFT and DPO across different models and preferences and observe that\n\n\n<span class=\"ltx_text ltx_font_italic\">mix of preferences leads to degradation for both SFT and DPO when using PEFT</span></span>\n\n\n</span>\n\n\n</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">Aligning to a preference improves its performance\u00a0<cite class=\"ltx_cite ltx_citemacro_citep\">(Bai et\u00a0al., <a class=\"ltx_ref\">2022</a>)</cite></span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">Evaluated with full fine-tuning on limited NLP tasks</span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">We experiment across models and alignment methods with PEFT\n\n\nand see that <span class=\"ltx_text ltx_font_italic\">often aligning to distinct preferences leads to improvements and aligning to same preference leads to degradation</span></span>\n\n\n</span>\n\n\n</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">No existing works</span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_top ltx_border_t\"></td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">We analyze the effects of the number of samples used for alignment and observe that\n\n\n<span class=\"ltx_text ltx_font_italic\">SFT decreases the performance for instruction-tuned models, while DPO improves or obtains performs similar for instruction-tuned and pre-trained models</span></span>\n\n\n</span>\n\n\n</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_bb ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">No existing works</span>\n\n\n</span>\n\n\n</td>\n\n\n<td class=\"ltx_td ltx_align_top ltx_border_bb ltx_border_t\"></td>\n\n\n<td class=\"ltx_td ltx_align_justify ltx_align_top ltx_border_bb ltx_border_t\">\n\n\n<span class=\"ltx_inline-block ltx_align_top\">\n\n\n<span class=\"ltx_p\">We analyze the effects of merging models trained with different alignment methods and preferences and observe that\n\n\n<span class=\"ltx_text ltx_font_italic\">merging models leads to improvement over individual models aligned to distinct preferences</span></span>\n\n\n</span>\n\n\n</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n\n\n\nTable 1: Comparing some of our experiments that address the limitations of existing works.\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S4.T2]\n\n\n\n\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n\n\n<thead class=\"ltx_thead\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Alignment Method</span></th>\n\n\n<th class=\"ltx_td ltx_th ltx_th_column ltx_th_row ltx_border_tt\"></th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">SFT</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">DPO</th>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row\"><span class=\"ltx_text ltx_font_bold\">Model</span></th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row\"><span class=\"ltx_text ltx_font_bold\">Variant</span></th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">MMLU</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">BBH</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">RealToxicity</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">MMLU</th>\n\n\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t\">BBH</th>\n\n\n<th class=\"ltx_td ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_t\">RealToxicity</th>\n\n\n</tr>\n\n\n</thead>\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">Mistral-7b</span></th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Original</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">0.590</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.395</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">1.255</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.590</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.395</td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">1.255</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Harmless</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.583</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.409</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">1.863</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.590</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.402</td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\">-3.701</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Helpful</th>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">0.589</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">0.417</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.571</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">0.594</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">0.418</span></td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\">-9.375</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Harmless+Helpful</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.575</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.408</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.239</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.593</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.412</td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\">-9.419</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">Mistral-7b-Ins</span></th>\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Original</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">0.535</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">0.385</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">1.273</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">0.535</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.385</td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_t\">1.273</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Harmless</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.518</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.366</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">1.981</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.529</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">0.392</span></td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">3.520</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Helpful</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.519</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.371</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.145</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">0.535</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.382</td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\">2.170</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">Harmless+Helpful</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.518</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.367</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.991</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.531</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">0.374</td>\n\n\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_bb\">-0.025</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n\n\n\nTable 2: Effect of aligning on a mixture of two distinct preferences (Harmlessness and Helpfulness) compared to training on individual preferences (Section\u00a0[4.3](#S4.SS3 \"4.3 Impact of Data Mixtures \u2023 4 Effects of the Alignment Dataset \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")). The model aligned to a mix of both preferences generally performs worse than the models aligned to the individual preferences.\n\n\n[/TABLE]\n\n\n\n\n\n[TABLE S6.T3]\n\n\n\n\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n\n\n<tbody class=\"ltx_tbody\">\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Merge Variant</span></th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Mistral-7b</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Mistral-7b-Ins</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">BBH</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">Alpaca Eval</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">RT</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">MMLU</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">Alpaca Eval</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">RT</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Harmless-SFT</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.409</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">7.346</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">1.863</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.518</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">7.711</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">1.981</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Helpful-SFT</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.417</td>\n\n\n<td class=\"ltx_td ltx_align_center\">7.081</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.571</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.519</td>\n\n\n<td class=\"ltx_td ltx_align_center\">8.095</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.145</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Harmless-DPO</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.402</td>\n\n\n<td class=\"ltx_td ltx_align_center\">3.975</td>\n\n\n<td class=\"ltx_td ltx_align_center\">-3.701</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.529</td>\n\n\n<td class=\"ltx_td ltx_align_center\">13.043</td>\n\n\n<td class=\"ltx_td ltx_align_center\">3.520</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Helpful-DPO</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.418</td>\n\n\n<td class=\"ltx_td ltx_align_center\">3.602</td>\n\n\n<td class=\"ltx_td ltx_align_center\">-9.375</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.535</td>\n\n\n<td class=\"ltx_td ltx_align_center\">15.299</td>\n\n\n<td class=\"ltx_td ltx_align_center\">2.170</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Slerp-SFT</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.415</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">2.236</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">-9.115</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">0.530</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">8.966</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_t\">3.311</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Slerp-DPO</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.425</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">7.721</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.604</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.524</td>\n\n\n<td class=\"ltx_td ltx_align_center\">8.209</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.873</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DARE-SFT</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.419</td>\n\n\n<td class=\"ltx_td ltx_align_center\">7.472</td>\n\n\n<td class=\"ltx_td ltx_align_center\">1.870</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.525</td>\n\n\n<td class=\"ltx_td ltx_align_center\">8.209</td>\n\n\n<td class=\"ltx_td ltx_align_center\">2.207</td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">DARE-DPO</th>\n\n\n<td class=\"ltx_td ltx_align_center\">0.428</td>\n\n\n<td class=\"ltx_td ltx_align_center\">2.981</td>\n\n\n<td class=\"ltx_td ltx_align_center\">-8.602</td>\n\n\n<td class=\"ltx_td ltx_align_center\">0.534</td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">15.702</span></td>\n\n\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">3.717</span></td>\n\n\n</tr>\n\n\n<tr class=\"ltx_tr\">\n\n\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">DARE-SFT+DPO</th>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">0.432</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">6.468</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">1.755</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">0.538</span></td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">9.363</td>\n\n\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">2.938</td>\n\n\n</tr>\n\n\n</tbody>\n\n\n</table>\n\n\n\n\n\nTable 3: Performance of merging models using different methods with the models trained on individual preferences (Section\u00a0[6.2](#S6.SS2 \"6.2 Effect of using Merged Models \u2023 6 Effects of the Nature of Base Models \u2023 A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques\")). Model merging variants perform better on average than individually aligned models.\n\n\n[/TABLE]\n\n\n",
+        "structured_md": {
+            "title": [
+                3,
+                3
+            ],
+            "abstract": [
+                12,
+                23
+            ],
+            "sections": {
+                "1 Introduction": [
+                    24,
+                    89
+                ],
+                "2 Background": [
+                    90,
+                    131
+                ],
+                "3 Experimental Setup": [
+                    132,
+                    191
+                ],
+                "4 Effects of the Alignment Dataset": [
+                    192,
+                    377
+                ],
+                "5 Effects of the Alignment Method": [
+                    378,
+                    440
+                ],
+                "6 Effects of the Nature of Base Models": [
+                    441,
+                    554
+                ],
+                "7 Comparing QLoRA with LoRA": [
+                    555,
+                    566
+                ],
+                "8 Key Takeaways": [
+                    567,
+                    590
+                ],
+                "9 Conclusion and Future Work": [
+                    591,
+                    608
+                ],
+                "Limitations": [
+                    609,
+                    632
+                ],
+                "Ethics Statement": [
+                    633,
+                    650
+                ],
+                "Acknowledgements": [
+                    651,
+                    662
+                ],
+                "References": [
+                    663,
+                    761
+                ],
+                "Figures and Tables": [
+                    762,
+                    1824
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Background": {
+                    "Alignment Methods": [
+                        96,
+                        119
+                    ],
+                    "Parameter-Efficient Training (PEFT)": [
+                        120,
+                        131
+                    ]
+                },
+                "3 Experimental Setup": {
+                    "Preferences and Preference Alignment Datasets": [
+                        138,
+                        149
+                    ],
+                    "Base Models": [
+                        150,
+                        167
+                    ],
+                    "Evaluation Tasks and Metrics": [
+                        168,
+                        179
+                    ],
+                    "Training Setup": [
+                        180,
+                        191
+                    ]
+                },
+                "4 Effects of the Alignment Dataset": {
+                    "4.1 Impact of Quality": [
+                        204,
+                        215
+                    ],
+                    "Setup": [
+                        336,
+                        347
+                    ],
+                    "Results and Observations": [
+                        348,
+                        359
+                    ],
+                    "4.2 Impact of Quantity": [
+                        264,
+                        275
+                    ],
+                    "4.3 Impact of Data Mixtures": [
+                        324,
+                        335
+                    ],
+                    "4.4 Key Takeaways": [
+                        360,
+                        377
+                    ]
+                },
+                "5 Effects of the Alignment Method": {
+                    "Setup": [
+                        396,
+                        407
+                    ],
+                    "Results": [
+                        408,
+                        425
+                    ],
+                    "5.1 Key Takeaways": [
+                        426,
+                        440
+                    ]
+                },
+                "6 Effects of the Nature of Base Models": {
+                    "6.1 Contrasting Pre-trained and Instruction-Tuned Models": [
+                        447,
+                        458
+                    ],
+                    "Setup": [
+                        507,
+                        518
+                    ],
+                    "Results and Observations": [
+                        519,
+                        530
+                    ],
+                    "6.2 Effect of using Merged Models": [
+                        495,
+                        506
+                    ],
+                    "6.3 Key Takeaways": [
+                        531,
+                        554
+                    ]
+                },
+                "7 Comparing QLoRA with LoRA": {},
+                "8 Key Takeaways": {},
+                "9 Conclusion and Future Work": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {},
+                "Figures and Tables": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        30,
+                        30
+                    ],
+                    [
+                        36,
+                        36
+                    ],
+                    [
+                        48,
+                        48
+                    ],
+                    [
+                        54,
+                        54
+                    ],
+                    [
+                        60,
+                        60
+                    ],
+                    [
+                        66,
+                        66
+                    ],
+                    [
+                        72,
+                        72
+                    ],
+                    [
+                        78,
+                        78
+                    ],
+                    [
+                        81,
+                        81
+                    ],
+                    [
+                        84,
+                        84
+                    ]
+                ],
+                "2 Background": [
+                    [
+                        102,
+                        102
+                    ],
+                    [
+                        108,
+                        108
+                    ],
+                    [
+                        114,
+                        114
+                    ],
+                    [
+                        126,
+                        126
+                    ]
+                ],
+                "3 Experimental Setup": [
+                    [
+                        144,
+                        144
+                    ],
+                    [
+                        156,
+                        156
+                    ],
+                    [
+                        174,
+                        174
+                    ],
+                    [
+                        186,
+                        186
+                    ]
+                ],
+                "4 Effects of the Alignment Dataset": [
+                    [
+                        198,
+                        198
+                    ],
+                    [
+                        210,
+                        210
+                    ],
+                    [
+                        222,
+                        222
+                    ],
+                    [
+                        234,
+                        234
+                    ],
+                    [
+                        240,
+                        240
+                    ],
+                    [
+                        258,
+                        258
+                    ],
+                    [
+                        270,
+                        270
+                    ],
+                    [
+                        282,
+                        282
+                    ],
+                    [
+                        294,
+                        294
+                    ],
+                    [
+                        300,
+                        300
+                    ],
+                    [
+                        306,
+                        306
+                    ],
+                    [
+                        330,
+                        330
+                    ],
+                    [
+                        342,
+                        342
+                    ],
+                    [
+                        354,
+                        354
+                    ],
+                    [
+                        366,
+                        366
+                    ],
+                    [
+                        369,
+                        369
+                    ],
+                    [
+                        372,
+                        372
+                    ]
+                ],
+                "5 Effects of the Alignment Method": [
+                    [
+                        384,
+                        384
+                    ],
+                    [
+                        402,
+                        402
+                    ],
+                    [
+                        414,
+                        414
+                    ],
+                    [
+                        420,
+                        420
+                    ],
+                    [
+                        432,
+                        432
+                    ],
+                    [
+                        435,
+                        435
+                    ]
+                ],
+                "6 Effects of the Nature of Base Models": [
+                    [
+                        453,
+                        453
+                    ],
+                    [
+                        465,
+                        465
+                    ],
+                    [
+                        483,
+                        483
+                    ],
+                    [
+                        489,
+                        489
+                    ],
+                    [
+                        501,
+                        501
+                    ],
+                    [
+                        513,
+                        513
+                    ],
+                    [
+                        525,
+                        525
+                    ],
+                    [
+                        537,
+                        537
+                    ],
+                    [
+                        540,
+                        540
+                    ],
+                    [
+                        543,
+                        543
+                    ]
+                ],
+                "7 Comparing QLoRA with LoRA": [
+                    [
+                        561,
+                        561
+                    ]
+                ],
+                "8 Key Takeaways": [
+                    [
+                        573,
+                        573
+                    ],
+                    [
+                        579,
+                        579
+                    ],
+                    [
+                        582,
+                        582
+                    ],
+                    [
+                        585,
+                        585
+                    ]
+                ],
+                "9 Conclusion and Future Work": [
+                    [
+                        597,
+                        597
+                    ],
+                    [
+                        603,
+                        603
+                    ]
+                ],
+                "Limitations": [
+                    [
+                        615,
+                        615
+                    ],
+                    [
+                        621,
+                        621
+                    ],
+                    [
+                        624,
+                        624
+                    ],
+                    [
+                        627,
+                        627
+                    ]
+                ],
+                "Ethics Statement": [
+                    [
+                        639,
+                        639
+                    ],
+                    [
+                        645,
+                        645
+                    ]
+                ],
+                "Acknowledgements": [
+                    [
+                        657,
+                        657
+                    ]
+                ],
+                "References": [
+                    [
+                        669,
+                        669
+                    ],
+                    [
+                        672,
+                        672
+                    ],
+                    [
+                        675,
+                        675
+                    ],
+                    [
+                        678,
+                        678
+                    ],
+                    [
+                        681,
+                        681
+                    ],
+                    [
+                        684,
+                        684
+                    ],
+                    [
+                        687,
+                        687
+                    ],
+                    [
+                        690,
+                        690
+                    ],
+                    [
+                        693,
+                        693
+                    ],
+                    [
+                        696,
+                        696
+                    ],
+                    [
+                        699,
+                        699
+                    ],
+                    [
+                        702,
+                        702
+                    ],
+                    [
+                        705,
+                        705
+                    ],
+                    [
+                        708,
+                        708
+                    ],
+                    [
+                        711,
+                        711
+                    ],
+                    [
+                        714,
+                        714
+                    ],
+                    [
+                        717,
+                        717
+                    ],
+                    [
+                        720,
+                        720
+                    ],
+                    [
+                        723,
+                        723
+                    ],
+                    [
+                        726,
+                        726
+                    ],
+                    [
+                        729,
+                        729
+                    ],
+                    [
+                        732,
+                        732
+                    ],
+                    [
+                        735,
+                        735
+                    ],
+                    [
+                        738,
+                        738
+                    ],
+                    [
+                        741,
+                        741
+                    ],
+                    [
+                        744,
+                        744
+                    ],
+                    [
+                        747,
+                        747
+                    ],
+                    [
+                        750,
+                        750
+                    ],
+                    [
+                        753,
+                        753
+                    ]
+                ],
+                "Figures and Tables": []
+            },
+            "figures": {
+                "1 Introduction": {},
+                "2 Background": {},
+                "3 Experimental Setup": {},
+                "4 Effects of the Alignment Dataset": {},
+                "5 Effects of the Alignment Method": {},
+                "6 Effects of the Nature of Base Models": {},
+                "7 Comparing QLoRA with LoRA": {},
+                "8 Key Takeaways": {},
+                "9 Conclusion and Future Work": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {},
+                "Figures and Tables": {
+                    "[FIGURE S3.F1.g1]": [
+                        768,
+                        780
+                    ],
+                    "[FIGURE S4.F2.g1]": [
+                        786,
+                        798
+                    ],
+                    "[FIGURE S4.F3.g1]": [
+                        804,
+                        816
+                    ],
+                    "[FIGURE S4.F4.g1]": [
+                        822,
+                        834
+                    ],
+                    "[FIGURE S5.F5.g1]": [
+                        840,
+                        852
+                    ],
+                    "[FIGURE S6.F6.g1]": [
+                        858,
+                        870
+                    ]
+                }
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Background": {},
+                "3 Experimental Setup": {},
+                "4 Effects of the Alignment Dataset": {},
+                "5 Effects of the Alignment Method": {},
+                "6 Effects of the Nature of Base Models": {},
+                "7 Comparing QLoRA with LoRA": {},
+                "8 Key Takeaways": {},
+                "9 Conclusion and Future Work": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {},
+                "Figures and Tables": {
+                    "[TABLE S1.T1]": [
+                        876,
+                        1203
+                    ],
+                    "[TABLE S4.T2]": [
+                        1209,
+                        1509
+                    ],
+                    "[TABLE S6.T3]": [
+                        1515,
+                        1821
+                    ]
+                }
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Background": {},
+                "3 Experimental Setup": {},
+                "4 Effects of the Alignment Dataset": {},
+                "5 Effects of the Alignment Method": {},
+                "6 Effects of the Nature of Base Models": {},
+                "7 Comparing QLoRA with LoRA": {},
+                "8 Key Takeaways": {},
+                "9 Conclusion and Future Work": {},
+                "Limitations": {},
+                "Ethics Statement": {},
+                "Acknowledgements": {},
+                "References": {},
+                "Figures and Tables": {}
+            }
+        }
+    },
+    "changes": [
+        "replaced \\n by random number of \\n",
+        "moved all figures and tables to the very back of the paper"
+    ],
+    "counterfactual_type": "paper_layout"
+}

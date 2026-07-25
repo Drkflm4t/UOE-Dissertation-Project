@@ -1,0 +1,904 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            41
+        ],
+        "2 Related Work": [
+            42,
+            53
+        ],
+        "3 Preliminaries of GFlowNets and $f$-Divergence": [
+            54,
+            114
+        ],
+        "4 Training Generative Flow Networks": [
+            115,
+            338
+        ],
+        "5 Experiments": [
+            339,
+            496
+        ],
+        "6 Conclusion": [
+            497,
+            500
+        ],
+        "References": [
+            501,
+            559
+        ],
+        "Appendix A Unifying Training Algorithms of GFlowNets": [
+            560,
+            734
+        ],
+        "Appendix B Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") and its Proof": [
+            735,
+            806
+        ],
+        "Appendix C Interpretation of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") for Different Kinds of Losses": [
+            807,
+            849
+        ],
+        "Appendix D Proof of Theorem [4.7](#S4.Thmtheorem7 \"Theorem 4.7. \u2023 4.3 Designing New Regression Losses \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")": [
+            850,
+            871
+        ],
+        "Appendix E Experimental Details": [
+            872,
+            891
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Theoretical aspects on GFlowNets and $f$-divergence.": [
+                48,
+                53
+            ]
+        },
+        "3 Preliminaries of GFlowNets and $f$-Divergence": {
+            "3.1 GFlowNets": [
+                58,
+                93
+            ],
+            "3.2 $f$-Divergence": [
+                94,
+                104
+            ],
+            "Fact 3.1 (Liese & Vajda ([2006](#bib.bib27))).": [
+                105,
+                108
+            ],
+            "Fact 3.2 (Liese & Vajda ([2006](#bib.bib27))).": [
+                109,
+                114
+            ]
+        },
+        "4 Training Generative Flow Networks": {
+            "4.1 A Unified Framework for GFlowNet Training Algorithms": [
+                119,
+                213
+            ],
+            "4.2 The Information-Theoretic Interpretation of Training Objectives": [
+                214,
+                217
+            ],
+            "Theorem 4.1.": [
+                218,
+                230
+            ],
+            "Remark 4.2.": [
+                231,
+                234
+            ],
+            "Remark 4.3.": [
+                235,
+                238
+            ],
+            "4.3 Designing New Regression Losses": [
+                239,
+                244
+            ],
+            "Proposition 4.4 (Liese & Vajda ([2006](#bib.bib27))).": [
+                245,
+                253
+            ],
+            "Proposition 4.5 (Liese & Vajda ([2006](#bib.bib27))).": [
+                254,
+                264
+            ],
+            "Definition 4.6.": [
+                265,
+                275
+            ],
+            "Theorem 4.7.": [
+                276,
+                338
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Hyper-grid": [
+                343,
+                363
+            ],
+            "5.2 Bit-sequence generation": [
+                364,
+                484
+            ],
+            "5.3 Molecule generation": [
+                485,
+                496
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Unifying Training Algorithms of GFlowNets": {
+            "A.1 Training Objects and Parameterization Mapping": [
+                564,
+                631
+            ],
+            "Flow-Matching GFlowNets (FM-GFN).": [
+                632,
+                647
+            ],
+            "Detailed-Balance GFlowNets (DB-GFN).": [
+                648,
+                665
+            ],
+            "Trajectory-Balance GFlowNets (TB-GFN).": [
+                666,
+                681
+            ],
+            "Sub-Trajectory-Balance GFlowNets (STB-GFN).": [
+                682,
+                692
+            ],
+            "Forward-looking GFlowNets (FL-GFN).": [
+                693,
+                709
+            ],
+            "DAG GFlowNets (DAG-GFN).": [
+                710,
+                726
+            ],
+            "A.2 Sampling and Resampling Weights": [
+                727,
+                730
+            ],
+            "A.3 Backward Policy": [
+                731,
+                734
+            ]
+        },
+        "Appendix B Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") and its Proof": {
+            "Theorem B.1 (An extension of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")).": [
+                737,
+                754
+            ],
+            "Proof.": [
+                755,
+                806
+            ]
+        },
+        "Appendix C Interpretation of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") for Different Kinds of Losses": {
+            "C.1 Flow Matching Loss": [
+                809,
+                822
+            ],
+            "C.2 Detailed Balance Loss": [
+                823,
+                838
+            ],
+            "C.3 Sub-Trajectory Balance Loss": [
+                839,
+                849
+            ]
+        },
+        "Appendix D Proof of Theorem [4.7](#S4.Thmtheorem7 \"Theorem 4.7. \u2023 4.3 Designing New Regression Losses \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")": {
+            "Theorem D.1.": [
+                852,
+                855
+            ],
+            "Proof.": [
+                856,
+                871
+            ]
+        },
+        "Appendix E Experimental Details": {
+            "E.1 Hyper-grid": [
+                874,
+                877
+            ],
+            "E.2 Bit-sequence Generation": [
+                878,
+                886
+            ],
+            "E.3 Molecule Generation": [
+                887,
+                891
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                40
+            ]
+        ],
+        "2 Related Work": [
+            [
+                44,
+                44
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                52
+            ]
+        ],
+        "3 Preliminaries of GFlowNets and $f$-Divergence": [
+            [
+                56,
+                56
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                64,
+                69
+            ],
+            [
+                71,
+                71
+            ],
+            [
+                73,
+                74
+            ],
+            [
+                76,
+                76
+            ],
+            [
+                78,
+                78
+            ],
+            [
+                80,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                85
+            ],
+            [
+                87,
+                90
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                96,
+                96
+            ],
+            [
+                98,
+                99
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                103,
+                103
+            ],
+            [
+                107,
+                107
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ]
+        ],
+        "4 Training Generative Flow Networks": [
+            [
+                117,
+                117
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                123,
+                124
+            ],
+            [
+                126,
+                126
+            ],
+            [
+                196,
+                196
+            ],
+            [
+                198,
+                198
+            ],
+            [
+                200,
+                201
+            ],
+            [
+                203,
+                203
+            ],
+            [
+                205,
+                210
+            ],
+            [
+                212,
+                212
+            ],
+            [
+                216,
+                216
+            ],
+            [
+                220,
+                220
+            ],
+            [
+                222,
+                222
+            ],
+            [
+                224,
+                225
+            ],
+            [
+                227,
+                227
+            ],
+            [
+                229,
+                229
+            ],
+            [
+                233,
+                233
+            ],
+            [
+                237,
+                237
+            ],
+            [
+                241,
+                241
+            ],
+            [
+                243,
+                243
+            ],
+            [
+                247,
+                247
+            ],
+            [
+                249,
+                250
+            ],
+            [
+                252,
+                252
+            ],
+            [
+                256,
+                256
+            ],
+            [
+                258,
+                259
+            ],
+            [
+                261,
+                261
+            ],
+            [
+                263,
+                263
+            ],
+            [
+                267,
+                267
+            ],
+            [
+                269,
+                270
+            ],
+            [
+                272,
+                272
+            ],
+            [
+                274,
+                274
+            ],
+            [
+                278,
+                278
+            ],
+            [
+                337,
+                337
+            ]
+        ],
+        "5 Experiments": [
+            [
+                341,
+                341
+            ],
+            [
+                345,
+                345
+            ],
+            [
+                347,
+                347
+            ],
+            [
+                349,
+                350
+            ],
+            [
+                352,
+                352
+            ],
+            [
+                354,
+                354
+            ],
+            [
+                362,
+                362
+            ],
+            [
+                366,
+                366
+            ],
+            [
+                374,
+                374
+            ],
+            [
+                434,
+                434
+            ],
+            [
+                483,
+                483
+            ],
+            [
+                493,
+                493
+            ],
+            [
+                495,
+                495
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                499,
+                499
+            ]
+        ],
+        "References": [
+            [
+                503,
+                553
+            ],
+            [
+                555,
+                555
+            ],
+            [
+                557,
+                558
+            ]
+        ],
+        "Appendix A Unifying Training Algorithms of GFlowNets": [
+            [
+                562,
+                562
+            ],
+            [
+                566,
+                566
+            ],
+            [
+                634,
+                634
+            ],
+            [
+                636,
+                637
+            ],
+            [
+                639,
+                639
+            ],
+            [
+                641,
+                646
+            ],
+            [
+                650,
+                650
+            ],
+            [
+                652,
+                655
+            ],
+            [
+                657,
+                657
+            ],
+            [
+                659,
+                664
+            ],
+            [
+                668,
+                668
+            ],
+            [
+                670,
+                671
+            ],
+            [
+                673,
+                673
+            ],
+            [
+                675,
+                680
+            ],
+            [
+                684,
+                684
+            ],
+            [
+                686,
+                691
+            ],
+            [
+                695,
+                695
+            ],
+            [
+                697,
+                708
+            ],
+            [
+                712,
+                712
+            ],
+            [
+                714,
+                725
+            ],
+            [
+                729,
+                729
+            ],
+            [
+                733,
+                733
+            ]
+        ],
+        "Appendix B Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") and its Proof": [
+            [
+                739,
+                739
+            ],
+            [
+                741,
+                741
+            ],
+            [
+                743,
+                746
+            ],
+            [
+                748,
+                748
+            ],
+            [
+                750,
+                753
+            ],
+            [
+                757,
+                757
+            ],
+            [
+                759,
+                778
+            ],
+            [
+                780,
+                780
+            ],
+            [
+                782,
+                803
+            ],
+            [
+                805,
+                805
+            ]
+        ],
+        "Appendix C Interpretation of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") for Different Kinds of Losses": [
+            [
+                811,
+                811
+            ],
+            [
+                813,
+                814
+            ],
+            [
+                816,
+                816
+            ],
+            [
+                818,
+                818
+            ],
+            [
+                820,
+                821
+            ],
+            [
+                825,
+                825
+            ],
+            [
+                827,
+                830
+            ],
+            [
+                832,
+                832
+            ],
+            [
+                834,
+                834
+            ],
+            [
+                836,
+                837
+            ],
+            [
+                841,
+                841
+            ],
+            [
+                843,
+                846
+            ],
+            [
+                848,
+                848
+            ]
+        ],
+        "Appendix D Proof of Theorem [4.7](#S4.Thmtheorem7 \"Theorem 4.7. \u2023 4.3 Designing New Regression Losses \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")": [
+            [
+                854,
+                854
+            ],
+            [
+                858,
+                858
+            ],
+            [
+                860,
+                861
+            ],
+            [
+                863,
+                863
+            ],
+            [
+                865,
+                865
+            ],
+            [
+                867,
+                868
+            ],
+            [
+                870,
+                870
+            ]
+        ],
+        "Appendix E Experimental Details": [
+            [
+                876,
+                876
+            ],
+            [
+                880,
+                880
+            ],
+            [
+                882,
+                883
+            ],
+            [
+                885,
+                885
+            ],
+            [
+                889,
+                889
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                13,
+                17
+            ],
+            "[FIGURE S1.F2.g1]": [
+                27,
+                31
+            ]
+        },
+        "2 Related Work": {},
+        "3 Preliminaries of GFlowNets and $f$-Divergence": {},
+        "4 Training Generative Flow Networks": {},
+        "5 Experiments": {
+            "[FIGURE S5.F3.g1]": [
+                356,
+                360
+            ],
+            "[FIGURE S5.F4.g1]": [
+                368,
+                372
+            ],
+            "[FIGURE S5.F5.g1]": [
+                487,
+                491
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Unifying Training Algorithms of GFlowNets": {},
+        "Appendix B Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") and its Proof": {},
+        "Appendix C Interpretation of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") for Different Kinds of Losses": {},
+        "Appendix D Proof of Theorem [4.7](#S4.Thmtheorem7 \"Theorem 4.7. \u2023 4.3 Designing New Regression Losses \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")": {},
+        "Appendix E Experimental Details": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Preliminaries of GFlowNets and $f$-Divergence": {},
+        "4 Training Generative Flow Networks": {
+            "[TABLE S4.T1]": [
+                128,
+                194
+            ],
+            "[TABLE S4.T2]": [
+                280,
+                335
+            ]
+        },
+        "5 Experiments": {
+            "[TABLE S5.T3]": [
+                376,
+                432
+            ],
+            "[TABLE S5.T4]": [
+                436,
+                481
+            ]
+        },
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Unifying Training Algorithms of GFlowNets": {
+            "[TABLE A1.T5]": [
+                568,
+                630
+            ]
+        },
+        "Appendix B Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") and its Proof": {},
+        "Appendix C Interpretation of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") for Different Kinds of Losses": {},
+        "Appendix D Proof of Theorem [4.7](#S4.Thmtheorem7 \"Theorem 4.7. \u2023 4.3 Designing New Regression Losses \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")": {},
+        "Appendix E Experimental Details": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Preliminaries of GFlowNets and $f$-Divergence": {},
+        "4 Training Generative Flow Networks": {},
+        "5 Experiments": {},
+        "6 Conclusion": {},
+        "References": {},
+        "Appendix A Unifying Training Algorithms of GFlowNets": {},
+        "Appendix B Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") and its Proof": {},
+        "Appendix C Interpretation of Theorem [4.1](#S4.Thmtheorem1 \"Theorem 4.1. \u2023 4.2 The Information-Theoretic Interpretation of Training Objectives \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\") for Different Kinds of Losses": {},
+        "Appendix D Proof of Theorem [4.7](#S4.Thmtheorem7 \"Theorem 4.7. \u2023 4.3 Designing New Regression Losses \u2023 4 Training Generative Flow Networks \u2023 Beyond Squared Error: Exploring Loss Design for Enhanced Training of Generative Flow Networks\")": {},
+        "Appendix E Experimental Details": {}
+    }
+}

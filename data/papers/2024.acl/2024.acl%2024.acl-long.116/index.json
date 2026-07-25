@@ -1,0 +1,584 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            27
+        ],
+        "2 Related work": [
+            28,
+            37
+        ],
+        "3 Background": [
+            38,
+            52
+        ],
+        "4 Proposed Approach": [
+            53,
+            181
+        ],
+        "5 Experiments": [
+            182,
+            788
+        ],
+        "6 Conclusions": [
+            789,
+            792
+        ],
+        "7 Limitations": [
+            793,
+            796
+        ],
+        "References": [
+            797,
+            824
+        ],
+        "Appendix A Experiment setting": [
+            825,
+            908
+        ],
+        "Appendix B Explanation Semantic Roles": [
+            909,
+            1298
+        ],
+        "Appendix C Disentanglement Metrics": [
+            1299,
+            1307
+        ],
+        "Appendix D Unsupervised INN: explanation reconstruction": [
+            1308,
+            1595
+        ],
+        "Appendix E Supervised INN: Explanation reconstruction": [
+            1596,
+            2227
+        ],
+        "Appendix F Disentanglement between PRED clusters": [
+            2228,
+            2355
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related work": {
+            "Sentence Disentanglement": [
+                30,
+                33
+            ],
+            "INN in NLP": [
+                34,
+                37
+            ]
+        },
+        "3 Background": {
+            "Disentangled semantic spaces": [
+                40,
+                43
+            ],
+            "Invertible Neural Networks": [
+                44,
+                52
+            ]
+        },
+        "4 Proposed Approach": {
+            "4.1 Training Strategy": [
+                57,
+                58
+            ],
+            "Unsupervised INNs": [
+                59,
+                67
+            ],
+            "Cluster-supervised INN": [
+                68,
+                78
+            ],
+            "4.2 Data Augmentation": [
+                79,
+                181
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Disentanglement Analysis": [
+                186,
+                189
+            ],
+            "Disentanglement metrics": [
+                190,
+                274
+            ],
+            "Traversal": [
+                275,
+                295
+            ],
+            "Interpolation": [
+                296,
+                318
+            ],
+            "Latent space arithmetic": [
+                319,
+                340
+            ],
+            "5.2 Cluster-supervised INN model": [
+                341,
+                344
+            ],
+            "Disentanglement between ARG0 clusters": [
+                345,
+                516
+            ],
+            "Disentanglement between ARG1 clusters": [
+                517,
+                641
+            ],
+            "Disentanglement between Animal clusters": [
+                642,
+                788
+            ]
+        },
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "References": {},
+        "Appendix A Experiment setting": {
+            "Datasets": [
+                827,
+                859
+            ],
+            "Data Augmentation": [
+                860,
+                892
+            ],
+            "Autoencoder": [
+                893,
+                896
+            ],
+            "INN": [
+                897,
+                908
+            ]
+        },
+        "Appendix B Explanation Semantic Roles": {},
+        "Appendix C Disentanglement Metrics": {},
+        "Appendix D Unsupervised INN: explanation reconstruction": {},
+        "Appendix E Supervised INN: Explanation reconstruction": {},
+        "Appendix F Disentanglement between PRED clusters": {
+            "Disentanglement between PRED clusters": [
+                2230,
+                2355
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                18,
+                18
+            ],
+            [
+                20,
+                20
+            ],
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ],
+            [
+                26,
+                26
+            ]
+        ],
+        "2 Related work": [
+            [
+                32,
+                32
+            ],
+            [
+                36,
+                36
+            ]
+        ],
+        "3 Background": [
+            [
+                42,
+                42
+            ],
+            [
+                46,
+                46
+            ],
+            [
+                48,
+                49
+            ],
+            [
+                51,
+                51
+            ]
+        ],
+        "4 Proposed Approach": [
+            [
+                55,
+                55
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                63,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                75
+            ],
+            [
+                77,
+                77
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                86
+            ],
+            [
+                88,
+                88
+            ]
+        ],
+        "5 Experiments": [
+            [
+                184,
+                184
+            ],
+            [
+                188,
+                188
+            ],
+            [
+                192,
+                192
+            ],
+            [
+                273,
+                273
+            ],
+            [
+                277,
+                277
+            ],
+            [
+                298,
+                298
+            ],
+            [
+                321,
+                321
+            ],
+            [
+                343,
+                343
+            ],
+            [
+                347,
+                347
+            ],
+            [
+                355,
+                355
+            ],
+            [
+                371,
+                371
+            ],
+            [
+                462,
+                462
+            ],
+            [
+                500,
+                500
+            ],
+            [
+                519,
+                519
+            ],
+            [
+                527,
+                527
+            ],
+            [
+                644,
+                644
+            ],
+            [
+                652,
+                652
+            ],
+            [
+                767,
+                767
+            ]
+        ],
+        "6 Conclusions": [
+            [
+                791,
+                791
+            ]
+        ],
+        "7 Limitations": [
+            [
+                795,
+                795
+            ]
+        ],
+        "References": [
+            [
+                799,
+                823
+            ]
+        ],
+        "Appendix A Experiment setting": [
+            [
+                829,
+                829
+            ],
+            [
+                862,
+                862
+            ],
+            [
+                895,
+                895
+            ],
+            [
+                899,
+                899
+            ],
+            [
+                907,
+                907
+            ]
+        ],
+        "Appendix B Explanation Semantic Roles": [
+            [
+                911,
+                911
+            ]
+        ],
+        "Appendix C Disentanglement Metrics": [
+            [
+                1301,
+                1306
+            ]
+        ],
+        "Appendix D Unsupervised INN: explanation reconstruction": [
+            [
+                1310,
+                1310
+            ]
+        ],
+        "Appendix E Supervised INN: Explanation reconstruction": [
+            [
+                1598,
+                1598
+            ]
+        ],
+        "Appendix F Disentanglement between PRED clusters": [
+            [
+                2232,
+                2232
+            ],
+            [
+                2240,
+                2240
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                12,
+                16
+            ]
+        },
+        "2 Related work": {},
+        "3 Background": {},
+        "4 Proposed Approach": {},
+        "5 Experiments": {
+            "[FIGURE S5.F2.1.g1]": [
+                349,
+                353
+            ],
+            "[FIGURE S5.F3.1.g1]": [
+                521,
+                525
+            ],
+            "[FIGURE S5.F4.1.g1]": [
+                646,
+                650
+            ]
+        },
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "References": {},
+        "Appendix A Experiment setting": {
+            "[FIGURE A1.F5.1.g1]": [
+                901,
+                905
+            ]
+        },
+        "Appendix B Explanation Semantic Roles": {},
+        "Appendix C Disentanglement Metrics": {},
+        "Appendix D Unsupervised INN: explanation reconstruction": {},
+        "Appendix E Supervised INN: Explanation reconstruction": {},
+        "Appendix F Disentanglement between PRED clusters": {
+            "[FIGURE A6.F6.1.g1]": [
+                2234,
+                2238
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Background": {},
+        "4 Proposed Approach": {
+            "[TABLE S4.T1]": [
+                90,
+                180
+            ]
+        },
+        "5 Experiments": {
+            "[TABLE S5.T2]": [
+                194,
+                271
+            ],
+            "[TABLE S5.T3]": [
+                279,
+                294
+            ],
+            "[TABLE S5.T4]": [
+                300,
+                317
+            ],
+            "[TABLE S5.T5]": [
+                323,
+                339
+            ],
+            "[TABLE S5.T6]": [
+                357,
+                369
+            ],
+            "[TABLE S5.T7]": [
+                373,
+                460
+            ],
+            "[TABLE S5.T8]": [
+                464,
+                498
+            ],
+            "[TABLE S5.T9]": [
+                502,
+                515
+            ],
+            "[TABLE S5.T10]": [
+                529,
+                640
+            ],
+            "[TABLE S5.T11]": [
+                654,
+                765
+            ],
+            "[TABLE S5.T12]": [
+                769,
+                787
+            ]
+        },
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "References": {},
+        "Appendix A Experiment setting": {
+            "[TABLE A1.T13]": [
+                831,
+                858
+            ]
+        },
+        "Appendix B Explanation Semantic Roles": {
+            "[TABLE A2.T14]": [
+                913,
+                1297
+            ]
+        },
+        "Appendix C Disentanglement Metrics": {},
+        "Appendix D Unsupervised INN: explanation reconstruction": {
+            "[TABLE A4.T15]": [
+                1312,
+                1594
+            ]
+        },
+        "Appendix E Supervised INN: Explanation reconstruction": {
+            "[TABLE A5.T16]": [
+                1600,
+                2226
+            ]
+        },
+        "Appendix F Disentanglement between PRED clusters": {
+            "[TABLE A6.T17]": [
+                2242,
+                2353
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Background": {},
+        "4 Proposed Approach": {},
+        "5 Experiments": {},
+        "6 Conclusions": {},
+        "7 Limitations": {},
+        "References": {},
+        "Appendix A Experiment setting": {
+            "[ALGORITHM alg1]": [
+                864,
+                891
+            ]
+        },
+        "Appendix B Explanation Semantic Roles": {},
+        "Appendix C Disentanglement Metrics": {},
+        "Appendix D Unsupervised INN: explanation reconstruction": {},
+        "Appendix E Supervised INN: Explanation reconstruction": {},
+        "Appendix F Disentanglement between PRED clusters": {}
+    }
+}

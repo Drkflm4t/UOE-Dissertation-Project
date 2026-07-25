@@ -1,0 +1,632 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        8
+    ],
+    "sections": {
+        "1 Introduction": [
+            9,
+            160
+        ],
+        "2 Questions with Questionable Assumptions": [
+            161,
+            174
+        ],
+        "3 (QA)2 Dataset": [
+            175,
+            353
+        ],
+        "4 Evaluation": [
+            354,
+            530
+        ],
+        "5 Experiments": [
+            531,
+            550
+        ],
+        "6 Results and Discussion": [
+            551,
+            574
+        ],
+        "7 Related Work": [
+            575,
+            584
+        ],
+        "8 Conclusion": [
+            585,
+            588
+        ],
+        "Limitations": [
+            589,
+            594
+        ],
+        "Ethics Statement": [
+            595,
+            600
+        ],
+        "Acknowledgements": [
+            601,
+            604
+        ],
+        "References": [
+            605,
+            655
+        ],
+        "Appendix A ChatGPT Responses": [
+            656,
+            665
+        ],
+        "Appendix B Canary String": [
+            666,
+            669
+        ],
+        "Appendix C Dataset Fields": [
+            670,
+            807
+        ],
+        "Appendix D Prompts": [
+            808,
+            1293
+        ],
+        "Appendix E End-to-End QA Error Examples": [
+            1294,
+            1413
+        ],
+        "Appendix F License and Terms for Use": [
+            1414,
+            1417
+        ],
+        "Appendix G Model and Implementation Details": [
+            1418,
+            1425
+        ],
+        "Appendix H Crowdsourcing Details": [
+            1426,
+            1442
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Questions with Questionable Assumptions": {
+            "Presuppositions": [
+                163,
+                166
+            ],
+            "Questionable Assumptions": [
+                167,
+                174
+            ]
+        },
+        "3 (QA)2 Dataset": {
+            "3.1 Data Collection and Annotation": [
+                179,
+                182
+            ],
+            "3.1.1 Step 1: Question Collection": [
+                183,
+                186
+            ],
+            "Stylistic Issues": [
+                187,
+                190
+            ],
+            "3.1.2 Step 2: Identification of Questionable Assumptions via Crowdsourcing": [
+                191,
+                192
+            ],
+            "Annotation Task Definition": [
+                193,
+                196
+            ],
+            "Worker Recruitment": [
+                197,
+                200
+            ],
+            "Main Annotation": [
+                201,
+                204
+            ],
+            "3.1.3 Step 3: Expert Annotation": [
+                205,
+                337
+            ],
+            "3.2 Dataset Statistics": [
+                338,
+                343
+            ],
+            "3.3 Discussion": [
+                344,
+                345
+            ],
+            "Detection of Failure Requires Topical Expertise": [
+                346,
+                349
+            ],
+            "Types of Questionable Assumptions": [
+                350,
+                353
+            ]
+        },
+        "4 Evaluation": {
+            "4.1 End-to-End Abstractive QA": [
+                358,
+                361
+            ],
+            "4.2 Questionable Assumption Detection": [
+                362,
+                365
+            ],
+            "4.3 Questionable Assumption Verification": [
+                366,
+                530
+            ]
+        },
+        "5 Experiments": {
+            "5.1 Models": [
+                533,
+                538
+            ],
+            "5.1.1 QA-Specific Models": [
+                539,
+                542
+            ],
+            "5.1.2 General-Purpose Language Models": [
+                543,
+                546
+            ],
+            "Step-by-Step Prompting with Task Decomposition": [
+                547,
+                550
+            ]
+        },
+        "6 Results and Discussion": {
+            "6.1 End-to-End Abstractive QA": [
+                555,
+                560
+            ],
+            "6.2 Subtasks": [
+                561,
+                566
+            ],
+            "Relation to E2E Performance": [
+                567,
+                570
+            ],
+            "6.3 Error Analysis": [
+                571,
+                574
+            ]
+        },
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A ChatGPT Responses": {},
+        "Appendix B Canary String": {},
+        "Appendix C Dataset Fields": {},
+        "Appendix D Prompts": {},
+        "Appendix E End-to-End QA Error Examples": {},
+        "Appendix F License and Terms for Use": {},
+        "Appendix G Model and Implementation Details": {},
+        "Appendix H Crowdsourcing Details": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                11,
+                11
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ]
+        ],
+        "2 Questions with Questionable Assumptions": [
+            [
+                165,
+                165
+            ],
+            [
+                169,
+                169
+            ],
+            [
+                171,
+                171
+            ],
+            [
+                173,
+                173
+            ]
+        ],
+        "3 (QA)2 Dataset": [
+            [
+                177,
+                177
+            ],
+            [
+                181,
+                181
+            ],
+            [
+                185,
+                185
+            ],
+            [
+                189,
+                189
+            ],
+            [
+                195,
+                195
+            ],
+            [
+                199,
+                199
+            ],
+            [
+                203,
+                203
+            ],
+            [
+                207,
+                207
+            ],
+            [
+                331,
+                331
+            ],
+            [
+                333,
+                334
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                340,
+                340
+            ],
+            [
+                342,
+                342
+            ],
+            [
+                348,
+                348
+            ],
+            [
+                352,
+                352
+            ]
+        ],
+        "4 Evaluation": [
+            [
+                356,
+                356
+            ],
+            [
+                360,
+                360
+            ],
+            [
+                364,
+                364
+            ],
+            [
+                368,
+                368
+            ]
+        ],
+        "5 Experiments": [
+            [
+                535,
+                535
+            ],
+            [
+                537,
+                537
+            ],
+            [
+                541,
+                541
+            ],
+            [
+                545,
+                545
+            ],
+            [
+                549,
+                549
+            ]
+        ],
+        "6 Results and Discussion": [
+            [
+                553,
+                553
+            ],
+            [
+                557,
+                557
+            ],
+            [
+                559,
+                559
+            ],
+            [
+                563,
+                563
+            ],
+            [
+                565,
+                565
+            ],
+            [
+                569,
+                569
+            ],
+            [
+                573,
+                573
+            ]
+        ],
+        "7 Related Work": [
+            [
+                577,
+                577
+            ],
+            [
+                579,
+                579
+            ],
+            [
+                581,
+                581
+            ],
+            [
+                583,
+                583
+            ]
+        ],
+        "8 Conclusion": [
+            [
+                587,
+                587
+            ]
+        ],
+        "Limitations": [
+            [
+                591,
+                591
+            ],
+            [
+                593,
+                593
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                597,
+                597
+            ],
+            [
+                599,
+                599
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                603,
+                603
+            ]
+        ],
+        "References": [
+            [
+                607,
+                654
+            ]
+        ],
+        "Appendix A ChatGPT Responses": [
+            [
+                658,
+                658
+            ]
+        ],
+        "Appendix B Canary String": [
+            [
+                668,
+                668
+            ]
+        ],
+        "Appendix C Dataset Fields": [
+            [
+                672,
+                672
+            ]
+        ],
+        "Appendix D Prompts": [
+            [
+                810,
+                810
+            ]
+        ],
+        "Appendix E End-to-End QA Error Examples": [
+            [
+                1296,
+                1296
+            ]
+        ],
+        "Appendix F License and Terms for Use": [
+            [
+                1416,
+                1416
+            ]
+        ],
+        "Appendix G Model and Implementation Details": [
+            [
+                1420,
+                1420
+            ],
+            [
+                1422,
+                1422
+            ],
+            [
+                1424,
+                1424
+            ]
+        ],
+        "Appendix H Crowdsourcing Details": [
+            [
+                1428,
+                1428
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.1.g1]": [
+                13,
+                17
+            ]
+        },
+        "2 Questions with Questionable Assumptions": {},
+        "3 (QA)2 Dataset": {},
+        "4 Evaluation": {},
+        "5 Experiments": {},
+        "6 Results and Discussion": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A ChatGPT Responses": {
+            "[FIGURE A1.F2.g1]": [
+                660,
+                664
+            ]
+        },
+        "Appendix B Canary String": {},
+        "Appendix C Dataset Fields": {},
+        "Appendix D Prompts": {},
+        "Appendix E End-to-End QA Error Examples": {},
+        "Appendix F License and Terms for Use": {},
+        "Appendix G Model and Implementation Details": {},
+        "Appendix H Crowdsourcing Details": {
+            "[FIGURE A8.F3.g1]": [
+                1430,
+                1434
+            ],
+            "[FIGURE A8.F4.g1]": [
+                1436,
+                1440
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {
+            "[TABLE S1.T1]": [
+                25,
+                159
+            ]
+        },
+        "2 Questions with Questionable Assumptions": {},
+        "3 (QA)2 Dataset": {
+            "[TABLE S3.T2]": [
+                209,
+                247
+            ],
+            "[TABLE S3.T3]": [
+                249,
+                329
+            ]
+        },
+        "4 Evaluation": {
+            "[TABLE S4.T4]": [
+                370,
+                529
+            ]
+        },
+        "5 Experiments": {},
+        "6 Results and Discussion": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A ChatGPT Responses": {},
+        "Appendix B Canary String": {},
+        "Appendix C Dataset Fields": {
+            "[TABLE A3.T5]": [
+                674,
+                806
+            ]
+        },
+        "Appendix D Prompts": {
+            "[TABLE A4.T6]": [
+                812,
+                885
+            ],
+            "[TABLE A4.T7]": [
+                887,
+                981
+            ],
+            "[TABLE A4.T8]": [
+                983,
+                1196
+            ],
+            "[TABLE A4.T9]": [
+                1198,
+                1292
+            ]
+        },
+        "Appendix E End-to-End QA Error Examples": {
+            "[TABLE A5.T10]": [
+                1298,
+                1412
+            ]
+        },
+        "Appendix F License and Terms for Use": {},
+        "Appendix G Model and Implementation Details": {},
+        "Appendix H Crowdsourcing Details": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Questions with Questionable Assumptions": {},
+        "3 (QA)2 Dataset": {},
+        "4 Evaluation": {},
+        "5 Experiments": {},
+        "6 Results and Discussion": {},
+        "7 Related Work": {},
+        "8 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A ChatGPT Responses": {},
+        "Appendix B Canary String": {},
+        "Appendix C Dataset Fields": {},
+        "Appendix D Prompts": {},
+        "Appendix E End-to-End QA Error Examples": {},
+        "Appendix F License and Terms for Use": {},
+        "Appendix G Model and Implementation Details": {},
+        "Appendix H Crowdsourcing Details": {}
+    }
+}

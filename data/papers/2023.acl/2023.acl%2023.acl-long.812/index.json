@@ -1,0 +1,538 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            29
+        ],
+        "2 Related Work": [
+            30,
+            43
+        ],
+        "3 Methodology": [
+            44,
+            129
+        ],
+        "4 Experimental Setup": [
+            130,
+            389
+        ],
+        "5 Results and Analysis": [
+            390,
+            780
+        ],
+        "6 Conclusion": [
+            781,
+            784
+        ],
+        "Limitations": [
+            785,
+            788
+        ],
+        "Ethics Statement": [
+            789,
+            792
+        ],
+        "Acknowledgments": [
+            793,
+            796
+        ],
+        "References": [
+            797,
+            836
+        ],
+        "Appendix A Appendix": [
+            837,
+            968
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "Parameter efficiency.": [
+                32,
+                35
+            ],
+            "Modified multi-head mechanism.": [
+                36,
+                39
+            ],
+            "Head redundancy optimization.": [
+                40,
+                43
+            ]
+        },
+        "3 Methodology": {
+            "3.1 Grouped Head Attention with Hidden Units": [
+                48,
+                79
+            ],
+            "3.2 The Pillars of Strength": [
+                80,
+                129
+            ]
+        },
+        "4 Experimental Setup": {},
+        "5 Results and Analysis": {
+            "5.1 Machine Translation": [
+                392,
+                393
+            ],
+            "Ours vs. vanilla transformer.": [
+                394,
+                399
+            ],
+            "Ours vs. efficient attention models.": [
+                400,
+                507
+            ],
+            "Ablation Study.": [
+                508,
+                517
+            ],
+            "Effect of group compactness.": [
+                518,
+                622
+            ],
+            "Effect of group number.": [
+                623,
+                632
+            ],
+            "Group pattern trends.": [
+                633,
+                695
+            ],
+            "Efficiency analysis.": [
+                696,
+                699
+            ],
+            "5.2 Abstractive Summarization": [
+                700,
+                774
+            ],
+            "5.3 Language Modeling": [
+                775,
+                780
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "A.1 Trainig Settings": [
+                839,
+                840
+            ],
+            "A.1.1 Machine Translation": [
+                841,
+                844
+            ],
+            "A.1.2 Language Modeling": [
+                845,
+                848
+            ],
+            "A.1.3 Abstractive Summarization": [
+                849,
+                852
+            ],
+            "A.2 Further Model Settings": [
+                853,
+                858
+            ],
+            "A.3 Datasets and Evaluation999For all three tasks, we follow the data pipeline of fairseq: <https://github.com/facebookresearch/fairseq/blob/main/examples>": [
+                859,
+                860
+            ],
+            "A.3.1 Efficiency Metrics settings": [
+                861,
+                862
+            ],
+            "Inference speed.": [
+                863,
+                866
+            ],
+            "FLOPs.": [
+                867,
+                870
+            ],
+            "A.3.2 Machine Translation": [
+                871,
+                959
+            ],
+            "A.3.3 Language Modeling": [
+                960,
+                963
+            ],
+            "A.3.4 Abstractive Summarization": [
+                964,
+                968
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                18
+            ],
+            [
+                20,
+                20
+            ],
+            [
+                22,
+                22
+            ],
+            [
+                24,
+                24
+            ],
+            [
+                26,
+                28
+            ]
+        ],
+        "2 Related Work": [
+            [
+                34,
+                34
+            ],
+            [
+                38,
+                38
+            ],
+            [
+                42,
+                42
+            ]
+        ],
+        "3 Methodology": [
+            [
+                46,
+                46
+            ],
+            [
+                56,
+                56
+            ],
+            [
+                58,
+                58
+            ],
+            [
+                60,
+                61
+            ],
+            [
+                63,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                70,
+                71
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                76
+            ],
+            [
+                78,
+                78
+            ],
+            [
+                82,
+                82
+            ],
+            [
+                84,
+                84
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                126,
+                126
+            ],
+            [
+                128,
+                128
+            ]
+        ],
+        "4 Experimental Setup": [
+            [
+                132,
+                132
+            ],
+            [
+                134,
+                134
+            ]
+        ],
+        "5 Results and Analysis": [
+            [
+                396,
+                396
+            ],
+            [
+                398,
+                398
+            ],
+            [
+                402,
+                402
+            ],
+            [
+                404,
+                404
+            ],
+            [
+                510,
+                510
+            ],
+            [
+                520,
+                520
+            ],
+            [
+                522,
+                522
+            ],
+            [
+                625,
+                625
+            ],
+            [
+                635,
+                635
+            ],
+            [
+                698,
+                698
+            ],
+            [
+                702,
+                702
+            ],
+            [
+                777,
+                777
+            ],
+            [
+                779,
+                779
+            ]
+        ],
+        "6 Conclusion": [
+            [
+                783,
+                783
+            ]
+        ],
+        "Limitations": [
+            [
+                787,
+                787
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                791,
+                791
+            ]
+        ],
+        "Acknowledgments": [
+            [
+                795,
+                795
+            ]
+        ],
+        "References": [
+            [
+                799,
+                835
+            ]
+        ],
+        "Appendix A Appendix": [
+            [
+                843,
+                843
+            ],
+            [
+                847,
+                847
+            ],
+            [
+                851,
+                851
+            ],
+            [
+                855,
+                855
+            ],
+            [
+                857,
+                857
+            ],
+            [
+                865,
+                865
+            ],
+            [
+                869,
+                869
+            ],
+            [
+                873,
+                873
+            ],
+            [
+                875,
+                875
+            ],
+            [
+                962,
+                962
+            ],
+            [
+                966,
+                966
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Methodology": {
+            "[FIGURE S3.F1.1.g1]": [
+                50,
+                54
+            ]
+        },
+        "4 Experimental Setup": {},
+        "5 Results and Analysis": {
+            "[FIGURE S5.F2.g1]": [
+                512,
+                516
+            ],
+            "[FIGURE S5.F3.g1]": [
+                524,
+                528
+            ],
+            "[FIGURE S5.F4.g1]": [
+                627,
+                631
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Appendix": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Methodology": {},
+        "4 Experimental Setup": {
+            "[TABLE S4.T1]": [
+                136,
+                236
+            ],
+            "[TABLE S4.T2]": [
+                238,
+                388
+            ]
+        },
+        "5 Results and Analysis": {
+            "[TABLE S5.T3]": [
+                406,
+                506
+            ],
+            "[TABLE S5.T4]": [
+                530,
+                621
+            ],
+            "[TABLE S5.T5]": [
+                637,
+                694
+            ],
+            "[TABLE S5.T6]": [
+                704,
+                773
+            ]
+        },
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Appendix": {
+            "[TABLE A1.T7]": [
+                877,
+                932
+            ],
+            "[TABLE A1.T8]": [
+                934,
+                958
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Methodology": {
+            "[ALGORITHM alg1]": [
+                86,
+                122
+            ]
+        },
+        "4 Experimental Setup": {},
+        "5 Results and Analysis": {},
+        "6 Conclusion": {},
+        "Limitations": {},
+        "Ethics Statement": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Appendix": {}
+    }
+}

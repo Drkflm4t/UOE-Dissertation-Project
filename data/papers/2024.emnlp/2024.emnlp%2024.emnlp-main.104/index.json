@@ -1,0 +1,635 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        10
+    ],
+    "sections": {
+        "1 Introduction": [
+            11,
+            32
+        ],
+        "2 Related Work": [
+            33,
+            108
+        ],
+        "3 Problem Statement and Notations": [
+            109,
+            119
+        ],
+        "4 MSA Transformer as a Retrieval Augmentation Method": [
+            120,
+            162
+        ],
+        "5 Retrieval Sequence Augmentations": [
+            163,
+            431
+        ],
+        "6 Experiments": [
+            432,
+            708
+        ],
+        "7 Conclusions and Future Work": [
+            709,
+            712
+        ],
+        "References": [
+            713,
+            778
+        ],
+        "Appendix A A Brief Recap on Proteins": [
+            779,
+            799
+        ],
+        "Appendix B Overview of Previous Protein Representation Augmentation Methods": [
+            800,
+            825
+        ],
+        "Appendix C Experiment Setups": [
+            826,
+            841
+        ],
+        "Appendix D Supplementary Experiment Analysis": [
+            842,
+            889
+        ],
+        "Appendix E Dataset details": [
+            890,
+            965
+        ],
+        "Appendix F Additional Visualization of Retrieved Sequence 3D Structure": [
+            966,
+            976
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Problem Statement and Notations": {},
+        "4 MSA Transformer as a Retrieval Augmentation Method": {
+            "Unaligned MSA Augmentation.": [
+                153,
+                156
+            ],
+            "Accelerated MSA Transformer.": [
+                157,
+                162
+            ]
+        },
+        "5 Retrieval Sequence Augmentations": {
+            "5.1 Model Architectures": [
+                401,
+                404
+            ],
+            "5.1.1 RSA Retriever": [
+                405,
+                416
+            ],
+            "5.1.2 RSA Encoder": [
+                417,
+                427
+            ],
+            "5.2 RSA Training": [
+                428,
+                431
+            ]
+        },
+        "6 Experiments": {
+            "6.1 General Setup": [
+                434,
+                449
+            ],
+            "6.2 Main Results": [
+                450,
+                509
+            ],
+            "6.3 Retrieval Augmentation for Domain Adaptation": [
+                510,
+                549
+            ],
+            "6.4 Retrieval Speed": [
+                550,
+                553
+            ],
+            "6.5 Retrieved Protein Interpretability": [
+                554,
+                637
+            ],
+            "6.6 Ablation Study": [
+                638,
+                708
+            ]
+        },
+        "7 Conclusions and Future Work": {},
+        "References": {},
+        "Appendix A A Brief Recap on Proteins": {},
+        "Appendix B Overview of Previous Protein Representation Augmentation Methods": {},
+        "Appendix C Experiment Setups": {
+            "C.1 Introduction to the datasets": [
+                828,
+                837
+            ],
+            "C.2 Retriever and MSA Details": [
+                838,
+                841
+            ]
+        },
+        "Appendix D Supplementary Experiment Analysis": {
+            "D.1 Baselines": [
+                844,
+                847
+            ],
+            "D.2 Domain Adaptation Analysis": [
+                848,
+                889
+            ]
+        },
+        "Appendix E Dataset details": {
+            "E.1 Downstream tasks": [
+                892,
+                961
+            ],
+            "E.2 De Novo Protein Dataset": [
+                962,
+                965
+            ]
+        },
+        "Appendix F Additional Visualization of Retrieved Sequence 3D Structure": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                25
+            ]
+        ],
+        "2 Related Work": [
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ]
+        ],
+        "3 Problem Statement and Notations": [
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                118
+            ]
+        ],
+        "4 MSA Transformer as a Retrieval Augmentation Method": [
+            [
+                122,
+                122
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                126,
+                127
+            ],
+            [
+                129,
+                129
+            ],
+            [
+                131,
+                132
+            ],
+            [
+                134,
+                134
+            ],
+            [
+                136,
+                138
+            ],
+            [
+                140,
+                140
+            ],
+            [
+                142,
+                142
+            ],
+            [
+                144,
+                147
+            ],
+            [
+                149,
+                149
+            ],
+            [
+                151,
+                151
+            ],
+            [
+                155,
+                155
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                161,
+                161
+            ]
+        ],
+        "5 Retrieval Sequence Augmentations": [
+            [
+                215,
+                215
+            ],
+            [
+                403,
+                403
+            ],
+            [
+                407,
+                407
+            ],
+            [
+                409,
+                411
+            ],
+            [
+                413,
+                413
+            ],
+            [
+                415,
+                415
+            ],
+            [
+                419,
+                419
+            ],
+            [
+                421,
+                424
+            ],
+            [
+                426,
+                426
+            ],
+            [
+                430,
+                430
+            ]
+        ],
+        "6 Experiments": [
+            [
+                436,
+                436
+            ],
+            [
+                438,
+                438
+            ],
+            [
+                440,
+                440
+            ],
+            [
+                442,
+                442
+            ],
+            [
+                452,
+                452
+            ],
+            [
+                512,
+                512
+            ],
+            [
+                514,
+                514
+            ],
+            [
+                552,
+                552
+            ],
+            [
+                556,
+                556
+            ],
+            [
+                564,
+                564
+            ],
+            [
+                566,
+                566
+            ],
+            [
+                630,
+                630
+            ],
+            [
+                640,
+                640
+            ],
+            [
+                642,
+                642
+            ],
+            [
+                703,
+                703
+            ],
+            [
+                705,
+                705
+            ],
+            [
+                707,
+                707
+            ]
+        ],
+        "7 Conclusions and Future Work": [
+            [
+                711,
+                711
+            ]
+        ],
+        "References": [
+            [
+                715,
+                777
+            ]
+        ],
+        "Appendix A A Brief Recap on Proteins": [
+            [
+                781,
+                781
+            ],
+            [
+                783,
+                783
+            ],
+            [
+                785,
+                785
+            ],
+            [
+                787,
+                787
+            ],
+            [
+                789,
+                789
+            ],
+            [
+                791,
+                794
+            ],
+            [
+                796,
+                796
+            ],
+            [
+                798,
+                798
+            ]
+        ],
+        "Appendix B Overview of Previous Protein Representation Augmentation Methods": [
+            [
+                802,
+                802
+            ],
+            [
+                804,
+                804
+            ],
+            [
+                806,
+                806
+            ],
+            [
+                808,
+                809
+            ],
+            [
+                811,
+                811
+            ],
+            [
+                813,
+                814
+            ],
+            [
+                816,
+                816
+            ],
+            [
+                818,
+                819
+            ],
+            [
+                821,
+                821
+            ],
+            [
+                823,
+                824
+            ]
+        ],
+        "Appendix C Experiment Setups": [
+            [
+                830,
+                830
+            ],
+            [
+                840,
+                840
+            ]
+        ],
+        "Appendix D Supplementary Experiment Analysis": [
+            [
+                846,
+                846
+            ],
+            [
+                850,
+                850
+            ]
+        ],
+        "Appendix E Dataset details": [
+            [
+                894,
+                894
+            ],
+            [
+                964,
+                964
+            ]
+        ],
+        "Appendix F Additional Visualization of Retrieved Sequence 3D Structure": [
+            [
+                974,
+                974
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                27,
+                31
+            ]
+        },
+        "2 Related Work": {},
+        "3 Problem Statement and Notations": {},
+        "4 MSA Transformer as a Retrieval Augmentation Method": {},
+        "5 Retrieval Sequence Augmentations": {
+            "[FIGURE S5.F2.g1]": [
+                165,
+                169
+            ]
+        },
+        "6 Experiments": {
+            "[FIGURE S6.F3.g1]": [
+                444,
+                448
+            ],
+            "[FIGURE S6.F4.g1]": [
+                558,
+                562
+            ],
+            "[FIGURE S6.F5.g1]": [
+                632,
+                636
+            ]
+        },
+        "7 Conclusions and Future Work": {},
+        "References": {},
+        "Appendix A A Brief Recap on Proteins": {},
+        "Appendix B Overview of Previous Protein Representation Augmentation Methods": {},
+        "Appendix C Experiment Setups": {
+            "[FIGURE A3.F6.g1]": [
+                832,
+                836
+            ]
+        },
+        "Appendix D Supplementary Experiment Analysis": {
+            "[FIGURE A4.F7.1.g1]": [
+                884,
+                888
+            ]
+        },
+        "Appendix E Dataset details": {},
+        "Appendix F Additional Visualization of Retrieved Sequence 3D Structure": {
+            "[FIGURE A6.F8.1.g1]": [
+                968,
+                972
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {
+            "[TABLE S2.T1]": [
+                39,
+                107
+            ]
+        },
+        "3 Problem Statement and Notations": {},
+        "4 MSA Transformer as a Retrieval Augmentation Method": {},
+        "5 Retrieval Sequence Augmentations": {
+            "[TABLE S5.T2]": [
+                171,
+                213
+            ],
+            "[TABLE S5.T3]": [
+                217,
+                399
+            ]
+        },
+        "6 Experiments": {
+            "[TABLE S6.T4]": [
+                454,
+                508
+            ],
+            "[TABLE S6.T5]": [
+                516,
+                548
+            ],
+            "[TABLE S6.T6]": [
+                568,
+                628
+            ],
+            "[TABLE S6.T7]": [
+                644,
+                701
+            ]
+        },
+        "7 Conclusions and Future Work": {},
+        "References": {},
+        "Appendix A A Brief Recap on Proteins": {},
+        "Appendix B Overview of Previous Protein Representation Augmentation Methods": {},
+        "Appendix C Experiment Setups": {},
+        "Appendix D Supplementary Experiment Analysis": {
+            "[TABLE A4.T8]": [
+                852,
+                882
+            ]
+        },
+        "Appendix E Dataset details": {
+            "[TABLE A5.T9]": [
+                896,
+                960
+            ]
+        },
+        "Appendix F Additional Visualization of Retrieved Sequence 3D Structure": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Problem Statement and Notations": {},
+        "4 MSA Transformer as a Retrieval Augmentation Method": {},
+        "5 Retrieval Sequence Augmentations": {},
+        "6 Experiments": {},
+        "7 Conclusions and Future Work": {},
+        "References": {},
+        "Appendix A A Brief Recap on Proteins": {},
+        "Appendix B Overview of Previous Protein Representation Augmentation Methods": {},
+        "Appendix C Experiment Setups": {},
+        "Appendix D Supplementary Experiment Analysis": {},
+        "Appendix E Dataset details": {},
+        "Appendix F Additional Visualization of Retrieved Sequence 3D Structure": {}
+    }
+}

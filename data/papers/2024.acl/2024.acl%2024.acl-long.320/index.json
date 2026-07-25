@@ -1,0 +1,693 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        14
+    ],
+    "sections": {
+        "1 Introduction": [
+            15,
+            28
+        ],
+        "2 Methodology": [
+            29,
+            319
+        ],
+        "3 Experiments": [
+            320,
+            799
+        ],
+        "4 Conclusion": [
+            800,
+            803
+        ],
+        "Limitations": [
+            804,
+            811
+        ],
+        "Acknowledgments": [
+            812,
+            815
+        ],
+        "References": [
+            816,
+            884
+        ],
+        "Appendix A Related work": [
+            885,
+            898
+        ],
+        "Appendix B Discussion of the Relation to RL": [
+            899,
+            980
+        ],
+        "Appendix C Implementation Details": [
+            981,
+            1016
+        ],
+        "Appendix D Dependency Statistics of Other Datasets and Models": [
+            1017,
+            1036
+        ],
+        "Appendix E Case Study of Dependency": [
+            1037,
+            1091
+        ],
+        "Appendix F False Positives": [
+            1092,
+            1277
+        ],
+        "Appendix G Cases": [
+            1278,
+            1715
+        ],
+        "Appendix H Experiments on Alpaca": [
+            1716,
+            1751
+        ],
+        "Appendix I The impact on length": [
+            1752,
+            1761
+        ],
+        "Appendix J Error Types": [
+            1762,
+            1773
+        ],
+        "Appendix K Detail of compared regularization methods": [
+            1774,
+            1784
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Methodology": {
+            "2.1 Masked thought Fine-Tuning": [
+                31,
+                54
+            ],
+            "2.2 Enhancing Dependency Learning with MFT Regularization": [
+                55,
+                319
+            ]
+        },
+        "3 Experiments": {
+            "3.1 Dataset": [
+                322,
+                337
+            ],
+            "3.2 Main Results": [
+                338,
+                569
+            ],
+            "3.3 Comparison with Other Regularization Techniques": [
+                570,
+                579
+            ],
+            "3.4 Investigating the Impact of MFT on Language Modeling": [
+                580,
+                799
+            ]
+        },
+        "4 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Related work": {
+            "A.1 Mathematical Reasoning of LLM.": [
+                887,
+                894
+            ],
+            "A.2 Data Augmentation for NLP.": [
+                895,
+                898
+            ]
+        },
+        "Appendix B Discussion of the Relation to RL": {
+            "B.1 Supervised Fine-tuning (SFT)": [
+                901,
+                907
+            ],
+            "B.2 Reinforcement Learning (RL) Fine-tuning": [
+                908,
+                920
+            ],
+            "B.3 Rejection sampling Fine-Tuning (RFT)": [
+                921,
+                930
+            ],
+            "B.4 Discussion": [
+                931,
+                980
+            ]
+        },
+        "Appendix C Implementation Details": {},
+        "Appendix D Dependency Statistics of Other Datasets and Models": {},
+        "Appendix E Case Study of Dependency": {},
+        "Appendix F False Positives": {},
+        "Appendix G Cases": {
+            "77</span>": [
+                1371,
+                1438
+            ],
+            "60</span>": [
+                1439,
+                1474
+            ],
+            "12</span>": [
+                1475,
+                1715
+            ]
+        },
+        "Appendix H Experiments on Alpaca": {},
+        "Appendix I The impact on length": {},
+        "Appendix J Error Types": {},
+        "Appendix K Detail of compared regularization methods": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ]
+        ],
+        "2 Methodology": [
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                39
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                47
+            ],
+            [
+                57,
+                57
+            ],
+            [
+                59,
+                59
+            ],
+            [
+                61,
+                61
+            ]
+        ],
+        "3 Experiments": [
+            [
+                324,
+                324
+            ],
+            [
+                326,
+                326
+            ],
+            [
+                328,
+                328
+            ],
+            [
+                330,
+                330
+            ],
+            [
+                332,
+                332
+            ],
+            [
+                334,
+                334
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                340,
+                340
+            ],
+            [
+                348,
+                348
+            ],
+            [
+                350,
+                350
+            ],
+            [
+                358,
+                358
+            ],
+            [
+                360,
+                360
+            ],
+            [
+                572,
+                572
+            ],
+            [
+                574,
+                574
+            ],
+            [
+                576,
+                576
+            ],
+            [
+                578,
+                578
+            ],
+            [
+                604,
+                604
+            ],
+            [
+                640,
+                640
+            ],
+            [
+                707,
+                707
+            ],
+            [
+                744,
+                744
+            ],
+            [
+                752,
+                752
+            ],
+            [
+                798,
+                798
+            ]
+        ],
+        "4 Conclusion": [
+            [
+                802,
+                802
+            ]
+        ],
+        "Limitations": [
+            [
+                806,
+                806
+            ],
+            [
+                808,
+                808
+            ],
+            [
+                810,
+                810
+            ]
+        ],
+        "Acknowledgments": [
+            [
+                814,
+                814
+            ]
+        ],
+        "References": [
+            [
+                818,
+                883
+            ]
+        ],
+        "Appendix A Related work": [
+            [
+                889,
+                889
+            ],
+            [
+                891,
+                891
+            ],
+            [
+                893,
+                893
+            ],
+            [
+                897,
+                897
+            ]
+        ],
+        "Appendix B Discussion of the Relation to RL": [
+            [
+                903,
+                903
+            ],
+            [
+                905,
+                906
+            ],
+            [
+                910,
+                910
+            ],
+            [
+                912,
+                912
+            ],
+            [
+                914,
+                917
+            ],
+            [
+                919,
+                919
+            ],
+            [
+                923,
+                923
+            ],
+            [
+                925,
+                927
+            ],
+            [
+                929,
+                929
+            ],
+            [
+                958,
+                958
+            ],
+            [
+                960,
+                963
+            ],
+            [
+                965,
+                965
+            ],
+            [
+                967,
+                967
+            ],
+            [
+                969,
+                969
+            ],
+            [
+                971,
+                971
+            ],
+            [
+                973,
+                973
+            ]
+        ],
+        "Appendix C Implementation Details": [
+            [
+                988,
+                1015
+            ]
+        ],
+        "Appendix D Dependency Statistics of Other Datasets and Models": [],
+        "Appendix E Case Study of Dependency": [
+            [
+                1090,
+                1090
+            ]
+        ],
+        "Appendix F False Positives": [],
+        "Appendix G Cases": [],
+        "Appendix H Experiments on Alpaca": [],
+        "Appendix I The impact on length": [
+            [
+                1754,
+                1754
+            ]
+        ],
+        "Appendix J Error Types": [
+            [
+                1764,
+                1764
+            ],
+            [
+                1766,
+                1766
+            ],
+            [
+                1768,
+                1768
+            ],
+            [
+                1770,
+                1770
+            ],
+            [
+                1772,
+                1772
+            ]
+        ],
+        "Appendix K Detail of compared regularization methods": [
+            [
+                1776,
+                1776
+            ],
+            [
+                1778,
+                1778
+            ],
+            [
+                1780,
+                1780
+            ],
+            [
+                1782,
+                1782
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Methodology": {
+            "[FIGURE S2.F1.sf1.g1]": [
+                49,
+                53
+            ]
+        },
+        "3 Experiments": {
+            "[FIGURE S3.F2.g1]": [
+                342,
+                346
+            ],
+            "[FIGURE S3.F3.g1]": [
+                352,
+                356
+            ],
+            "[FIGURE S3.F4]": [
+                582,
+                591
+            ],
+            "[FIGURE S3.F5]": [
+                593,
+                602
+            ],
+            "[FIGURE S3.F6.1.g1]": [
+                746,
+                750
+            ]
+        },
+        "4 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Related work": {},
+        "Appendix B Discussion of the Relation to RL": {
+            "[FIGURE A2.F7]": [
+                933,
+                956
+            ],
+            "[FIGURE A2.F8.1.g1]": [
+                975,
+                979
+            ]
+        },
+        "Appendix C Implementation Details": {},
+        "Appendix D Dependency Statistics of Other Datasets and Models": {
+            "[FIGURE A4.F9.sf1.g1]": [
+                1019,
+                1023
+            ],
+            "[FIGURE A4.F10.sf1.g1]": [
+                1025,
+                1029
+            ],
+            "[FIGURE A4.F11.sf1.g1]": [
+                1031,
+                1035
+            ]
+        },
+        "Appendix E Case Study of Dependency": {
+            "[FIGURE A5.1]": [
+                1039,
+                1048
+            ],
+            "[FIGURE A5.F13.1.g1]": [
+                1084,
+                1088
+            ]
+        },
+        "Appendix F False Positives": {
+            "[FIGURE A6.F14]": [
+                1094,
+                1111
+            ]
+        },
+        "Appendix G Cases": {},
+        "Appendix H Experiments on Alpaca": {},
+        "Appendix I The impact on length": {
+            "[FIGURE A9.F15.g1]": [
+                1756,
+                1760
+            ]
+        },
+        "Appendix J Error Types": {},
+        "Appendix K Detail of compared regularization methods": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Methodology": {
+            "[TABLE S2.T1]": [
+                63,
+                244
+            ],
+            "[TABLE S2.T2]": [
+                246,
+                318
+            ]
+        },
+        "3 Experiments": {
+            "[TABLE S3.T3]": [
+                362,
+                568
+            ],
+            "[TABLE S3.T4]": [
+                606,
+                638
+            ],
+            "[TABLE S3.T5]": [
+                642,
+                705
+            ],
+            "[TABLE S3.T6]": [
+                709,
+                742
+            ],
+            "[TABLE S3.T7]": [
+                754,
+                796
+            ]
+        },
+        "4 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Related work": {},
+        "Appendix B Discussion of the Relation to RL": {},
+        "Appendix C Implementation Details": {
+            "[TABLE A3.T8]": [
+                983,
+                986
+            ]
+        },
+        "Appendix D Dependency Statistics of Other Datasets and Models": {},
+        "Appendix E Case Study of Dependency": {
+            "[TABLE A5.T9]": [
+                1050,
+                1082
+            ]
+        },
+        "Appendix F False Positives": {
+            "[TABLE A6.T10]": [
+                1113,
+                1208
+            ],
+            "[TABLE A6.T11]": [
+                1210,
+                1276
+            ]
+        },
+        "Appendix G Cases": {
+            "[TABLE A7.T12]": [
+                1280,
+                1484
+            ],
+            "[TABLE A7.T13]": [
+                1486,
+                1714
+            ]
+        },
+        "Appendix H Experiments on Alpaca": {
+            "[TABLE A8.T14]": [
+                1718,
+                1750
+            ]
+        },
+        "Appendix I The impact on length": {},
+        "Appendix J Error Types": {},
+        "Appendix K Detail of compared regularization methods": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Methodology": {},
+        "3 Experiments": {},
+        "4 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A Related work": {},
+        "Appendix B Discussion of the Relation to RL": {},
+        "Appendix C Implementation Details": {},
+        "Appendix D Dependency Statistics of Other Datasets and Models": {},
+        "Appendix E Case Study of Dependency": {},
+        "Appendix F False Positives": {},
+        "Appendix G Cases": {},
+        "Appendix H Experiments on Alpaca": {},
+        "Appendix I The impact on length": {},
+        "Appendix J Error Types": {},
+        "Appendix K Detail of compared regularization methods": {}
+    }
+}

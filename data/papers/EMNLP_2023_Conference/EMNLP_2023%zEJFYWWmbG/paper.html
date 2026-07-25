@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2310.13206] Primacy Effect of ChatGPT</title><meta content="Instruction-tuned large language models (LLMs), such as ChatGPT, have led to promising zero-shot performance in discriminative natural language understanding (NLU) tasks.
+This involves querying the LLM using a prompt c…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Primacy Effect of ChatGPT" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Primacy Effect of ChatGPT" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2310.13206" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2310.13206" rel="canonical" target="_blank"/>
+<!--Generated on Tue Feb 27 23:51:10 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Primacy Effect of ChatGPT</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id22.id1">Instruction-tuned large language models (LLMs), such as ChatGPT, have led to promising zero-shot performance in discriminative natural language understanding (NLU) tasks.
+This involves querying the LLM using a prompt containing the question, and the candidate labels to choose from.
+The question-answering capabilities of ChatGPT arise from its pre-training on large amounts of human-written text, as well as its subsequent fine-tuning on human preferences, which motivates us to ask: <span class="ltx_text ltx_font_italic" id="id22.id1.1">Does ChatGPT also inherits humans’ cognitive biases?</span>
+In this paper, we study the <span class="ltx_text ltx_font_italic" id="id22.id1.2">primacy effect</span> of ChatGPT: the tendency of selecting the labels at earlier positions as the answer.
+We have two main findings: i) ChatGPT’s decision is sensitive to the order of labels in the prompt; ii) ChatGPT has a clearly higher chance to select the labels at earlier positions as the answer.
+We hope that our experiments and analyses provide additional insights into building more reliable ChatGPT-based solutions.
+We release the source code at <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/wangywUST/PrimacyEffectGPT" target="_blank" title="">https://github.com/wangywUST/PrimacyEffectGPT</a>.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Humans tend to recall information presented at the start of a list better than information at the middle or end.
+This phenomenon is known as the <span class="ltx_text ltx_font_italic" id="S1.p1.1.1">primacy effect</span> <cite class="ltx_cite ltx_citemacro_cite">Asch (<a class="ltx_ref" href="#bib.bib3" title="">1946</a>)</cite>, which is a cognitive bias that relates to humans’ attention spans <cite class="ltx_cite ltx_citemacro_cite">Crano (<a class="ltx_ref" href="#bib.bib10" title="">1977</a>)</cite>, rehearsal <cite class="ltx_cite ltx_citemacro_cite">Tan and Ward (<a class="ltx_ref" href="#bib.bib33" title="">2000</a>)</cite>, and memory systems <cite class="ltx_cite ltx_citemacro_cite">Li (<a class="ltx_ref" href="#bib.bib21" title="">2010</a>)</cite>.
+Similarly, in advertisement systems and search engines, humans tend to interact with items in higher positions regardless of the items’ actual relevance <cite class="ltx_cite ltx_citemacro_cite">Chen et al. (<a class="ltx_ref" href="#bib.bib7" title="">2023</a>)</cite>.
+Primacy effect influences humans’ behaviors to make unfair decisions.
+Similarly, if it exists in machine learning models, it may lead to worse performance.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Recently, instruction-tuned
+large language models (LLMs), represented by ChatGPT <cite class="ltx_cite ltx_citemacro_cite">OpenAI (<a class="ltx_ref" href="#bib.bib25" title="">2022</a>)</cite>, have received wide attention on their
+capabilities of imitating humans in question-answering and problem-solving.
+However, this underlying behavioral similarity between ChatGPT and humans naturally leads to an intriguing question: <span class="ltx_text ltx_font_italic" id="S1.p2.1.1">Is ChatGPT also affected by the primacy effect?</span></p>
+</div>
+<figure class="ltx_figure" id="S1.F1"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="276" id="S1.F1.g1" src="./media/x1.png" width="461"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>
+<span class="ltx_text ltx_font_italic" id="S1.F1.2.1">Primacy Effect of ChatGPT</span>: ChatGPT tends to return labels in earlier positions as the answer. This plot shows the distribution of ChatGPT’s predicted label indices in TACRED (42 classes), where we randomly shuffle labels before every prediction (see Sec. <a class="ltx_ref" href="#S2.SS2" title="2.2 Analysis with Label Shuffling ‣ 2 Primacy Effect of ChatGPT ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">2.2</span></a>).</figcaption>
+</figure>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">ChatGPT provides a convenient way to achieve the discriminative natural language understanding (NLU) <cite class="ltx_cite ltx_citemacro_cite">Li et al. (<a class="ltx_ref" href="#bib.bib20" title="">2023</a>); Wei et al. (<a class="ltx_ref" href="#bib.bib40" title="">2023</a>); Yuan et al. (<a class="ltx_ref" href="#bib.bib42" title="">2023</a>)</cite>.
+People only need to list the labels in the prompt and asking ChatGPT to select the label(s) that match the input text.
+In this work, to analyze the <span class="ltx_text ltx_font_italic" id="S1.p3.1.1">primacy effect</span> of ChatGPT, we start by testing with random label shuffling, i.e., shuffling labels listed in the prompt before every prediction.
+We compare the predictions on the same instance with two different label orders.
+Then, we count the predicted label indices on many instances with label shuffling.
+The motivation is that: a fair NLU model should give the same prediction on an input instance regardless of how the labels are ordered;
+consequently, it should produce uniformly distributed label indices under label shuffling for any instance.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">Through extensive experiments with a series of NLU datasets, we find that</p>
+</div>
+<div class="ltx_para" id="S1.p5">
+<ul class="ltx_itemize" id="S1.I1">
+<li class="ltx_item" id="S1.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i1.p1">
+<p class="ltx_p" id="S1.I1.i1.p1.1">ChatGPT’s prediction is sensitive to the order of labels in the prompt.
+Specifically, ChatGPT’s prediction changes after a label shuffling on 87.9% of the instances in TACRED.</p>
+</div>
+</li>
+<li class="ltx_item" id="S1.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i2.p1">
+<p class="ltx_p" id="S1.I1.i2.p1.1">ChatGPT is affected by the <span class="ltx_text ltx_font_italic" id="S1.I1.i2.p1.1.1">primacy effect</span>: ChatGPT tends to select labels in earlier positions in the prompt (see Fig. <a class="ltx_ref" href="#S1.F1" title="Figure 1 ‣ 1 Introduction ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">1</span></a>), which present clear bias with respect to the label order.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="ltx_para" id="S1.p6">
+<p class="ltx_p" id="S1.p6.1">On the whole, our work contributes to a better understanding of ChatGPT’s behaviors and building more faithful ChatGPT-based NLU solutions.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Primacy Effect of ChatGPT</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">In this section, we first introduce the general prompt design of ChatGPT in discriminative natural language understanding (NLU).
+Then, we analyze the primacy effect of ChatGPT using label shuffling in prompts.</p>
+</div>
+<section class="ltx_subsection" id="S2.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.1 </span>Prompts for ChatGPT</h3>
+<div class="ltx_para" id="S2.SS1.p1">
+<p class="ltx_p" id="S2.SS1.p1.1">Prompts are a key component to the effective use of ChatGPT on discriminative NLU tasks <cite class="ltx_cite ltx_citemacro_cite">Wei et al. (<a class="ltx_ref" href="#bib.bib40" title="">2023</a>); Yuan et al. (<a class="ltx_ref" href="#bib.bib42" title="">2023</a>)</cite>. Generally, prompts for such tasks involves two key components: (i) label definitions, and (ii) a task description and input text (see an example in Fig. <a class="ltx_ref" href="#S2.F2" title="Figure 2 ‣ 2.2 Analysis with Label Shuffling ‣ 2 Primacy Effect of ChatGPT ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">2</span></a>).</p>
+</div>
+<div class="ltx_para" id="S2.SS1.p2">
+<p class="ltx_p" id="S2.SS1.p2.1">ChatGPT’s capability of understanding instructions in the prompt benefits from its training with human feedback <cite class="ltx_cite ltx_citemacro_cite">OpenAI (<a class="ltx_ref" href="#bib.bib25" title="">2022</a>)</cite>,
+but this also creates the risks of inheriting humans’ cognitive biases.
+In this paper, we discuss a cognitive bias in ChatGPT: the primacy effect, which indicates the tendency of selecting labels in earlier positions in the prompt.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S2.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.2 </span>Analysis with Label Shuffling</h3>
+<div class="ltx_para" id="S2.SS2.p1">
+<p class="ltx_p" id="S2.SS2.p1.1">Analyzing the primacy effect requires us to distill the effects of label orders in the prompts.
+However, this is non-trivial because there are many factors influencing ChatGPT’s decisions, such as the input text and label definitions.
+In our work, to distinguish the primacy effect of ChatGPT from other factors, we conduct random shuffling for labels listed in the prompts.
+Specifically, before every prediction, we shuffle the labels as visualized in Fig. <a class="ltx_ref" href="#S2.F3" title="Figure 3 ‣ 2.2 Analysis with Label Shuffling ‣ 2 Primacy Effect of ChatGPT ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">3</span></a>.
+Label shuffling erases the discriminative semantics of the specific label orders in the prompts.
+Ideally, a fair model should return the same prediction when labels are shuffled, and consequently, the predicted label index should follow a uniform distribution under random shuffling.</p>
+</div>
+<div class="ltx_para" id="S2.SS2.p2">
+<p class="ltx_p" id="S2.SS2.p2.1">Next, we introduce our two ways of using random label shuffling to analyze ChatGPT.</p>
+</div>
+<figure class="ltx_figure" id="S2.F2"><svg class="ltx_picture ltx_centering" height="170.03" id="S2.F2.pic1" overflow="visible" version="1.1" width="600"><g fill="#000000" stroke="#000000" stroke-width="0.4pt" transform="translate(0,170.03) matrix(1 0 0 -1 0 0)"><g fill="#404040" fill-opacity="1.0"><path d="M 0 5.91 L 0 164.12 C 0 167.38 2.64 170.03 5.91 170.03 L 594.09 170.03 C 597.36 170.03 600 167.38 600 164.12 L 600 5.91 C 600 2.64 597.36 0 594.09 0 L 5.91 0 C 2.64 0 0 2.64 0 5.91 Z" style="stroke:none"></path></g><g fill="#F2F2F2" fill-opacity="1.0"><path d="M 1.97 5.91 L 1.97 145.92 L 598.03 145.92 L 598.03 5.91 C 598.03 3.73 596.27 1.97 594.09 1.97 L 5.91 1.97 C 3.73 1.97 1.97 3.73 1.97 5.91 Z" style="stroke:none"></path></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 151.82)"><foreignobject color="#FFFFFF" height="12.3" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69">
+<span class="ltx_inline-block ltx_minipage ltx_align_bottom" id="S2.F2.pic1.4.4.4.1.1" style="width:402.3pt;">
+<span class="ltx_p" id="S2.F2.pic1.4.4.4.1.1.1"><span class="ltx_text ltx_font_bold" id="S2.F2.pic1.4.4.4.1.1.1.1">Prompts for Zero-shot Intent Detection</span></span>
+</span></foreignobject></g><g fill-opacity="1.0" transform="matrix(1.0 0.0 0.0 1.0 21.65 13.78)"><foreignobject color="#000000" height="120.33" overflow="visible" transform="matrix(1 0 0 -1 0 16.6)" width="556.69"><span class="ltx_inline-logical-block ltx_minipage ltx_align_bottom" id="S2.F2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.2" style="width:402.3pt;">
+<span class="ltx_para" id="S2.F2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.p2">
+<span class="ltx_p" id="S2.F2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.p2.1"><span class="ltx_text ltx_font_bold" id="S2.F2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.p2.1.1">Label Definitions
+<br class="ltx_break"/></span>Label 1: change pin</span>
+<span class="ltx_p" id="S2.F2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.p2.2">Label 2: card arrival</span>
+<span class="ltx_p" id="S2.F2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.p2.3">Label 3: activate my card</span>
+<span class="ltx_p" id="S2.F2.pic1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1.p2.4">…</span>
+</span>
+<span class="ltx_para ltx_noindent" id="S2.F2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.p1"><svg class="ltx_picture" height="23.62" id="S2.F2.pic1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.p1.pic1" overflow="visible" version="1.1" width="619.96"><g fill="#000000" fill-opacity="1.0" stroke="#404040" stroke-dasharray="2.84528pt,2.84528pt" stroke-dashoffset="1.42264pt" stroke-width="0.4pt" transform="translate(0,23.62) matrix(1 0 0 -1 0 0) translate(19.96,0) translate(0,11.81)"><path d="M -19.68 0 L 576.38 0" style="fill:none"></path></g></svg>
+</span>
+<span class="ltx_para" id="S2.F2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.2.p3">
+<span class="ltx_p" id="S2.F2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.2.p3.1">Target Text: I need a new PIN.</span>
+<span class="ltx_p" id="S2.F2.pic1.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.3.2.p3.2">Which Label matches the intent expressed in the Target Text?</span>
+</span></span></foreignobject></g></g></svg>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>A prompt example for ChatGPT.</figcaption>
+</figure>
+<figure class="ltx_figure" id="S2.F3"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="170" id="S2.F3.g1" src="./media/fig_1.png" width="538"/>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>
+We analyze the primacy effects of ChatGPT by randomly shuffling the labels in the prompts.
+</figcaption>
+</figure>
+<section class="ltx_paragraph" id="S2.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Prediction Comparison on an Instance</h4>
+<div class="ltx_para" id="S2.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S2.SS2.SSS0.Px1.p1.1">A reliable and consistent classifier is expected to
+consistently choose the same label for the same instance irrespective of the label order.
+To evaluate such consistency of ChatGPT, we perform the random shuffling for the same instance twice to produce two prompts.
+We feed these two prompts to ChatGPT and compare the corresponding two predictions with each other.
+We apply the above process to all the test instances and compute the fraction of the instances where the prediction changed after label shuffling.
+The higher the fraction is, the more sensitive ChatGPT is to the label order.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S2.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Statistics of Predicted Indices</h4>
+<div class="ltx_para" id="S2.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S2.SS2.SSS0.Px2.p1.1">Taking a further step, we perform statistical analysis on the predicted indices for instances where the prediction changed after label shuffling.
+If ChatGPT does not have any preference on the label orders, its predicted label indices should be uniformly distributed.
+By comparing the predicted label index distribution of ChatGPT to the uniform distribution, we can assess its fairness and preferences regarding label orders.</p>
+</div>
+</section>
+</section>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Experiments</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">We analyze the primacy effect based on the aforementioned strategies using three relation extraction datasets and an intent detection dataset.</p>
+</div>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>Experiment Setup</h3>
+<div class="ltx_para" id="S3.SS1.p1">
+<p class="ltx_p" id="S3.SS1.p1.1">We mainly chose relation extraction and intent detection tasks in our experiments since these tasks naturally come with adequately sized decision spaces to illustrate the underlying primacy effect of labels.
+For relation extraction, we experiment on three benchmark datasets including TACRED <cite class="ltx_cite ltx_citemacro_cite">Zhang et al. (<a class="ltx_ref" href="#bib.bib44" title="">2017</a>)</cite>, TACREV <cite class="ltx_cite ltx_citemacro_cite">Alt et al. (<a class="ltx_ref" href="#bib.bib2" title="">2020</a>)</cite>, and Re-TACRED <cite class="ltx_cite ltx_citemacro_cite">Stoica et al. (<a class="ltx_ref" href="#bib.bib30" title="">2021</a>)</cite>.
+For intent detection, we conducted experiments on Banking77 <cite class="ltx_cite ltx_citemacro_cite">Casanueva et al. (<a class="ltx_ref" href="#bib.bib5" title="">2020a</a>)</cite> and MASSIVE <cite class="ltx_cite ltx_citemacro_cite">FitzGerald et al. (<a class="ltx_ref" href="#bib.bib14" title="">2022</a>)</cite>.
+MASSIVE <cite class="ltx_cite ltx_citemacro_cite">FitzGerald et al. (<a class="ltx_ref" href="#bib.bib14" title="">2022</a>)</cite> is a parallel dataset of massive utterances with annotations for the Natural Language Understanding tasks of intent prediction.
+Utterances span 60 intents.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p2">
+<p class="ltx_p" id="S3.SS1.p2.1">We additionally conducted experiments on the NLP datasets: GoEmotions <cite class="ltx_cite ltx_citemacro_cite">Demszky et al. (<a class="ltx_ref" href="#bib.bib11" title="">2020</a>)</cite> and 20 Newsgroups <cite class="ltx_cite ltx_citemacro_cite">Albishre et al. (<a class="ltx_ref" href="#bib.bib1" title="">2015</a>)</cite> for a more comprehensive evaluation.
+GoEmotions <cite class="ltx_cite ltx_citemacro_cite">Demszky et al. (<a class="ltx_ref" href="#bib.bib11" title="">2020</a>)</cite> is a dataset for fine-grained emotion classification.
+It is a corpus of 58k carefully curated comments extracted from Reddit, with human annotations for 27 emotion categories and a neutral one.
+The 20 Newsgroups <cite class="ltx_cite ltx_citemacro_cite">Albishre et al. (<a class="ltx_ref" href="#bib.bib1" title="">2015</a>)</cite> dataset is a collection of approximately 20,000 newsgroup documents, partitioned across 20 different newsgroups.</p>
+</div>
+<div class="ltx_para" id="S3.SS1.p3">
+<p class="ltx_p" id="S3.SS1.p3.1">We follow the existing work <cite class="ltx_cite ltx_citemacro_cite">Wei et al. (<a class="ltx_ref" href="#bib.bib40" title="">2023</a>); Li et al. (<a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite> to apply ChatGPT to these tasks via the OpenAI API <span class="ltx_text ltx_font_typewriter" id="S3.SS1.p3.1.1">gpt-3.5-turbo</span>.
+Specifically, we set the temperature as 0.0 to minimize the randomness of ChatGPT’s outputs.
+For comparison, we adopt the existing work <cite class="ltx_cite ltx_citemacro_cite">Casanueva et al. (<a class="ltx_ref" href="#bib.bib6" title="">2020b</a>); Zhou and Chen (<a class="ltx_ref" href="#bib.bib47" title="">2021</a>)</cite> to fine-tune the BERT model with an MLP classification head.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Consistency under Label Shuffling</h3>
+<div class="ltx_para" id="S3.SS2.p1">
+<p class="ltx_p" id="S3.SS2.p1.1">First, we observe the low consistency of ChatGPT confronted under label shuffling.
+As shown in Table <a class="ltx_ref" href="#S3.T1" title="Table 1 ‣ 3.2 Consistency under Label Shuffling ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">1</span></a>, ChatGPT changes its label prediction after label shuffling in over 85% of the test instances on the TACRED, TACREV, and Re-TACRED datasets, and in 35.7% of instances on Banking77.
+Also, ChatGPT changes its label prediction after label shuffling in over 69% of the test instances on the datasets of GoEmotions and in more than 30% of instances on MASSIVE and 20 Newsgroups.
+In contrast, the fine-tuned BERT classifier maintains consistent predictions after label shuffling.
+This discrepancy challenges the widely-held belief that ChatGPT can comprehend human instructions and provide consistent responses.
+One possible explanation is that ChatGPT’s understanding of the prompt is obtained by training on human-labeled data, which inherits humans’ cognitive bias of treating labels at different positions unfairly.</p>
+</div>
+<div class="ltx_para" id="S3.SS2.p2">
+<p class="ltx_p" id="S3.SS2.p2.1">It is worth noting that the ratio of instances with changed predictions is consistently high across the relation extraction datasets but lower on intent detection.
+This discrepancy can be attributed to the fact that information extraction tasks are shown to be challenging for ChatGPT and other LLMs <cite class="ltx_cite ltx_citemacro_cite">Wang et al. (<a class="ltx_ref" href="#bib.bib37" title="">2023</a>); Li et al. (<a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite>.
+In more difficult tasks, ChatGPT lacks sufficient discriminative semantic understanding from the input text and may be more affected by the label order.</p>
+</div>
+<figure class="ltx_table" id="S3.T1">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="S3.T1.1">
+<tr class="ltx_tr" id="S3.T1.1.1">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S3.T1.1.1.1" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.1.1">Method</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.1.2" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.2.1">TACRED</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.1.3" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.3.1">TACREV</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.1.4" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.4.1">Re-TACRED</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.1.5" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.5.1">Banking77</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.1.6" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.6.1">GoEmotions</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.1.7" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.7.1">MASSIVE</span></td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_tt" id="S3.T1.1.1.8" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T1.1.1.8.1">20 Newsgroups</span></td>
+</tr>
+<tr class="ltx_tr" id="S3.T1.1.2">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S3.T1.1.2.1" style="padding-left:4.0pt;padding-right:4.0pt;">ChatGPT w/ Prompt</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.2.2" style="padding-left:4.0pt;padding-right:4.0pt;">87.9</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.2.3" style="padding-left:4.0pt;padding-right:4.0pt;">85.9</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.2.4" style="padding-left:4.0pt;padding-right:4.0pt;">88.6</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.2.5" style="padding-left:4.0pt;padding-right:4.0pt;">35.7</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.2.6" style="padding-left:4.0pt;padding-right:4.0pt;">69.3</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T1.1.2.7" style="padding-left:4.0pt;padding-right:4.0pt;">32.8</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_tt" id="S3.T1.1.2.8" style="padding-left:4.0pt;padding-right:4.0pt;">34.1</td>
+</tr>
+<tr class="ltx_tr" id="S3.T1.1.3">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S3.T1.1.3.1" style="padding-left:4.0pt;padding-right:4.0pt;">BERT w/ MLP</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T1.1.3.2" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T1.1.3.3" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T1.1.3.4" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T1.1.3.5" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T1.1.3.6" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T1.1.3.7" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_bb" id="S3.T1.1.3.8" style="padding-left:4.0pt;padding-right:4.0pt;">0.0</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span>Fraction of the instances that have their predicted label changed after a label shuffling.</figcaption>
+</figure>
+<figure class="ltx_figure" id="S3.F4">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_4">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F4.sf1"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="368" id="S3.F4.sf1.g1" src="./media/x2.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(a) </span>TACRED</figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_4">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F4.sf2"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="368" id="S3.F4.sf2.g1" src="./media/x3.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(b) </span>TACREV</figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_4">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F4.sf3"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="368" id="S3.F4.sf3.g1" src="./media/x4.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(c) </span>Re-TACRED</figcaption>
+</figure>
+</div>
+<div class="ltx_flex_cell ltx_flex_size_4">
+<figure class="ltx_figure ltx_figure_panel ltx_align_center" id="S3.F4.sf4"><img alt="Refer to caption" class="ltx_graphics ltx_img_landscape" height="368" id="S3.F4.sf4.g1" src="./media/x5.png" width="461"/>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_figure">(d) </span>Banking77</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 4: </span>The distribution of predicted indices of the test instances with label shuffling before every prediction. </figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.3 </span>Primacy Effect of ChatGPT</h3>
+<div class="ltx_para" id="S3.SS3.p1">
+<p class="ltx_p" id="S3.SS3.p1.1">The empirical results in Section <a class="ltx_ref" href="#S3.SS2" title="3.2 Consistency under Label Shuffling ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">3.2</span></a> indicate that ChatGPT’s predictions are affected by label order.
+To deeper delve into the effects of label orders on ChatGPT, we analyze the distribution of predicted label indices (e.g., if the prediction is the first label, the label index is <math alttext="1" class="ltx_Math" display="inline" id="S3.SS3.p1.1.m1.1"><semantics id="S3.SS3.p1.1.m1.1a"><mn id="S3.SS3.p1.1.m1.1.1" xref="S3.SS3.p1.1.m1.1.1.cmml">1</mn><annotation-xml encoding="MathML-Content" id="S3.SS3.p1.1.m1.1b"><cn id="S3.SS3.p1.1.m1.1.1.cmml" type="integer" xref="S3.SS3.p1.1.m1.1.1">1</cn></annotation-xml><annotation encoding="application/x-tex" id="S3.SS3.p1.1.m1.1c">1</annotation></semantics></math>), as introduced in Section <a class="ltx_ref" href="#S2.SS2" title="2.2 Analysis with Label Shuffling ‣ 2 Primacy Effect of ChatGPT ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">2.2</span></a>.
+We visualize the distributions in Fig. <a class="ltx_ref" href="#S3.F4" title="Figure 4 ‣ 3.2 Consistency under Label Shuffling ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">4</span></a>.
+Notably, the distribution of ChatGPT’s predictions consistently deviates from the uniform distribution, displaying a consistent bias towards smaller indices across different datasets.
+In contrast, BERT exhibits no preference for label orders and consistently demonstrates a uniform distribution in its predicted label indices.</p>
+</div>
+<div class="ltx_para" id="S3.SS3.p2">
+<p class="ltx_p" id="S3.SS3.p2.1">We term this tendency of ChatGPT as the <span class="ltx_text ltx_font_italic" id="S3.SS3.p2.1.1">primacy effect</span>, where the model tends to favor the labels presented earlier in the prompt.
+The magnitude of these primacy effects varies across tasks, as illustrated in Fig. <a class="ltx_ref" href="#S3.F4" title="Figure 4 ‣ 3.2 Consistency under Label Shuffling ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">4</span></a>.
+Notably, the influence of primacy effects is higher in more challenging tasks.
+This observation aligns with the results discussed in Sec. <a class="ltx_ref" href="#S3.SS3" title="3.3 Primacy Effect of ChatGPT ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">3.3</span></a>, wherein the impact of primacy effects is greater when ChatGPT tackles more difficult tasks.
+In the next section, we will quantitatively analyze the primacy effects of ChatGPT.</p>
+</div>
+<figure class="ltx_table" id="S3.T2">
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="S3.T2.1">
+<tr class="ltx_tr" id="S3.T2.1.1">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S3.T2.1.1.1" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.1.1.1">Method</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T2.1.1.2" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.1.2.1">TACRED</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T2.1.1.3" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.1.3.1">TACREV</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T2.1.1.4" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.1.4.1">Re-TACRED</span></td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_tt" id="S3.T2.1.1.5" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.1.5.1">Banking77</span></td>
+</tr>
+<tr class="ltx_tr" id="S3.T2.1.2">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S3.T2.1.2.1" style="padding-left:4.0pt;padding-right:4.0pt;">ChatGPT w/ Prompts</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T2.1.2.2" style="padding-left:4.0pt;padding-right:4.0pt;">57.9</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T2.1.2.3" style="padding-left:4.0pt;padding-right:4.0pt;">57.8</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S3.T2.1.2.4" style="padding-left:4.0pt;padding-right:4.0pt;">58.1</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_tt" id="S3.T2.1.2.5" style="padding-left:4.0pt;padding-right:4.0pt;">18.8</td>
+</tr>
+<tr class="ltx_tr" id="S3.T2.1.3">
+<td class="ltx_td ltx_align_left" id="S3.T2.1.3.1" style="padding-left:4.0pt;padding-right:4.0pt;">ChatGPT w/ CoT</td>
+<td class="ltx_td ltx_align_center" id="S3.T2.1.3.2" style="padding-left:4.0pt;padding-right:4.0pt;">57.6</td>
+<td class="ltx_td ltx_align_center" id="S3.T2.1.3.3" style="padding-left:4.0pt;padding-right:4.0pt;">57.9</td>
+<td class="ltx_td ltx_align_center" id="S3.T2.1.3.4" style="padding-left:4.0pt;padding-right:4.0pt;">58.3</td>
+<td class="ltx_td ltx_nopad_r ltx_align_center" id="S3.T2.1.3.5" style="padding-left:4.0pt;padding-right:4.0pt;">18.6</td>
+</tr>
+<tr class="ltx_tr" id="S3.T2.1.4">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S3.T2.1.4.1" style="padding-left:4.0pt;padding-right:4.0pt;">BERT w/ MLP</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.1.4.2" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.4.2.1">1.8</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.1.4.3" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.4.3.1">1.9</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S3.T2.1.4.4" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.4.4.1">2.3</span></td>
+<td class="ltx_td ltx_nopad_r ltx_align_center ltx_border_bb" id="S3.T2.1.4.5" style="padding-left:4.0pt;padding-right:4.0pt;"><span class="ltx_text ltx_font_bold" id="S3.T2.1.4.5.1">2.1</span></td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 2: </span>Experimental results (unfairness; %) on the test sets of TACRED, TACRED-Revisit, Re-TACRED, and Banking77 (lower is better).
+The best results in each column are highlighted in <span class="ltx_text ltx_font_bold" id="S3.T2.3.1">bold</span> font. </figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="S3.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.4 </span>Evaluation on Fairness</h3>
+<div class="ltx_para" id="S3.SS4.p1">
+<p class="ltx_p" id="S3.SS4.p1.2">The fairness of a trained model can be assessed by examining the imbalance or skewness in its predictions <cite class="ltx_cite ltx_citemacro_cite">Sweeney and Najafian (<a class="ltx_ref" href="#bib.bib32" title="">2019</a>)</cite>. Following prior studies <cite class="ltx_cite ltx_citemacro_cite">Xiang et al. (<a class="ltx_ref" href="#bib.bib41" title="">2020</a>); Sweeney and Najafian (<a class="ltx_ref" href="#bib.bib32" title="">2019</a>); Qian et al. (<a class="ltx_ref" href="#bib.bib27" title="">2021</a>); Wang et al. (<a class="ltx_ref" href="#bib.bib38" title="">2022</a>)</cite>, we employ the <span class="ltx_text ltx_font_italic" id="S3.SS4.p1.2.1">JS divergence</span> <cite class="ltx_cite ltx_citemacro_cite">Fuglede and Topsoe (<a class="ltx_ref" href="#bib.bib15" title="">2004</a>)</cite> as the metric to evaluate how imbalanced/skewed/unfair a prediction <math alttext="P" class="ltx_Math" display="inline" id="S3.SS4.p1.1.m1.1"><semantics id="S3.SS4.p1.1.m1.1a"><mi id="S3.SS4.p1.1.m1.1.1" xref="S3.SS4.p1.1.m1.1.1.cmml">P</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.1.m1.1b"><ci id="S3.SS4.p1.1.m1.1.1.cmml" xref="S3.SS4.p1.1.m1.1.1">𝑃</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.1.m1.1c">P</annotation></semantics></math> is. The measurement is symmetric (i.e., <math alttext="\mathrm{JS}(P\|U)=\mathrm{JS}(U\|P)" class="ltx_Math" display="inline" id="S3.SS4.p1.2.m2.2"><semantics id="S3.SS4.p1.2.m2.2a"><mrow id="S3.SS4.p1.2.m2.2.2" xref="S3.SS4.p1.2.m2.2.2.cmml"><mrow id="S3.SS4.p1.2.m2.1.1.1" xref="S3.SS4.p1.2.m2.1.1.1.cmml"><mi id="S3.SS4.p1.2.m2.1.1.1.3" xref="S3.SS4.p1.2.m2.1.1.1.3.cmml">JS</mi><mo id="S3.SS4.p1.2.m2.1.1.1.2" lspace="0em" rspace="0em" xref="S3.SS4.p1.2.m2.1.1.1.2.cmml">​</mo><mrow id="S3.SS4.p1.2.m2.1.1.1.1.1" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.cmml"><mo id="S3.SS4.p1.2.m2.1.1.1.1.1.2" stretchy="false" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.cmml">(</mo><mrow id="S3.SS4.p1.2.m2.1.1.1.1.1.1" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.cmml"><mi id="S3.SS4.p1.2.m2.1.1.1.1.1.1.2" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.2.cmml">P</mi><mo id="S3.SS4.p1.2.m2.1.1.1.1.1.1.1" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.1.cmml">∥</mo><mi id="S3.SS4.p1.2.m2.1.1.1.1.1.1.3" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.3.cmml">U</mi></mrow><mo id="S3.SS4.p1.2.m2.1.1.1.1.1.3" stretchy="false" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.SS4.p1.2.m2.2.2.3" xref="S3.SS4.p1.2.m2.2.2.3.cmml">=</mo><mrow id="S3.SS4.p1.2.m2.2.2.2" xref="S3.SS4.p1.2.m2.2.2.2.cmml"><mi id="S3.SS4.p1.2.m2.2.2.2.3" xref="S3.SS4.p1.2.m2.2.2.2.3.cmml">JS</mi><mo id="S3.SS4.p1.2.m2.2.2.2.2" lspace="0em" rspace="0em" xref="S3.SS4.p1.2.m2.2.2.2.2.cmml">​</mo><mrow id="S3.SS4.p1.2.m2.2.2.2.1.1" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.cmml"><mo id="S3.SS4.p1.2.m2.2.2.2.1.1.2" stretchy="false" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.cmml">(</mo><mrow id="S3.SS4.p1.2.m2.2.2.2.1.1.1" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.cmml"><mi id="S3.SS4.p1.2.m2.2.2.2.1.1.1.2" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.2.cmml">U</mi><mo id="S3.SS4.p1.2.m2.2.2.2.1.1.1.1" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.1.cmml">∥</mo><mi id="S3.SS4.p1.2.m2.2.2.2.1.1.1.3" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.3.cmml">P</mi></mrow><mo id="S3.SS4.p1.2.m2.2.2.2.1.1.3" stretchy="false" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.cmml">)</mo></mrow></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.SS4.p1.2.m2.2b"><apply id="S3.SS4.p1.2.m2.2.2.cmml" xref="S3.SS4.p1.2.m2.2.2"><eq id="S3.SS4.p1.2.m2.2.2.3.cmml" xref="S3.SS4.p1.2.m2.2.2.3"></eq><apply id="S3.SS4.p1.2.m2.1.1.1.cmml" xref="S3.SS4.p1.2.m2.1.1.1"><times id="S3.SS4.p1.2.m2.1.1.1.2.cmml" xref="S3.SS4.p1.2.m2.1.1.1.2"></times><ci id="S3.SS4.p1.2.m2.1.1.1.3.cmml" xref="S3.SS4.p1.2.m2.1.1.1.3">JS</ci><apply id="S3.SS4.p1.2.m2.1.1.1.1.1.1.cmml" xref="S3.SS4.p1.2.m2.1.1.1.1.1"><csymbol cd="latexml" id="S3.SS4.p1.2.m2.1.1.1.1.1.1.1.cmml" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.1">conditional</csymbol><ci id="S3.SS4.p1.2.m2.1.1.1.1.1.1.2.cmml" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.2">𝑃</ci><ci id="S3.SS4.p1.2.m2.1.1.1.1.1.1.3.cmml" xref="S3.SS4.p1.2.m2.1.1.1.1.1.1.3">𝑈</ci></apply></apply><apply id="S3.SS4.p1.2.m2.2.2.2.cmml" xref="S3.SS4.p1.2.m2.2.2.2"><times id="S3.SS4.p1.2.m2.2.2.2.2.cmml" xref="S3.SS4.p1.2.m2.2.2.2.2"></times><ci id="S3.SS4.p1.2.m2.2.2.2.3.cmml" xref="S3.SS4.p1.2.m2.2.2.2.3">JS</ci><apply id="S3.SS4.p1.2.m2.2.2.2.1.1.1.cmml" xref="S3.SS4.p1.2.m2.2.2.2.1.1"><csymbol cd="latexml" id="S3.SS4.p1.2.m2.2.2.2.1.1.1.1.cmml" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.1">conditional</csymbol><ci id="S3.SS4.p1.2.m2.2.2.2.1.1.1.2.cmml" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.2">𝑈</ci><ci id="S3.SS4.p1.2.m2.2.2.2.1.1.1.3.cmml" xref="S3.SS4.p1.2.m2.2.2.2.1.1.1.3">𝑃</ci></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p1.2.m2.2c">\mathrm{JS}(P\|U)=\mathrm{JS}(U\|P)</annotation></semantics></math>) and strictly scoped.</p>
+</div>
+<div class="ltx_para" id="S3.SS4.p2">
+<p class="ltx_p" id="S3.SS4.p2.4">To evaluate the label order bias of ChatGPT, we compute the average <span class="ltx_text ltx_font_italic" id="S3.SS4.p2.4.1">relative label order imbalance</span> (<math alttext="\mathrm{LOI}" class="ltx_Math" display="inline" id="S3.SS4.p2.1.m1.1"><semantics id="S3.SS4.p2.1.m1.1a"><mi id="S3.SS4.p2.1.m1.1.1" xref="S3.SS4.p2.1.m1.1.1.cmml">LOI</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.1.m1.1b"><ci id="S3.SS4.p2.1.m1.1.1.cmml" xref="S3.SS4.p2.1.m1.1.1">LOI</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.1.m1.1c">\mathrm{LOI}</annotation></semantics></math>): <math alttext="\mathrm{LOI}" class="ltx_Math" display="inline" id="S3.SS4.p2.2.m2.1"><semantics id="S3.SS4.p2.2.m2.1a"><mi id="S3.SS4.p2.2.m2.1.1" xref="S3.SS4.p2.2.m2.1.1.cmml">LOI</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.2.m2.1b"><ci id="S3.SS4.p2.2.m2.1.1.cmml" xref="S3.SS4.p2.2.m2.1.1">LOI</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.2.m2.1c">\mathrm{LOI}</annotation></semantics></math> is defined as the JS divergence between the predicted label index distribution <math alttext="P" class="ltx_Math" display="inline" id="S3.SS4.p2.3.m3.1"><semantics id="S3.SS4.p2.3.m3.1a"><mi id="S3.SS4.p2.3.m3.1.1" xref="S3.SS4.p2.3.m3.1.1.cmml">P</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.3.m3.1b"><ci id="S3.SS4.p2.3.m3.1.1.cmml" xref="S3.SS4.p2.3.m3.1.1">𝑃</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.3.m3.1c">P</annotation></semantics></math> and the uniform distribution <math alttext="U" class="ltx_Math" display="inline" id="S3.SS4.p2.4.m4.1"><semantics id="S3.SS4.p2.4.m4.1a"><mi id="S3.SS4.p2.4.m4.1.1" xref="S3.SS4.p2.4.m4.1.1.cmml">U</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.4.m4.1b"><ci id="S3.SS4.p2.4.m4.1.1.cmml" xref="S3.SS4.p2.4.m4.1.1">𝑈</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.4.m4.1c">U</annotation></semantics></math>:</p>
+<table class="ltx_equation ltx_eqn_table" id="S3.E1">
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math alttext="\mathrm{LOI}=\mathrm{JS}(P({x|x\in\mathcal{D}}),U)," class="ltx_Math" display="block" id="S3.E1.m1.2"><semantics id="S3.E1.m1.2a"><mrow id="S3.E1.m1.2.2.1" xref="S3.E1.m1.2.2.1.1.cmml"><mrow id="S3.E1.m1.2.2.1.1" xref="S3.E1.m1.2.2.1.1.cmml"><mi id="S3.E1.m1.2.2.1.1.3" xref="S3.E1.m1.2.2.1.1.3.cmml">LOI</mi><mo id="S3.E1.m1.2.2.1.1.2" xref="S3.E1.m1.2.2.1.1.2.cmml">=</mo><mrow id="S3.E1.m1.2.2.1.1.1" xref="S3.E1.m1.2.2.1.1.1.cmml"><mi id="S3.E1.m1.2.2.1.1.1.3" xref="S3.E1.m1.2.2.1.1.1.3.cmml">JS</mi><mo id="S3.E1.m1.2.2.1.1.1.2" lspace="0em" rspace="0em" xref="S3.E1.m1.2.2.1.1.1.2.cmml">​</mo><mrow id="S3.E1.m1.2.2.1.1.1.1.1" xref="S3.E1.m1.2.2.1.1.1.1.2.cmml"><mo id="S3.E1.m1.2.2.1.1.1.1.1.2" stretchy="false" xref="S3.E1.m1.2.2.1.1.1.1.2.cmml">(</mo><mrow id="S3.E1.m1.2.2.1.1.1.1.1.1" xref="S3.E1.m1.2.2.1.1.1.1.1.1.cmml"><mi id="S3.E1.m1.2.2.1.1.1.1.1.1.3" xref="S3.E1.m1.2.2.1.1.1.1.1.1.3.cmml">P</mi><mo id="S3.E1.m1.2.2.1.1.1.1.1.1.2" lspace="0em" rspace="0em" xref="S3.E1.m1.2.2.1.1.1.1.1.1.2.cmml">​</mo><mrow id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.cmml"><mo id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.2" stretchy="false" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.cmml">(</mo><mrow id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.cmml"><mrow id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.cmml"><mi id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.2" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.2.cmml">x</mi><mo fence="false" id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.1" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.1.cmml">|</mo><mi id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.3" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.3.cmml">x</mi></mrow><mo id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.1" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.1.cmml">∈</mo><mi class="ltx_font_mathcaligraphic" id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.3" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.3.cmml">𝒟</mi></mrow><mo id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.3" stretchy="false" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S3.E1.m1.2.2.1.1.1.1.1.3" xref="S3.E1.m1.2.2.1.1.1.1.2.cmml">,</mo><mi id="S3.E1.m1.1.1" xref="S3.E1.m1.1.1.cmml">U</mi><mo id="S3.E1.m1.2.2.1.1.1.1.1.4" stretchy="false" xref="S3.E1.m1.2.2.1.1.1.1.2.cmml">)</mo></mrow></mrow></mrow><mo id="S3.E1.m1.2.2.1.2" xref="S3.E1.m1.2.2.1.1.cmml">,</mo></mrow><annotation-xml encoding="MathML-Content" id="S3.E1.m1.2b"><apply id="S3.E1.m1.2.2.1.1.cmml" xref="S3.E1.m1.2.2.1"><eq id="S3.E1.m1.2.2.1.1.2.cmml" xref="S3.E1.m1.2.2.1.1.2"></eq><ci id="S3.E1.m1.2.2.1.1.3.cmml" xref="S3.E1.m1.2.2.1.1.3">LOI</ci><apply id="S3.E1.m1.2.2.1.1.1.cmml" xref="S3.E1.m1.2.2.1.1.1"><times id="S3.E1.m1.2.2.1.1.1.2.cmml" xref="S3.E1.m1.2.2.1.1.1.2"></times><ci id="S3.E1.m1.2.2.1.1.1.3.cmml" xref="S3.E1.m1.2.2.1.1.1.3">JS</ci><interval closure="open" id="S3.E1.m1.2.2.1.1.1.1.2.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1"><apply id="S3.E1.m1.2.2.1.1.1.1.1.1.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1"><times id="S3.E1.m1.2.2.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.2"></times><ci id="S3.E1.m1.2.2.1.1.1.1.1.1.3.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.3">𝑃</ci><apply id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1"><in id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.1.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.1"></in><apply id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2"><csymbol cd="latexml" id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.1.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.1">conditional</csymbol><ci id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.2.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.2">𝑥</ci><ci id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.3.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.2.3">𝑥</ci></apply><ci id="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.3.cmml" xref="S3.E1.m1.2.2.1.1.1.1.1.1.1.1.1.3">𝒟</ci></apply></apply><ci id="S3.E1.m1.1.1.cmml" xref="S3.E1.m1.1.1">𝑈</ci></interval></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.E1.m1.2c">\mathrm{LOI}=\mathrm{JS}(P({x|x\in\mathcal{D}}),U),</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(1)</span></td>
+</tr></tbody>
+</table>
+<p class="ltx_p" id="S3.SS4.p2.9">where <math alttext="x" class="ltx_Math" display="inline" id="S3.SS4.p2.5.m1.1"><semantics id="S3.SS4.p2.5.m1.1a"><mi id="S3.SS4.p2.5.m1.1.1" xref="S3.SS4.p2.5.m1.1.1.cmml">x</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.5.m1.1b"><ci id="S3.SS4.p2.5.m1.1.1.cmml" xref="S3.SS4.p2.5.m1.1.1">𝑥</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.5.m1.1c">x</annotation></semantics></math> represents an input instance, <math alttext="\mathcal{D}" class="ltx_Math" display="inline" id="S3.SS4.p2.6.m2.1"><semantics id="S3.SS4.p2.6.m2.1a"><mi class="ltx_font_mathcaligraphic" id="S3.SS4.p2.6.m2.1.1" xref="S3.SS4.p2.6.m2.1.1.cmml">𝒟</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.6.m2.1b"><ci id="S3.SS4.p2.6.m2.1.1.cmml" xref="S3.SS4.p2.6.m2.1.1">𝒟</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.6.m2.1c">\mathcal{D}</annotation></semantics></math> is the test set, <math alttext="P(x)" class="ltx_Math" display="inline" id="S3.SS4.p2.7.m3.1"><semantics id="S3.SS4.p2.7.m3.1a"><mrow id="S3.SS4.p2.7.m3.1.2" xref="S3.SS4.p2.7.m3.1.2.cmml"><mi id="S3.SS4.p2.7.m3.1.2.2" xref="S3.SS4.p2.7.m3.1.2.2.cmml">P</mi><mo id="S3.SS4.p2.7.m3.1.2.1" lspace="0em" rspace="0em" xref="S3.SS4.p2.7.m3.1.2.1.cmml">​</mo><mrow id="S3.SS4.p2.7.m3.1.2.3.2" xref="S3.SS4.p2.7.m3.1.2.cmml"><mo id="S3.SS4.p2.7.m3.1.2.3.2.1" stretchy="false" xref="S3.SS4.p2.7.m3.1.2.cmml">(</mo><mi id="S3.SS4.p2.7.m3.1.1" xref="S3.SS4.p2.7.m3.1.1.cmml">x</mi><mo id="S3.SS4.p2.7.m3.1.2.3.2.2" stretchy="false" xref="S3.SS4.p2.7.m3.1.2.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.7.m3.1b"><apply id="S3.SS4.p2.7.m3.1.2.cmml" xref="S3.SS4.p2.7.m3.1.2"><times id="S3.SS4.p2.7.m3.1.2.1.cmml" xref="S3.SS4.p2.7.m3.1.2.1"></times><ci id="S3.SS4.p2.7.m3.1.2.2.cmml" xref="S3.SS4.p2.7.m3.1.2.2">𝑃</ci><ci id="S3.SS4.p2.7.m3.1.1.cmml" xref="S3.SS4.p2.7.m3.1.1">𝑥</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.7.m3.1c">P(x)</annotation></semantics></math> is the predicted label index, and <math alttext="U" class="ltx_Math" display="inline" id="S3.SS4.p2.8.m4.1"><semantics id="S3.SS4.p2.8.m4.1a"><mi id="S3.SS4.p2.8.m4.1.1" xref="S3.SS4.p2.8.m4.1.1.cmml">U</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.8.m4.1b"><ci id="S3.SS4.p2.8.m4.1.1.cmml" xref="S3.SS4.p2.8.m4.1.1">𝑈</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.8.m4.1c">U</annotation></semantics></math> is the uniform distribution. <math alttext="\mathrm{LOI}" class="ltx_Math" display="inline" id="S3.SS4.p2.9.m5.1"><semantics id="S3.SS4.p2.9.m5.1a"><mi id="S3.SS4.p2.9.m5.1.1" xref="S3.SS4.p2.9.m5.1.1.cmml">LOI</mi><annotation-xml encoding="MathML-Content" id="S3.SS4.p2.9.m5.1b"><ci id="S3.SS4.p2.9.m5.1.1.cmml" xref="S3.SS4.p2.9.m5.1.1">LOI</ci></annotation-xml><annotation encoding="application/x-tex" id="S3.SS4.p2.9.m5.1c">\mathrm{LOI}</annotation></semantics></math> captures the disparity between the predicted indices and a uniform distribution.</p>
+</div>
+<div class="ltx_para" id="S3.SS4.p3">
+<p class="ltx_p" id="S3.SS4.p3.1">We conduct the fairness evaluation following the experimental settings described in Section <a class="ltx_ref" href="#S3.SS3" title="3.3 Primacy Effect of ChatGPT ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">3.3</span></a>, and the results are presented in Table <a class="ltx_ref" href="#S3.T2" title="Table 2 ‣ 3.3 Primacy Effect of ChatGPT ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">2</span></a>.
+The findings demonstrate that ChatGPT exhibits unfair treatment of label indices when making relation label predictions for input texts.
+Furthermore, the degree of unfairness increases with the task’s difficulty, which aligns with the empirical results discussed in Sections <a class="ltx_ref" href="#S3.SS2" title="3.2 Consistency under Label Shuffling ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">3.2</span></a> and <a class="ltx_ref" href="#S3.SS3" title="3.3 Primacy Effect of ChatGPT ‣ 3 Experiments ‣ Primacy Effect of ChatGPT"><span class="ltx_text ltx_ref_tag">3.3</span></a>.
+In contrast, BERT demonstrates significantly better fairness, as its predictions are not influenced by label orders.</p>
+</div>
+<div class="ltx_para" id="S3.SS4.p4">
+<p class="ltx_p" id="S3.SS4.p4.1">We additionally test the performance of ChatGPT with CoT (Chain-of-thoughts) <cite class="ltx_cite ltx_citemacro_cite">Wei et al. (<a class="ltx_ref" href="#bib.bib39" title="">2022</a>)</cite>.
+With CoT, ChatGPT still exhibits the primacy effect.
+The above results show that with or without CoT, ChatGPT consistently exhibits the primacy effect.
+A reason for this phenomenon could be that the CoT encourages the LLMs for “slow thinking” about the question but does not necessarily mitigate the cognitive bias in the reasoning steps of CoT.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Related Work</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.1">Large Language Models (LLMs) <cite class="ltx_cite ltx_citemacro_cite">Brown et al. (<a class="ltx_ref" href="#bib.bib4" title="">2020</a>); Rae et al. (<a class="ltx_ref" href="#bib.bib28" title="">2021</a>); Thoppilan et al. (<a class="ltx_ref" href="#bib.bib34" title="">2022</a>); Smith et al. (<a class="ltx_ref" href="#bib.bib29" title="">2022</a>)</cite>, such as GPT-3 <cite class="ltx_cite ltx_citemacro_cite">Brown et al. (<a class="ltx_ref" href="#bib.bib4" title="">2020</a>)</cite>, LaMDA <cite class="ltx_cite ltx_citemacro_cite">Thoppilan et al. (<a class="ltx_ref" href="#bib.bib34" title="">2022</a>)</cite> and PaLM <cite class="ltx_cite ltx_citemacro_cite">Chowdhery et al. (<a class="ltx_ref" href="#bib.bib9" title="">2022</a>)</cite>, refer to large scale pretrained model that contain more than a hundred billion parameters.
+Based on the the highly parallelizable Transformer architecture <cite class="ltx_cite ltx_citemacro_cite">Vaswani et al. (<a class="ltx_ref" href="#bib.bib35" title="">2017</a>)</cite>, these Large Language models have shown powerful capability to produce reasonable results with very few samples or task descriptions as input.</p>
+</div>
+<div class="ltx_para" id="S4.p2">
+<p class="ltx_p" id="S4.p2.1">A key milestone in the development process of LLMs is ChatGPT, which is developed by OpenAI based on InstructGPT<cite class="ltx_cite ltx_citemacro_cite">Ouyang et al. (<a class="ltx_ref" href="#bib.bib26" title="">2022</a>)</cite>.
+ChatGPT is able to interact with humans through multiple turns of dialogue, understand user intent, accomplish instructions and return human-like responses.
+This attracts huge attention from research field, motivating numerous recent work <cite class="ltx_cite ltx_citemacro_cite">Zhang et al. (<a class="ltx_ref" href="#bib.bib43" title="">2022</a>); Ma et al. (<a class="ltx_ref" href="#bib.bib23" title="">2023</a>); Wan et al. (<a class="ltx_ref" href="#bib.bib36" title="">2023</a>); Zhong et al. (<a class="ltx_ref" href="#bib.bib46" title="">2023</a>); Susnjak (<a class="ltx_ref" href="#bib.bib31" title="">2023</a>)</cite> to utilize ChatGPT to different tasks.</p>
+</div>
+<div class="ltx_para" id="S4.p3">
+<p class="ltx_p" id="S4.p3.1">As ChatGPT is a proprietary model, and OpenAI does not disclose its training specifics, researchers are actively investigating its associated implications and capabilities.
+There have been some work analyzing the performance, robustness, faithfulness, and explain-ability of ChatGPT <cite class="ltx_cite ltx_citemacro_cite">Gao et al. (<a class="ltx_ref" href="#bib.bib16" title="">2023</a>); Han et al. (<a class="ltx_ref" href="#bib.bib17" title="">2023</a>); Li et al. (<a class="ltx_ref" href="#bib.bib20" title="">2023</a>)</cite>.
+For example, <cite class="ltx_cite ltx_citemacro_cite">Malinka et al. (<a class="ltx_ref" href="#bib.bib24" title="">2023</a>)</cite> investigates the educational integrity of ChatGPT and evaluates the ChatGPT’s abilities to solve assignments of various levels in computer security specialization.
+<cite class="ltx_cite ltx_citemacro_cite">Haque et al. (<a class="ltx_ref" href="#bib.bib18" title="">2022</a>)</cite> and <cite class="ltx_cite ltx_citemacro_cite">Krügel et al. (<a class="ltx_ref" href="#bib.bib19" title="">2023</a>)</cite> investigate the ethical risks of ChatGPT.</p>
+</div>
+<div class="ltx_para" id="S4.p4">
+<p class="ltx_p" id="S4.p4.1">Before ChatGPT, LLMs’ inference has been accompanied by in-context learning (ICL) which adds a few demonstrations in the prompt <cite class="ltx_cite ltx_citemacro_cite">Dong et al. (<a class="ltx_ref" href="#bib.bib12" title="">2022</a>); Fei et al. (<a class="ltx_ref" href="#bib.bib13" title="">2023</a>)</cite>.
+Accordingly, some work investigates the effects of demonstration orders for the LLMs before ChatGPT <cite class="ltx_cite ltx_citemacro_cite">Lu et al. (<a class="ltx_ref" href="#bib.bib22" title="">2021</a>)</cite>.
+<cite class="ltx_cite ltx_citemacro_cite">Zhao et al. (<a class="ltx_ref" href="#bib.bib45" title="">2021</a>)</cite> finds the majority label, recency, and common token biases of LLMs’ ICL.</p>
+</div>
+<div class="ltx_para" id="S4.p5">
+<p class="ltx_p" id="S4.p5.1">Different from the above work, we focus on a new phenomenon of ChatGPT: the primacy effect, which is the tendency of selecting the first labels as the answer.
+The Primacy effect seriously influence ChatGPT’s fairness.
+Collectively, our findings provide a new understanding of how ChatGPT works given the instructional prompts.</p>
+</div>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Conclusion</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">While previous work often takes ChatGPT as a universal method applicable to all text-related tasks, we argue that its flexibility comes with the risk of inheriting human’s cognitive biases.
+These biases lead to unfair judgments which can affect the performance of the machine learning model.
+This work studies a cognitive bias of ChatGPT: primacy effects.
+We propose a simple yet effective label shuffling method to analyze the influence of label orders on ChatGPT.
+We discover the primacy effects of ChatGPT and finds that it highly influence the fairness of ChatGPT in NLU.
+Our work contributes to better understanding the behaviors of ChatGPT and building more faithful solutions with ChatGPT in NLU applications.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitation</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1">Our work has a few potential limitations.
+Firstly, we primarily
+evaluate the primacy effect of ChatGPT, which is one of the most widely-used instruction-legacy models for each task.
+It would be beneficial to assess this effect on other LLMs models (such as Google Bard, vicuna <cite class="ltx_cite ltx_citemacro_cite">Chiang et al. (<a class="ltx_ref" href="#bib.bib8" title="">2023</a>)</cite>) and explore additional tasks to examine this primacy effect.
+Secondly, this work focused on analyzing the primacy effect of ChatGPT through experiments. We encourage further studies to propose effective solutions that can mitigate the negative impacts associated with the primacy effect.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Acknowledgement</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">The authors would like to thank the anonymous reviewers for their discussion and feedback.
+Yiwei Wang and Bryan Hooi are supported by NUS ODPRT Grant A-0008067-00-00, NUS ODPRT Grant R252-000-A81-133, and Singapore Ministry of Education Academic Research Fund Tier 3 under MOEs official grant number MOE2017-T3-1-007.
+Muhao Chen is supported by the NSF Grant IIS 2105329, the NSF Grant ITE 2333736,
+the DARPA MCS program under Contract No. N660011924033 with
+the United States Office Of Naval Research,
+a Cisco Research Award, two Amazon Research Awards, and a Keston Research Award.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Albishre et al. (2015)</span>
+<span class="ltx_bibblock">
+Khaled Albishre, Mubarak Albathan, and Yuefeng Li. 2015.
+
+</span>
+<span class="ltx_bibblock">Effective 20 newsgroups dataset cleaning.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib1.1.1">2015 IEEE/WIC/ACM International Conference on Web
+Intelligence and Intelligent Agent Technology (WI-IAT)</em>, volume 3, pages
+98–101. IEEE.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Alt et al. (2020)</span>
+<span class="ltx_bibblock">
+Christoph Alt, Aleksandra Gabryszak, and Leonhard Hennig. 2020.
+
+</span>
+<span class="ltx_bibblock">TACRED revisited: A thorough evaluation of the TACRED relation
+extraction task.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib2.1.1">Proceedings of the 58th Annual Meeting of the Association
+for Computational Linguistics</em>, pages 1558–1569, Online. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Asch (1946)</span>
+<span class="ltx_bibblock">
+Solomon E Asch. 1946.
+
+</span>
+<span class="ltx_bibblock">Forming impressions of personality.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib3.1.1">The Journal of Abnormal and Social Psychology</em>, 41(3):258.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Brown et al. (2020)</span>
+<span class="ltx_bibblock">
+Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla
+Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell,
+et al. 2020.
+
+</span>
+<span class="ltx_bibblock">Language models are few-shot learners.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">Advances in neural information processing systems</em>,
+33:1877–1901.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Casanueva et al. (2020a)</span>
+<span class="ltx_bibblock">
+Iñigo Casanueva, Tadas Temcinas, Daniela Gerz, Matthew Henderson, and
+Ivan Vulic. 2020a.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://arxiv.org/abs/2003.04807" target="_blank" title="">Efficient intent detection
+with dual sentence encoders</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">Proceedings of the 2nd Workshop on NLP for ConvAI - ACL
+2020</em>.
+
+</span>
+<span class="ltx_bibblock">Data available at
+https://github.com/PolyAI-LDN/task-specific-datasets.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Casanueva et al. (2020b)</span>
+<span class="ltx_bibblock">
+Iñigo Casanueva, Tadas Temčinas, Daniela Gerz, Matthew Henderson, and
+Ivan Vulić. 2020b.
+
+</span>
+<span class="ltx_bibblock">Efficient intent detection with dual sentence encoders.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib6.1.1">arXiv preprint arXiv:2003.04807</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chen et al. (2023)</span>
+<span class="ltx_bibblock">
+Jiawei Chen, Hande Dong, Xiang Wang, Fuli Feng, Meng Wang, and Xiangnan He.
+2023.
+
+</span>
+<span class="ltx_bibblock">Bias and debias in recommender system: A survey and future
+directions.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib7.1.1">ACM Transactions on Information Systems</em>, 41(3):1–39.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chiang et al. (2023)</span>
+<span class="ltx_bibblock">
+Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin
+Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion Stoica, and
+Eric P. Xing. 2023.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank" title="">Vicuna: An
+open-source chatbot impressing gpt-4 with 90%* chatgpt quality</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chowdhery et al. (2022)</span>
+<span class="ltx_bibblock">
+Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra,
+Adam Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian
+Gehrmann, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Palm: Scaling language modeling with pathways.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">arXiv preprint arXiv:2204.02311</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Crano (1977)</span>
+<span class="ltx_bibblock">
+William D Crano. 1977.
+
+</span>
+<span class="ltx_bibblock">Primacy versus recency in retention of information and opinion
+change.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">The Journal of Social Psychology</em>, 101(1):87–96.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Demszky et al. (2020)</span>
+<span class="ltx_bibblock">
+Dorottya Demszky, Dana Movshovitz-Attias, Jeongwoo Ko, Alan Cowen, Gaurav
+Nemade, and Sujith Ravi. 2020.
+
+</span>
+<span class="ltx_bibblock">Goemotions: A dataset of fine-grained emotions.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">arXiv preprint arXiv:2005.00547</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Dong et al. (2022)</span>
+<span class="ltx_bibblock">
+Qingxiu Dong, Lei Li, Damai Dai, Ce Zheng, Zhiyong Wu, Baobao Chang, Xu Sun,
+Jingjing Xu, and Zhifang Sui. 2022.
+
+</span>
+<span class="ltx_bibblock">A survey for in-context learning.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">arXiv preprint arXiv:2301.00234</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Fei et al. (2023)</span>
+<span class="ltx_bibblock">
+Yu Fei, Yifan Hou, Zeming Chen, and Antoine Bosselut. 2023.
+
+</span>
+<span class="ltx_bibblock">Mitigating label biases for in-context learning.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">arXiv preprint arXiv:2305.19148</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">FitzGerald et al. (2022)</span>
+<span class="ltx_bibblock">
+Jack FitzGerald, Christopher Hench, Charith Peris, Scott Mackie, Kay Rottmann,
+Ana Sanchez, Aaron Nash, Liam Urbach, Vishesh Kakarala, Richa Singh, et al.
+2022.
+
+</span>
+<span class="ltx_bibblock">Massive: A 1m-example multilingual natural language understanding
+dataset with 51 typologically-diverse languages.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">arXiv preprint arXiv:2204.08582</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Fuglede and Topsoe (2004)</span>
+<span class="ltx_bibblock">
+Bent Fuglede and Flemming Topsoe. 2004.
+
+</span>
+<span class="ltx_bibblock">Jensen-shannon divergence and hilbert space embedding.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">International Symposium onInformation Theory, 2004. ISIT
+2004. Proceedings.</em>, page 31. IEEE.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gao et al. (2023)</span>
+<span class="ltx_bibblock">
+Jinglong Gao, Xiao Ding, Bing Qin, and Ting Liu. 2023.
+
+</span>
+<span class="ltx_bibblock">Is chatgpt a good causal reasoner? a comprehensive evaluation.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">arXiv preprint arXiv:2305.07375</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Han et al. (2023)</span>
+<span class="ltx_bibblock">
+Ridong Han, Tao Peng, Chaohao Yang, Benyou Wang, Lu Liu, and Xiang Wan. 2023.
+
+</span>
+<span class="ltx_bibblock">Is information extraction solved by chatgpt? an analysis of
+performance, evaluation criteria, robustness and errors.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">arXiv preprint arXiv:2305.14450</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Haque et al. (2022)</span>
+<span class="ltx_bibblock">
+Mubin Ul Haque, Isuru Dharmadasa, Zarrin Tasnim Sworna, Roshan Namal Rajapakse,
+and Hussain Ahmad. 2022.
+
+</span>
+<span class="ltx_bibblock">" i think this is the most disruptive technology": Exploring
+sentiments of chatgpt early adopters using twitter data.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">arXiv preprint arXiv:2212.05856</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Krügel et al. (2023)</span>
+<span class="ltx_bibblock">
+Sebastian Krügel, Andreas Ostermaier, and Matthias Uhl. 2023.
+
+</span>
+<span class="ltx_bibblock">The moral authority of chatgpt.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib19.1.1">arXiv preprint arXiv:2301.07098</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li et al. (2023)</span>
+<span class="ltx_bibblock">
+Bo Li, Gexiang Fang, Yang Yang, Quansen Wang, Wei Ye, Wen Zhao, and Shikun
+Zhang. 2023.
+
+</span>
+<span class="ltx_bibblock">Evaluating chatgpt’s information extraction capabilities: An
+assessment of performance, explainability, calibration, and faithfulness.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">arXiv preprint arXiv:2304.11633</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Li (2010)</span>
+<span class="ltx_bibblock">
+Cong Li. 2010.
+
+</span>
+<span class="ltx_bibblock">Primacy effect or recency effect? a long-term memory test of super
+bowl commercials.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">Journal of Consumer Behaviour: An International Research
+Review</em>, 9(1):32–44.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Lu et al. (2021)</span>
+<span class="ltx_bibblock">
+Yao Lu, Max Bartolo, Alastair Moore, Sebastian Riedel, and Pontus Stenetorp.
+2021.
+
+</span>
+<span class="ltx_bibblock">Fantastically ordered prompts and where to find them: Overcoming
+few-shot prompt order sensitivity.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">arXiv preprint arXiv:2104.08786</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ma et al. (2023)</span>
+<span class="ltx_bibblock">
+Yubo Ma, Yixin Cao, YongChing Hong, and Aixin Sun. 2023.
+
+</span>
+<span class="ltx_bibblock">Large language model is not a good few-shot information extractor,
+but a good reranker for hard samples!
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib23.1.1">arXiv preprint arXiv:2303.08559</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Malinka et al. (2023)</span>
+<span class="ltx_bibblock">
+Kamil Malinka, Martin Peresíni, Anton Firc, Ondrej Hujnak, and Filip
+Janus. 2023.
+
+</span>
+<span class="ltx_bibblock">On the educational impact of chatgpt: Is artificial intelligence
+ready to obtain a university degree?
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">Proceedings of the 2023 Conference on Innovation and
+Technology in Computer Science Education V. 1</em>, pages 47–53.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">OpenAI (2022)</span>
+<span class="ltx_bibblock">
+OpenAI. 2022.
+
+</span>
+<span class="ltx_bibblock">Introducing chatgpt https://openai.com/blog/chatgpt).
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ouyang et al. (2022)</span>
+<span class="ltx_bibblock">
+Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela
+Mishkin, Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al.
+2022.
+
+</span>
+<span class="ltx_bibblock">Training language models to follow instructions with human feedback.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">Advances in Neural Information Processing Systems</em>,
+35:27730–27744.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Qian et al. (2021)</span>
+<span class="ltx_bibblock">
+Chen Qian, Fuli Feng, Lijie Wen, Chunping Ma, and Pengjun Xie. 2021.
+
+</span>
+<span class="ltx_bibblock">Counterfactual inference for text classification debiasing.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">Proceedings of the 59th Annual Meeting of the Association
+for Computational Linguistics and the 11th International Joint Conference on
+Natural Language Processing (Volume 1: Long Papers)</em>, pages 5434–5445.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Rae et al. (2021)</span>
+<span class="ltx_bibblock">
+Jack W Rae, Sebastian Borgeaud, Trevor Cai, Katie Millican, Jordan Hoffmann,
+Francis Song, John Aslanides, Sarah Henderson, Roman Ring, Susannah Young,
+et al. 2021.
+
+</span>
+<span class="ltx_bibblock">Scaling language models: Methods, analysis &amp; insights from training
+gopher.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib28.1.1">arXiv preprint arXiv:2112.11446</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Smith et al. (2022)</span>
+<span class="ltx_bibblock">
+Shaden Smith, Mostofa Patwary, Brandon Norick, Patrick LeGresley, Samyam
+Rajbhandari, Jared Casper, Zhun Liu, Shrimai Prabhumoye, George Zerveas,
+Vijay Korthikanti, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Using deepspeed and megatron to train megatron-turing nlg 530b, a
+large-scale generative language model.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">arXiv preprint arXiv:2201.11990</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Stoica et al. (2021)</span>
+<span class="ltx_bibblock">
+George Stoica, Emmanouil Antonios Platanios, and Barnabás Póczos. 2021.
+
+</span>
+<span class="ltx_bibblock">Re-tacred: Addressing shortcomings of the tacred dataset.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">Proceedings of the AAAI Conference on Artificial
+Intelligence</em>, volume 35, pages 13843–13850.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Susnjak (2023)</span>
+<span class="ltx_bibblock">
+Teo Susnjak. 2023.
+
+</span>
+<span class="ltx_bibblock">Applying bert and chatgpt for sentiment analysis of lyme disease in
+scientific literature.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib31.1.1">arXiv preprint arXiv:2302.06474</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Sweeney and Najafian (2019)</span>
+<span class="ltx_bibblock">
+Chris Sweeney and Maryam Najafian. 2019.
+
+</span>
+<span class="ltx_bibblock">A transparent framework for evaluating unintended demographic bias in
+word embeddings.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">Proceedings of the 57th Annual Meeting of the Association
+for Computational Linguistics</em>, pages 1662–1667.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Tan and Ward (2000)</span>
+<span class="ltx_bibblock">
+Lydia Tan and Geoff Ward. 2000.
+
+</span>
+<span class="ltx_bibblock">A recency-based account of the primacy effect in free recall.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib33.1.1">Journal of Experimental Psychology: Learning, Memory, and
+Cognition</em>, 26(6):1589.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Thoppilan et al. (2022)</span>
+<span class="ltx_bibblock">
+Romal Thoppilan, Daniel De Freitas, Jamie Hall, Noam Shazeer, Apoorv
+Kulshreshtha, Heng-Tze Cheng, Alicia Jin, Taylor Bos, Leslie Baker, Yu Du,
+et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Lamda: Language models for dialog applications.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib34.1.1">arXiv preprint arXiv:2201.08239</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Vaswani et al. (2017)</span>
+<span class="ltx_bibblock">
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.
+
+</span>
+<span class="ltx_bibblock">Attention is all you need.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib35.1.1">Advances in neural information processing systems</em>, pages
+5998–6008.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wan et al. (2023)</span>
+<span class="ltx_bibblock">
+Zhen Wan, Fei Cheng, Zhuoyuan Mao, Qianying Liu, Haiyue Song, Jiwei Li, and
+Sadao Kurohashi. 2023.
+
+</span>
+<span class="ltx_bibblock">Gpt-re: In-context learning for relation extraction using large
+language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">arXiv preprint arXiv:2305.02105</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2023)</span>
+<span class="ltx_bibblock">
+Fei Wang, Wenjie Mo, Yiwei Wang, Wenxuan Zhou, and Muhao Chen. 2023.
+
+</span>
+<span class="ltx_bibblock">A causal view of entity bias in (large) language models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">arXiv preprint arXiv:2305.14695</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wang et al. (2022)</span>
+<span class="ltx_bibblock">
+Yiwei Wang, Muhao Chen, Wenxuan Zhou, Yujun Cai, Yuxuan Liang, Dayiheng Liu,
+Baosong Yang, Juncheng Liu, and Bryan Hooi. 2022.
+
+</span>
+<span class="ltx_bibblock">Should we rely on entity mentions for relation extraction? debiasing
+relation extraction with counterfactual analysis.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">arXiv preprint arXiv:2205.03784</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wei et al. (2022)</span>
+<span class="ltx_bibblock">
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed Chi, Quoc V
+Le, Denny Zhou, et al. 2022.
+
+</span>
+<span class="ltx_bibblock">Chain-of-thought prompting elicits reasoning in large language
+models.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib39.1.1">Advances in Neural Information Processing Systems</em>,
+35:24824–24837.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wei et al. (2023)</span>
+<span class="ltx_bibblock">
+Xiang Wei, Xingyu Cui, Ning Cheng, Xiaobin Wang, Xin Zhang, Shen Huang, Pengjun
+Xie, Jinan Xu, Yufeng Chen, Meishan Zhang, et al. 2023.
+
+</span>
+<span class="ltx_bibblock">Zero-shot information extraction via chatting with chatgpt.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib40.1.1">arXiv preprint arXiv:2302.10205</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Xiang et al. (2020)</span>
+<span class="ltx_bibblock">
+Liuyu Xiang, Guiguang Ding, and Jungong Han. 2020.
+
+</span>
+<span class="ltx_bibblock">Learning from multiple experts: Self-paced knowledge distillation for
+long-tailed classification.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">European Conference on Computer Vision</em>, pages 247–263.
+Springer.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Yuan et al. (2023)</span>
+<span class="ltx_bibblock">
+Chenhan Yuan, Qianqian Xie, and Sophia Ananiadou. 2023.
+
+</span>
+<span class="ltx_bibblock">Zero-shot temporal relation extraction with chatgpt.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib42.1.1">arXiv preprint arXiv:2304.05454</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2022)</span>
+<span class="ltx_bibblock">
+Bowen Zhang, Daijun Ding, and Liwen Jing. 2022.
+
+</span>
+<span class="ltx_bibblock">How would stance detection techniques evolve after the launch of
+chatgpt?
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib43.1.1">arXiv preprint arXiv:2212.14548</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhang et al. (2017)</span>
+<span class="ltx_bibblock">
+Yuhao Zhang, Victor Zhong, Danqi Chen, Gabor Angeli, and Christopher D Manning.
+2017.
+
+</span>
+<span class="ltx_bibblock">Position-aware attention and supervised data improve slot filling.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib44.1.1">Proceedings of the 2017 Conference on Empirical Methods in
+Natural Language Processing</em>, pages 35–45.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib45">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhao et al. (2021)</span>
+<span class="ltx_bibblock">
+Zihao Zhao, Eric Wallace, Shi Feng, Dan Klein, and Sameer Singh. 2021.
+
+</span>
+<span class="ltx_bibblock">Calibrate before use: Improving few-shot performance of language
+models.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib45.1.1">International Conference on Machine Learning</em>, pages
+12697–12706. PMLR.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib46">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhong et al. (2023)</span>
+<span class="ltx_bibblock">
+Qihuang Zhong, Liang Ding, Juhua Liu, Bo Du, and Dacheng Tao. 2023.
+
+</span>
+<span class="ltx_bibblock">Can chatgpt understand too? a comparative study on chatgpt and
+fine-tuned bert.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib46.1.1">arXiv preprint arXiv:2302.10198</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib47">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhou and Chen (2021)</span>
+<span class="ltx_bibblock">
+Wenxuan Zhou and Muhao Chen. 2021.
+
+</span>
+<span class="ltx_bibblock">An improved baseline for sentence-level relation extraction.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib47.1.1">arXiv preprint arXiv:2102.01373</em>.
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2310.13205">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-error" href="/log/2310.13206">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2310.13206" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2310.13206">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2310.13207">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Tue Feb 27 23:51:10 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

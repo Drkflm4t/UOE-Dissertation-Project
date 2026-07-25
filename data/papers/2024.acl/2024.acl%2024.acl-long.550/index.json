@@ -1,0 +1,652 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        19
+    ],
+    "sections": {
+        "1 Introduction": [
+            20,
+            96
+        ],
+        "2 Related Works": [
+            97,
+            104
+        ],
+        "3 Problem Formulation": [
+            105,
+            131
+        ],
+        "4 TwoHopFact Dataset": [
+            132,
+            135
+        ],
+        "5 First Hop of Multi-Hop Reasoning": [
+            136,
+            184
+        ],
+        "6 Second Hop of Multi-Hop Reasoning": [
+            185,
+            238
+        ],
+        "7 Latent Multi-Hop Reasoning": [
+            239,
+            252
+        ],
+        "8 Discussion and Conclusion": [
+            253,
+            262
+        ],
+        "9 Limitations": [
+            263,
+            276
+        ],
+        "Acknowledgements": [
+            277,
+            280
+        ],
+        "References": [
+            281,
+            512
+        ],
+        "Appendix A Dataset construction": [
+            513,
+            1245
+        ],
+        "Appendix B Dataset Statistics": [
+            1246,
+            1257
+        ],
+        "Appendix C Justification of Internal Entity Recall Score: Appositive Generation Experiment": [
+            1258,
+            1279
+        ],
+        "Appendix D Justification of Consistency Score: Comparative Experiment with Chain-of-Thought Cases": [
+            1280,
+            1476
+        ],
+        "Appendix E Technical Details": [
+            1477,
+            1481
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Problem Formulation": {
+            "3.1 Preliminaries": [
+                107,
+                116
+            ],
+            "3.2 Latent Multi-Hop Reasoning in LLMs": [
+                117,
+                131
+            ]
+        },
+        "4 TwoHopFact Dataset": {},
+        "5 First Hop of Multi-Hop Reasoning": {
+            "5.1 Internal Entity Recall Score": [
+                140,
+                152
+            ],
+            "5.2 Experiment": [
+                153,
+                160
+            ],
+            "5.3 Results": [
+                161,
+                174
+            ],
+            "There is substantial evidence of the first hop of reasoning, which becomes stronger with increasing model size.": [
+                175,
+                180
+            ],
+            "Relatively strong evidence supports the first-hop reasoning in up to 73% of fact composition types.": [
+                181,
+                184
+            ]
+        },
+        "6 Second Hop of Multi-Hop Reasoning": {
+            "6.1 Consistency Score": [
+                189,
+                207
+            ],
+            "6.2 Experiment": [
+                208,
+                220
+            ],
+            "6.3 Results": [
+                221,
+                222
+            ],
+            "There is moderate evidence of the second-hop reasoning, which does not become stronger with increasing model size.": [
+                223,
+                228
+            ],
+            "Relatively strong evidence supports the second-hop reasoning in up to 19% of fact composition types.": [
+                229,
+                238
+            ]
+        },
+        "7 Latent Multi-Hop Reasoning": {
+            "There is moderate evidence of the latent multi-hop reasoning, which sometimes becomes stronger with increasing model size.": [
+                243,
+                248
+            ],
+            "Relatively strong evidence supports latent multi-hop reasoning in up to 23% of fact composition types.": [
+                249,
+                252
+            ]
+        },
+        "8 Discussion and Conclusion": {},
+        "9 Limitations": {
+            "Latent Multi-Hop Reasoning Pathway": [
+                265,
+                268
+            ],
+            "Dataset": [
+                269,
+                272
+            ],
+            "Metrics": [
+                273,
+                276
+            ]
+        },
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Dataset construction": {
+            "A.1 Data Selection": [
+                1164,
+                1167
+            ],
+            "Relation Selection": [
+                1168,
+                1173
+            ],
+            "Querying Wikidata": [
+                1174,
+                1177
+            ],
+            "A.2 Natural Language Templates": [
+                1178,
+                1245
+            ]
+        },
+        "Appendix B Dataset Statistics": {},
+        "Appendix C Justification of Internal Entity Recall Score: Appositive Generation Experiment": {
+            "Experiment": [
+                1266,
+                1275
+            ],
+            "Result": [
+                1276,
+                1279
+            ]
+        },
+        "Appendix D Justification of Consistency Score: Comparative Experiment with Chain-of-Thought Cases": {
+            "Experiment": [
+                1282,
+                1285
+            ],
+            "Result": [
+                1286,
+                1476
+            ]
+        },
+        "Appendix E Technical Details": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                28,
+                28
+            ],
+            [
+                30,
+                30
+            ],
+            [
+                32,
+                32
+            ],
+            [
+                34,
+                34
+            ],
+            [
+                36,
+                36
+            ],
+            [
+                38,
+                38
+            ],
+            [
+                40,
+                43
+            ]
+        ],
+        "2 Related Works": [
+            [
+                99,
+                99
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                103,
+                103
+            ]
+        ],
+        "3 Problem Formulation": [
+            [
+                109,
+                109
+            ],
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                115,
+                115
+            ],
+            [
+                119,
+                119
+            ],
+            [
+                121,
+                121
+            ],
+            [
+                123,
+                123
+            ],
+            [
+                125,
+                125
+            ],
+            [
+                127,
+                128
+            ],
+            [
+                130,
+                130
+            ]
+        ],
+        "4 TwoHopFact Dataset": [
+            [
+                134,
+                134
+            ]
+        ],
+        "5 First Hop of Multi-Hop Reasoning": [
+            [
+                138,
+                138
+            ],
+            [
+                142,
+                142
+            ],
+            [
+                144,
+                147
+            ],
+            [
+                149,
+                149
+            ],
+            [
+                151,
+                151
+            ],
+            [
+                155,
+                155
+            ],
+            [
+                157,
+                157
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                177,
+                177
+            ],
+            [
+                179,
+                179
+            ],
+            [
+                183,
+                183
+            ]
+        ],
+        "6 Second Hop of Multi-Hop Reasoning": [
+            [
+                187,
+                187
+            ],
+            [
+                191,
+                191
+            ],
+            [
+                193,
+                194
+            ],
+            [
+                196,
+                196
+            ],
+            [
+                198,
+                198
+            ],
+            [
+                200,
+                200
+            ],
+            [
+                210,
+                210
+            ],
+            [
+                212,
+                212
+            ],
+            [
+                214,
+                214
+            ],
+            [
+                216,
+                217
+            ],
+            [
+                219,
+                219
+            ],
+            [
+                225,
+                225
+            ],
+            [
+                227,
+                227
+            ],
+            [
+                231,
+                231
+            ]
+        ],
+        "7 Latent Multi-Hop Reasoning": [
+            [
+                241,
+                241
+            ],
+            [
+                245,
+                245
+            ],
+            [
+                247,
+                247
+            ],
+            [
+                251,
+                251
+            ]
+        ],
+        "8 Discussion and Conclusion": [
+            [
+                255,
+                255
+            ],
+            [
+                257,
+                257
+            ],
+            [
+                259,
+                259
+            ],
+            [
+                261,
+                261
+            ]
+        ],
+        "9 Limitations": [
+            [
+                267,
+                267
+            ],
+            [
+                271,
+                271
+            ],
+            [
+                275,
+                275
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                279,
+                279
+            ]
+        ],
+        "References": [
+            [
+                283,
+                339
+            ]
+        ],
+        "Appendix A Dataset construction": [
+            [
+                515,
+                515
+            ],
+            [
+                1166,
+                1166
+            ],
+            [
+                1170,
+                1170
+            ],
+            [
+                1172,
+                1172
+            ],
+            [
+                1176,
+                1176
+            ],
+            [
+                1180,
+                1180
+            ],
+            [
+                1182,
+                1182
+            ],
+            [
+                1184,
+                1184
+            ]
+        ],
+        "Appendix B Dataset Statistics": [
+            [
+                1248,
+                1248
+            ],
+            [
+                1250,
+                1250
+            ]
+        ],
+        "Appendix C Justification of Internal Entity Recall Score: Appositive Generation Experiment": [
+            [
+                1268,
+                1268
+            ],
+            [
+                1278,
+                1278
+            ]
+        ],
+        "Appendix D Justification of Consistency Score: Comparative Experiment with Chain-of-Thought Cases": [
+            [
+                1284,
+                1284
+            ],
+            [
+                1288,
+                1288
+            ]
+        ],
+        "Appendix E Technical Details": [
+            [
+                1479,
+                1479
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                22,
+                26
+            ]
+        },
+        "2 Related Works": {},
+        "3 Problem Formulation": {},
+        "4 TwoHopFact Dataset": {},
+        "5 First Hop of Multi-Hop Reasoning": {
+            "[FIGURE S5.F2.sf1.g1]": [
+                163,
+                167
+            ],
+            "[FIGURE S5.F3.sf1.g1]": [
+                169,
+                173
+            ]
+        },
+        "6 Second Hop of Multi-Hop Reasoning": {
+            "[FIGURE S6.F4.sf1.g1]": [
+                202,
+                206
+            ],
+            "[FIGURE S6.F5.1.g1]": [
+                233,
+                237
+            ]
+        },
+        "7 Latent Multi-Hop Reasoning": {},
+        "8 Discussion and Conclusion": {},
+        "9 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Dataset construction": {
+            "[FIGURE A1.F6.g1]": [
+                1240,
+                1244
+            ]
+        },
+        "Appendix B Dataset Statistics": {
+            "[FIGURE A2.F7.sf1.g1]": [
+                1252,
+                1256
+            ]
+        },
+        "Appendix C Justification of Internal Entity Recall Score: Appositive Generation Experiment": {
+            "[FIGURE A3.F8.g1]": [
+                1260,
+                1264
+            ],
+            "[FIGURE A3.F9.g1]": [
+                1270,
+                1274
+            ]
+        },
+        "Appendix D Justification of Consistency Score: Comparative Experiment with Chain-of-Thought Cases": {},
+        "Appendix E Technical Details": {}
+    },
+    "tables": {
+        "1 Introduction": {
+            "[TABLE S1.T1]": [
+                45,
+                95
+            ]
+        },
+        "2 Related Works": {},
+        "3 Problem Formulation": {},
+        "4 TwoHopFact Dataset": {},
+        "5 First Hop of Multi-Hop Reasoning": {},
+        "6 Second Hop of Multi-Hop Reasoning": {},
+        "7 Latent Multi-Hop Reasoning": {},
+        "8 Discussion and Conclusion": {},
+        "9 Limitations": {},
+        "Acknowledgements": {},
+        "References": {
+            "[TABLE A0.T2]": [
+                341,
+                511
+            ]
+        },
+        "Appendix A Dataset construction": {
+            "[TABLE A1.T3]": [
+                517,
+                1162
+            ],
+            "[TABLE A1.T4]": [
+                1186,
+                1238
+            ]
+        },
+        "Appendix B Dataset Statistics": {},
+        "Appendix C Justification of Internal Entity Recall Score: Appositive Generation Experiment": {},
+        "Appendix D Justification of Consistency Score: Comparative Experiment with Chain-of-Thought Cases": {
+            "[TABLE A4.T5]": [
+                1290,
+                1475
+            ]
+        },
+        "Appendix E Technical Details": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Works": {},
+        "3 Problem Formulation": {},
+        "4 TwoHopFact Dataset": {},
+        "5 First Hop of Multi-Hop Reasoning": {},
+        "6 Second Hop of Multi-Hop Reasoning": {},
+        "7 Latent Multi-Hop Reasoning": {},
+        "8 Discussion and Conclusion": {},
+        "9 Limitations": {},
+        "Acknowledgements": {},
+        "References": {},
+        "Appendix A Dataset construction": {},
+        "Appendix B Dataset Statistics": {},
+        "Appendix C Justification of Internal Entity Recall Score: Appositive Generation Experiment": {},
+        "Appendix D Justification of Consistency Score: Comparative Experiment with Chain-of-Thought Cases": {},
+        "Appendix E Technical Details": {}
+    }
+}

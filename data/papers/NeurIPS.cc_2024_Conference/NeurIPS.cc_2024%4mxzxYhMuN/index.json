@@ -1,0 +1,540 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            22
+        ],
+        "2 Related work": [
+            23,
+            32
+        ],
+        "3 Methodology": [
+            33,
+            118
+        ],
+        "4 Experiments": [
+            119,
+            825
+        ],
+        "5 Conclusion": [
+            826,
+            833
+        ],
+        "Acknowledgments": [
+            834,
+            837
+        ],
+        "References": [
+            838,
+            894
+        ],
+        "Appendix A More experimental settings": [
+            895,
+            902
+        ],
+        "Appendix B More experiments": [
+            903,
+            991
+        ],
+        "Appendix C More qualitative results": [
+            992,
+            995
+        ],
+        "Appendix D Failure cases": [
+            996,
+            1026
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Methodology": {
+            "3.1 Preliminary": [
+                42,
+                43
+            ],
+            "Data reorganization.": [
+                44,
+                47
+            ],
+            "Input representation.": [
+                48,
+                59
+            ],
+            "3.2 RealMotion for continuous forecasting": [
+                60,
+                63
+            ],
+            "3.2.1 Multimodal feature encoding and trajectory decoding": [
+                64,
+                69
+            ],
+            "3.2.2 Scene context stream": [
+                70,
+                87
+            ],
+            "3.2.3 Agent trajectory stream": [
+                88,
+                109
+            ],
+            "3.3 Model training": [
+                110,
+                118
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Experimental settings": [
+                121,
+                122
+            ],
+            "Datasets and metrics": [
+                123,
+                302
+            ],
+            "Implementation details": [
+                303,
+                306
+            ],
+            "4.2 Comparison with state of the art": [
+                307,
+                404
+            ],
+            "4.3 Multi-agent quantitative results": [
+                405,
+                465
+            ],
+            "4.4 Ablation study": [
+                466,
+                560
+            ],
+            "Effects of components.": [
+                561,
+                564
+            ],
+            "Effects of feature alignment and TE.": [
+                565,
+                698
+            ],
+            "Effects of split points and gradient steps.": [
+                699,
+                770
+            ],
+            "Effects of the depth of cross-attention blocks.": [
+                771,
+                817
+            ],
+            "4.5 Efficiency analysis": [
+                818,
+                821
+            ],
+            "4.6 Qualitative results": [
+                822,
+                825
+            ]
+        },
+        "5 Conclusion": {
+            "Limitations.": [
+                830,
+                833
+            ]
+        },
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A More experimental settings": {
+            "A.1 Evaluation metrics": [
+                897,
+                902
+            ]
+        },
+        "Appendix B More experiments": {
+            "B.1 Model ensemble": [
+                905,
+                953
+            ],
+            "B.2 Generality evaluation with integrating\u00a0RealMotion": [
+                954,
+                991
+            ]
+        },
+        "Appendix C More qualitative results": {},
+        "Appendix D Failure cases": {
+            "D.1 Case 1: Complex map topology": [
+                1000,
+                1003
+            ],
+            "D.2 Case 2: Subjective driving behavior": [
+                1004,
+                1026
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ]
+        ],
+        "2 Related work": [
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                29,
+                29
+            ],
+            [
+                31,
+                31
+            ]
+        ],
+        "3 Methodology": [
+            [
+                46,
+                46
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                74,
+                74
+            ],
+            [
+                76,
+                77
+            ],
+            [
+                79,
+                79
+            ],
+            [
+                81,
+                82
+            ],
+            [
+                84,
+                84
+            ],
+            [
+                86,
+                86
+            ],
+            [
+                90,
+                90
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                94,
+                94
+            ],
+            [
+                96,
+                97
+            ],
+            [
+                99,
+                99
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                103,
+                104
+            ],
+            [
+                106,
+                106
+            ],
+            [
+                108,
+                108
+            ],
+            [
+                112,
+                112
+            ],
+            [
+                114,
+                115
+            ],
+            [
+                117,
+                117
+            ]
+        ],
+        "4 Experiments": [
+            [
+                125,
+                125
+            ],
+            [
+                301,
+                301
+            ],
+            [
+                305,
+                305
+            ],
+            [
+                309,
+                309
+            ],
+            [
+                407,
+                407
+            ],
+            [
+                468,
+                468
+            ],
+            [
+                563,
+                563
+            ],
+            [
+                567,
+                567
+            ],
+            [
+                701,
+                701
+            ],
+            [
+                773,
+                773
+            ],
+            [
+                820,
+                820
+            ],
+            [
+                824,
+                824
+            ]
+        ],
+        "5 Conclusion": [
+            [
+                828,
+                828
+            ],
+            [
+                832,
+                832
+            ]
+        ],
+        "Acknowledgments": [
+            [
+                836,
+                836
+            ]
+        ],
+        "References": [
+            [
+                840,
+                891
+            ],
+            [
+                893,
+                893
+            ]
+        ],
+        "Appendix A More experimental settings": [
+            [
+                899,
+                899
+            ],
+            [
+                901,
+                901
+            ]
+        ],
+        "Appendix B More experiments": [
+            [
+                907,
+                907
+            ],
+            [
+                956,
+                956
+            ]
+        ],
+        "Appendix C More qualitative results": [
+            [
+                994,
+                994
+            ]
+        ],
+        "Appendix D Failure cases": [
+            [
+                998,
+                998
+            ],
+            [
+                1002,
+                1002
+            ],
+            [
+                1006,
+                1006
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                13,
+                17
+            ]
+        },
+        "2 Related work": {},
+        "3 Methodology": {
+            "[FIGURE S3.F2.g1]": [
+                35,
+                40
+            ],
+            "[FIGURE S3.F3.g1]": [
+                52,
+                58
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F4.g1]": [
+                703,
+                707
+            ]
+        },
+        "5 Conclusion": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A More experimental settings": {},
+        "Appendix B More experiments": {},
+        "Appendix C More qualitative results": {},
+        "Appendix D Failure cases": {
+            "[FIGURE A4.F5.g1]": [
+                1008,
+                1012
+            ],
+            "[FIGURE A4.F6.g1]": [
+                1014,
+                1018
+            ],
+            "[FIGURE A4.F7.g1]": [
+                1020,
+                1024
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Methodology": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                127,
+                299
+            ],
+            "[TABLE S4.T2]": [
+                311,
+                403
+            ],
+            "[TABLE S4.T3]": [
+                409,
+                464
+            ],
+            "[TABLE S4.T4]": [
+                470,
+                559
+            ],
+            "[TABLE S4.T5]": [
+                569,
+                697
+            ],
+            "[TABLE S4.T6]": [
+                709,
+                769
+            ],
+            "[TABLE S4.T7]": [
+                775,
+                816
+            ]
+        },
+        "5 Conclusion": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A More experimental settings": {},
+        "Appendix B More experiments": {
+            "[TABLE A2.T8]": [
+                909,
+                952
+            ],
+            "[TABLE A2.T9]": [
+                958,
+                990
+            ]
+        },
+        "Appendix C More qualitative results": {},
+        "Appendix D Failure cases": {}
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related work": {},
+        "3 Methodology": {},
+        "4 Experiments": {},
+        "5 Conclusion": {},
+        "Acknowledgments": {},
+        "References": {},
+        "Appendix A More experimental settings": {},
+        "Appendix B More experiments": {},
+        "Appendix C More qualitative results": {},
+        "Appendix D Failure cases": {}
+    }
+}

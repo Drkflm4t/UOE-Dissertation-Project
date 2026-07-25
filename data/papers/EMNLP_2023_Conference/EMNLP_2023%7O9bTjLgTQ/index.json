@@ -1,0 +1,756 @@
+{
+    "title": [
+        5,
+        5
+    ],
+    "abstract": [
+        7,
+        16
+    ],
+    "sections": {
+        "1 Introduction": [
+            17,
+            28
+        ],
+        "2 Background": [
+            29,
+            82
+        ],
+        "3 Tracing the Semantics Behind the Attention\u2019s Output": [
+            83,
+            132
+        ],
+        "4 Modeling the Information Flow as a Flow-Graph": [
+            133,
+            148
+        ],
+        "5 Example of Use and Immediate Discoveries": [
+            149,
+            190
+        ],
+        "6 Related Work": [
+            191,
+            200
+        ],
+        "7 Conclusion": [
+            201,
+            208
+        ],
+        "Limitations": [
+            209,
+            218
+        ],
+        "Acknowledgements": [
+            219,
+            222
+        ],
+        "Ethics Statement": [
+            223,
+            226
+        ],
+        "References": [
+            227,
+            261
+        ],
+        "Appendix A Modeling GPTs as a Flow-Graph": [
+            262,
+            345
+        ],
+        "Appendix B Walkthrough the Graph Model": [
+            346,
+            349
+        ],
+        "Appendix C Model Selection": [
+            350,
+            359
+        ],
+        "Appendix D Additional Quantitative Analysis of Information Flow Inside the Attention Blocks": [
+            360,
+            433
+        ],
+        "Appendix E Layer Norm Uses as Sub-Block Filters": [
+            434,
+            861
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Background": {
+            "2.1 The Transformer Architecture": [
+                31,
+                38
+            ],
+            "2.2 GPTs Sub-Blocks": [
+                39,
+                40
+            ],
+            "Attention:": [
+                41,
+                46
+            ],
+            "MLP:": [
+                47,
+                50
+            ],
+            "Entire block:": [
+                51,
+                57
+            ],
+            "2.3 Projecting Hidden States and Neurons": [
+                58,
+                59
+            ],
+            "The Logit Lens (LL):": [
+                60,
+                70
+            ],
+            "Interpreting Static Neurons:": [
+                71,
+                82
+            ]
+        },
+        "3 Tracing the Semantics Behind the Attention\u2019s Output": {
+            "3.1 Projecting the Attention Memory": [
+                94,
+                107
+            ],
+            "3.2 Projecting Only the Top Attention Heads": [
+                108,
+                111
+            ],
+            "3.3 Projecting Memory Values": [
+                112,
+                128
+            ],
+            "3.4 Interim Summary": [
+                129,
+                132
+            ]
+        },
+        "4 Modeling the Information Flow as a Flow-Graph": {},
+        "5 Example of Use and Immediate Discoveries": {
+            "5.1 Indirect Object Identification": [
+                153,
+                160
+            ],
+            "5.2 Layer Norm as Sub-Block Filter": [
+                161,
+                170
+            ],
+            "5.3 Regularization Neurons": [
+                171,
+                190
+            ]
+        },
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "Ethics Statement": {},
+        "References": {},
+        "Appendix A Modeling GPTs as a Flow-Graph": {
+            "A.1 The Attention Block as a Flow-Graph": [
+                274,
+                284
+            ],
+            "A.2 The Feed Forward Block as a Flow-Graph": [
+                285,
+                295
+            ],
+            "A.3 Connecting The Graphs of Single Blocks Into One": [
+                296,
+                301
+            ],
+            "A.4 Scoring the Nodes and Edges": [
+                302,
+                305
+            ],
+            "Scoring nodes according to projected token ranking and probability:": [
+                306,
+                309
+            ],
+            "Scoring edges according to activation value and norm:": [
+                310,
+                319
+            ],
+            "A.5 Modeling a Single GPT Inference as a Flow-Graph": [
+                320,
+                331
+            ],
+            "A.6 Implementation Details and how to Read the Graph": [
+                332,
+                345
+            ]
+        },
+        "Appendix B Walkthrough the Graph Model": {},
+        "Appendix C Model Selection": {},
+        "Appendix D Additional Quantitative Analysis of Information Flow Inside the Attention Blocks": {
+            "D.1 Additional Setup Information": [
+                362,
+                379
+            ],
+            "D.2 Additional Results": [
+                380,
+                425
+            ],
+            "D.3 Are All HS Interpretable? Examining the $QK$ Circuit": [
+                426,
+                433
+            ]
+        },
+        "Appendix E Layer Norm Uses as Sub-Block Filters": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ]
+        ],
+        "2 Background": [
+            [
+                33,
+                33
+            ],
+            [
+                35,
+                35
+            ],
+            [
+                37,
+                37
+            ],
+            [
+                43,
+                43
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                53,
+                53
+            ],
+            [
+                55,
+                56
+            ],
+            [
+                62,
+                62
+            ],
+            [
+                64,
+                65
+            ],
+            [
+                67,
+                67
+            ],
+            [
+                69,
+                69
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                75,
+                75
+            ]
+        ],
+        "3 Tracing the Semantics Behind the Attention\u2019s Output": [
+            [
+                85,
+                85
+            ],
+            [
+                87,
+                88
+            ],
+            [
+                90,
+                90
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                96,
+                96
+            ],
+            [
+                98,
+                98
+            ],
+            [
+                100,
+                100
+            ],
+            [
+                110,
+                110
+            ],
+            [
+                114,
+                114
+            ],
+            [
+                131,
+                131
+            ]
+        ],
+        "4 Modeling the Information Flow as a Flow-Graph": [
+            [
+                141,
+                141
+            ],
+            [
+                143,
+                143
+            ],
+            [
+                145,
+                145
+            ],
+            [
+                147,
+                147
+            ]
+        ],
+        "5 Example of Use and Immediate Discoveries": [
+            [
+                151,
+                151
+            ],
+            [
+                155,
+                155
+            ],
+            [
+                157,
+                157
+            ],
+            [
+                159,
+                159
+            ],
+            [
+                163,
+                163
+            ],
+            [
+                173,
+                173
+            ],
+            [
+                181,
+                181
+            ],
+            [
+                183,
+                183
+            ]
+        ],
+        "6 Related Work": [
+            [
+                193,
+                193
+            ],
+            [
+                195,
+                195
+            ],
+            [
+                197,
+                197
+            ],
+            [
+                199,
+                199
+            ]
+        ],
+        "7 Conclusion": [
+            [
+                203,
+                203
+            ],
+            [
+                205,
+                205
+            ],
+            [
+                207,
+                207
+            ]
+        ],
+        "Limitations": [
+            [
+                211,
+                211
+            ],
+            [
+                213,
+                213
+            ],
+            [
+                215,
+                215
+            ],
+            [
+                217,
+                217
+            ]
+        ],
+        "Acknowledgements": [
+            [
+                221,
+                221
+            ]
+        ],
+        "Ethics Statement": [
+            [
+                225,
+                225
+            ]
+        ],
+        "References": [
+            [
+                229,
+                260
+            ]
+        ],
+        "Appendix A Modeling GPTs as a Flow-Graph": [
+            [
+                264,
+                264
+            ],
+            [
+                266,
+                266
+            ],
+            [
+                276,
+                283
+            ],
+            [
+                287,
+                287
+            ],
+            [
+                289,
+                294
+            ],
+            [
+                298,
+                298
+            ],
+            [
+                300,
+                300
+            ],
+            [
+                304,
+                304
+            ],
+            [
+                308,
+                308
+            ],
+            [
+                312,
+                312
+            ],
+            [
+                322,
+                322
+            ],
+            [
+                324,
+                324
+            ],
+            [
+                326,
+                328
+            ],
+            [
+                330,
+                330
+            ],
+            [
+                334,
+                334
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                338,
+                338
+            ],
+            [
+                340,
+                344
+            ]
+        ],
+        "Appendix B Walkthrough the Graph Model": [
+            [
+                348,
+                348
+            ]
+        ],
+        "Appendix C Model Selection": [
+            [
+                352,
+                352
+            ]
+        ],
+        "Appendix D Additional Quantitative Analysis of Information Flow Inside the Attention Blocks": [
+            [
+                364,
+                364
+            ],
+            [
+                372,
+                372
+            ],
+            [
+                382,
+                382
+            ],
+            [
+                384,
+                384
+            ],
+            [
+                398,
+                398
+            ],
+            [
+                406,
+                406
+            ],
+            [
+                428,
+                428
+            ],
+            [
+                430,
+                430
+            ],
+            [
+                432,
+                432
+            ]
+        ],
+        "Appendix E Layer Norm Uses as Sub-Block Filters": [
+            [
+                436,
+                436
+            ],
+            [
+                438,
+                438
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {},
+        "2 Background": {
+            "[FIGURE S2.F2.sf1.g1]": [
+                77,
+                81
+            ]
+        },
+        "3 Tracing the Semantics Behind the Attention\u2019s Output": {
+            "[FIGURE S3.F3.sf1.g1]": [
+                102,
+                106
+            ],
+            "[FIGURE S3.F4.g1]": [
+                116,
+                121
+            ],
+            "[FIGURE S3.F5.1.g1]": [
+                123,
+                127
+            ]
+        },
+        "4 Modeling the Information Flow as a Flow-Graph": {
+            "[FIGURE S4.F6.sf1.g1]": [
+                135,
+                139
+            ]
+        },
+        "5 Example of Use and Immediate Discoveries": {
+            "[FIGURE S5.F7.1.g1]": [
+                165,
+                169
+            ],
+            "[FIGURE S5.F8.1.g1]": [
+                175,
+                179
+            ],
+            "[FIGURE S5.F9.1.g1]": [
+                185,
+                189
+            ]
+        },
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "Ethics Statement": {},
+        "References": {},
+        "Appendix A Modeling GPTs as a Flow-Graph": {
+            "[FIGURE A1.F10.g1]": [
+                268,
+                272
+            ],
+            "[FIGURE A1.F11.g1]": [
+                314,
+                318
+            ]
+        },
+        "Appendix B Walkthrough the Graph Model": {},
+        "Appendix C Model Selection": {
+            "[FIGURE A3.F12.sf1.g1]": [
+                354,
+                358
+            ]
+        },
+        "Appendix D Additional Quantitative Analysis of Information Flow Inside the Attention Blocks": {
+            "[FIGURE A4.F13.sf1.g1]": [
+                366,
+                370
+            ],
+            "[FIGURE A4.F14.1.g1]": [
+                374,
+                378
+            ],
+            "[FIGURE A4.F15.1.g1]": [
+                386,
+                390
+            ],
+            "[FIGURE A4.F16.1.g1]": [
+                392,
+                396
+            ],
+            "[FIGURE A4.F17.1.g1]": [
+                400,
+                404
+            ],
+            "[FIGURE A4.F18.1.g1]": [
+                408,
+                412
+            ],
+            "[FIGURE A4.F19.sf1.g1]": [
+                414,
+                418
+            ],
+            "[FIGURE A4.F20.sf1.g1]": [
+                420,
+                424
+            ]
+        },
+        "Appendix E Layer Norm Uses as Sub-Block Filters": {
+            "[FIGURE A5.F21.sf1.g1]": [
+                761,
+                765
+            ],
+            "[FIGURE A5.F22.sf1.g1]": [
+                767,
+                771
+            ],
+            "[FIGURE A5.F23.sf1.g1]": [
+                855,
+                859
+            ]
+        }
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Tracing the Semantics Behind the Attention\u2019s Output": {},
+        "4 Modeling the Information Flow as a Flow-Graph": {},
+        "5 Example of Use and Immediate Discoveries": {},
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "Ethics Statement": {},
+        "References": {},
+        "Appendix A Modeling GPTs as a Flow-Graph": {},
+        "Appendix B Walkthrough the Graph Model": {},
+        "Appendix C Model Selection": {},
+        "Appendix D Additional Quantitative Analysis of Information Flow Inside the Attention Blocks": {},
+        "Appendix E Layer Norm Uses as Sub-Block Filters": {
+            "[TABLE A5.T1]": [
+                440,
+                490
+            ],
+            "[TABLE A5.T2]": [
+                492,
+                542
+            ],
+            "[TABLE A5.T3]": [
+                544,
+                625
+            ],
+            "[TABLE A5.T4]": [
+                627,
+                677
+            ],
+            "[TABLE A5.T5]": [
+                679,
+                759
+            ],
+            "[TABLE A5.T6]": [
+                773,
+                853
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Background": {},
+        "3 Tracing the Semantics Behind the Attention\u2019s Output": {},
+        "4 Modeling the Information Flow as a Flow-Graph": {},
+        "5 Example of Use and Immediate Discoveries": {},
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "Acknowledgements": {},
+        "Ethics Statement": {},
+        "References": {},
+        "Appendix A Modeling GPTs as a Flow-Graph": {},
+        "Appendix B Walkthrough the Graph Model": {},
+        "Appendix C Model Selection": {},
+        "Appendix D Additional Quantitative Analysis of Information Flow Inside the Attention Blocks": {},
+        "Appendix E Layer Norm Uses as Sub-Block Filters": {}
+    }
+}

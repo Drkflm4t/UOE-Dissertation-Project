@@ -1,0 +1,610 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        4,
+        7
+    ],
+    "sections": {
+        "1 Introduction": [
+            8,
+            37
+        ],
+        "2 Setup": [
+            38,
+            106
+        ],
+        "3 Methodology": [
+            107,
+            303
+        ],
+        "4 Results": [
+            304,
+            349
+        ],
+        "5 Discussion": [
+            350,
+            403
+        ],
+        "6 Related Work": [
+            404,
+            415
+        ],
+        "7 Conclusion": [
+            416,
+            419
+        ],
+        "Limitations": [
+            420,
+            433
+        ],
+        "References": [
+            434,
+            474
+        ],
+        "Appendix A Downstream Performance of English-Replaying Models at Various Ratios": [
+            475,
+            486
+        ],
+        "Appendix B Fitting Error for Extended Scaling Law": [
+            487,
+            566
+        ],
+        "Appendix C Theoretical Analysis and Interpretation of Extended Scaling Law": [
+            567,
+            595
+        ],
+        "Appendix D Model Structural Parameters": [
+            596,
+            1767
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Setup": {
+            "2.1 Training Framework": [
+                40,
+                92
+            ],
+            "2.2 Model and Data": [
+                93,
+                94
+            ],
+            "Model Architecture": [
+                95,
+                98
+            ],
+            "Data Sources": [
+                99,
+                102
+            ],
+            "2.3 Evaluation Tasks": [
+                103,
+                106
+            ]
+        },
+        "3 Methodology": {
+            "3.1 Scaling Law for Pre-Training from Scratch": [
+                109,
+                128
+            ],
+            "3.2 Scaling Law for Continual Pre-Training": [
+                129,
+                287
+            ],
+            "3.3 Parametric Fit": [
+                288,
+                303
+            ]
+        },
+        "4 Results": {
+            "4.1 CPT Reaches Lower Loss Throughout Training": [
+                306,
+                309
+            ],
+            "4.2 CPT Preserves Loss-Compute Scaling Relationship": [
+                310,
+                321
+            ],
+            "4.3 Extended Scaling Law Measures Effectively Transferred Data in CPT": [
+                322,
+                333
+            ],
+            "4.4 CPT Models Generalize to Downstream Tasks": [
+                334,
+                349
+            ]
+        },
+        "5 Discussion": {
+            "5.1 What is the Compute-Optimal Allocation between Parameter Size and Data?": [
+                352,
+                383
+            ],
+            "5.2 Does Replaying from Source Language Prevent Catastrophic Forgetting?": [
+                384,
+                403
+            ]
+        },
+        "6 Related Work": {
+            "Scaling Law for Large Language Models": [
+                406,
+                409
+            ],
+            "Cross-Lingual Transfer Learning": [
+                410,
+                415
+            ]
+        },
+        "7 Conclusion": {},
+        "Limitations": {
+            "Language Contamination": [
+                422,
+                425
+            ],
+            "Hyper-Parameter Sensitivity": [
+                426,
+                429
+            ],
+            "Scaling Constraints": [
+                430,
+                433
+            ]
+        },
+        "References": {},
+        "Appendix A Downstream Performance of English-Replaying Models at Various Ratios": {},
+        "Appendix B Fitting Error for Extended Scaling Law": {},
+        "Appendix C Theoretical Analysis and Interpretation of Extended Scaling Law": {
+            "Functional space decomposition": [
+                580,
+                587
+            ],
+            "Inheriting learned variables": [
+                588,
+                595
+            ]
+        },
+        "Appendix D Model Structural Parameters": {}
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                10,
+                10
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                23,
+                23
+            ],
+            [
+                25,
+                26
+            ],
+            [
+                28,
+                28
+            ],
+            [
+                30,
+                30
+            ],
+            [
+                32,
+                36
+            ]
+        ],
+        "2 Setup": [
+            [
+                89,
+                89
+            ],
+            [
+                91,
+                91
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                105,
+                105
+            ]
+        ],
+        "3 Methodology": [
+            [
+                111,
+                111
+            ],
+            [
+                113,
+                114
+            ],
+            [
+                116,
+                116
+            ],
+            [
+                118,
+                120
+            ],
+            [
+                122,
+                122
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                126,
+                127
+            ],
+            [
+                275,
+                275
+            ],
+            [
+                277,
+                278
+            ],
+            [
+                280,
+                280
+            ],
+            [
+                282,
+                284
+            ],
+            [
+                286,
+                286
+            ],
+            [
+                290,
+                290
+            ],
+            [
+                292,
+                294
+            ],
+            [
+                296,
+                296
+            ],
+            [
+                298,
+                300
+            ],
+            [
+                302,
+                302
+            ]
+        ],
+        "4 Results": [
+            [
+                308,
+                308
+            ],
+            [
+                312,
+                312
+            ],
+            [
+                314,
+                314
+            ],
+            [
+                324,
+                324
+            ],
+            [
+                326,
+                326
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                338,
+                338
+            ],
+            [
+                340,
+                340
+            ],
+            [
+                342,
+                342
+            ],
+            [
+                344,
+                344
+            ],
+            [
+                346,
+                346
+            ],
+            [
+                348,
+                348
+            ]
+        ],
+        "5 Discussion": [
+            [
+                360,
+                360
+            ],
+            [
+                362,
+                362
+            ],
+            [
+                364,
+                366
+            ],
+            [
+                368,
+                368
+            ],
+            [
+                370,
+                372
+            ],
+            [
+                374,
+                374
+            ],
+            [
+                376,
+                376
+            ],
+            [
+                386,
+                386
+            ],
+            [
+                388,
+                388
+            ],
+            [
+                390,
+                390
+            ],
+            [
+                392,
+                392
+            ],
+            [
+                394,
+                394
+            ],
+            [
+                396,
+                396
+            ],
+            [
+                398,
+                398
+            ],
+            [
+                400,
+                400
+            ],
+            [
+                402,
+                402
+            ]
+        ],
+        "6 Related Work": [
+            [
+                408,
+                408
+            ],
+            [
+                412,
+                412
+            ],
+            [
+                414,
+                414
+            ]
+        ],
+        "7 Conclusion": [
+            [
+                418,
+                418
+            ]
+        ],
+        "Limitations": [
+            [
+                424,
+                424
+            ],
+            [
+                428,
+                428
+            ],
+            [
+                432,
+                432
+            ]
+        ],
+        "References": [
+            [
+                436,
+                473
+            ]
+        ],
+        "Appendix A Downstream Performance of English-Replaying Models at Various Ratios": [
+            [
+                483,
+                483
+            ],
+            [
+                485,
+                485
+            ]
+        ],
+        "Appendix B Fitting Error for Extended Scaling Law": [
+            [
+                565,
+                565
+            ]
+        ],
+        "Appendix C Theoretical Analysis and Interpretation of Extended Scaling Law": [
+            [
+                569,
+                569
+            ],
+            [
+                571,
+                574
+            ],
+            [
+                576,
+                576
+            ],
+            [
+                578,
+                578
+            ],
+            [
+                582,
+                582
+            ],
+            [
+                584,
+                584
+            ],
+            [
+                586,
+                586
+            ],
+            [
+                590,
+                590
+            ],
+            [
+                592,
+                592
+            ],
+            [
+                594,
+                594
+            ]
+        ],
+        "Appendix D Model Structural Parameters": []
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                11,
+                15
+            ]
+        },
+        "2 Setup": {},
+        "3 Methodology": {},
+        "4 Results": {
+            "[FIGURE S4.F2.g1]": [
+                316,
+                320
+            ],
+            "[FIGURE S4.F3.g1]": [
+                328,
+                332
+            ]
+        },
+        "5 Discussion": {
+            "[FIGURE S5.F4.g1]": [
+                354,
+                358
+            ],
+            "[FIGURE S5.F5.g1]": [
+                378,
+                382
+            ]
+        },
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Downstream Performance of English-Replaying Models at Various Ratios": {
+            "[FIGURE A1.F6.g1]": [
+                477,
+                481
+            ]
+        },
+        "Appendix B Fitting Error for Extended Scaling Law": {},
+        "Appendix C Theoretical Analysis and Interpretation of Extended Scaling Law": {},
+        "Appendix D Model Structural Parameters": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Setup": {
+            "[TABLE S2.T1]": [
+                42,
+                87
+            ]
+        },
+        "3 Methodology": {
+            "[TABLE S3.T2]": [
+                131,
+                273
+            ]
+        },
+        "4 Results": {},
+        "5 Discussion": {},
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Downstream Performance of English-Replaying Models at Various Ratios": {},
+        "Appendix B Fitting Error for Extended Scaling Law": {
+            "[TABLE A2.T3]": [
+                489,
+                563
+            ]
+        },
+        "Appendix C Theoretical Analysis and Interpretation of Extended Scaling Law": {},
+        "Appendix D Model Structural Parameters": {
+            "[TABLE A4.T4]": [
+                598,
+                1765
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Setup": {},
+        "3 Methodology": {},
+        "4 Results": {},
+        "5 Discussion": {},
+        "6 Related Work": {},
+        "7 Conclusion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Downstream Performance of English-Replaying Models at Various Ratios": {},
+        "Appendix B Fitting Error for Extended Scaling Law": {},
+        "Appendix C Theoretical Analysis and Interpretation of Extended Scaling Law": {},
+        "Appendix D Model Structural Parameters": {}
+    }
+}

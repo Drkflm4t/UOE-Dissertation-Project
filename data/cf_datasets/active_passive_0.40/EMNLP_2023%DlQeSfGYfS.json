@@ -1,0 +1,936 @@
+{
+    "o_paper": "EMNLP_2023%DlQeSfGYfS",
+    "cf_paper": {
+        "id": "EMNLP_2023%DlQeSfGYfS",
+        "meta": {
+            "venue": "EMNLP_2023",
+            "authors": [
+                "Shahar Lutati",
+                "Itamar Zimerman",
+                "Lior Wolf"
+            ],
+            "categories": [
+                "cs.LG",
+                "eess.SP",
+                "F.2.2; I.2.7"
+            ],
+            "entry_id": "http://arxiv.org/abs/2305.14952v2",
+            "links": [
+                "http://arxiv.org/abs/2305.14952v2",
+                "http://arxiv.org/pdf/2305.14952v2"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2305.14952v2",
+            "published": "2023-05-24T09:42:30+00:00",
+            "updated": "2023-10-18T11:24:31+00:00",
+            "primary_category": "cs.LG",
+            "title": "Focus Your Attention (with Adaptive IIR Filters)",
+            "summary": "We present a new layer in which dynamic (i.e.,input-dependent) Infinite\nImpulse Response (IIR) filters of order two are used to process the input\nsequence prior to applying conventional attention. The input is split into\nchunks, and the coefficients of these filters are determined based on previous\nchunks to maintain causality. Despite their relatively low order, the causal\nadaptive filters are shown to focus attention on the relevant sequence\nelements. The new layer is grounded in control theory, and is shown to\ngeneralize diagonal state-space layers. The layer performs on-par with\nstate-of-the-art networks, with a fraction of their parameters and with time\ncomplexity that is sub-quadratic with input size. The obtained layer is\nfavorable to layers such as Heyna, GPT2, and Mega, both with respect to the\nnumber of parameters and the obtained level of performance on multiple\nlong-range sequence problems.",
+            "license": null,
+            "venue_config": {
+                "id": "EMNLP_2023_Conference",
+                "name": "Empirical Methods in Natural Language Processing (EMNLP) of 2023",
+                "type": "Empirical Methods in Natural Language Processing (EMNLP)",
+                "description": "The Empirical Methods in Natural Language Processing (EMNLP) conference is a premier annual event organized by the Association for Computational Linguistics (ACL). It focuses on advances in natural language processing (NLP), emphasizing empirical approaches that use data-driven methods, such as machine learning, deep learning, and large-scale language models covering areas such as syntax, semantics, discourse, and phonology. It emphasizes machine learning techniques, including deep learning and large language models, and explores multilingual NLP, conversational AI, and information extraction. The conference also addresses ethical concerns like bias and fairness while showcasing applications in domains such as healthcare, social media, and computational social science..",
+                "guidelines": "## Review Guidelines:\n\n1. Be Specific:\n\tFlag issues with clear, detailed examples (e.g., \"X misses factor Y\" instead of \"X is wrong\").\n\tEnsure your points are understandable without requiring additional context.\n\n2. Avoid Common Review Pitfalls:\n\t* Avoid overused heuristics like \"Results are not surprising\" or \"The paper lacks novelty\" without clear justification.\n\t* Be open-minded about unexpected results, simpler methods, and niche topics.\n\n3. Watch for Common Issues in NLP Papers:\n\t* Methodology: Ensure valid evaluation, reproducibility, and clear assumptions.\n\t* Artifacts: Check for ethics issues and clear licensing.\n\t* Experimental Results: Avoid misleading framing, unsubstantiated claims, or statistical flaws.\n\t* General: Ensure clear research questions, proper citations, and accurate terminology.\n\n4. Ensure Consistency in Scores:\n\t* Justify low soundness scores with detailed explanations.\n\t* Use excitement scores for personal preferences and overall assessment for the paper\u2019s recommendation.\n\n5. Maintain a Professional, Neutral Tone:\n\t* Write reviews that help authors improve, avoiding sarcasm or dismissiveness.\n\t* Treat authors with respect, considering they may be early-career researchers or under stress.",
+                "guidelines_detailed": "## Write a strong review\n\n### 1. Be specific\n\nIf you would like to flag any issues, it should be specific and ideally understandable to the chairs without reading the full paper. Let us consider a few examples.\n\n* Instead of \"The paper is missing relevant references\" use \"The paper is missing references XYZ\"\n* Instead of \"X is not clear\" use \"Y and Z are missing from the description of X\"\n* Instead of \"The formulation of X is wrong\" use \"The formulation of X misses the factor Y\"\n* Instead of \"The contribution is not novel\" use \"Highly similar work X and Y has been published 3+ months prior to submission deadline\"\n* Instead of \"The paper is missing recent baselines\" use \"The proposed method should be compared against recent methods X, Y and Z\"\n* Instead of \"X was done in the way Y\" use \"X was done in the way Y which has the disadvantage Z\"\n* Instead of \"The algorithm's interaction with dataset is problematic\" use \"It's possible that when using the decoding (line 723) on the dataset 3 (line 512), there might not be enough training data to rely on the n-best list.\"\n\nThe advantage of the last version is that it can be understood by an area chair (who has expertise in the subarea) without looking for line numbers.\n\n### 2. Check for common review issues\n\nJudging whether a research paper is \u201cgood\u201d is an objectively hard task, and over the past conferences, we collected a list of common problems, which is presented below. Such comments may point at legitimate problems with the paper, but they are not always \u201cweaknesses\u201d. This can happen even to experienced reviewers, and it\u2019s worth checking your review for these problems before submitting.\n| Heuristic  | Why this is problematic |\n|------------|------------------------|\n| **H1. The results are not surprising** | Just because findings seem obvious doesn\u2019t mean they are known or useless. Empirical validation is still valuable. |\n| **H2. The results contradict what I would expect** | Avoid confirmation bias\u2014unexpected results can challenge assumptions and contribute to progress. |\n| **H3. The results are not novel** | If claiming lack of novelty, provide references. Contributions like analysis or reproduction are valid under CFP. |\n| **H4. This has no precedent in the existing literature** | Novel ideas can be harder to publish, but that doesn\u2019t make them invalid. Avoid excessive conservatism. |\n| **H5. The results do not surpass the latest SOTA** | SOTA is not required for a contribution. Improvements in efficiency, interpretability, or fairness also matter. |\n| **H6. The results are negative** | Negative results prevent hype and overclaiming. Knowing what doesn\u2019t work is as important as knowing what does. |\n| **H7. This method is too simple** | Simpler methods are often preferable\u2014effective, robust, and easier to deploy. Complexity isn\u2019t inherently better. |\n| **H8. The paper doesn't use [my preferred methodology]** | NLP includes diverse contributions beyond specific methodologies. Methodological diversity is essential. |\n| **H9. The topic is too niche** | Specialized research can have a significant impact within its subfield and contribute to broader understanding. |\n| **H10. The approach is tested only on [not English]** | Research on any language is valuable, both practically and theoretically, just as English-only studies are. |\n| **H11. The paper has language errors** | Clarity is more important than perfect language. Scientific content matters more than writing style. |\n| **H12. The paper is missing the [reference X]** | Missing key references is a concern only if the work was published 3+ months before the deadline. Otherwise, suggest rather than criticize. |\n| **H13. The authors could also do [extra experiment X]** | Extra experiments are always possible but not always necessary. If critical, justify why. Otherwise, suggest rather than reject. |\n| **H14. The authors should compare to a 'closed' model X** | Closed-model comparisons are useful only if relevant to the claim. Lack of transparency can make them unreliable. |\n| **H15. The authors should have done [X] instead** | Different approaches exist. Only critique if the chosen method prevents answering the research question or is misleading. |\n| **H16. Limitations != weaknesses** | Acknowledging limitations is required; listing them as weaknesses without justification is unfair. Argue why they invalidate the work if relevant. |\n\nIf you have something like the above listed as a \u201cweakness\u201d of the paper, do try to revisit the paper with an open mind. Both the authors and the ACs will be aware of these guidelines and can refer to them in discussion/meta-review.\n\n### 3. Check for common problems in NLP papers\n\nAs a counter to common problems with reviews, there are also common problems with NLP papers. We do ask you to watch out for these and point them out when you see them. Above all else, published research should at least be technically sound and appropriately scoped. As with the above reviewer issues, it\u2019s a case-by-case evaluation: some things in the list below may be appropriate in a given context, given that they are sufficiently motivated. We provide codes for different types of issues (e.g. M1, G2\u2026) that can be referenced in discussions.\n\n#### Issues with methodology (M)\n\n- **M1. LLM-only evaluation without validation**: If LLMs are used as evaluators, their reliability must be validated in this context.  \n\n- **M2. Reproducibility issues**: Are there enough details to reproduce the experiments, including hyperparameters? Is code or data provided for reviewer evaluation? Reproducibility refers to rerunning experiments with similar results, not reimplementing them.  \n\n- **M3. Undisclosed data quality issues**: If the paper provides datasets or samples, any quality issues should be disclosed. If undisclosed issues exist, it's a serious concern.  \n\n- **M4. Unmotivated selection**: The paper should justify its choice of models and benchmarks in relation to its claims. Even if you would have chosen differently, their selection must be reasonable.  \n\n- **M5. Incomplete assumptions or proofs**: Assumptions should be clearly stated, and formal statements (theorems, lemmas, etc.) must be backed by complete, correct proofs, even if placed in an appendix.  \n\n#### Issues with artifact sourcing or release (T)\n\n- **T1. Ethics issues with data collection**: If human data collection is involved, ethical considerations (e.g., approval, compensation) should be addressed. Major concerns can be flagged for ethics review.\n\n- **T2. Unclear license/release terms**: If a dataset or model is released, the terms should be explicitly stated. Reviewers should check clarity, not make legal judgments.  \n\n#### Issues with experimental results (R)\n\n- **R1. Analysis issues**: Issues include misleading statistics, cherry-picked results, or poorly tuned baselines that affect fairness in comparisons.  \n\n- **R2. Inappropriate scope of claims**: Claims should be based on representative samples. Evaluating a few benchmarks does not justify broad statements about reasoning, understanding, or LLM capabilities.  \n\n- **R3. Hypotheses/speculations as conclusions**: Claims must be supported by evidence or marked as speculation, not presented as established facts.  \n\n- **R4. Misleading framing or overclaiming**: Overgeneralized conclusions, such as stating that LLMs \"understand\" language based only on benchmark results, should be avoided.  \n\n- **R5. Missing statistical significance assessment**: Key results should include error bars, confidence intervals, and statistical significance tests, with details on variability and assumptions.  \n\n#### General issues (G)\n\n- **G1. Unclear research question or contribution**: The paper should clearly state the problem it addresses, its contributions, and its limitations in the abstract and introduction.  \n\n- **G2. Reliance on a bad precedent**: Justifying methods by citing flawed or outdated work is problematic. If precedent is questionable, reviewers should clarify their stance.  \n\n- **G3. Missing/misrepresented related work**: Authors should fairly represent previous research, ensuring novelty claims are justified and related work is accurately cited.  \n\n- **G4. Key terms too vague and undefined**: If an important term is unclear or undefined, the paper should specify or reference its meaning.  \n\n- **G5. Misleading/incorrect citations**: Citations must accurately reflect the referenced work. Increasing reliance on LLM-generated summaries makes this issue more prevalent.  \n\n\n### 4. Check that your scores reflect the review\n\nARR reviewers are asked to provide three scores: soundness, excitement, and overall recommendation.\n\nThe soundness scores must be justified by the text of the review . If you give a low Soundness score without finding any major faults, this means that your review is not a faithful explanation of your recommendation, and you need to revise it. One possible reason for low soundness scores without sufficient justification could be reliance on some unconscious bias or heuristic, like the ones listed in the previous section. Likewise, low reproducibility scores should be justified.\n\nSometimes you may find the work sound, but not something that is interesting for you personally. Such preferences are more subjective and should be reflected in a separate excitement score, which is orthogonal to the assessment of the soundness of the paper. Excitement scores reflect our personal taste, and so do not necessarily come with explicit reasons.\n\nThe Overall assessment score is an explicit recommendation for the outcome of this paper, if it were committed to an *ACL venue. This is a composite score reflecting your assessment of soundness, excitement, and also other factors like novelty and impact. All papers recommended for Findings and main conferences are expected to be sufficiently sound and reproducible, but you may consider a paper worthy of the main conference even if you personally are not excited about it. For example, improvements in efficiency of some algorithm, or creating a high-quality resource for a language/domain that does not yet have resources of that type may not sound very novel or exciting, but you may still consider it a significant contribution due to its potential impact (for its target community).\n\n\n### 5. Check that the tone is professional and neutral\n\nAbove all, a good review should be professional and neutral, if not kind. A key goal of peer review is to help the authors improve their papers. As an anonymous reviewer, you are in a position of power, and the written medium makes it easier to be more dismissive and sarcastic than if you were communicating with the authors face-to-face. Unfortunately such reviews are not uncommon.\n\nConsider that you may well be addressing someone who is only starting on the research path. And/or someone struggling with stress and other mental health issues. And/or someone who has been less lucky with their school and advisors. Academic lives are already stressful enough, and we do not need to inflict extra damage on the mental health of our colleagues with sarcastic or insulting reviews. Write the review you would like to get yourself.\n\nThe fact is, authors and reviewers are actually the same people: the conference crowd lining up for coffee, happily chatting with each other about the grand problems even if they do not always agree. Why can\u2019t we do peer review in the same spirit of fun intellectual interaction with colleagues?\n\nJust like the conference coffee break chats, reviewing is in fact, mutually beneficial: in exchange for feedback, the reviewers get to have the first look at cutting-edge research. Just like the coffee breaks, where you do not necessarily meet only the people working in your subsubfield, peer review may expose you to new techniques. Since there is careful written communication in the authors\u2019 response, you may even find that you were wrong about something, which is a much faster way to learn than making the same mistake in your own research.\n\nNot to mention, someone out there is reviewing your papers too. The more rude or dismissive reviews there are, the more of a norm they become, and the higher the chances you will get one yourself in the future.",
+                "template_field_semantics": {
+                    "summary": "Paper Topic And Main Contributions",
+                    "strengths": "Reasons To Accept",
+                    "weaknesses": "Reasons To Reject",
+                    "suggestions": "Questions For The Authors"
+                },
+                "review_template": {
+                    "Paper Topic And Main Contributions": "Describe what this paper is about. This should help action editors and area chairs to understand the topic of the work and highlight any possible misunderstandings.",
+                    "Reasons To Accept": "What are the major reasons to publish this paper at EMNLP? These could include novel and useful methodology, insightful empirical results or theoretical analysis, clear organization of related literature, or any other reason why interested readers of *ACL papers may find the paper useful.",
+                    "Reasons To Reject": "What are the concerns that you have about the paper that would cause you to favor prioritizing other high-quality papers that are also under consideration for publication? These could include concerns about correctness of the results or argumentation, limited perceived impact of the methods or findings (note that impact can be significant both in broad or in narrow sub-fields), lack of clarity in exposition, or any other reason why interested readers of *ACL papers may gain less from this paper than they would from other papers under consideration. Where possible, please number your concerns so authors may respond to them individually.",
+                    "Questions For The Authors": "If you have any questions to the authors, other than addressing the concerns above, please list them here.",
+                    "Missing References": "List any missing references here",
+                    "Typos Grammar Style and Presentation Improvements": "List any typos, grammar issues, or style and presentation improvements here"
+                },
+                "overall_score_name": "Overall Assessment",
+                "review_scores": {
+                    "Reviewer Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "Positive that my evaluation is correct. I read the paper very carefully and am familiar with related work.",
+                            "4": "Quite sure. I tried to check the important points carefully. It\u2019s unlikely, though conceivable, that I missed something that should affect my ratings.",
+                            "3": "Pretty sure, but there\u2019s a chance I missed something. Although I have a good feel for this area in general, I did not carefully check the paper\u2019s details, e.g., the math or experimental design.",
+                            "2": "Willing to defend my evaluation, but it is fairly likely that I missed some details, didn\u2019t understand some central points, or can\u2019t be sure about the novelty of the work.",
+                            "1": "Not my area, or paper is very hard to understand. My evaluation is just an educated guess."
+                        }
+                    },
+                    "Soundness": {
+                        "meaning": "Given that this is a short/long paper, is it sufficiently sound and thorough? Does it clearly state scientific claims and provide adequate support for them? For experimental papers: consider the depth and/or breadth of the research questions investigated, technical soundness of experiments, methodological validity of evaluation. For position papers, surveys: consider whether the current state of the field is adequately represented and main counter-arguments acknowledged. For resource papers: consider the data collection methodology, resulting data & the difference from existing resources are described in sufficient detail.",
+                        "scores": {
+                            "5": "Excellent: This study is one of the most thorough I have seen, given its type.",
+                            "4": "Strong: This study provides sufficient support for all of its claims. Some extra experiments could be nice, but not essential.",
+                            "3": "Acceptable: This study provides sufficient support for its main claims. Some minor points may need extra support or details.",
+                            "2": "Poor: Some of the main claims are not sufficiently supported. There are major technical/methodological problems.",
+                            "1": "Major Issues: This study is not yet sufficiently thorough to warrant publication or is not relevant to ACL."
+                        }
+                    },
+                    "Excitement": {
+                        "meaning": "How exciting is this paper for you? Excitement is subjective, and does not necessarily follow what is popular in the field. We may perceive papers as transformational/innovative/surprising, e.g. because they present conceptual breakthroughs or evidence challenging common assumptions/methods/datasets/metrics. We may be excited about the possible impact of the paper on some community (not necessarily large or our own), e.g. lowering barriers, reducing costs, enabling new applications. We may be excited for papers that are relevant, inspiring, or useful for our own research. These factors may combine in different ways for different reviewers.",
+                        "scores": {
+                            "5": "Highly Exciting: I would recommend this paper to others and/or attend its presentation in a conference.",
+                            "4": "Exciting: I would mention this paper to others and/or make an effort to attend its presentation in a conference.",
+                            "3": "Interesting: I might mention some points of this paper to others and/or attend its presentation in a conference if there\u2019s time.",
+                            "2": "Potentially Interesting: this paper does not resonate with me, but it might with others in the *ACL community.",
+                            "1": "Not Exciting: this paper does not resonate with me, and I don\u2019t think it would with others in the *ACL community (e.g. it is in no way related to computational processing of language)."
+                        }
+                    },
+                    "Overall Assessment": {
+                        "meaning": "Do you believe the paper should be accepted? Outstanding papers should be either fascinating, controversial, surprising, impressive, or potentially field-changing.",
+                        "scores": {
+                            "5": "Award quality: technically flawless paper with groundbreaking impact.",
+                            "4.5": "Borderline award",
+                            "4": "Very strong accept: technically flawless paper with excellent impact",
+                            "3.5": "Borderline strong accept",
+                            "3": "Accept: technically strong paper with high impact",
+                            "2.5": "Borderline Reject",
+                            "2": "Reject: technical flaws and low interest to the community",
+                            "1.5": "",
+                            "1": "Strong Reject: trivial results, many technical flaws and low interest to the community"
+                        }
+                    }
+                }
+            },
+            "oid": "EMNLP_2023%DlQeSfGYfS",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/EMNLP_2023_Conference/EMNLP_2023%DlQeSfGYfS/media"
+        },
+        "md": "\n# Focus Your Attention (with Adaptive IIR Filters)\n\n###### Abstract\n\nWe present a new layer in which dynamic (i.e., input-dependent) Infinite Impulse Response (IIR) filters of order two are used to process the input sequence prior to applying conventional attention. The input is split into chunks, and the coefficients of these filters are determined based on previous chunks to maintain causality. Despite their relatively low order, the causal adaptive filters are shown to focus attention on the relevant sequence elements. The new layer is grounded in control theory, and is shown to generalize diagonal state-space layers. The layer performs on-par with state-of-the-art networks, with a fraction of their parameters and with time complexity that is sub-quadratic with input size. The obtained layer is favorable to layers such as Heyna, GPT2, and Mega, both with respect to the number of parameters and the obtained level of performance on multiple long-range sequence problems.  \n\n## 1 Introduction\n\nDesigning sequence models that capture short- and long-term dependencies is a central goal of sequence modeling. Besides performance, computational complexity also plays a part when dealing with long sequences. Although transformers\u00a0Vaswani et\u00a0al. ([2017](#bib.bib49)) excel at tasks that involve short-range dependencies, their performance on data with long-range dependencies can be poor. For example, regardless of the high time complexity, on the Long Range Arena benchmark (LRA)\u00a0Tay et\u00a0al. ([2020](#bib.bib46)) transformers perform poorly compared to other sequence models.  \n\nAnother approach that has emerged to address long-range data processing is the utilization of regularized implicit global (long) convolutions. In this technique, convolutions are employed along the sequence dimension, enabling convolutions with a global receptive field. Initially, this approach was implemented through state-space layers\u00a0Gu et\u00a0al. ([2021b](#bib.bib21), [a](#bib.bib20)), which introduced a recurrent layer that could be efficiently computed via a global convolution. Recent research has explored alternative variations of global convolutions, including implicit\u00a0Poli et\u00a0al. ([2023](#bib.bib39)) and regularized parameterization\u00a0Fu et\u00a0al. ([2023](#bib.bib16)); Li et\u00a0al. ([2022](#bib.bib33)). These methods have demonstrated improved performance on tasks involving long-range dependencies and with sub-quantitative complexity. They have also shown effectiveness in enhancing long-range transformer capabilities\u00a0Ma et\u00a0al. ([2022](#bib.bib36)); Zuo et\u00a0al. ([2022](#bib.bib62)); Saon et\u00a0al. ([2023](#bib.bib44)). However, it remains uncertain whether these models can scale up or function similarly to transformers across a diverse range of tasks\u00a0Vardasbi et\u00a0al. ([2023](#bib.bib48)).  \n\nThis work strives to efficiently integrate convolution-based sequence models and transformers, to provide a model that is capable of handling both short and long dependencies. The attempt to combine these components was first presented by Ma et\u00a0al. ([2022](#bib.bib36)), who used a simple global convolution before each transformer block. This convolution is parameterized by the Exponential Moving Average (EMA) recurrent rule and can be seen as an IIR filter. In this work, instead of using first-order IIR filters, we introduce learnable adaptive IIR filters, which allow us to propose Focus, a layer that combines local attention and a novel type of regularized global convolution grounded on a hypernetwork that produces adaptive IIR filters.  \n\nOur main contribution is the focus layer, which has several unique properties: (i) We are the first to use data-dependent global filters, which are implemented by a global hyper-network mechanism that focuses local attention. (ii) In contrast to other works in the domain that employ FIR filters, it relies on IIR filters. (iii). We present an efficient and stable computation of those IIR filters. (iv) Theoretically, our layer is grounded in the theory of control systems, similar to state-space layers, which are built on the state-space model (SSM) of control theory. Furthermore, in Sec. [4](#S4 \"4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\") we show that IIR filters are a generalization of SSMs and diagonal-linear RNNs, which have recently been recognized as remarkable long-range learning architectures\u00a0Gupta et\u00a0al. ([2022a](#bib.bib23)); Gu et\u00a0al. ([2022](#bib.bib19)); Orvieto et\u00a0al. ([2023](#bib.bib38)); Gupta et\u00a0al. ([2022b](#bib.bib24)); Saon et\u00a0al. ([2023](#bib.bib44)); David et\u00a0al. ([2023](#bib.bib12)). By drawing upon the extensive research conducted on IIR filters, our findings can provide additional insights into the effectiveness, stability, expressiveness, and initialization of those layers.  \n\n## 2 Background and related work\n\nIIR filters, known as infinite impulse response filters, are digital filters that utilize feedback to generate an output signal. Their primary applications involve signal smoothing, filtering, and signal modification. These filters are extensively employed in various fields, such as audio processing, speech processing, and image processing. One notable advantage of IIR filters is their ability to achieve a significantly sharper roll-off in the transition region compared to an FIR filter of the same order. This is made possible by the presence of complex poles in the IIR filters, which enable them to attenuate frequencies more rapidly.  \n\nThe state-space representation of an IIR filter is a convenient way to represent the filter\u2019s dynamics and to implement it in software. It consists of three parts: the state vector, the state transition matrix, and the output matrix. The state vector contains the filter\u2019s internal state variables, the state transition matrix describes how the state vector changes over time, and the output matrix describes how the output signal is computed from the state vector. Such representation are described in Zhang et\u00a0al. ([2023](#bib.bib59))  \n\n### 2.1 Learnable IIR Filters\n\nSince IIR filters are computationally efficient and expressive, we naturally design IIR filters with Deep Learning. Kuznetsov et al. ([2020](#bib.bib32)) proposes an approach to using traditional digital IIR filter structures inside deep-learning networks trained using backpropagation. The authors establish the link between these structures and recurrent neural networks, and they present three different differentiable IIR filter topologies. They compare the proposed topologies against each other and an established baseline and show that the proposed topologies can achieve better performance in some cases. Additionally, the authors present a simple Wiener-Hammerstein model that uses differentiable IIRs as its filtering component and train it on a guitar signal.\n\n### 2.2 Global Convolutions\n\nThe global convolution, also known as a long convolution, is a layer that applies scalar convolutions along the sequence dimension, enabling the handling of unrestricted 1-D sequences. Empirically, these layers have shown strong performance in tasks involving long-range dependencies, particularly in domains such as NLP\u00a0Dao et\u00a0al. ([2022b](#bib.bib11)); Mehta et\u00a0al. ([2022](#bib.bib37)); Wang et\u00a0al. ([2022](#bib.bib52)), audio\u00a0Goel et\u00a0al. ([2022](#bib.bib18)), speech\u00a0Saon et\u00a0al. ([2023](#bib.bib44)), video\u00a0Islam et\u00a0al. ([2022](#bib.bib29)); Wang et\u00a0al. ([2023](#bib.bib51)), time-series analysis\u00a0Zhang et\u00a0al. ([2023](#bib.bib59)) and more. Moreover, they exhibit computational efficiency as their cost is sub-quadratic. However, to achieve SOTA results, appropriate regularization is necessary. The approach of Gu et\u00a0al. ([2021b](#bib.bib21), [a](#bib.bib20)); Ma et\u00a0al. ([2022](#bib.bib36)); Li et\u00a0al. ([2022](#bib.bib33)) incorporates a parameterization that inherently regularizes the kernel and decoupling sequence length from parameter count. Romero et\u00a0al. ([2021](#bib.bib43)); Poli et\u00a0al. ([2023](#bib.bib39)) utilizes an implicit parameterization learned by FFNs operating on positional encodings, while \u00a0Fu et\u00a0al. ([2023](#bib.bib16)) explicitly regularizes the convolution kernels using squash or smooth operators.  \n\n### 2.3 Long Range Transformers\n\nTransformers\u00a0Vaswani et\u00a0al. ([2017](#bib.bib49)) have emerged as highly effective models for various tasks, but their widespread adoption has been limited by the quadratic cost of the self-attention mechanism and poor performance on long-range tasks. Researchers have pursued diverse approaches to overcome this challenge and to create efficient transformer architectures\u00a0Fournier et\u00a0al. ([2021](#bib.bib15)); Tay et\u00a0al. ([2022](#bib.bib47)). From the perspective of efficiency, techniques such as sparse attention\u00a0Child et\u00a0al. ([2019](#bib.bib7)), low-rank attention\u00a0Wang et\u00a0al. ([2020](#bib.bib53)); Winata et\u00a0al. ([2020](#bib.bib54)), kernel-based attention\u00a0Choromanski et\u00a0al. ([2020](#bib.bib8)), recurrent mechanisms\u00a0Hutchins et\u00a0al. ([2022](#bib.bib28)); Dai et\u00a0al. ([2019](#bib.bib9)), and efficient IO-awareness-based implementation\u00a0Dao et\u00a0al. ([2022a](#bib.bib10)) proved efficient. From the perspective of effectiveness, \u00a0Yu et\u00a0al. ([2023](#bib.bib56)); Ivgi et\u00a0al. ([2023](#bib.bib30)) combines local and global attention models hierarchically, enhancing the model\u2019s ability to handle extensive context Other techniques employ global memory-based Attention\u00a0Gupta and Berant ([2020](#bib.bib22)); Al\u00a0Adel ([2022](#bib.bib1)); [Burtsev](#bib.bib5) , and\u00a0Zhou et\u00a0al. ([2022](#bib.bib61)) applies attention in the frequency domain to expand long-range capabilities.  \n\n### 2.4 Hyper Networks\n\nA hypernetwork Ha et al. ([2016](#bib.bib25)) functions by mapping a set of inputs to a set of weights, which serve as the parameters for a 'primary network'. Researchers have demonstrated the effectiveness of hypernetworks across various tasks, including image classification Lutati and Wolf ([2023](#bib.bib35)), natural language processing He et al. ([2022](#bib.bib27)), and speech recognition Szatkowski et al. ([2022](#bib.bib45)). Furthermore, research has shown that hypernetworks can improve neural networks' performance on meta-learning tasks such as few-shot learning Bertinetto et al. ([2016](#bib.bib3)), continual learning Von Oswald et al. ([2019](#bib.bib50)), and neural architecture search Zhang et al. ([2019](#bib.bib57)).\n\n### 2.5 Adaptive Filtering\n\nResearchers use adaptive filtering as a technique to improve the quality of a signal by removing noise or interference. Adaptive filters can adapt to changes in the signal or the environment, which makes them well-suited for a variety of applications.\n\nOne common technique used in adaptive filtering is the short-time Fourier transform (STFT), which provides a time-frequency representation of a signal. It enables the analysis of time-varying properties of a signal by dividing it into short-time windows and applying the Fourier transform to each window. The STFT reveals the distribution of frequency content over time, which allows the adaptive filter to track the frequency content of the signal and adapt its coefficients accordingly. However, STFT introduce non-causal implementation due to overlapping time-bins. To mitigate it, we introduce chunked-FFT, a degenerate form of the STFT.  \n\nRecent research in AI has focused on using deep learning to improve the performance of adaptive filters. For example, deep learning has been used to improve the performance of adaptive filters for noise cancellation Zhang and Wang ([2021](#bib.bib58)), echo cancellation Haubner and Kellermann ([2022](#bib.bib26)), and equalization Zhou et\u00a0al. ([2020](#bib.bib60)). Deep learning has also been used to develop new adaptive filter architectures that are more robust to noise and interference Alwan and Hussain ([2022](#bib.bib2)). Revach et\u00a0al. ([2022](#bib.bib42)) demonstrate how deep learning can be used to improve the performance of Kalman filtering Kalman ([1960](#bib.bib31)), a classical control algorithm.  \n## 3 Method\n\n### 3.1 Overview\n\nWe start by discussing the main design choices of our architecture.  \n\nChunking and the combination of local and global models\u2003 Given the quadratic complexity of transformers, chunking is a common practice for computing short-range attention efficiently. However, despite excelling in short-range tasks, full-length transformers often struggle to handle long-range dependencies and often perform comparably to local-attention-based transformers\u00a0Xiong et\u00a0al. ([2021](#bib.bib55)). Recent studies have demonstrated that a combination of local and global transformers can achieve state-of-the-art performance on long-range tasks\u00a0Ivgi et\u00a0al. ([2023](#bib.bib30)); Yu et\u00a0al. ([2023](#bib.bib56)); Hutchins et\u00a0al. ([2022](#bib.bib28)). Inspired by these findings, we introduce local attention as the local model, which is combined with a novel type of global convolution as the global model. Furthermore, in contrast to Hutchins et\u00a0al. ([2022](#bib.bib28)); Bulatov et\u00a0al. ([2023](#bib.bib4)), our global model does not use recurrent computations, since it severely restricts parallelization.  \n\nAdaptive IIR Filters\u2003 In MEGA \u00a0Ma et\u00a0al. ([2022](#bib.bib36)), it was demonstrated that incorporating an EMA at the beginning of each transformer block improves transformer performance in long-range tasks. EMA can be viewed as a convolution operation using simple first-order IIR filters. Motivated by this finding, we adopt a more versatile and expressive convolution approach that utilizes adaptive filters generated by a hypernetwork. Since the hypernetwork is an integral part of our global model, it employs global convolutions. Specifically, the regularized global convolution of\u00a0Fu et\u00a0al. ([2023](#bib.bib16)) is used, as the most straightforward option. A common challenge with hypernetworks is ensuring relatively small output sizes. In this regard, leveraging IIR filters, which have only a few parameters, is a reasonable choice.  \n\n### 3.2 The Focus Layer\n\n[FIGURE S3.F1.g1]\n![Figure S3.F1.g1](./media/focus_full_arch.png)\n\nFigure 1: Focus Architecture: (a) The architecture of a single head. (b) The obtained layer. (c) The entire model. The architecture of the model and layer are defined similarly to MEGA\u00a0Ma et\u00a0al. ([2022](#bib.bib36)). Blocks in blue are not learned, while blocks in red are learned parameters. $S2P$ (serial to parallel) and $P2S$ (parallel to serial) are the chunking and the de-chunking operations, respectively.\n[/FIGURE]\n\nIn this section, we describe the focus attention head, our primary contribution. This head is integrated into the MEGA backbone, as visualized in Fig\u00a0[1](#S3.F1 \"Figure 1 \u2023 3.2 The Focus Layer \u2023 3 Method \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). Let $x$ be the input for the focus layer, where $x\\in\\mathcal{R}^{L\\times D}$, $L$ is the sequence length, and $D$ is the input\u2019s dimension. Our method, termed Focus, utilizes the foundations of adaptive filtering theory to cope with very long stochastic sequences. Given the seasonality of the sequence, the resolution of the FFT is determined by its size in each time-bin. Denote the size of the FFT in a single time-bin as $NFFT$.  \n\nThe first component of the Focus layer is the hypernetwork, $H$. The output of $H$ is $\\Theta$, which is the set of IIR kernels used for the forward processing of the sequence. $\\Theta$ has a dimension of $Nbins\\times D\\times F\\times 2$, denoting $F$ kernels, each with a kernel size of two for $D$ feature channels. The kernel is unique per time-bin, $Nbins$, which makes the filter adaptive to changes over time.  \n\n|  | $$\\Theta=H(x)\\,.$$ |  | (1) |\n| --- | --- | --- | --- |\n\n$H$ has two main components. The first is a shallow global convolution Fu et\u00a0al. ([2023](#bib.bib16)) based sub-model that is followed by adaptive max pooling (over each feature channel) [Pytorch](#bib.bib40)  with a size of $O\\times Nbins$, where $O$ is the oversampling factor.  \n\n|  | $$e=\\operatorname{MaxPool}(\\operatorname{GlobalConv}(x))$$ |  | (2) |\n| --- | --- | --- | --- |\n\nwhere $e$ is the embedding from processing $x$ using the global convolution layer. This computation can be shared across multiple Focus layers and can be split into local ($H_{\\text{local}}$) and global ($H_{\\text{global}}$) sub-components, as in most of our experiments, thus reducing substantially the computational cost. Furthermore, the embedding is permuted such that the feature space has the size $O$ while $Nbins$ is added to the batch dimension for parallel computing.  \n\nThe second component of $H$ is a 2-layer MLP with sigmoid activations that maps the embedding $e$ to a tensor with size $Nbins\\times D\\times F\\times 2$. With mapping of latent dimension $O$ to $2\\cdot F$  \n\n$\\Theta$ is calculated using an MLP on $e$, (3)\n| --- | --- | --- | --- |\n\nwhere $\\Theta$ is the IIR kernel, with size $Nbins\\times D\\times F\\times 2$. $MLP$ is the forward MLP mapping, as described above. Since $H$ is a hypernetwork, the initialization of the last layer of the MLPs follows Chang et\u00a0al. ([2020](#bib.bib6)). The rest of the layers follow the Xavier initialization Glorot and Bengio ([2010](#bib.bib17)). The input $x$ is split into non-overlapping time bins, where each time bin is passed through the FFT of the size $NFFT$. Denote the input in the r-th time bin as $x_{r}$.  \n\n|  | $$X[\\omega,r]=FFT(x_{r})\\,,$$ |  | (4) |\n| --- | --- | --- | --- |\n\nwhere $\\omega$ is the normalized frequency variable, sampled evenly on $2\\pi$ range, and $r$ is the index over the different time bins.  \n\nA note about causality\u2003 To maintain a fully causal model that is applicable to auto-regressive tasks, we process each time bin on its own and do not overlap it with other time bins. In addition, we shift $\\Theta$ right by one time bin so that we process the sequence at time bin $i$ with the kernel computed from time bin $i-1$.\n\nFor each time-bin index, the corresponding IIR filter is applied. The IIR filter of order 2 has the following frequency response, denote it as $IIR_{imp}$  \n\n|  | $$IIR_{imp}(f)=\\frac{1}{1+\\Theta[0]\\cdot e^{-j\\cdot 2\\pi f}+\\Theta[1]\\cdot e^{-j\\cdot 4\\pi f}}\\,,$$ |  | (5) |\n| --- | --- | --- | --- |\n\nSince a Sigmoid activation is used for the last layer of $H$, it is guaranteed that $\\Theta$\u2019s elements are positive real numbers smaller than 1. Further analysis and reasoning behind the specific selections made are presented in Sec.\u00a0[4](#S4 \"4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\").  \n\nRecall that we multiply by the conjugated impulse response in the frequency domain as the equivalent of filtering,\n\n|  | $$X_{f}=X\\circ IIR_{imp}^{*}\\,,$$ |  | (6) |\n| --- | --- | --- | --- |\n\nwhere the conjugation is denoted by a star and $\\circ$ is the elementwise (Hadamard) multiplication. We collapse the hyper-dimension $F$, defined earlier as the filter-bank size, using a regular sum operation and denote the resulting tensor as $X_{c}$\n\n|  | $$X_{c}=\\mathbf{1}\\cdot X_{f}\\,,$$ |  | (7) |\n| --- | --- | --- | --- |\n\nwhere $\\mathbf{1}$ is an all-ones vector with size $1\\times F$. The collapsed tensor is the short-time Fourier representation of the original sequence filtered with adaptive filter kernels. The frequency representation goes through the inverse chunked Fourier transform (IFFT), to obtain the time-domain sequence.  \n\n|  | $$x_{f}=IFFT(X_{c})$$ |  | (8) |\n| --- | --- | --- | --- |\n\nThe time-domain sequence has the same dimensions as the original sequence, yet, by applying an adaptive filter to it, we furnish it with an induction bias that helps smaller context attention head to cope with complicated tasks.  \n\nWe split the sequence into $C$ separate non-overlapping chunks. Denote the chunk length as $M$, such that $L=MC$. We denote the chunk of signal with uppercase $i$, and use square brackets for indexing, starting with index 0, as follows\n\n|  | $$x^{i}=(x[iM],x[iM+1],\\dots,x[(i+1)M-1])$$ |  | (9) |\n| --- | --- | --- | --- |\n\n[FIGURE S3.F2.g1]\n![Figure S3.F2.g1](./media/iir_filters.png)\n\nFigure 2: Filter responses for three random filters with the specific denominator structure of Eq.\u00a0[16](#S4.E16 \"In 4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\").\n[/FIGURE]\n\nAll chunks are processed in parallel with the same small attention head,  \n\n|  | $$y^{i}=Atten(Qx^{i},Kx_{f}^{i},Vx_{f}^{i})\\,,$$ |  | (10) |\n| --- | --- | --- | --- |\n\nwhere $Q,\\,K,\\,V$ are the query, key, and value matrices that map each chunk to their latent corresponding space. Note that the attention head is causal, as it uses lower triangle masking. The chunks, $y^{i}$, are rearranged to form a complete signal, with sequence length $L$, denote it as $y$. Following Ma et\u00a0al. ([2022](#bib.bib36)), the output of the Focus layer, $y$, passes through reset gate $\\gamma$, the update gate $\\psi$. Specifically,  \n\n|  | $$\\gamma=\\operatorname{SiLU}(x_{f}W_{\\gamma}+b_{\\gamma})$$ |  | (11) |\n| --- | --- | --- | --- |\n\n|  | $$\\phi=\\operatorname{sigmoid}(x_{f}W_{\\phi}+b_{\\phi})$$ |  | (12) |\n| --- | --- | --- | --- |\n\n|  | $$z=\\operatorname{SiLU}(x_{f}W_{h}+(\\gamma\\circ y)U_{h}+b_{h})\\,,$$ |  | (13) |\n| --- | --- | --- | --- |\n\nwhere $W_{\\gamma}$, $W_{\\phi}$ and $W_{h}$ are learned matrices with size $D\\times D$. $b_{\\gamma}$, $b_{\\phi}$, and $b_{h}$ are learned biases with size $D$. SiLU stands for the sigmoid linear unit Elfwing et\u00a0al. ([2018](#bib.bib13)).  \n\nWe calculate the final output as the gated summation of the gated attention and the input sequence,\n\n|  | $$o=\\phi\\circ z+(1-\\phi)\\circ x$$ |  | (14) |\n| --- | --- | --- | --- |\n## 4 Analysis\n\nResearchers commonly use IIR (Infinite Impulse Response) and FIR (Finite Impulse Response) as the two main types of digital filters, which have distinct characteristics. Their impulse response and filtering properties are the main differences between them. FIR filters have a finite impulse response, meaning that the filter output is based solely on a finite number of past input samples. In contrast, IIR filters have an infinite impulse response, allowing the filter output to depend on both past and future input samples.\n\nOne advantage of IIR filters is their ability to achieve a desired frequency response with fewer coefficients compared to FIR filters. This makes IIR filters more computationally efficient, requiring fewer calculations and lower memory requirements. Consequently, in control feedback systems where real-time operation and computational efficiency are crucial, IIR filters are often preferred.  \n\nAdditionally, higher selectivity and a sharper roll-off can be exhibited in the frequency domain by IIR filters compared to FIR filters. It can be considered advantageous in control feedback systems, where specific frequency components are precisely controlled.\n\nImproper design of IIR filters can make them more sensitive to quantization errors and prone to instability. The presence of feedback loops in control systems can further impact stability considerations. Therefore, one must give careful attention to stability analysis and appropriate filter design techniques to ensure reliable performance.\n\nThe filter can be described in the frequency domain as a rational polynomial function of the complex exponent $e^{-j2\\pi f}$. Denote the complex exponent as $S$.  \n\n|  | $$S=e^{-j2\\pi f}$$ |  | (15) |\n| --- | --- | --- | --- |\n\nA second-order system can be described as follows,  \n\n|  | $$IIR(S)=\\frac{1}{aS^{2}+bS+1}$$ |  | (16) |\n| --- | --- | --- | --- |\n\nSpecifically, when general \\( b,a \\) is solved, it gives,\n\nline 173: |  | $$IIR(t)=\\alpha e^{t(-\\frac{b}{2a}-\\frac{\\sqrt{b^{2}-4a})}{2a})}+\\beta e^{t(-\\frac{b}{2a}+\\frac{\\sqrt{b^{2}-4a})}{2a})}\\,,$$ |  | (17) |\nline 174: | --- |\n\nwhere $\\alpha$ and $\\beta$ are normalizing factors. Denote the term under the square root as discriminant, $\\Delta$. For any $b\\geq 0$ and $a\\geq 0$ the following holds:  \n\n|  | $$\\Delta\\leq b^{2}\\,\\,\\,\\forall\\{a,b\\}\\geq 0\\,.$$ |  | (18) |\n| --- | --- | --- | --- |\n\nIn order to guarantee stability, both exponents should decay, which leads to the requirement that the real part must be negative.  \n\n|  | $$Re\\{-\\frac{b}{2a}\\pm\\frac{\\sqrt{\\Delta})}{2a})\\}\\leq 0\\,.$$ |  | (19) |\n| --- | --- | --- | --- |\n\nThis can be achieved if $b$ is positive. In the scenario where $\\Delta\\leq 0$, the exponents have an imaginary part, causing it to oscillate. This is called an under-damped response. This response is stable, yet more expressive than Exponential Moving Average (EMA) filters, as found in MEGA\u00a0Ma et\u00a0al. ([2022](#bib.bib36)). The frequency of the sine, $\\omega$, in this case is  \n\n|  | $$\\omega=\\frac{\\sqrt{\\Delta}}{2a}\\,,$$ |  | (20) |\n| --- | --- | --- | --- |\n\nand the time domain impulse response reads,  \n\n|  | $$IIR(t)=\\gamma e^{-t\\frac{b}{2a}}sin(\\omega t+\\phi)\\,,$$ |  | (21) |\n| --- | --- | --- | --- |\n\nwhere $\\gamma$ is the normalizing factor, and $\\phi$ is the phase from aggregating both sine and cosine functions with the same frequency. Note that for orders above 2, there is no simple condition that guarantees that the real part will be negative and the response stable.  \n\nTo demonstrate the oscillating behavior of the generated IIR filters, the time-domain impulse responses of some random kernels are drawn in Fig.\u00a0[2](#S3.F2 \"Figure 2 \u2023 3.2 The Focus Layer \u2023 3 Method \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). In this plot, the purple kernel acts as EMA, while other kernels have a more complicated response. However, all filters decay as time increases, which leads to a stable response and has been identified by\u00a0Li et\u00a0al. ([2022](#bib.bib33)) as an essential property for capturing long-range dependencies.  \n\nTime Complexity\u2002 The global conv time complexity is analyzed.\n\n|  | $$\\operatorname{GlobalConv}\\approx O(Llog(L)\\cdot D)$$ |  | (22) |\n| --- | --- | --- | --- |\n\nThis is due to the FFT and IFFT that the signal is passed through. This computation is done only once and is shared through multiple layers of Focus. The MLP is mapping between $D$ and $F$.  \n\n|  | $$MLP\\approx O(DF)$$ |  | (23) |\n| --- | --- | --- | --- |\n\nThe chunked-FFT complexity depends on the size of the FFT used ($NFFT$). Denote the size of a single time bin as $R$,  \n\n|  | $$R=\\frac{L}{Nbins}$$ |  | (24) |\n| --- | --- | --- | --- |\n\nWe determine that the time complexity of a single time bin is $O(Rlog(R))$. We describe the total time complexity of the chunked FFT as follows,\n\n|  | $$\\operatorname{FFT_{chunked}}\\approx O(Llog(R))$$ |  | (25) |\n| --- | --- | --- | --- |\n\nNext, we observe that the time complexity of the attention head is determined by the size of the context length $M$,,\n\n|  | $$\\operatorname{Atten}\\approx O(CM^{2}D+CMD^{2})$$ |  | (26) |\n| --- | --- | --- | --- |\n\nThe total time complexity of the Focus layer is, therefore,  \n\n|  | $$\\operatorname{Focus}\\approx O(Llog(L)\\cdot D+CM^{2}D)$$ |  | (27) |\n| --- | --- | --- | --- |\n\nwhere we neglected smaller terms when the sequence length is large (greater than dimensions). Recalling that $L=MC$, and rearranging terms, we have,  \n\n|  | $$\\operatorname{Focus}\\approx O(DL\\cdot(log(L)+M))$$ |  | (28) |\n| --- | --- | --- | --- |\n\nWe obtain sub-quadratic time complexity with respect to the input sequence length. Fig.\u00a0[3](#S4.F3 \"Figure 3 \u2023 4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\") depicts a visual comparison of overall complexity versus the standard attention head.\n\n[FIGURE S4.F3.g1]\n![Figure S4.F3.g1](./media/Focus_complexity.png)\n\nFigure 3: Time Complexity of the Focus layer and of Attention, increasing sequence length\n[/FIGURE]\n\nExpressiveness \u2002 An emerging class of diagonal linear RNNs\u00a0Orvieto et\u00a0al. ([2023](#bib.bib38)); Gupta et\u00a0al. ([2022b](#bib.bib24)) recently achieved near SOTA results in several long-range tasks. They include complex and real variants, as well as diagonal state-space layers\u00a0Gupta et\u00a0al. ([2022a](#bib.bib23)); Gu et\u00a0al. ([2022](#bib.bib19)). The following recurrent rule describes each channel of those layers:  \n\n|  | $$s[t]=As[t-1]+Bx[t],\\quad y[t]=Cs[t]+Dx[t]$$ |  | (29) |\n| --- | --- | --- | --- |\n\nwhere $s[t]$ is the recurrent state at time $t$. By isolating $s[t-1]$, Eq. [29](#S4.E29 \"In 4 Analysis \\u2022 Focus Your Attention (with Adaptive IIR Filters)\") can be rewritten as follows:\n\n|  | $$s[t-1]=\\frac{1}{C}y[t-1]-\\frac{D}{C}x[t-1]$$ |  | (30) |\n| --- | --- | --- | --- |\n\n|  | $$y[t]=CAs[t-1]+(CB+D)x[t]=$$ |  | (31) |\n| --- | --- | --- | --- |\n\n|  | $$Ay[t-1]+(CB+D)x[t]+ADx[t-1]$$ |  |\n| --- | --- | --- |\n\nRecall that we can represent the differential equation of an IIR filter of order 2 as follows:\n\n|  | $$y[t]=b_{0}x[t]+b_{1}x[t-1]+b_{2}x[t-2]-$$ |  | (32) |\n| --- | --- | --- | --- |\n\n|  | $$a_{1}y[t-1]-a_{2}y[t-2]$$ |  |\n| --- | --- | --- |\n\nBy substituting the values of $b_{0}=CB+D$, $b_{1}=AD$, $a_{1}=-A$, $b_{2}=a_{2}=0$, it becomes evident that the IIR filter can be constrained to a linear SSM. In machine learning, $D$ is often omitted in SSMs or diagonal RNNs, since it can be seen as a parameter-based skip-connection. In this case, the SSM can be represented by an IIR filter of order 1.  \n\nAs mentioned earlier, higher-order filters can introduce stability issues. Therefore, our decision to utilize IIR filters of order 2 is justified, as we opt for the most expressive IIR filters that still maintain stability during training.  \n## 5 Experiments\n\nExperimental results for the proposed Focus layer are presented below. An ablation is introduced in addition to the full method, to evaluate the importance of adaptive filtering, in which instead of the hypernetwork $H$, the IIR filters are conventional learned parameters. This ablation is denoted by 'Focus-H'.\n\n### 5.1 In-context learning\n\nIn order to evaluate our method relative to other state-of-the-art long-range architectures, such as Poli et\u00a0al. ([2023](#bib.bib39)), Dai et\u00a0al. ([2019](#bib.bib9)), we evaluate the associative recall synthetic task. Elhage et\u00a0al. ([2021](#bib.bib14)) first introduced the associative recall task, which is one among several simple yet informative tasks that we use to test the model's capabilities in processing long-range sequences.\n\nIn the associative recall task, we form each string by concatenating key-value pairs sampled randomly from a dictionary. The model must produce the correct value when given a singular key, even if the key appears in a long sequence.\n\nSimilarly to Poli et\u00a0al. ([2023](#bib.bib39)), we employ the associative recall task in order to explore the memory capabilities of our model.  \n\nWe use the same shared hyperparameters in all synthetic data experiments, with the exception of the sequence length. We depict the hyperparameters in Appendix [A](#A1 \"Appendix A Hyperparameters \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). We use the AdamW optimizer (Loshchilov and Hutter, [2017](#bib.bib34)).\n\n[TABLE S5.T1]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Focus</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Focus-H</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Hyena</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">FlashTransformer</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Transformer</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">30</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">1K</th>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">98.0</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">95.0</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">8K</th>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">85.3</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">NR</td>\n<td class=\"ltx_td ltx_align_center\">NF</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">32K</th>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">34.6</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">32.4</td>\n<td class=\"ltx_td ltx_align_center\">NF</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">64K</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">28.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">26.7</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">NF</td>\n</tr>\n</tbody>\n</table>\n\nTable 1: Test accuracy (%) for associative recall on long sequences of length $L$ and a vocabulary size of 30. NF - not feasible to test. NR = not reported.\n[/TABLE]\n\nAs can be seen in Tab.\u00a0LABEL:tab:synth, our model is able to obtain an accuracy of 100% for all sequence lengths, without overfitting, despite the low number of examples (2000), and with no memory explosion thanks to linear scaling with input size. These results show that the Focus mechanism is able to improve the performance of regular transformers to be on par with Heyna Poli et\u00a0al. ([2023](#bib.bib39)), with smaller footprint. In addition, the ablation experiment shows the importance of adaptive filtering, i.e. estimating the filter kernels online to focus the attention mechanism on important sub-sequences where the results degrade in the ablation due to the greater sequence length.  \n\n[FIGURE S5.F4.g1]\n![Figure S5.F4.g1](./media/iir_filters_2.png)\n\nFigure 4: Frequency Response of IIR kernels, for 1K sequence split into 18 time bins. The important key is found in the 12th time bin.\n[/FIGURE]\n\nWe use the associative recall task not only for benchmarking but also to gain insights into the adaptive filtering mechanism. As Fig.\u00a0[4](#S5.F4 \"Figure 4 \u2023 5.1 In-context learning \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\") shows, we have plotted the frequency response of the adaptive filtering for this task. In this specific run, we find the important key in the 12th time bin. The frequency response of the IIR filters is almost 5 orders of magnitude higher than that for nearby time bins. This effect demonstrates the \u201cFocus\u201d mechanism. Note that using only 2 parameters for the IIR kernel, the filters can differentiate between important and unimportant time bins with 5 orders of magnitude. This supports our design choice of IIR filter, seeing that with a kernel size as low as 2 the filter remains sharp enough.\n\n### 5.2 Language Modeling\n\nThe enwiki8 dataset is a byte-level dataset consisting of the first 100 million bytes of a Wikipedia XML dump. It is a commonly used dataset for benchmarking character-level language models.  \n\nWe use the Text8 dataset as a corpus of text for training and evaluating language models. The Text8 dataset, being a subset of the March 2006 Wikipedia dump, contains 90 million characters. We tokenize the text, lowercase it, and assign a unique ID to each token.\n\nThe metric used to evaluate language models on enwiki8 and Text8 is bits per character (BPC). The lower the BPC, the better the language model. To compute the BPC the average cross-entropy is computed in the log2 basis  \n\n|  | $$BPC=\\frac{1}{L}Log_{2}\\operatorname{CrossEntropy}(P,\\hat{P})\\,,$$ |  | (33) |\n| --- | --- | --- | --- |\n\nwhere $P$ is the target distribution, and $\\hat{P}$ is the output distribution. $L$ is the sequence length. To maintain the same capabilities such as Mega Ma et\u00a0al. ([2022](#bib.bib36)), we used 8 layers of the Focus layer, with a hidden dimension of 1024 and an input dimension of 512.  \n\n[TABLE S5.T4]\n\n<div class=\"ltx_flex_figure\">\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n<table class=\"ltx_tabular ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">#params</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">BPC</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer XL <cite class=\"ltx_cite ltx_citemacro_cite\">Dai et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">277M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">0.99</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Mega <cite class=\"ltx_cite ltx_citemacro_cite\">Ma et\u00a0al. (<a class=\"ltx_ref\">2022</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">39M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">1.02</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">GPT2 <cite class=\"ltx_cite ltx_citemacro_cite\">Radford et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">1542M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">0.94</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Focus-H (ablation)</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">21M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">1.06</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\">22M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">0.94</span></td>\n</tr>\n</tbody>\n</table>\n</div>\n</div>\n\n<div class=\"ltx_flex_figure\">\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n<table class=\"ltx_tabular ltx_centering ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">#params</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">BPC</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer XL <cite class=\"ltx_cite ltx_citemacro_cite\">Dai et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">277M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">1.08</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">GPT2 <cite class=\"ltx_cite ltx_citemacro_cite\">Radford et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">1542M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">0.98</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Focus-H (ablation)</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">21M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">1.10</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\">22M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">0.98</span></td>\n</tr>\n</tbody>\n</table>\n</div>\n</div>\n\n<div class=\"ltx_flex_figure\">\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n<table class=\"ltx_tabular ltx_centering ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">sMNIST</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">pMNIST</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">98.9</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">97.9</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">S4 <cite class=\"ltx_cite ltx_citemacro_cite\">Gu et\u00a0al. (<a class=\"ltx_ref\">2021a</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">99.6</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">98.7</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Focus-H (ablation)</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">98.9</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">98.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">99.7</span></td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">98.8</span></td>\n</tr>\n</tbody>\n</table>\n</div>\n</div>\n\nTable 2: BPC for enwiki8 dataset.\n[/TABLE]\n\nTab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\") reports the enwiki8 results. Evidently, Focus outperforms both Mega\u00a0Ma et\u00a0al. ([2022](#bib.bib36)) and Transformer XL\u00a0Dai et\u00a0al. ([2019](#bib.bib9)), despite a much lower number of parameters, and performs on par with GPT2Radford et\u00a0al. ([2019](#bib.bib41)) (zero-shot) but with only a fraction of its parameters and substantially fewer FLOPS. The same outcome is observed for the Text8 dataset, as reported in Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). While the ablation underperforms compared to Transformer-XL, with the full method, Focus matches GPT2's performance.\n\n### 5.3 1-D image classification\n\nOur model was evaluated on the sequential MNIST task, a challenging problem that requires models to capture long-range dependencies. Permuted MNIST is a variant of MNIST where the order of pixels in each image is scrambled, making the task more challenging. A hidden dimension of 512 is used following S4, but to save resources, only 6 layers are utilized and not more. The results are listed in Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). An accuracy of 99.7% (98.8%) on unpermuted (permuted) MNIST is achieved by Focus, outperforming the transformer and S4.\n\n### 5.4 Efficiency Comparison\n\nTo assess the efficiency of the Focus layer, we measure peak memory usage and inference speed. We compare several related models on the association recall task. This task involves processing a sequence of 1K tokens, which represents the maximal fit in memory for transformers. The results are presented in Tab.\u00a0[5](#S5.T5 \"Table 5 \u2023 5.4 Efficiency Comparison \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). As can be seen, Focus exhibits the lowest peak memory consumption, using only 38% of the memory consumed by the Transformer model. However, its inference speed is slightly slower than the other methods.  \n\n[TABLE S5.T5]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Model</span></th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Inference time</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Memory</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">x1</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">x1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row\">S4</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">x1.58</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">x0.43</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row\">MEGA</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">x1.49</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">x0.57</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\">x1.75</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\">x0.38</td>\n</tr>\n</tbody>\n</table>\n\nTable 5: Comparison of inference speed and peak memory consumption for related models.\n[/TABLE]\n## 6 Conclusions\n\nThe seminal work of Vaswani et al. ([2017](#bib.bib49)) demonstrates that attention models are extremely powerful for modeling sequences. Indeed, transformers have changed the practice of deep learning and achieved unprecedented performance in nearly all studied AI domains.\n\nHowever, transformers have quadratic complexity in the sequence length, which can impact their efficiency, and often struggle to perform optimally in tasks that involve long-range dependencies\u00a0Tay et\u00a0al. ([2020](#bib.bib46)). In this work, we present a dynamic filtering approach that enables us to subsequently employ attention within much shallower architectures. As our ablation shows, the dynamic nature of these filters is crucial to the success of the layer. Similarly crucial is the use of IIR filters, and we analyze the regime in which these are stable.  \n## 7 Limitations\n\nWhile this paper presents promising results, there are a few limitations to consider. Firstly, although we are the first to utilize IIR filters for long-range tasks, we have not examined sequence models solely based on IIR filters. Additionally, we have not investigated the impact of different types of hyper-global convolution on performance. Furthermore, IIR filters can be computed using recurrent rules or convolution. While the convolutional view is more natural for training, the recurrent view presented in Eq.\u00a0[32](#S4.E32 \"In 4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\"), can be leveraged for efficient auto-regressive generation. This can lead to a significant reduction in the time and space complexity of the layer during inference, which is beneficial for real-time applications.  \n\n## 8 Acknowledgments\n\nThe Tel Aviv University Center for AI and Data Science (TAD) granted support to this work. It is part of a PhD research conducted by the first author.\n## References\n\n* Al\u00a0Adel (2022)  Arij Al\u00a0Adel. 2022.   Global memory transformer for processing long documents.   In *Advances in Neural Computation, Machine Learning, and Cognitive Research VI: Selected Papers from the XXIV International Conference on Neuroinformatics, October 17-21, 2022, Moscow, Russia*, pages 343\u2013352. Springer. \n* Alwan and Hussain (2022)  Nuha A.\u00a0S. Alwan and Zahir\u00a0M. Hussain. 2022.   [Deep learning for robust adaptive inverse control of nonlinear dynamic systems: Improved settling time with an autoencoder](https://doi.org/10.3390/s22165935).   *Sensors*, 22(16). \n* Bertinetto et\u00a0al. (2016)  Luca Bertinetto, Jo\u00e3o\u00a0F Henriques, Jack Valmadre, Philip Torr, and Andrea Vedaldi. 2016.   Learning feed-forward one-shot learners.   In *Advances in Neural Information Processing Systems*, pages 523\u2013531. \n* Bulatov et\u00a0al. (2023)  Aydar Bulatov, Yuri Kuratov, and Mikhail\u00a0S Burtsev. 2023.   Scaling transformer to 1m tokens and beyond with rmt.   *arXiv preprint arXiv:2304.11062*. \n* (5)  Mikhail\u00a0S Burtsev.   Memory transformer with hierarchical attention for long document processing. \n* Chang et\u00a0al. (2020)  Oscar Chang, Lampros Flokas, and Hod Lipson. 2020.   Principled weight initialization for hypernetworks.   In *Int. Conf. on Learning Representations*. \n* Child et\u00a0al. (2019)  Rewon Child, Scott Gray, Alec Radford, and Ilya Sutskever. 2019.   Generating long sequences with sparse transformers.   *arXiv preprint arXiv:1904.10509*. \n* Choromanski et\u00a0al. (2020)  Krzysztof Choromanski, Valerii Likhosherstov, David Dohan, Xingyou Song, Andreea Gane, Tamas Sarlos, Peter Hawkins, Jared Davis, Afroz Mohiuddin, Lukasz Kaiser, et\u00a0al. 2020.   Rethinking attention with performers.   *arXiv preprint arXiv:2009.14794*. \n* Dai et\u00a0al. (2019)  Zihang Dai, Zhilin Yang, Yiming Yang, Jaime Carbonell, Quoc\u00a0V Le, and Ruslan Salakhutdinov. 2019.   Transformer-xl: Attentive language models beyond a fixed-length context.   *arXiv preprint arXiv:1901.02860*. \n* Dao et\u00a0al. (2022a)  Tri Dao, Dan Fu, Stefano Ermon, Atri Rudra, and Christopher R\u00e9. 2022a.   Flashattention: Fast and memory-efficient exact attention with io-awareness.   *Advances in Neural Information Processing Systems*, 35:16344\u201316359. \n* Dao et\u00a0al. (2022b)  Tri Dao, Daniel\u00a0Y Fu, Khaled\u00a0K Saab, Armin\u00a0W Thomas, Atri Rudra, and Christopher R\u00e9. 2022b.   Hungry hungry hippos: Towards language modeling with state space models.   *arXiv preprint arXiv:2212.14052*. \n* David et\u00a0al. (2023)  Shmuel\u00a0Bar David, Itamar Zimerman, Eliya Nachmani, and Lior Wolf. 2023.   Decision s4: Efficient sequence-based rl via state spaces layers.   In *The Eleventh International Conference on Learning Representations*. \n* Elfwing et\u00a0al. (2018)  Stefan Elfwing, Eiji Uchibe, and Kenji Doya. 2018.   Sigmoid-weighted linear units for neural network function approximation in reinforcement learning.   *Neural Networks*, 107:3\u201311. \n* Elhage et\u00a0al. (2021)  N\u00a0Elhage, N\u00a0Nanda, C\u00a0Olsson, T\u00a0Henighan, N\u00a0Joseph, B\u00a0Mann, A\u00a0Askell, Y\u00a0Bai, A\u00a0Chen, T\u00a0Conerly, et\u00a0al. 2021.   A mathematical framework for transformer circuits.   *Transformer Circuits Thread*. \n* Fournier et\u00a0al. (2021)  Quentin Fournier, Ga\u00e9tan\u00a0Marceau Caron, and Daniel Aloise. 2021.   A practical survey on faster and lighter transformers.   *ACM Computing Surveys*. \n* Fu et\u00a0al. (2023)  Daniel\u00a0Y Fu, Elliot\u00a0L Epstein, Eric Nguyen, Armin\u00a0W Thomas, Michael Zhang, Tri Dao, Atri Rudra, and Christopher R\u00e9. 2023.   Simple hardware-efficient long convolutions for sequence modeling.   *arXiv preprint arXiv:2302.06646*. \n* Glorot and Bengio (2010)  Xavier Glorot and Yoshua Bengio. 2010.   [Understanding the difficulty of training deep feedforward neural networks](https://proceedings.mlr.press/v9/glorot10a.html).   In *Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics*, volume\u00a09 of *Proceedings of Machine Learning Research*, pages 249\u2013256, Chia Laguna Resort, Sardinia, Italy. PMLR. \n* Goel et\u00a0al. (2022)  Karan Goel, Albert Gu, Chris Donahue, and Christopher R\u00e9. 2022.   It\u2019s raw! audio generation with state-space models.   In *International Conference on Machine Learning*, pages 7616\u20137633. PMLR. \n* Gu et\u00a0al. (2022)  Albert Gu, Karan Goel, Ankit Gupta, and Christopher R\u00e9. 2022.   On the parameterization and initialization of diagonal state space models.   *Advances in Neural Information Processing Systems*, 35:35971\u201335983. \n* Gu et\u00a0al. (2021a)  Albert Gu, Karan Goel, and Christopher R\u00e9. 2021a.   Efficiently modeling long sequences with structured state spaces.   *arXiv preprint arXiv:2111.00396*. \n* Gu et\u00a0al. (2021b)  Albert Gu, Isys Johnson, Karan Goel, Khaled Saab, Tri Dao, Atri Rudra, and Christopher R\u00e9. 2021b.   Combining recurrent, convolutional, and continuous-time models with linear state space layers.   *Advances in neural information processing systems*, 34:572\u2013585. \n* Gupta and Berant (2020)  Ankit Gupta and Jonathan Berant. 2020.   Gmat: Global memory augmentation for transformers.   *arXiv preprint arXiv:2006.03274*. \n* Gupta et\u00a0al. (2022a)  Ankit Gupta, Albert Gu, and Jonathan Berant. 2022a.   Diagonal state spaces are as effective as structured state spaces.   *Advances in Neural Information Processing Systems*, 35:22982\u201322994. \n* Gupta et\u00a0al. (2022b)  Ankit Gupta, Harsh Mehta, and Jonathan Berant. 2022b.   Simplifying and understanding state space models with diagonal linear rnns.   *arXiv preprint arXiv:2212.00768*. \n* Ha et\u00a0al. (2016)  David Ha, Andrew Dai, and Quoc\u00a0V Le. 2016.   Hypernetworks.   *arXiv preprint arXiv:1609.09106*. \n* Haubner and Kellermann (2022)  Thomas Haubner and Walter Kellermann. 2022.   [Deep learning-based joint control of acoustic echo cancellation, beamforming and postfiltering](http://arxiv.org/abs/2203.01793). \n* He et\u00a0al. (2022)  Yun He, Steven Zheng, Yi\u00a0Tay, Jai Gupta, Yu\u00a0Du, Vamsi Aribandi, Zhe Zhao, YaGuang Li, Zhao Chen, Donald Metzler, et\u00a0al. 2022.   Hyperprompt: Prompt-based task-conditioning of transformers.   In *International Conference on Machine Learning*, pages 8678\u20138690. PMLR. \n* Hutchins et\u00a0al. (2022)  DeLesley Hutchins, Imanol Schlag, Yuhuai Wu, Ethan Dyer, and Behnam Neyshabur. 2022.   Block-recurrent transformers.   *arXiv preprint arXiv:2203.07852*. \n* Islam et\u00a0al. (2022)  Md\u00a0Mohaiminul Islam, Mahmudul Hasan, Kishan\u00a0Shamsundar Athrey, Tony Braskich, and Gedas Bertasius. 2022.   Efficient movie scene detection using state-space transformers.   *arXiv preprint arXiv:2212.14427*. \n* Ivgi et\u00a0al. (2023)  Maor Ivgi, Uri Shaham, and Jonathan Berant. 2023.   Efficient long-text understanding with short-text models.   *Transactions of the Association for Computational Linguistics*, 11:284\u2013299. \n* Kalman (1960)  Rudolph\u00a0Emil Kalman. 1960.   A new approach to linear filtering and prediction problems. \n* Kuznetsov et\u00a0al. (2020)  Boris Kuznetsov, Julian\u00a0D Parker, and Fabi\u00e1n Esqueda. 2020.   Differentiable iir filters for machine learning applications.   In *Proc. Int. Conf. Digital Audio Effects (eDAFx-20)*, pages 297\u2013303. \n* Li et\u00a0al. (2022)  Yuhong Li, Tianle Cai, Yi\u00a0Zhang, Deming Chen, and Debadeepta Dey. 2022.   What makes convolutional models great on long sequence modeling?   *arXiv preprint arXiv:2210.09298*. \n* Loshchilov and Hutter (2017)  Ilya Loshchilov and Frank Hutter. 2017.   Fixing weight decay regularization in adam. \n* Lutati and Wolf (2023)  Shahar\u00a0Shlomo Lutati and Lior Wolf. 2023.   Ocd: Learning to overfit with conditional diffusion models.   In *ICML*. \n* Ma et\u00a0al. (2022)  Xuezhe Ma, Chunting Zhou, Xiang Kong, Junxian He, Liangke Gui, Graham Neubig, Jonathan May, and Luke Zettlemoyer. 2022.   Mega: moving average equipped gated attention.   *arXiv preprint arXiv:2209.10655*. \n* Mehta et\u00a0al. (2022)  Harsh Mehta, Ankit Gupta, Ashok Cutkosky, and Behnam Neyshabur. 2022.   Long range language modeling via gated state spaces.   *arXiv preprint arXiv:2206.13947*. \n* Orvieto et\u00a0al. (2023)  Antonio Orvieto, Samuel\u00a0L Smith, Albert Gu, Anushan Fernando, Caglar Gulcehre, Razvan Pascanu, and Soham De. 2023.   Resurrecting recurrent neural networks for long sequences.   *arXiv preprint arXiv:2303.06349*. \n* Poli et\u00a0al. (2023)  Michael Poli, Stefano Massaroli, Eric Nguyen, Daniel\u00a0Y Fu, Tri Dao, Stephen Baccus, Yoshua Bengio, Stefano Ermon, and Christopher R\u00e9. 2023.   Hyena hierarchy: Towards larger convolutional language models.   *arXiv preprint arXiv:2302.10866*. \n* (40)  Pytorch.   [Adaptivemaxpool2d\u00b6](https://pytorch.org/docs/stable/generated/torch.nn.AdaptiveMaxPool2d.html). \n* Radford et\u00a0al. (2019)  Alec Radford, Jeff Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever. 2019.   Language models are unsupervised multitask learners. \n* Revach et\u00a0al. (2022)  Guy Revach, Nir Shlezinger, Xiaoyong Ni, Adria\u00a0Lopez Escoriza, Ruud J.\u00a0G. van Sloun, and Yonina\u00a0C. Eldar. 2022.   [KalmanNet: Neural network aided kalman filtering for partially known dynamics](https://doi.org/10.1109/tsp.2022.3158588).   *IEEE Transactions on Signal Processing*, 70:1532\u20131547. \n* Romero et\u00a0al. (2021)  David\u00a0W Romero, Anna Kuzina, Erik\u00a0J Bekkers, Jakub\u00a0M Tomczak, and Mark Hoogendoorn. 2021.   Ckconv: Continuous kernel convolution for sequential data.   *arXiv preprint arXiv:2102.02611*. \n* Saon et\u00a0al. (2023)  George Saon, Ankit Gupta, and Xiaodong Cui. 2023.   Diagonal state space augmented transformers for speech recognition.   In *ICASSP 2023-2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, pages 1\u20135. IEEE. \n* Szatkowski et\u00a0al. (2022)  Filip Szatkowski, Karol\u00a0J Piczak, Przemys\u0142aw Spurek, Jacek Tabor, and Tomasz Trzci\u0144ski. 2022.   Hypersound: Generating implicit neural representations of audio signals with hypernetworks.   *arXiv preprint arXiv:2211.01839*. \n* Tay et\u00a0al. (2020)  Yi\u00a0Tay, Mostafa Dehghani, Samira Abnar, Yikang Shen, Dara Bahri, Philip Pham, Jinfeng Rao, Liu Yang, Sebastian Ruder, and Donald Metzler. 2020.   Long range arena: A benchmark for efficient transformers.   *arXiv preprint arXiv:2011.04006*. \n* Tay et\u00a0al. (2022)  Yi\u00a0Tay, Mostafa Dehghani, Dara Bahri, and Donald Metzler. 2022.   Efficient transformers: A survey.   *ACM Computing Surveys*, 55(6):1\u201328. \n* Vardasbi et\u00a0al. (2023)  Ali Vardasbi, Telmo Pires, Robin\u00a0M. Schmidt, and Stephan Peitz. 2023.   State spaces aren\u2019t enough: Machine translation needs attention.   *ArXiv*, abs/2304.12776. \n* Vaswani et\u00a0al. (2017)  Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan\u00a0N Gomez, \u0141ukasz Kaiser, and Illia Polosukhin. 2017.   Attention is all you need.   *Advances in neural information processing systems*, 30. \n* Von\u00a0Oswald et\u00a0al. (2019)  Johannes Von\u00a0Oswald, Christian Henning, Benjamin\u00a0F Grewe, and Jo\u00e3o Sacramento. 2019.   Continual learning with hypernetworks.   *arXiv preprint arXiv:1906.00695*. \n* Wang et\u00a0al. (2023)  Jue Wang, Wentao Zhu, Pichao Wang, Xiang Yu, Linda Liu, Mohamed Omar, and Raffay Hamid. 2023.   Selective structured state-spaces for long-form video understanding.   *arXiv preprint arXiv:2303.14526*. \n* Wang et\u00a0al. (2022)  Junxiong Wang, Jing\u00a0Nathan Yan, Albert Gu, and Alexander\u00a0M Rush. 2022.   Pretraining without attention.   *arXiv preprint arXiv:2212.10544*. \n* Wang et\u00a0al. (2020)  Sinong Wang, Belinda\u00a0Z Li, Madian Khabsa, Han Fang, and Hao Ma. 2020.   Linformer: Self-attention with linear complexity.   *arXiv preprint arXiv:2006.04768*. \n* Winata et\u00a0al. (2020)  Genta\u00a0Indra Winata, Samuel Cahyawijaya, Zhaojiang Lin, Zihan Liu, and Pascale Fung. 2020.   Lightweight and efficient end-to-end speech recognition using low-rank transformer.   In *ICASSP 2020-2020 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, pages 6144\u20136148. IEEE. \n* Xiong et\u00a0al. (2021)  Wenhan Xiong, Barlas O\u011fuz, Anchit Gupta, Xilun Chen, Diana Liskovich, Omer Levy, Wen-tau Yih, and Yashar Mehdad. 2021.   Simple local attentions remain competitive for long-context tasks.   *arXiv preprint arXiv:2112.07210*. \n* Yu et\u00a0al. (2023)  Lili Yu, D\u00e1niel Simig, Colin Flaherty, Armen Aghajanyan, Luke Zettlemoyer, and Mike Lewis. 2023.   Megabyte: Predicting million-byte sequences with multiscale transformers.   *arXiv preprint arXiv:2305.07185*. \n* Zhang et\u00a0al. (2019)  Chris Zhang, Mengye Ren, and Raquel Urtasun. 2019.   Graph hypernetworks for neural architecture search.   In *7th International Conference on Learning Representations, ICLR 2019*. \n* Zhang and Wang (2021)  Hao Zhang and DeLiang Wang. 2021.   [Deep anc: A deep learning approach to active noise control](https://doi.org/https://doi.org/10.1016/j.neunet.2021.03.037).   *Neural Networks*, 141:1\u201310. \n* Zhang et\u00a0al. (2023)  Michael Zhang, Khaled\u00a0K Saab, Michael Poli, Tri Dao, Karan Goel, and Christopher R\u00e9. 2023.   Effectively modeling time series with simple discrete state spaces.   *arXiv preprint arXiv:2303.09489*. \n* Zhou et\u00a0al. (2020)  Qingyi Zhou, Fan Zhang, and Chuanchuan Yang. 2020.   [AdaNN: Adaptive neural network-based equalizer via online semi-supervised learning](https://doi.org/10.1109/jlt.2020.2991028).   *Journal of Lightwave Technology*, 38(16):4315\u20134324. \n* Zhou et\u00a0al. (2022)  Tian Zhou, Ziqing Ma, Qingsong Wen, Xue Wang, Liang Sun, and Rong Jin. 2022.   Fedformer: Frequency enhanced decomposed transformer for long-term series forecasting.   In *International Conference on Machine Learning*, pages 27268\u201327286. PMLR. \n* Zuo et\u00a0al. (2022)  Simiao Zuo, Xiaodong Liu, Jian Jiao, Denis Charles, Eren Manavoglu, Tuo Zhao, and Jianfeng Gao. 2022.   Efficient long sequence modeling via state space augmented transformer.   *arXiv preprint arXiv:2212.08136*. \n",
+        "structured_md": {
+            "title": [
+                1,
+                1
+            ],
+            "abstract": [
+                3,
+                6
+            ],
+            "sections": {
+                "1 Introduction": [
+                    7,
+                    16
+                ],
+                "2 Background and related work": [
+                    17,
+                    45
+                ],
+                "3 Method": [
+                    46,
+                    148
+                ],
+                "4 Analysis": [
+                    149,
+                    267
+                ],
+                "5 Experiments": [
+                    268,
+                    534
+                ],
+                "6 Conclusions": [
+                    535,
+                    539
+                ],
+                "7 Limitations": [
+                    540,
+                    543
+                ],
+                "8 Acknowledgments": [
+                    544,
+                    546
+                ],
+                "References": [
+                    547,
+                    611
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {},
+                "2 Background and related work": {
+                    "2.1 Learnable IIR Filters": [
+                        23,
+                        26
+                    ],
+                    "2.2 Global Convolutions": [
+                        27,
+                        30
+                    ],
+                    "2.3 Long Range Transformers": [
+                        31,
+                        34
+                    ],
+                    "2.4 Hyper Networks": [
+                        35,
+                        38
+                    ],
+                    "2.5 Adaptive Filtering": [
+                        39,
+                        45
+                    ]
+                },
+                "3 Method": {
+                    "3.1 Overview": [
+                        48,
+                        55
+                    ],
+                    "3.2 The Focus Layer": [
+                        56,
+                        148
+                    ]
+                },
+                "4 Analysis": {},
+                "5 Experiments": {
+                    "5.1 In-context learning": [
+                        272,
+                        351
+                    ],
+                    "5.2 Language Modeling": [
+                        352,
+                        490
+                    ],
+                    "5.3 1-D image classification": [
+                        491,
+                        494
+                    ],
+                    "5.4 Efficiency Comparison": [
+                        495,
+                        534
+                    ]
+                },
+                "6 Conclusions": {},
+                "7 Limitations": {},
+                "8 Acknowledgments": {},
+                "References": {}
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        9,
+                        9
+                    ],
+                    [
+                        11,
+                        11
+                    ],
+                    [
+                        13,
+                        13
+                    ],
+                    [
+                        15,
+                        15
+                    ]
+                ],
+                "2 Background and related work": [
+                    [
+                        19,
+                        19
+                    ],
+                    [
+                        21,
+                        21
+                    ],
+                    [
+                        25,
+                        25
+                    ],
+                    [
+                        29,
+                        29
+                    ],
+                    [
+                        33,
+                        33
+                    ],
+                    [
+                        37,
+                        37
+                    ],
+                    [
+                        41,
+                        41
+                    ],
+                    [
+                        43,
+                        43
+                    ]
+                ],
+                "3 Method": [
+                    [
+                        50,
+                        50
+                    ],
+                    [
+                        52,
+                        52
+                    ],
+                    [
+                        54,
+                        54
+                    ],
+                    [
+                        64,
+                        64
+                    ],
+                    [
+                        66,
+                        66
+                    ],
+                    [
+                        68,
+                        69
+                    ],
+                    [
+                        71,
+                        71
+                    ],
+                    [
+                        73,
+                        74
+                    ],
+                    [
+                        76,
+                        76
+                    ],
+                    [
+                        78,
+                        78
+                    ],
+                    [
+                        80,
+                        81
+                    ],
+                    [
+                        83,
+                        83
+                    ],
+                    [
+                        85,
+                        86
+                    ],
+                    [
+                        88,
+                        88
+                    ],
+                    [
+                        90,
+                        90
+                    ],
+                    [
+                        92,
+                        92
+                    ],
+                    [
+                        94,
+                        95
+                    ],
+                    [
+                        97,
+                        97
+                    ],
+                    [
+                        99,
+                        99
+                    ],
+                    [
+                        101,
+                        102
+                    ],
+                    [
+                        104,
+                        104
+                    ],
+                    [
+                        106,
+                        107
+                    ],
+                    [
+                        109,
+                        109
+                    ],
+                    [
+                        111,
+                        112
+                    ],
+                    [
+                        114,
+                        114
+                    ],
+                    [
+                        116,
+                        116
+                    ],
+                    [
+                        118,
+                        119
+                    ],
+                    [
+                        127,
+                        127
+                    ],
+                    [
+                        129,
+                        130
+                    ],
+                    [
+                        132,
+                        132
+                    ],
+                    [
+                        134,
+                        135
+                    ],
+                    [
+                        137,
+                        138
+                    ],
+                    [
+                        140,
+                        141
+                    ],
+                    [
+                        143,
+                        143
+                    ],
+                    [
+                        145,
+                        145
+                    ]
+                ],
+                "4 Analysis": [
+                    [
+                        151,
+                        151
+                    ],
+                    [
+                        153,
+                        153
+                    ],
+                    [
+                        155,
+                        155
+                    ],
+                    [
+                        157,
+                        157
+                    ],
+                    [
+                        159,
+                        159
+                    ],
+                    [
+                        161,
+                        162
+                    ],
+                    [
+                        164,
+                        164
+                    ],
+                    [
+                        166,
+                        167
+                    ],
+                    [
+                        169,
+                        169
+                    ],
+                    [
+                        171,
+                        172
+                    ],
+                    [
+                        174,
+                        174
+                    ],
+                    [
+                        176,
+                        177
+                    ],
+                    [
+                        179,
+                        179
+                    ],
+                    [
+                        181,
+                        182
+                    ],
+                    [
+                        184,
+                        184
+                    ],
+                    [
+                        186,
+                        187
+                    ],
+                    [
+                        189,
+                        189
+                    ],
+                    [
+                        191,
+                        192
+                    ],
+                    [
+                        194,
+                        194
+                    ],
+                    [
+                        196,
+                        196
+                    ],
+                    [
+                        198,
+                        198
+                    ],
+                    [
+                        200,
+                        201
+                    ],
+                    [
+                        203,
+                        203
+                    ],
+                    [
+                        205,
+                        206
+                    ],
+                    [
+                        208,
+                        208
+                    ],
+                    [
+                        210,
+                        211
+                    ],
+                    [
+                        213,
+                        213
+                    ],
+                    [
+                        215,
+                        216
+                    ],
+                    [
+                        218,
+                        218
+                    ],
+                    [
+                        220,
+                        221
+                    ],
+                    [
+                        223,
+                        223
+                    ],
+                    [
+                        225,
+                        226
+                    ],
+                    [
+                        228,
+                        228
+                    ],
+                    [
+                        230,
+                        231
+                    ],
+                    [
+                        233,
+                        233
+                    ],
+                    [
+                        241,
+                        241
+                    ],
+                    [
+                        243,
+                        244
+                    ],
+                    [
+                        246,
+                        246
+                    ],
+                    [
+                        248,
+                        249
+                    ],
+                    [
+                        251,
+                        252
+                    ],
+                    [
+                        254,
+                        255
+                    ],
+                    [
+                        257,
+                        257
+                    ],
+                    [
+                        259,
+                        260
+                    ],
+                    [
+                        262,
+                        263
+                    ],
+                    [
+                        265,
+                        265
+                    ]
+                ],
+                "5 Experiments": [
+                    [
+                        270,
+                        270
+                    ],
+                    [
+                        274,
+                        274
+                    ],
+                    [
+                        276,
+                        276
+                    ],
+                    [
+                        278,
+                        278
+                    ],
+                    [
+                        280,
+                        280
+                    ],
+                    [
+                        342,
+                        342
+                    ],
+                    [
+                        350,
+                        350
+                    ],
+                    [
+                        354,
+                        354
+                    ],
+                    [
+                        356,
+                        356
+                    ],
+                    [
+                        358,
+                        358
+                    ],
+                    [
+                        360,
+                        361
+                    ],
+                    [
+                        363,
+                        363
+                    ],
+                    [
+                        489,
+                        489
+                    ],
+                    [
+                        493,
+                        493
+                    ],
+                    [
+                        497,
+                        497
+                    ]
+                ],
+                "6 Conclusions": [
+                    [
+                        537,
+                        537
+                    ]
+                ],
+                "7 Limitations": [
+                    [
+                        542,
+                        542
+                    ]
+                ],
+                "8 Acknowledgments": [],
+                "References": [
+                    [
+                        549,
+                        610
+                    ]
+                ]
+            },
+            "figures": {
+                "1 Introduction": {},
+                "2 Background and related work": {},
+                "3 Method": {
+                    "[FIGURE S3.F1.g1]": [
+                        58,
+                        62
+                    ],
+                    "[FIGURE S3.F2.g1]": [
+                        121,
+                        125
+                    ]
+                },
+                "4 Analysis": {
+                    "[FIGURE S4.F3.g1]": [
+                        235,
+                        239
+                    ]
+                },
+                "5 Experiments": {
+                    "[FIGURE S5.F4.g1]": [
+                        344,
+                        348
+                    ]
+                },
+                "6 Conclusions": {},
+                "7 Limitations": {},
+                "8 Acknowledgments": {},
+                "References": {}
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Background and related work": {},
+                "3 Method": {},
+                "4 Analysis": {},
+                "5 Experiments": {
+                    "[TABLE S5.T1]": [
+                        282,
+                        340
+                    ],
+                    "[TABLE S5.T4]": [
+                        365,
+                        487
+                    ],
+                    "[TABLE S5.T5]": [
+                        499,
+                        534
+                    ]
+                },
+                "6 Conclusions": {},
+                "7 Limitations": {},
+                "8 Acknowledgments": {},
+                "References": {}
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Background and related work": {},
+                "3 Method": {},
+                "4 Analysis": {},
+                "5 Experiments": {},
+                "6 Conclusions": {},
+                "7 Limitations": {},
+                "8 Acknowledgments": {},
+                "References": {}
+            }
+        }
+    },
+    "changes": {
+        "highlevel": [
+            {
+                "target": "sec_2 Background and related work",
+                "change": [
+                    {
+                        "line": 25,
+                        "changed_line": "Since IIR filters are computationally efficient and expressive, we naturally design IIR filters with Deep Learning. Kuznetsov et al. ([2020](#bib.bib32)) proposes an approach to using traditional digital IIR filter structures inside deep-learning networks trained using backpropagation. The authors establish the link between these structures and recurrent neural networks, and they present three different differentiable IIR filter topologies. They compare the proposed topologies against each other and an established baseline and show that the proposed topologies can achieve better performance in some cases. Additionally, the authors present a simple Wiener-Hammerstein model that uses differentiable IIRs as its filtering component and train it on a guitar signal."
+                    },
+                    {
+                        "line": 37,
+                        "changed_line": "A hypernetwork Ha et al. ([2016](#bib.bib25)) functions by mapping a set of inputs to a set of weights, which serve as the parameters for a 'primary network'. Researchers have demonstrated the effectiveness of hypernetworks across various tasks, including image classification Lutati and Wolf ([2023](#bib.bib35)), natural language processing He et al. ([2022](#bib.bib27)), and speech recognition Szatkowski et al. ([2022](#bib.bib45)). Furthermore, research has shown that hypernetworks can improve neural networks' performance on meta-learning tasks such as few-shot learning Bertinetto et al. ([2016](#bib.bib3)), continual learning Von Oswald et al. ([2019](#bib.bib50)), and neural architecture search Zhang et al. ([2019](#bib.bib57))."
+                    },
+                    {
+                        "line": 41,
+                        "changed_line": "Researchers use adaptive filtering as a technique to improve the quality of a signal by removing noise or interference. Adaptive filters can adapt to changes in the signal or the environment, which makes them well-suited for a variety of applications."
+                    }
+                ]
+            },
+            {
+                "target": "sec_4 Analysis",
+                "change": [
+                    {
+                        "line": 248,
+                        "changed_line": "where $s[t]$ is the recurrent state at time $t$. By isolating $s[t-1]$, Eq. [29](#S4.E29 \"In 4 Analysis \\u2022 Focus Your Attention (with Adaptive IIR Filters)\") can be rewritten as follows:"
+                    },
+                    {
+                        "line": 227,
+                        "changed_line": "|  | $$\\operatorname{Focus}\\approx O(Llog(L)\\cdot D+CM^{2}D)$$ |  | (27) |"
+                    },
+                    {
+                        "line": 228,
+                        "changed_line": "| --- | --- | --- | --- |"
+                    },
+                    {
+                        "line": 157,
+                        "changed_line": "Additionally, higher selectivity and a sharper roll-off can be exhibited in the frequency domain by IIR filters compared to FIR filters. It can be considered advantageous in control feedback systems, where specific frequency components are precisely controlled."
+                    },
+                    {
+                        "line": 173,
+                        "changed_line": "line 173: |  | $$IIR(t)=\\alpha e^{t(-\\frac{b}{2a}-\\frac{\\sqrt{b^{2}-4a})}{2a})}+\\beta e^{t(-\\frac{b}{2a}+\\frac{\\sqrt{b^{2}-4a})}{2a})}\\,,$$ |  | (17) |"
+                    },
+                    {
+                        "line": 174,
+                        "changed_line": "line 174: | --- |"
+                    },
+                    {
+                        "line": 159,
+                        "changed_line": "Improper design of IIR filters can make them more sensitive to quantization errors and prone to instability. The presence of feedback loops in control systems can further impact stability considerations. Therefore, one must give careful attention to stability analysis and appropriate filter design techniques to ensure reliable performance."
+                    },
+                    {
+                        "line": 220,
+                        "changed_line": "Next, we observe that the time complexity of the attention head is determined by the size of the context length $M$,,"
+                    },
+                    {
+                        "line": 215,
+                        "changed_line": "We determine that the time complexity of a single time bin is $O(Rlog(R))$. We describe the total time complexity of the chunked FFT as follows,"
+                    },
+                    {
+                        "line": 259,
+                        "changed_line": "Recall that we can represent the differential equation of an IIR filter of order 2 as follows:"
+                    },
+                    {
+                        "line": 153,
+                        "changed_line": "Researchers commonly use IIR (Infinite Impulse Response) and FIR (Finite Impulse Response) as the two main types of digital filters, which have distinct characteristics. Their impulse response and filtering properties are the main differences between them. FIR filters have a finite impulse response, meaning that the filter output is based solely on a finite number of past input samples. In contrast, IIR filters have an infinite impulse response, allowing the filter output to depend on both past and future input samples."
+                    },
+                    {
+                        "line": 200,
+                        "changed_line": "Time Complexity\u2002 The global conv time complexity is analyzed."
+                    },
+                    {
+                        "line": 235,
+                        "changed_line": "We obtain sub-quadratic time complexity with respect to the input sequence length. Fig.\u00a0[3](#S4.F3 \"Figure 3 \u2023 4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\") depicts a visual comparison of overall complexity versus the standard attention head."
+                    },
+                    {
+                        "line": 171,
+                        "changed_line": "Specifically, when general \\( b,a \\) is solved, it gives,"
+                    }
+                ]
+            },
+            {
+                "target": "sec_5 Experiments",
+                "change": [
+                    {
+                        "line": 279,
+                        "changed_line": "In the associative recall task, we form each string by concatenating key-value pairs sampled randomly from a dictionary. The model must produce the correct value when given a singular key, even if the key appears in a long sequence."
+                    },
+                    {
+                        "line": 492,
+                        "changed_line": "Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\") reports the enwiki8 results. Evidently, Focus outperforms both Mega\u00a0Ma et\u00a0al. ([2022](#bib.bib36)) and Transformer XL\u00a0Dai et\u00a0al. ([2019](#bib.bib9)), despite a much lower number of parameters, and performs on par with GPT2Radford et\u00a0al. ([2019](#bib.bib41)) (zero-shot) but with only a fraction of its parameters and substantially fewer FLOPS. The same outcome is observed for the Text8 dataset, as reported in Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). While the ablation underperforms compared to Transformer-XL, with the full method, Focus matches GPT2's performance."
+                    },
+                    {
+                        "line": 353,
+                        "changed_line": "We use the associative recall task not only for benchmarking but also to gain insights into the adaptive filtering mechanism. As Fig.\u00a0[4](#S5.F4 \"Figure 4 \u2023 5.1 In-context learning \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\") shows, we have plotted the frequency response of the adaptive filtering for this task. In this specific run, we find the important key in the 12th time bin. The frequency response of the IIR filters is almost 5 orders of magnitude higher than that for nearby time bins. This effect demonstrates the \u201cFocus\u201d mechanism. Note that using only 2 parameters for the IIR kernel, the filters can differentiate between important and unimportant time bins with 5 orders of magnitude. This supports our design choice of IIR filter, seeing that with a kernel size as low as 2 the filter remains sharp enough."
+                    },
+                    {
+                        "line": 283,
+                        "changed_line": "We use the same shared hyperparameters in all synthetic data experiments, with the exception of the sequence length. We depict the hyperparameters in Appendix [A](#A1 \"Appendix A Hyperparameters \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). We use the AdamW optimizer (Loshchilov and Hutter, [2017](#bib.bib34))."
+                    },
+                    {
+                        "line": 359,
+                        "changed_line": "We use the Text8 dataset as a corpus of text for training and evaluating language models. The Text8 dataset, being a subset of the March 2006 Wikipedia dump, contains 90 million characters. We tokenize the text, lowercase it, and assign a unique ID to each token."
+                    },
+                    {
+                        "line": 273,
+                        "changed_line": "Experimental results for the proposed Focus layer are presented below. An ablation is introduced in addition to the full method, to evaluate the importance of adaptive filtering, in which instead of the hypernetwork $H$, the IIR filters are conventional learned parameters. This ablation is denoted by 'Focus-H'."
+                    },
+                    {
+                        "line": 277,
+                        "changed_line": "In order to evaluate our method relative to other state-of-the-art long-range architectures, such as Poli et\u00a0al. ([2023](#bib.bib39)), Dai et\u00a0al. ([2019](#bib.bib9)), we evaluate the associative recall synthetic task. Elhage et\u00a0al. ([2021](#bib.bib14)) first introduced the associative recall task, which is one among several simple yet informative tasks that we use to test the model's capabilities in processing long-range sequences."
+                    },
+                    {
+                        "line": 496,
+                        "changed_line": "Our model was evaluated on the sequential MNIST task, a challenging problem that requires models to capture long-range dependencies. Permuted MNIST is a variant of MNIST where the order of pixels in each image is scrambled, making the task more challenging. A hidden dimension of 512 is used following S4, but to save resources, only 6 layers are utilized and not more. The results are listed in Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). An accuracy of 99.7% (98.8%) on unpermuted (permuted) MNIST is achieved by Focus, outperforming the transformer and S4."
+                    }
+                ]
+            },
+            {
+                "target": "sec_3 Method",
+                "change": [
+                    {
+                        "line": 105,
+                        "changed_line": "where the conjugation is denoted by a star and $\\circ$ is the elementwise (Hadamard) multiplication. We collapse the hyper-dimension $F$, defined earlier as the filter-bank size, using a regular sum operation and denote the resulting tensor as $X_{c}$"
+                    },
+                    {
+                        "line": 100,
+                        "changed_line": "Recall that we multiply by the conjugated impulse response in the frequency domain as the equivalent of filtering,"
+                    },
+                    {
+                        "line": 146,
+                        "changed_line": "We calculate the final output as the gated summation of the gated attention and the input sequence,"
+                    },
+                    {
+                        "line": 81,
+                        "changed_line": "$\\Theta$ is calculated using an MLP on $e$, (3)"
+                    },
+                    {
+                        "line": 117,
+                        "changed_line": "We split the sequence into $C$ separate non-overlapping chunks. Denote the chunk length as $M$, such that $L=MC$. We denote the chunk of signal with uppercase $i$, and use square brackets for indexing, starting with index 0, as follows"
+                    },
+                    {
+                        "line": 91,
+                        "changed_line": "A note about causality\u2003 To maintain a fully causal model that is applicable to auto-regressive tasks, we process each time bin on its own and do not overlap it with other time bins. In addition, we shift $\\Theta$ right by one time bin so that we process the sequence at time bin $i$ with the kernel computed from time bin $i-1$."
+                    }
+                ]
+            },
+            {
+                "target": "sec_8 Acknowledgments",
+                "change": [
+                    {
+                        "line": 551,
+                        "changed_line": "The Tel Aviv University Center for AI and Data Science (TAD) granted support to this work. It is part of a PhD research conducted by the first author."
+                    }
+                ]
+            },
+            {
+                "target": "sec_6 Conclusions",
+                "change": [
+                    {
+                        "line": 541,
+                        "changed_line": "The seminal work of Vaswani et al. ([2017](#bib.bib49)) demonstrates that attention models are extremely powerful for modeling sequences. Indeed, transformers have changed the practice of deep learning and achieved unprecedented performance in nearly all studied AI domains."
+                    }
+                ]
+            },
+            {
+                "target": "abstract",
+                "change": null
+            }
+        ],
+        "edits": [
+            [
+                "sections",
+                "## 2 Background and related work\n\nIIR filters, known as infinite impulse response filters, are digital filters that utilize feedback to generate an output signal. Their primary applications involve signal smoothing, filtering, and signal modification. These filters are extensively employed in various fields, such as audio processing, speech processing, and image processing. One notable advantage of IIR filters is their ability to achieve a significantly sharper roll-off in the transition region compared to an FIR filter of the same order. This is made possible by the presence of complex poles in the IIR filters, which enable them to attenuate frequencies more rapidly.  \n\nThe state-space representation of an IIR filter is a convenient way to represent the filter\u2019s dynamics and to implement it in software. It consists of three parts: the state vector, the state transition matrix, and the output matrix. The state vector contains the filter\u2019s internal state variables, the state transition matrix describes how the state vector changes over time, and the output matrix describes how the output signal is computed from the state vector. Such representation are described in Zhang et\u00a0al. ([2023](#bib.bib59))  \n\n### 2.1 Learnable IIR Filters\n\nSince IIR filters are computationally efficient and expressive, we naturally design IIR filters with Deep Learning. Kuznetsov et al. ([2020](#bib.bib32)) proposes an approach to using traditional digital IIR filter structures inside deep-learning networks trained using backpropagation. The authors establish the link between these structures and recurrent neural networks, and they present three different differentiable IIR filter topologies. They compare the proposed topologies against each other and an established baseline and show that the proposed topologies can achieve better performance in some cases. Additionally, the authors present a simple Wiener-Hammerstein model that uses differentiable IIRs as its filtering component and train it on a guitar signal.\n\n### 2.2 Global Convolutions\n\nThe global convolution, also known as a long convolution, is a layer that applies scalar convolutions along the sequence dimension, enabling the handling of unrestricted 1-D sequences. Empirically, these layers have shown strong performance in tasks involving long-range dependencies, particularly in domains such as NLP\u00a0Dao et\u00a0al. ([2022b](#bib.bib11)); Mehta et\u00a0al. ([2022](#bib.bib37)); Wang et\u00a0al. ([2022](#bib.bib52)), audio\u00a0Goel et\u00a0al. ([2022](#bib.bib18)), speech\u00a0Saon et\u00a0al. ([2023](#bib.bib44)), video\u00a0Islam et\u00a0al. ([2022](#bib.bib29)); Wang et\u00a0al. ([2023](#bib.bib51)), time-series analysis\u00a0Zhang et\u00a0al. ([2023](#bib.bib59)) and more. Moreover, they exhibit computational efficiency as their cost is sub-quadratic. However, to achieve SOTA results, appropriate regularization is necessary. The approach of Gu et\u00a0al. ([2021b](#bib.bib21), [a](#bib.bib20)); Ma et\u00a0al. ([2022](#bib.bib36)); Li et\u00a0al. ([2022](#bib.bib33)) incorporates a parameterization that inherently regularizes the kernel and decoupling sequence length from parameter count. Romero et\u00a0al. ([2021](#bib.bib43)); Poli et\u00a0al. ([2023](#bib.bib39)) utilizes an implicit parameterization learned by FFNs operating on positional encodings, while \u00a0Fu et\u00a0al. ([2023](#bib.bib16)) explicitly regularizes the convolution kernels using squash or smooth operators.  \n\n### 2.3 Long Range Transformers\n\nTransformers\u00a0Vaswani et\u00a0al. ([2017](#bib.bib49)) have emerged as highly effective models for various tasks, but their widespread adoption has been limited by the quadratic cost of the self-attention mechanism and poor performance on long-range tasks. Researchers have pursued diverse approaches to overcome this challenge and to create efficient transformer architectures\u00a0Fournier et\u00a0al. ([2021](#bib.bib15)); Tay et\u00a0al. ([2022](#bib.bib47)). From the perspective of efficiency, techniques such as sparse attention\u00a0Child et\u00a0al. ([2019](#bib.bib7)), low-rank attention\u00a0Wang et\u00a0al. ([2020](#bib.bib53)); Winata et\u00a0al. ([2020](#bib.bib54)), kernel-based attention\u00a0Choromanski et\u00a0al. ([2020](#bib.bib8)), recurrent mechanisms\u00a0Hutchins et\u00a0al. ([2022](#bib.bib28)); Dai et\u00a0al. ([2019](#bib.bib9)), and efficient IO-awareness-based implementation\u00a0Dao et\u00a0al. ([2022a](#bib.bib10)) proved efficient. From the perspective of effectiveness, \u00a0Yu et\u00a0al. ([2023](#bib.bib56)); Ivgi et\u00a0al. ([2023](#bib.bib30)) combines local and global attention models hierarchically, enhancing the model\u2019s ability to handle extensive context Other techniques employ global memory-based Attention\u00a0Gupta and Berant ([2020](#bib.bib22)); Al\u00a0Adel ([2022](#bib.bib1)); [Burtsev](#bib.bib5) , and\u00a0Zhou et\u00a0al. ([2022](#bib.bib61)) applies attention in the frequency domain to expand long-range capabilities.  \n\n### 2.4 Hyper Networks\n\nA hypernetwork Ha et al. ([2016](#bib.bib25)) functions by mapping a set of inputs to a set of weights, which serve as the parameters for a 'primary network'. Researchers have demonstrated the effectiveness of hypernetworks across various tasks, including image classification Lutati and Wolf ([2023](#bib.bib35)), natural language processing He et al. ([2022](#bib.bib27)), and speech recognition Szatkowski et al. ([2022](#bib.bib45)). Furthermore, research has shown that hypernetworks can improve neural networks' performance on meta-learning tasks such as few-shot learning Bertinetto et al. ([2016](#bib.bib3)), continual learning Von Oswald et al. ([2019](#bib.bib50)), and neural architecture search Zhang et al. ([2019](#bib.bib57)).\n\n### 2.5 Adaptive Filtering\n\nResearchers use adaptive filtering as a technique to improve the quality of a signal by removing noise or interference. Adaptive filters can adapt to changes in the signal or the environment, which makes them well-suited for a variety of applications.\n\nOne common technique used in adaptive filtering is the short-time Fourier transform (STFT), which provides a time-frequency representation of a signal. It enables the analysis of time-varying properties of a signal by dividing it into short-time windows and applying the Fourier transform to each window. The STFT reveals the distribution of frequency content over time, which allows the adaptive filter to track the frequency content of the signal and adapt its coefficients accordingly. However, STFT introduce non-causal implementation due to overlapping time-bins. To mitigate it, we introduce chunked-FFT, a degenerate form of the STFT.  \n\nRecent research in AI has focused on using deep learning to improve the performance of adaptive filters. For example, deep learning has been used to improve the performance of adaptive filters for noise cancellation Zhang and Wang ([2021](#bib.bib58)), echo cancellation Haubner and Kellermann ([2022](#bib.bib26)), and equalization Zhou et\u00a0al. ([2020](#bib.bib60)). Deep learning has also been used to develop new adaptive filter architectures that are more robust to noise and interference Alwan and Hussain ([2022](#bib.bib2)). Revach et\u00a0al. ([2022](#bib.bib42)) demonstrate how deep learning can be used to improve the performance of Kalman filtering Kalman ([1960](#bib.bib31)), a classical control algorithm.  ",
+                "2 Background and related work"
+            ],
+            [
+                "sections",
+                "## 4 Analysis\n\nResearchers commonly use IIR (Infinite Impulse Response) and FIR (Finite Impulse Response) as the two main types of digital filters, which have distinct characteristics. Their impulse response and filtering properties are the main differences between them. FIR filters have a finite impulse response, meaning that the filter output is based solely on a finite number of past input samples. In contrast, IIR filters have an infinite impulse response, allowing the filter output to depend on both past and future input samples.\n\nOne advantage of IIR filters is their ability to achieve a desired frequency response with fewer coefficients compared to FIR filters. This makes IIR filters more computationally efficient, requiring fewer calculations and lower memory requirements. Consequently, in control feedback systems where real-time operation and computational efficiency are crucial, IIR filters are often preferred.  \n\nAdditionally, higher selectivity and a sharper roll-off can be exhibited in the frequency domain by IIR filters compared to FIR filters. It can be considered advantageous in control feedback systems, where specific frequency components are precisely controlled.\n\nImproper design of IIR filters can make them more sensitive to quantization errors and prone to instability. The presence of feedback loops in control systems can further impact stability considerations. Therefore, one must give careful attention to stability analysis and appropriate filter design techniques to ensure reliable performance.\n\nThe filter can be described in the frequency domain as a rational polynomial function of the complex exponent $e^{-j2\\pi f}$. Denote the complex exponent as $S$.  \n\n|  | $$S=e^{-j2\\pi f}$$ |  | (15) |\n| --- | --- | --- | --- |\n\nA second-order system can be described as follows,  \n\n|  | $$IIR(S)=\\frac{1}{aS^{2}+bS+1}$$ |  | (16) |\n| --- | --- | --- | --- |\n\nSpecifically, when general \\( b,a \\) is solved, it gives,\n\nline 173: |  | $$IIR(t)=\\alpha e^{t(-\\frac{b}{2a}-\\frac{\\sqrt{b^{2}-4a})}{2a})}+\\beta e^{t(-\\frac{b}{2a}+\\frac{\\sqrt{b^{2}-4a})}{2a})}\\,,$$ |  | (17) |\nline 174: | --- |\n\nwhere $\\alpha$ and $\\beta$ are normalizing factors. Denote the term under the square root as discriminant, $\\Delta$. For any $b\\geq 0$ and $a\\geq 0$ the following holds:  \n\n|  | $$\\Delta\\leq b^{2}\\,\\,\\,\\forall\\{a,b\\}\\geq 0\\,.$$ |  | (18) |\n| --- | --- | --- | --- |\n\nIn order to guarantee stability, both exponents should decay, which leads to the requirement that the real part must be negative.  \n\n|  | $$Re\\{-\\frac{b}{2a}\\pm\\frac{\\sqrt{\\Delta})}{2a})\\}\\leq 0\\,.$$ |  | (19) |\n| --- | --- | --- | --- |\n\nThis can be achieved if $b$ is positive. In the scenario where $\\Delta\\leq 0$, the exponents have an imaginary part, causing it to oscillate. This is called an under-damped response. This response is stable, yet more expressive than Exponential Moving Average (EMA) filters, as found in MEGA\u00a0Ma et\u00a0al. ([2022](#bib.bib36)). The frequency of the sine, $\\omega$, in this case is  \n\n|  | $$\\omega=\\frac{\\sqrt{\\Delta}}{2a}\\,,$$ |  | (20) |\n| --- | --- | --- | --- |\n\nand the time domain impulse response reads,  \n\n|  | $$IIR(t)=\\gamma e^{-t\\frac{b}{2a}}sin(\\omega t+\\phi)\\,,$$ |  | (21) |\n| --- | --- | --- | --- |\n\nwhere $\\gamma$ is the normalizing factor, and $\\phi$ is the phase from aggregating both sine and cosine functions with the same frequency. Note that for orders above 2, there is no simple condition that guarantees that the real part will be negative and the response stable.  \n\nTo demonstrate the oscillating behavior of the generated IIR filters, the time-domain impulse responses of some random kernels are drawn in Fig.\u00a0[2](#S3.F2 \"Figure 2 \u2023 3.2 The Focus Layer \u2023 3 Method \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). In this plot, the purple kernel acts as EMA, while other kernels have a more complicated response. However, all filters decay as time increases, which leads to a stable response and has been identified by\u00a0Li et\u00a0al. ([2022](#bib.bib33)) as an essential property for capturing long-range dependencies.  \n\nTime Complexity\u2002 The global conv time complexity is analyzed.\n\n|  | $$\\operatorname{GlobalConv}\\approx O(Llog(L)\\cdot D)$$ |  | (22) |\n| --- | --- | --- | --- |\n\nThis is due to the FFT and IFFT that the signal is passed through. This computation is done only once and is shared through multiple layers of Focus. The MLP is mapping between $D$ and $F$.  \n\n|  | $$MLP\\approx O(DF)$$ |  | (23) |\n| --- | --- | --- | --- |\n\nThe chunked-FFT complexity depends on the size of the FFT used ($NFFT$). Denote the size of a single time bin as $R$,  \n\n|  | $$R=\\frac{L}{Nbins}$$ |  | (24) |\n| --- | --- | --- | --- |\n\nWe determine that the time complexity of a single time bin is $O(Rlog(R))$. We describe the total time complexity of the chunked FFT as follows,\n\n|  | $$\\operatorname{FFT_{chunked}}\\approx O(Llog(R))$$ |  | (25) |\n| --- | --- | --- | --- |\n\nNext, we observe that the time complexity of the attention head is determined by the size of the context length $M$,,\n\n|  | $$\\operatorname{Atten}\\approx O(CM^{2}D+CMD^{2})$$ |  | (26) |\n| --- | --- | --- | --- |\n\nThe total time complexity of the Focus layer is, therefore,  \n\n|  | $$\\operatorname{Focus}\\approx O(Llog(L)\\cdot D+CM^{2}D)$$ |  | (27) |\n| --- | --- | --- | --- |\n\nwhere we neglected smaller terms when the sequence length is large (greater than dimensions). Recalling that $L=MC$, and rearranging terms, we have,  \n\n|  | $$\\operatorname{Focus}\\approx O(DL\\cdot(log(L)+M))$$ |  | (28) |\n| --- | --- | --- | --- |\n\nWe obtain sub-quadratic time complexity with respect to the input sequence length. Fig.\u00a0[3](#S4.F3 \"Figure 3 \u2023 4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\") depicts a visual comparison of overall complexity versus the standard attention head.\n\n[FIGURE S4.F3.g1]\n![Figure S4.F3.g1](./media/Focus_complexity.png)\n\nFigure 3: Time Complexity of the Focus layer and of Attention, increasing sequence length\n[/FIGURE]\n\nExpressiveness \u2002 An emerging class of diagonal linear RNNs\u00a0Orvieto et\u00a0al. ([2023](#bib.bib38)); Gupta et\u00a0al. ([2022b](#bib.bib24)) recently achieved near SOTA results in several long-range tasks. They include complex and real variants, as well as diagonal state-space layers\u00a0Gupta et\u00a0al. ([2022a](#bib.bib23)); Gu et\u00a0al. ([2022](#bib.bib19)). The following recurrent rule describes each channel of those layers:  \n\n|  | $$s[t]=As[t-1]+Bx[t],\\quad y[t]=Cs[t]+Dx[t]$$ |  | (29) |\n| --- | --- | --- | --- |\n\nwhere $s[t]$ is the recurrent state at time $t$. By isolating $s[t-1]$, Eq. [29](#S4.E29 \"In 4 Analysis \\u2022 Focus Your Attention (with Adaptive IIR Filters)\") can be rewritten as follows:\n\n|  | $$s[t-1]=\\frac{1}{C}y[t-1]-\\frac{D}{C}x[t-1]$$ |  | (30) |\n| --- | --- | --- | --- |\n\n|  | $$y[t]=CAs[t-1]+(CB+D)x[t]=$$ |  | (31) |\n| --- | --- | --- | --- |\n\n|  | $$Ay[t-1]+(CB+D)x[t]+ADx[t-1]$$ |  |\n| --- | --- | --- |\n\nRecall that we can represent the differential equation of an IIR filter of order 2 as follows:\n\n|  | $$y[t]=b_{0}x[t]+b_{1}x[t-1]+b_{2}x[t-2]-$$ |  | (32) |\n| --- | --- | --- | --- |\n\n|  | $$a_{1}y[t-1]-a_{2}y[t-2]$$ |  |\n| --- | --- | --- |\n\nBy substituting the values of $b_{0}=CB+D$, $b_{1}=AD$, $a_{1}=-A$, $b_{2}=a_{2}=0$, it becomes evident that the IIR filter can be constrained to a linear SSM. In machine learning, $D$ is often omitted in SSMs or diagonal RNNs, since it can be seen as a parameter-based skip-connection. In this case, the SSM can be represented by an IIR filter of order 1.  \n\nAs mentioned earlier, higher-order filters can introduce stability issues. Therefore, our decision to utilize IIR filters of order 2 is justified, as we opt for the most expressive IIR filters that still maintain stability during training.  ",
+                "4 Analysis"
+            ],
+            [
+                "sections",
+                "## 5 Experiments\n\nExperimental results for the proposed Focus layer are presented below. An ablation is introduced in addition to the full method, to evaluate the importance of adaptive filtering, in which instead of the hypernetwork $H$, the IIR filters are conventional learned parameters. This ablation is denoted by 'Focus-H'.\n\n### 5.1 In-context learning\n\nIn order to evaluate our method relative to other state-of-the-art long-range architectures, such as Poli et\u00a0al. ([2023](#bib.bib39)), Dai et\u00a0al. ([2019](#bib.bib9)), we evaluate the associative recall synthetic task. Elhage et\u00a0al. ([2021](#bib.bib14)) first introduced the associative recall task, which is one among several simple yet informative tasks that we use to test the model's capabilities in processing long-range sequences.\n\nIn the associative recall task, we form each string by concatenating key-value pairs sampled randomly from a dictionary. The model must produce the correct value when given a singular key, even if the key appears in a long sequence.\n\nSimilarly to Poli et\u00a0al. ([2023](#bib.bib39)), we employ the associative recall task in order to explore the memory capabilities of our model.  \n\nWe use the same shared hyperparameters in all synthetic data experiments, with the exception of the sequence length. We depict the hyperparameters in Appendix [A](#A1 \"Appendix A Hyperparameters \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). We use the AdamW optimizer (Loshchilov and Hutter, [2017](#bib.bib34)).\n\n[TABLE S5.T1]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">L</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Focus</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Focus-H</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Hyena</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">FlashTransformer</th>\n<th class=\"ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Transformer</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">30</th>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\">100.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">1K</th>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">98.0</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">95.0</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">8K</th>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">85.3</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">NR</td>\n<td class=\"ltx_td ltx_align_center\">NF</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">32K</th>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">34.6</td>\n<td class=\"ltx_td ltx_align_center\">100.0</td>\n<td class=\"ltx_td ltx_align_center\">32.4</td>\n<td class=\"ltx_td ltx_align_center\">NF</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\">64K</th>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">28.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">100.0</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">26.7</td>\n<td class=\"ltx_td ltx_align_center ltx_border_bb\">NF</td>\n</tr>\n</tbody>\n</table>\n\nTable 1: Test accuracy (%) for associative recall on long sequences of length $L$ and a vocabulary size of 30. NF - not feasible to test. NR = not reported.\n[/TABLE]\n\nAs can be seen in Tab.\u00a0LABEL:tab:synth, our model is able to obtain an accuracy of 100% for all sequence lengths, without overfitting, despite the low number of examples (2000), and with no memory explosion thanks to linear scaling with input size. These results show that the Focus mechanism is able to improve the performance of regular transformers to be on par with Heyna Poli et\u00a0al. ([2023](#bib.bib39)), with smaller footprint. In addition, the ablation experiment shows the importance of adaptive filtering, i.e. estimating the filter kernels online to focus the attention mechanism on important sub-sequences where the results degrade in the ablation due to the greater sequence length.  \n\n[FIGURE S5.F4.g1]\n![Figure S5.F4.g1](./media/iir_filters_2.png)\n\nFigure 4: Frequency Response of IIR kernels, for 1K sequence split into 18 time bins. The important key is found in the 12th time bin.\n[/FIGURE]\n\nWe use the associative recall task not only for benchmarking but also to gain insights into the adaptive filtering mechanism. As Fig.\u00a0[4](#S5.F4 \"Figure 4 \u2023 5.1 In-context learning \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\") shows, we have plotted the frequency response of the adaptive filtering for this task. In this specific run, we find the important key in the 12th time bin. The frequency response of the IIR filters is almost 5 orders of magnitude higher than that for nearby time bins. This effect demonstrates the \u201cFocus\u201d mechanism. Note that using only 2 parameters for the IIR kernel, the filters can differentiate between important and unimportant time bins with 5 orders of magnitude. This supports our design choice of IIR filter, seeing that with a kernel size as low as 2 the filter remains sharp enough.\n\n### 5.2 Language Modeling\n\nThe enwiki8 dataset is a byte-level dataset consisting of the first 100 million bytes of a Wikipedia XML dump. It is a commonly used dataset for benchmarking character-level language models.  \n\nWe use the Text8 dataset as a corpus of text for training and evaluating language models. The Text8 dataset, being a subset of the March 2006 Wikipedia dump, contains 90 million characters. We tokenize the text, lowercase it, and assign a unique ID to each token.\n\nThe metric used to evaluate language models on enwiki8 and Text8 is bits per character (BPC). The lower the BPC, the better the language model. To compute the BPC the average cross-entropy is computed in the log2 basis  \n\n|  | $$BPC=\\frac{1}{L}Log_{2}\\operatorname{CrossEntropy}(P,\\hat{P})\\,,$$ |  | (33) |\n| --- | --- | --- | --- |\n\nwhere $P$ is the target distribution, and $\\hat{P}$ is the output distribution. $L$ is the sequence length. To maintain the same capabilities such as Mega Ma et\u00a0al. ([2022](#bib.bib36)), we used 8 layers of the Focus layer, with a hidden dimension of 1024 and an input dimension of 512.  \n\n[TABLE S5.T4]\n\n<div class=\"ltx_flex_figure\">\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n<table class=\"ltx_tabular ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">#params</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">BPC</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer XL <cite class=\"ltx_cite ltx_citemacro_cite\">Dai et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">277M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">0.99</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Mega <cite class=\"ltx_cite ltx_citemacro_cite\">Ma et\u00a0al. (<a class=\"ltx_ref\">2022</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">39M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">1.02</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">GPT2 <cite class=\"ltx_cite ltx_citemacro_cite\">Radford et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">1542M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">0.94</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Focus-H (ablation)</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">21M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">1.06</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\">22M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">0.94</span></td>\n</tr>\n</tbody>\n</table>\n</div>\n</div>\n\n<div class=\"ltx_flex_figure\">\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n<table class=\"ltx_tabular ltx_centering ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">#params</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">BPC</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer XL <cite class=\"ltx_cite ltx_citemacro_cite\">Dai et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">277M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">1.08</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">GPT2 <cite class=\"ltx_cite ltx_citemacro_cite\">Radford et\u00a0al. (<a class=\"ltx_ref\">2019</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">1542M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">0.98</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Focus-H (ablation)</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">21M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">1.10</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\">22M</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">0.98</span></td>\n</tr>\n</tbody>\n</table>\n</div>\n</div>\n\n<div class=\"ltx_flex_figure\">\n<div class=\"ltx_flex_cell ltx_flex_size_1\">\n<table class=\"ltx_tabular ltx_centering ltx_figure_panel ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\">Model</th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">sMNIST</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">pMNIST</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">98.9</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">97.9</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">S4 <cite class=\"ltx_cite ltx_citemacro_cite\">Gu et\u00a0al. (<a class=\"ltx_ref\">2021a</a>)</cite>\n</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">99.6</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">98.7</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row\">Focus-H (ablation)</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">98.9</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">98.0</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">99.7</span></td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">98.8</span></td>\n</tr>\n</tbody>\n</table>\n</div>\n</div>\n\nTable 2: BPC for enwiki8 dataset.\n[/TABLE]\n\nTab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\") reports the enwiki8 results. Evidently, Focus outperforms both Mega\u00a0Ma et\u00a0al. ([2022](#bib.bib36)) and Transformer XL\u00a0Dai et\u00a0al. ([2019](#bib.bib9)), despite a much lower number of parameters, and performs on par with GPT2Radford et\u00a0al. ([2019](#bib.bib41)) (zero-shot) but with only a fraction of its parameters and substantially fewer FLOPS. The same outcome is observed for the Text8 dataset, as reported in Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). While the ablation underperforms compared to Transformer-XL, with the full method, Focus matches GPT2's performance.\n\n### 5.3 1-D image classification\n\nOur model was evaluated on the sequential MNIST task, a challenging problem that requires models to capture long-range dependencies. Permuted MNIST is a variant of MNIST where the order of pixels in each image is scrambled, making the task more challenging. A hidden dimension of 512 is used following S4, but to save resources, only 6 layers are utilized and not more. The results are listed in Tab.\u00a0[4](#S5.T4 \"Table 4 \u2023 5.2 Language Modeling \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). An accuracy of 99.7% (98.8%) on unpermuted (permuted) MNIST is achieved by Focus, outperforming the transformer and S4.\n\n### 5.4 Efficiency Comparison\n\nTo assess the efficiency of the Focus layer, we measure peak memory usage and inference speed. We compare several related models on the association recall task. This task involves processing a sequence of 1K tokens, which represents the maximal fit in memory for transformers. The results are presented in Tab.\u00a0[5](#S5.T5 \"Table 5 \u2023 5.4 Efficiency Comparison \u2023 5 Experiments \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). As can be seen, Focus exhibits the lowest peak memory consumption, using only 38% of the memory consumed by the Transformer model. However, its inference speed is slightly slower than the other methods.  \n\n[TABLE S5.T5]\n\n<table class=\"ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle\">\n<thead class=\"ltx_thead\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_column ltx_th_row ltx_border_tt\"><span class=\"ltx_text ltx_font_bold\">Model</span></th>\n<th class=\"ltx_td ltx_nopad_l ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Inference time</th>\n<th class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_th ltx_th_column ltx_border_tt\">Memory</th>\n</tr>\n</thead>\n<tbody class=\"ltx_tbody\">\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row ltx_border_t\">Transformer</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_t\">x1</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_t\">x1</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row\">S4</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">x1.58</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">x0.43</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row\">MEGA</th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center\">x1.49</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center\">x0.57</td>\n</tr>\n<tr class=\"ltx_tr\">\n<th class=\"ltx_td ltx_nopad_r ltx_align_left ltx_th ltx_th_row ltx_border_bb\"><span class=\"ltx_text ltx_font_bold\">Focus</span></th>\n<td class=\"ltx_td ltx_nopad_l ltx_align_center ltx_border_bb\">x1.75</td>\n<td class=\"ltx_td ltx_nopad_l ltx_nopad_r ltx_align_center ltx_border_bb\">x0.38</td>\n</tr>\n</tbody>\n</table>\n\nTable 5: Comparison of inference speed and peak memory consumption for related models.\n[/TABLE]",
+                "5 Experiments"
+            ],
+            [
+                "sections",
+                "## 3 Method\n\n### 3.1 Overview\n\nWe start by discussing the main design choices of our architecture.  \n\nChunking and the combination of local and global models\u2003 Given the quadratic complexity of transformers, chunking is a common practice for computing short-range attention efficiently. However, despite excelling in short-range tasks, full-length transformers often struggle to handle long-range dependencies and often perform comparably to local-attention-based transformers\u00a0Xiong et\u00a0al. ([2021](#bib.bib55)). Recent studies have demonstrated that a combination of local and global transformers can achieve state-of-the-art performance on long-range tasks\u00a0Ivgi et\u00a0al. ([2023](#bib.bib30)); Yu et\u00a0al. ([2023](#bib.bib56)); Hutchins et\u00a0al. ([2022](#bib.bib28)). Inspired by these findings, we introduce local attention as the local model, which is combined with a novel type of global convolution as the global model. Furthermore, in contrast to Hutchins et\u00a0al. ([2022](#bib.bib28)); Bulatov et\u00a0al. ([2023](#bib.bib4)), our global model does not use recurrent computations, since it severely restricts parallelization.  \n\nAdaptive IIR Filters\u2003 In MEGA \u00a0Ma et\u00a0al. ([2022](#bib.bib36)), it was demonstrated that incorporating an EMA at the beginning of each transformer block improves transformer performance in long-range tasks. EMA can be viewed as a convolution operation using simple first-order IIR filters. Motivated by this finding, we adopt a more versatile and expressive convolution approach that utilizes adaptive filters generated by a hypernetwork. Since the hypernetwork is an integral part of our global model, it employs global convolutions. Specifically, the regularized global convolution of\u00a0Fu et\u00a0al. ([2023](#bib.bib16)) is used, as the most straightforward option. A common challenge with hypernetworks is ensuring relatively small output sizes. In this regard, leveraging IIR filters, which have only a few parameters, is a reasonable choice.  \n\n### 3.2 The Focus Layer\n\n[FIGURE S3.F1.g1]\n![Figure S3.F1.g1](./media/focus_full_arch.png)\n\nFigure 1: Focus Architecture: (a) The architecture of a single head. (b) The obtained layer. (c) The entire model. The architecture of the model and layer are defined similarly to MEGA\u00a0Ma et\u00a0al. ([2022](#bib.bib36)). Blocks in blue are not learned, while blocks in red are learned parameters. $S2P$ (serial to parallel) and $P2S$ (parallel to serial) are the chunking and the de-chunking operations, respectively.\n[/FIGURE]\n\nIn this section, we describe the focus attention head, our primary contribution. This head is integrated into the MEGA backbone, as visualized in Fig\u00a0[1](#S3.F1 \"Figure 1 \u2023 3.2 The Focus Layer \u2023 3 Method \u2023 Focus Your Attention (with Adaptive IIR Filters)\"). Let $x$ be the input for the focus layer, where $x\\in\\mathcal{R}^{L\\times D}$, $L$ is the sequence length, and $D$ is the input\u2019s dimension. Our method, termed Focus, utilizes the foundations of adaptive filtering theory to cope with very long stochastic sequences. Given the seasonality of the sequence, the resolution of the FFT is determined by its size in each time-bin. Denote the size of the FFT in a single time-bin as $NFFT$.  \n\nThe first component of the Focus layer is the hypernetwork, $H$. The output of $H$ is $\\Theta$, which is the set of IIR kernels used for the forward processing of the sequence. $\\Theta$ has a dimension of $Nbins\\times D\\times F\\times 2$, denoting $F$ kernels, each with a kernel size of two for $D$ feature channels. The kernel is unique per time-bin, $Nbins$, which makes the filter adaptive to changes over time.  \n\n|  | $$\\Theta=H(x)\\,.$$ |  | (1) |\n| --- | --- | --- | --- |\n\n$H$ has two main components. The first is a shallow global convolution Fu et\u00a0al. ([2023](#bib.bib16)) based sub-model that is followed by adaptive max pooling (over each feature channel) [Pytorch](#bib.bib40)  with a size of $O\\times Nbins$, where $O$ is the oversampling factor.  \n\n|  | $$e=\\operatorname{MaxPool}(\\operatorname{GlobalConv}(x))$$ |  | (2) |\n| --- | --- | --- | --- |\n\nwhere $e$ is the embedding from processing $x$ using the global convolution layer. This computation can be shared across multiple Focus layers and can be split into local ($H_{\\text{local}}$) and global ($H_{\\text{global}}$) sub-components, as in most of our experiments, thus reducing substantially the computational cost. Furthermore, the embedding is permuted such that the feature space has the size $O$ while $Nbins$ is added to the batch dimension for parallel computing.  \n\nThe second component of $H$ is a 2-layer MLP with sigmoid activations that maps the embedding $e$ to a tensor with size $Nbins\\times D\\times F\\times 2$. With mapping of latent dimension $O$ to $2\\cdot F$  \n\n$\\Theta$ is calculated using an MLP on $e$, (3)\n| --- | --- | --- | --- |\n\nwhere $\\Theta$ is the IIR kernel, with size $Nbins\\times D\\times F\\times 2$. $MLP$ is the forward MLP mapping, as described above. Since $H$ is a hypernetwork, the initialization of the last layer of the MLPs follows Chang et\u00a0al. ([2020](#bib.bib6)). The rest of the layers follow the Xavier initialization Glorot and Bengio ([2010](#bib.bib17)). The input $x$ is split into non-overlapping time bins, where each time bin is passed through the FFT of the size $NFFT$. Denote the input in the r-th time bin as $x_{r}$.  \n\n|  | $$X[\\omega,r]=FFT(x_{r})\\,,$$ |  | (4) |\n| --- | --- | --- | --- |\n\nwhere $\\omega$ is the normalized frequency variable, sampled evenly on $2\\pi$ range, and $r$ is the index over the different time bins.  \n\nA note about causality\u2003 To maintain a fully causal model that is applicable to auto-regressive tasks, we process each time bin on its own and do not overlap it with other time bins. In addition, we shift $\\Theta$ right by one time bin so that we process the sequence at time bin $i$ with the kernel computed from time bin $i-1$.\n\nFor each time-bin index, the corresponding IIR filter is applied. The IIR filter of order 2 has the following frequency response, denote it as $IIR_{imp}$  \n\n|  | $$IIR_{imp}(f)=\\frac{1}{1+\\Theta[0]\\cdot e^{-j\\cdot 2\\pi f}+\\Theta[1]\\cdot e^{-j\\cdot 4\\pi f}}\\,,$$ |  | (5) |\n| --- | --- | --- | --- |\n\nSince a Sigmoid activation is used for the last layer of $H$, it is guaranteed that $\\Theta$\u2019s elements are positive real numbers smaller than 1. Further analysis and reasoning behind the specific selections made are presented in Sec.\u00a0[4](#S4 \"4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\").  \n\nRecall that we multiply by the conjugated impulse response in the frequency domain as the equivalent of filtering,\n\n|  | $$X_{f}=X\\circ IIR_{imp}^{*}\\,,$$ |  | (6) |\n| --- | --- | --- | --- |\n\nwhere the conjugation is denoted by a star and $\\circ$ is the elementwise (Hadamard) multiplication. We collapse the hyper-dimension $F$, defined earlier as the filter-bank size, using a regular sum operation and denote the resulting tensor as $X_{c}$\n\n|  | $$X_{c}=\\mathbf{1}\\cdot X_{f}\\,,$$ |  | (7) |\n| --- | --- | --- | --- |\n\nwhere $\\mathbf{1}$ is an all-ones vector with size $1\\times F$. The collapsed tensor is the short-time Fourier representation of the original sequence filtered with adaptive filter kernels. The frequency representation goes through the inverse chunked Fourier transform (IFFT), to obtain the time-domain sequence.  \n\n|  | $$x_{f}=IFFT(X_{c})$$ |  | (8) |\n| --- | --- | --- | --- |\n\nThe time-domain sequence has the same dimensions as the original sequence, yet, by applying an adaptive filter to it, we furnish it with an induction bias that helps smaller context attention head to cope with complicated tasks.  \n\nWe split the sequence into $C$ separate non-overlapping chunks. Denote the chunk length as $M$, such that $L=MC$. We denote the chunk of signal with uppercase $i$, and use square brackets for indexing, starting with index 0, as follows\n\n|  | $$x^{i}=(x[iM],x[iM+1],\\dots,x[(i+1)M-1])$$ |  | (9) |\n| --- | --- | --- | --- |\n\n[FIGURE S3.F2.g1]\n![Figure S3.F2.g1](./media/iir_filters.png)\n\nFigure 2: Filter responses for three random filters with the specific denominator structure of Eq.\u00a0[16](#S4.E16 \"In 4 Analysis \u2023 Focus Your Attention (with Adaptive IIR Filters)\").\n[/FIGURE]\n\nAll chunks are processed in parallel with the same small attention head,  \n\n|  | $$y^{i}=Atten(Qx^{i},Kx_{f}^{i},Vx_{f}^{i})\\,,$$ |  | (10) |\n| --- | --- | --- | --- |\n\nwhere $Q,\\,K,\\,V$ are the query, key, and value matrices that map each chunk to their latent corresponding space. Note that the attention head is causal, as it uses lower triangle masking. The chunks, $y^{i}$, are rearranged to form a complete signal, with sequence length $L$, denote it as $y$. Following Ma et\u00a0al. ([2022](#bib.bib36)), the output of the Focus layer, $y$, passes through reset gate $\\gamma$, the update gate $\\psi$. Specifically,  \n\n|  | $$\\gamma=\\operatorname{SiLU}(x_{f}W_{\\gamma}+b_{\\gamma})$$ |  | (11) |\n| --- | --- | --- | --- |\n\n|  | $$\\phi=\\operatorname{sigmoid}(x_{f}W_{\\phi}+b_{\\phi})$$ |  | (12) |\n| --- | --- | --- | --- |\n\n|  | $$z=\\operatorname{SiLU}(x_{f}W_{h}+(\\gamma\\circ y)U_{h}+b_{h})\\,,$$ |  | (13) |\n| --- | --- | --- | --- |\n\nwhere $W_{\\gamma}$, $W_{\\phi}$ and $W_{h}$ are learned matrices with size $D\\times D$. $b_{\\gamma}$, $b_{\\phi}$, and $b_{h}$ are learned biases with size $D$. SiLU stands for the sigmoid linear unit Elfwing et\u00a0al. ([2018](#bib.bib13)).  \n\nWe calculate the final output as the gated summation of the gated attention and the input sequence,\n\n|  | $$o=\\phi\\circ z+(1-\\phi)\\circ x$$ |  | (14) |\n| --- | --- | --- | --- |",
+                "3 Method"
+            ],
+            [
+                "sections",
+                "## 8 Acknowledgments\n\nThe Tel Aviv University Center for AI and Data Science (TAD) granted support to this work. It is part of a PhD research conducted by the first author.",
+                "8 Acknowledgments"
+            ],
+            [
+                "sections",
+                "## 6 Conclusions\n\nThe seminal work of Vaswani et al. ([2017](#bib.bib49)) demonstrates that attention models are extremely powerful for modeling sequences. Indeed, transformers have changed the practice of deep learning and achieved unprecedented performance in nearly all studied AI domains.\n\nHowever, transformers have quadratic complexity in the sequence length, which can impact their efficiency, and often struggle to perform optimally in tasks that involve long-range dependencies\u00a0Tay et\u00a0al. ([2020](#bib.bib46)). In this work, we present a dynamic filtering approach that enables us to subsequently employ attention within much shallower architectures. As our ablation shows, the dynamic nature of these filters is crucial to the success of the layer. Similarly crucial is the use of IIR filters, and we analyze the regime in which these are stable.  ",
+                "6 Conclusions"
+            ]
+        ]
+    },
+    "counterfactual_type": "active_passive_0.40"
+}

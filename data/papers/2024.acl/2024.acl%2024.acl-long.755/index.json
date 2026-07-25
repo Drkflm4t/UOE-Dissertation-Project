@@ -1,0 +1,638 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            28
+        ],
+        "2 Related Work": [
+            29,
+            34
+        ],
+        "3 Method": [
+            35,
+            107
+        ],
+        "4 Experiments": [
+            108,
+            663
+        ],
+        "5 Conclusion and Discussion": [
+            664,
+            669
+        ],
+        "Limitations": [
+            670,
+            675
+        ],
+        "References": [
+            676,
+            739
+        ],
+        "Appendix A Datasets Details": [
+            740,
+            751
+        ],
+        "Appendix B Prompt Formats": [
+            752,
+            1212
+        ],
+        "Appendix C Human Evaluation": [
+            1213,
+            1238
+        ],
+        "Appendix D Studies on Verbalizers for Bootstrapped LLM Scorer": [
+            1239,
+            1268
+        ],
+        "Appendix E Additional Case Studies": [
+            1269,
+            1936
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {
+            "3.1 Problem Definition": [
+                39,
+                42
+            ],
+            "3.2 Recap of Self-consistency Pipeline for In-context Learning": [
+                43,
+                61
+            ],
+            "3.3 Explanation-guided Ensemble": [
+                62,
+                89
+            ],
+            "3.4 Soft Probability Aggregation": [
+                90,
+                98
+            ],
+            "3.5 Summary": [
+                99,
+                107
+            ]
+        },
+        "4 Experiments": {
+            "4.1 Experiment Setups": [
+                110,
+                115
+            ],
+            "Implementation Details": [
+                116,
+                119
+            ],
+            "4.2 Overall Results": [
+                120,
+                337
+            ],
+            "4.3 Results on Open-source Models": [
+                338,
+                549
+            ],
+            "4.4 Study on Explanation-aware Ensemble": [
+                550,
+                578
+            ],
+            "4.5 Study on Soft Probability Aggregation": [
+                579,
+                641
+            ],
+            "4.6 Additional Studies": [
+                642,
+                663
+            ]
+        },
+        "5 Conclusion and Discussion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Datasets Details": {},
+        "Appendix B Prompt Formats": {
+            "B.1 Prompt Format For In-context Learning": [
+                756,
+                759
+            ],
+            "B.1.1 E-SNLI": [
+                760,
+                832
+            ],
+            "B.1.2 ANLI": [
+                833,
+                905
+            ],
+            "B.1.3 ECQA & OpenbookQA": [
+                906,
+                1004
+            ],
+            "B.1.4 StrategyQA": [
+                1005,
+                1077
+            ],
+            "B.2 Prompt Format For Explanation-aware Ensemble.": [
+                1078,
+                1104
+            ],
+            "B.3 Additional Prompt Format Used in Prompt Sensitivity Study": [
+                1105,
+                1212
+            ]
+        },
+        "Appendix C Human Evaluation": {},
+        "Appendix D Studies on Verbalizers for Bootstrapped LLM Scorer": {},
+        "Appendix E Additional Case Studies": {
+            "E.1 Case study on explanation-aware ensemble": [
+                1271,
+                1603
+            ],
+            "E.2 Case study on soft probability aggregation": [
+                1604,
+                1936
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                13,
+                13
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                21
+            ]
+        ],
+        "2 Related Work": [
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                33
+            ]
+        ],
+        "3 Method": [
+            [
+                37,
+                37
+            ],
+            [
+                41,
+                41
+            ],
+            [
+                45,
+                45
+            ],
+            [
+                47,
+                48
+            ],
+            [
+                50,
+                50
+            ],
+            [
+                52,
+                53
+            ],
+            [
+                55,
+                55
+            ],
+            [
+                57,
+                58
+            ],
+            [
+                60,
+                60
+            ],
+            [
+                64,
+                64
+            ],
+            [
+                66,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                70,
+                71
+            ],
+            [
+                73,
+                73
+            ],
+            [
+                81,
+                81
+            ],
+            [
+                83,
+                83
+            ],
+            [
+                85,
+                86
+            ],
+            [
+                88,
+                88
+            ],
+            [
+                92,
+                92
+            ],
+            [
+                94,
+                95
+            ],
+            [
+                97,
+                97
+            ],
+            [
+                101,
+                101
+            ],
+            [
+                103,
+                104
+            ],
+            [
+                106,
+                106
+            ]
+        ],
+        "4 Experiments": [
+            [
+                112,
+                112
+            ],
+            [
+                114,
+                114
+            ],
+            [
+                118,
+                118
+            ],
+            [
+                336,
+                336
+            ],
+            [
+                340,
+                340
+            ],
+            [
+                552,
+                552
+            ],
+            [
+                554,
+                554
+            ],
+            [
+                556,
+                556
+            ],
+            [
+                564,
+                564
+            ],
+            [
+                572,
+                572
+            ],
+            [
+                574,
+                575
+            ],
+            [
+                577,
+                577
+            ],
+            [
+                581,
+                581
+            ],
+            [
+                640,
+                640
+            ],
+            [
+                644,
+                644
+            ],
+            [
+                646,
+                646
+            ],
+            [
+                660,
+                660
+            ],
+            [
+                662,
+                662
+            ]
+        ],
+        "5 Conclusion and Discussion": [
+            [
+                666,
+                666
+            ],
+            [
+                668,
+                668
+            ]
+        ],
+        "Limitations": [
+            [
+                672,
+                672
+            ],
+            [
+                674,
+                674
+            ]
+        ],
+        "References": [
+            [
+                678,
+                738
+            ]
+        ],
+        "Appendix A Datasets Details": [
+            [
+                742,
+                742
+            ],
+            [
+                744,
+                748
+            ],
+            [
+                750,
+                750
+            ]
+        ],
+        "Appendix B Prompt Formats": [
+            [
+                754,
+                754
+            ],
+            [
+                758,
+                758
+            ],
+            [
+                908,
+                908
+            ],
+            [
+                1107,
+                1107
+            ]
+        ],
+        "Appendix C Human Evaluation": [
+            [
+                1215,
+                1215
+            ]
+        ],
+        "Appendix D Studies on Verbalizers for Bootstrapped LLM Scorer": [
+            [
+                1241,
+                1241
+            ]
+        ],
+        "Appendix E Additional Case Studies": [
+            [
+                1273,
+                1273
+            ],
+            [
+                1606,
+                1606
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                23,
+                27
+            ]
+        },
+        "2 Related Work": {},
+        "3 Method": {
+            "[FIGURE S3.F2.g1]": [
+                75,
+                79
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F3.sf1.g1]": [
+                558,
+                562
+            ],
+            "[FIGURE S4.F4.1.g1]": [
+                566,
+                570
+            ],
+            "[FIGURE S4.F6.1.1.g1]": [
+                648,
+                652
+            ],
+            "[FIGURE S4.F7.sf1.g1]": [
+                654,
+                658
+            ]
+        },
+        "5 Conclusion and Discussion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Datasets Details": {},
+        "Appendix B Prompt Formats": {
+            "[FIGURE LST1]": [
+                762,
+                781
+            ],
+            "[FIGURE LST2]": [
+                783,
+                806
+            ],
+            "[FIGURE LST3]": [
+                808,
+                831
+            ],
+            "[FIGURE LST4]": [
+                835,
+                854
+            ],
+            "[FIGURE LST5]": [
+                856,
+                879
+            ],
+            "[FIGURE LST6]": [
+                881,
+                904
+            ],
+            "[FIGURE LST7]": [
+                910,
+                937
+            ],
+            "[FIGURE LST8]": [
+                939,
+                970
+            ],
+            "[FIGURE LST9]": [
+                972,
+                1003
+            ],
+            "[FIGURE LST10]": [
+                1007,
+                1026
+            ],
+            "[FIGURE LST11]": [
+                1028,
+                1051
+            ],
+            "[FIGURE LST12]": [
+                1053,
+                1076
+            ],
+            "[FIGURE LST13]": [
+                1080,
+                1103
+            ],
+            "[FIGURE LST14]": [
+                1109,
+                1132
+            ],
+            "[FIGURE LST15]": [
+                1134,
+                1157
+            ],
+            "[FIGURE LST16]": [
+                1159,
+                1182
+            ],
+            "[FIGURE LST17]": [
+                1184,
+                1211
+            ]
+        },
+        "Appendix C Human Evaluation": {
+            "[FIGURE LST18]": [
+                1217,
+                1226
+            ],
+            "[FIGURE LST19]": [
+                1228,
+                1237
+            ]
+        },
+        "Appendix D Studies on Verbalizers for Bootstrapped LLM Scorer": {},
+        "Appendix E Additional Case Studies": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                122,
+                334
+            ],
+            "[TABLE S4.T2]": [
+                342,
+                471
+            ],
+            "[TABLE S4.T3]": [
+                473,
+                548
+            ],
+            "[TABLE S4.T4]": [
+                583,
+                638
+            ]
+        },
+        "5 Conclusion and Discussion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Datasets Details": {},
+        "Appendix B Prompt Formats": {},
+        "Appendix C Human Evaluation": {},
+        "Appendix D Studies on Verbalizers for Bootstrapped LLM Scorer": {
+            "[TABLE A4.T5]": [
+                1243,
+                1267
+            ]
+        },
+        "Appendix E Additional Case Studies": {
+            "[TABLE A5.T6]": [
+                1275,
+                1439
+            ],
+            "[TABLE A5.T7]": [
+                1441,
+                1602
+            ],
+            "[TABLE A5.T8]": [
+                1608,
+                1772
+            ],
+            "[TABLE A5.T9]": [
+                1774,
+                1934
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Related Work": {},
+        "3 Method": {},
+        "4 Experiments": {},
+        "5 Conclusion and Discussion": {},
+        "Limitations": {},
+        "References": {},
+        "Appendix A Datasets Details": {},
+        "Appendix B Prompt Formats": {},
+        "Appendix C Human Evaluation": {},
+        "Appendix D Studies on Verbalizers for Bootstrapped LLM Scorer": {},
+        "Appendix E Additional Case Studies": {}
+    }
+}

@@ -1,0 +1,686 @@
+{
+    "o_paper": "NeurIPS.cc_2024%V6hrg4O9gg",
+    "cf_paper": {
+        "id": "NeurIPS.cc_2024%V6hrg4O9gg",
+        "meta": {
+            "venue": "NeurIPS.cc_2024",
+            "authors": [
+                "Ali TehraniJamsaz",
+                "Arijit Bhattacharjee",
+                "Le Chen",
+                "Nesreen K. Ahmed",
+                "Amir Yazdanbakhsh",
+                "Ali Jannesari"
+            ],
+            "categories": [
+                "cs.DC",
+                "cs.AI",
+                "cs.LG",
+                "cs.PF",
+                "cs.PL",
+                "cs.SE"
+            ],
+            "entry_id": "http://arxiv.org/abs/2410.20527v1",
+            "links": [
+                "http://arxiv.org/abs/2410.20527v1",
+                "http://arxiv.org/pdf/2410.20527v1"
+            ],
+            "pdf_url": "http://arxiv.org/pdf/2410.20527v1",
+            "published": "2024-10-27T17:34:07+00:00",
+            "updated": "2024-10-27T17:34:07+00:00",
+            "primary_category": "cs.DC",
+            "title": "CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming",
+            "summary": "Recent advancements in Large Language Models (LLMs) have renewed interest in\nautomatic programming language translation. Encoder-decoder transformer models,\nin particular, have shown promise in translating between different programming\nlanguages. However, translating between a language and its high-performance\ncomputing (HPC) extensions remains underexplored due to challenges such as\ncomplex parallel semantics. In this paper, we introduce CodeRosetta, an\nencoder-decoder transformer model designed specifically for translating between\nprogramming languages and their HPC extensions. CodeRosetta is evaluated on C++\nto CUDA and Fortran to C++ translation tasks. It uses a customized learning\nframework with tailored pretraining and training objectives to effectively\ncapture both code semantics and parallel structural nuances, enabling\nbidirectional translation. Our results show that CodeRosetta outperforms\nstate-of-the-art baselines in C++ to CUDA translation by 2.9 BLEU and 1.72\nCodeBLEU points while improving compilation accuracy by 6.05%. Compared to\ngeneral closed-source LLMs, our method improves C++ to CUDA translation by\n22.08 BLEU and 14.39 CodeBLEU, with 2.75% higher compilation accuracy. Finally,\nCodeRosetta exhibits proficiency in Fortran to parallel C++ translation,\nmarking it, to our knowledge, as the first encoder-decoder model for this\ncomplex task, improving CodeBLEU by at least 4.63 points compared to\nclosed-source and open-code LLMs.",
+            "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+            "venue_config": {
+                "id": "NeurIPS.cc_2024_Conference",
+                "name": "Conference on Neural Information Processing Systems of 2024",
+                "type": "Conference on Neural Information Processing Systems",
+                "description": "The Conference on Neural Information Processing Systems (NeurIPS) is one of the most prestigious conferences in machine learning, artificial intelligence (AI), and computational neuroscience. It covers a broad range of topics, including deep learning, reinforcement learning, probabilistic methods, optimization, and AI ethics. NeurIPS attracts top researchers from academia and industry, fostering innovation and interdisciplinary collaboration.",
+                "guidelines": "### Write thoughtful reviews:\n\n    * We know that serving as a reviewer for NeurIPS is time consuming, but the community depends on your high quality reviews to uphold the scientific quality of NeurIPS. \n    * Please make your review as informative and substantiated as possible; superficial, uninformed reviews are worse than no review as they may contribute noise to the review process.\n    * You can see the review form questions and guidance on how to answer each question in the 'Review Form' below.\n    * In general, authors should be rewarded rather than punished for being up front about the limitations of their work and any potential negative societal impact. You are encouraged to think through whether any critical points are missing and provide these as feedback for the authors.\n    * Do not worry about minor violations of the required format (e.g., papers that exceed the page limit by a few lines), but immediately report any major violations that you notice to your AC.\n    * When writing your review, please keep in mind that after decisions have been made, reviews and meta-reviews of accepted papers as well as your discussion with the authors will be made public (but reviewer and SAC/AC identities will remain anonymous). \n    * Please note that the review form this year asks for some additional fields such as text fields for the strengths and weaknesses, and questions and suggestions for authors. There are also additional ratings on soundness, presentation and contribution, in addition to the overall rating. These are intended to make it easier for the AC and SAC to understand your rationale for the rating, and facilitate better discussions.",
+                "guidelines_detailed": "### Checklist\n 1. Claims\nAssess whether the main claims in the abstract and introduction accurately reflect the paper's contributions and scope. Ensure that claims align with theoretical and experimental results in terms of generalizability. Contributions, assumptions, and limitations should be clearly stated. Aspirational goals can be included as motivation but should be distinguished from actual contributions.\n\n 2. Limitations\nEvaluate whether the paper discusses its limitations explicitly. Consider if strong assumptions are identified and their robustness is addressed (e.g., independence assumptions, model well-specification, asymptotic approximations). Reflect on how these assumptions might be violated in practice and their implications. Assess whether empirical results depend on implicit assumptions that are clearly articulated. \n\n 3. Theory, Assumptions, and Proofs\nIf the paper includes theoretical results, verify that all assumptions are clearly stated or referenced. Ensure that proofs are complete and either included in the main paper or supplemental materials. Informal proofs in the main text should be complemented by formal proofs in the appendix. Theorems and lemmas should be properly referenced, and the relationship to related literature should be discussed.\n\n 4. Experimental Result Reproducibility\nIf the paper presents a dataset or model, assess whether it provides sufficient details to allow others to verify or reproduce results. Depending on the contribution, this may involve full architecture descriptions, replication instructions, model access, or model checkpoints. Consider whether the approach to reproducibility is appropriate given the research's nature.\n\n 5. Open Access to Data and Code\nFor experimental results, determine whether the paper includes the code, data, and instructions necessary for reproduction. Check if main experimental results, including baselines, are reproducible and whether instructions provide exact commands and environment details. Consider whether the lack of code/data is justifiable (e.g., proprietary constraints) and if an anonymized version is provided.\n\n 6. Experimental Setting/Details\nFor empirical studies, verify that the paper specifies training details such as data splits, hyperparameters, and their selection process. Important details should be in the main paper, while full details may be in the appendix or supplement. The experimental setup should be described sufficiently to allow proper interpretation of results.\n\n 7. Experiment Statistical Significance\nCheck if error bars, confidence intervals, or statistical significance tests are reported for key experimental results. The factors contributing to variability (e.g., train/test split, initialization) should be clearly stated, along with the method used to compute error bars. Assumptions underlying statistical tests should be specified, and graphical or tabular representations should avoid misleading depictions of uncertainty.\n\n 8. Compute Resources\nReview whether the paper provides sufficient information on computational resources used for experiments, including hardware type (CPU/GPU, cloud provider), memory, and execution time. Consider whether total compute usage, including failed or preliminary experiments, is disclosed.\n\n 9. Code of Ethics\nEnsure the research aligns with the NeurIPS Code of Ethics. If any deviations are necessary, they should be explained while preserving anonymity.\n\n 10. Broader Impacts\nIf relevant, consider whether the paper discusses potential negative societal impacts. These could include issues related to fairness, privacy, security, and potential misuse. Evaluate whether mitigation strategies are proposed where appropriate. If foundational research is not tied to applications, an impact discussion may not be necessary.\n\n 11. Safeguards\nFor high-risk models (e.g., pretrained language models), assess whether safeguards are in place to prevent misuse. Consider whether access restrictions, usage guidelines, or other control mechanisms are provided. If datasets contain scraped content, the paper should describe steps taken to avoid releasing unsafe data.\n\n 12. Licenses\nEnsure that any external assets (code, data, models) are properly cited and that their licenses and terms of use are respected. The paper should state license names, provide citations, and include URLs where applicable. If data was scraped, its copyright status and terms of service should be acknowledged.\n\n 13. Assets\nIf the paper releases new datasets, models, or code, check whether they are well-documented. This includes providing structured templates detailing training procedures, licenses, and limitations. Assess whether consent was obtained for any human-derived data and whether anonymization was applied when necessary.\n\n 14. Crowdsourcing and Human Subjects Research\nFor research involving human subjects or crowdsourcing, verify that participant instructions, compensation details, and other relevant documentation are included (in the main text or supplement). Ensure compliance with ethical guidelines, including fair compensation for crowdsourced labor.\n\n",
+                "template_field_semantics": {
+                    "summary": "Summary",
+                    "strengths": "Strengths",
+                    "weaknesses": "Weaknesses",
+                    "suggestions": "Questions"
+                },
+                "review_template": {
+                    "Summary": "Briefly summarize the paper and its contributions. This is not the place to critique the paper; the authors should generally agree with a well-written summary.",
+                    "Strengths": "Please provide a thorough assessment of the strengths of the paper, touching on each of the following dimensions:\na. Originality: Are the tasks or methods new? Is the work a novel combination of well-known techniques? (This can be valuable!) Is it clear how this work differs from previous contributions? Is related work adequately cited?\nb. Quality: Is the submission technically sound? Are claims well supported (e.g., by theoretical analysis or experimental results)? Are the methods used appropriate? Is this a complete piece of work or work in progress? Are the authors careful and honest about evaluating both the strengths and weaknesses of their work?\nc. Clarity: Is the submission clearly written? Is it well organized? (If not, please make constructive suggestions for improving its clarity.) Does it adequately inform the reader? (Note that a superbly written paper provides enough information for an expert reader to reproduce its results.)\nd. Significance: Are the results important? Are others (researchers or practitioners) likely to use the ideas or build on them? Does the submission address a difficult task in a better way than previous work? Does it advance the state of the art in a demonstrable way? Does it provide unique data, unique conclusions about existing data, or a unique theoretical or experimental approach?",
+                    "Weaknesses": "Please provide a thorough assessment of the weaknesses of the paper, touching on each of the following dimensions:\na. Originality: Are the tasks or methods new? Is the work a novel combination of well-known techniques? (This can be valuable!) Is it clear how this work differs from previous contributions? Is related work adequately cited?\nb. Quality: Is the submission technically sound? Are claims well supported (e.g., by theoretical analysis or experimental results)? Are the methods used appropriate? Is this a complete piece of work or work in progress? Are the authors careful and honest about evaluating both the strengths and weaknesses of their work?\nc. Clarity: Is the submission clearly written? Is it well organized? (If not, please make constructive suggestions for improving its clarity.) Does it adequately inform the reader? (Note that a superbly written paper provides enough information for an expert reader to reproduce its results.)\nd. Significance: Are the results important? Are others (researchers or practitioners) likely to use the ideas or build on them? Does the submission address a difficult task in a better way than previous work? Does it advance the state of the art in a demonstrable way? Does it provide unique data, unique conclusions about existing data, or a unique theoretical or experimental approach?",
+                    "Questions": "Please list up and carefully describe any questions and suggestions for the authors. Think of the things where a response from the author can change your opinion, clarify a confusion or address a limitation. This can be very important for a productive rebuttal and discussion phase with the authors.",
+                    "Limitations": "Have the authors adequately addressed the limitations and potential negative societal impact of their work? If not, please include constructive suggestions for improvement. In general, authors should be rewarded rather than punished for being up front about the limitations of their work and any potential negative societal impact. You are encouraged to think through whether any critical points are missing and provide these as feedback for the authors."
+                },
+                "overall_score_name": "Overall",
+                "review_scores": {
+                    "Soundness": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the soundness of the technical claims, experimental and research methodology and on whether the central claims of the paper are adequately supported with evidence.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Presentation": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the quality of the presentation. This should take into account the writing style and clarity, as well as contextualization relative to prior work.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Contribution": {
+                        "meaning": "Please assign the paper a numerical rating on the following scale to indicate the quality of the overall contribution this paper makes to the research area being studied. Are the questions being asked important? Does the paper bring a significant originality of ideas and/or execution? Are the results valuable to share with the broader NeurIPS community.",
+                        "scores": {
+                            "4": "excellent",
+                            "3": "good",
+                            "2": "fair",
+                            "1": "poor"
+                        }
+                    },
+                    "Confidence": {
+                        "meaning": "Please provide a 'confidence score' for your assessment of this submission to indicate how confident you are in your evaluation.",
+                        "scores": {
+                            "5": "You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully.",
+                            "4": "You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.",
+                            "3": "You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.",
+                            "2": "You are willing to defend your assessment, but it is quite likely that you did not understand the central parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.",
+                            "1": "Your assessment is an educated guess. The submission is not in your area or the submission was difficult to understand. Math/other details were not carefully checked."
+                        }
+                    },
+                    "Overall": {
+                        "meaning": "Please provide an 'overall score' for this submission.",
+                        "scores": {
+                            "10": "Award quality: Technically flawless paper with groundbreaking impact on one or more areas of AI, with exceptionally strong evaluation, reproducibility, and resources, and no unaddressed ethical considerations.",
+                            "9": "Very Strong Accept: Technically flawless paper with groundbreaking impact on at least one area of AI and excellent impact on multiple areas of AI, with flawless evaluation, resources, and reproducibility, and no unaddressed ethical considerations.",
+                            "8": "Strong Accept: Technically strong paper with, with novel ideas, excellent impact on at least one area of AI or high-to-excellent impact on multiple areas of AI, with excellent evaluation, resources, and reproducibility, and no unaddressed ethical considerations.",
+                            "7": "Accept: Technically solid paper, with high impact on at least one sub-area of AI or moderate-to-high impact on more than one area of AI, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.",
+                            "6": "Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.",
+                            "5": "Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+                            "4": "Borderline reject: Technically solid paper where reasons to reject, e.g., limited evaluation, outweigh reasons to accept, e.g., good evaluation. Please use sparingly.",
+                            "3": "Reject: For instance, a paper with technical flaws, weak evaluation, inadequate reproducibility and incompletely addressed ethical considerations.",
+                            "2": "Strong Reject: For instance, a paper with major technical flaws, and/or poor evaluation, limited impact, poor reproducibility and mostly unaddressed ethical considerations.",
+                            "1": "Very Strong Reject: For instance, a paper with trivial results or unaddressed ethical considerations"
+                        }
+                    }
+                }
+            },
+            "oid": "NeurIPS.cc_2024%V6hrg4O9gg",
+            "media": "/home/dycke/Projects/CERGS/data/papers/data/NeurIPS.cc_2024_Conference/NeurIPS.cc_2024%V6hrg4O9gg/media"
+        },
+        "md": "\n# CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\n\n###### Abstract\n\nRecent advancements in Large Language Models (LLMs) have renewed interest in automatic programming language translation. Encoder-decoder transformer models, in particular, have shown promise in translating between different programming languages. However, translating between a language and its high-performance computing (HPC) extensions remains underexplored due to challenges such as complex parallel semantics. In this paper, we introduce CodeRosetta, an encoder-decoder transformer model designed specifically for translating between programming languages and their HPC extensions. CodeRosetta is evaluated on C++ $\\leftrightarrow$ CUDA and Fortran $\\leftrightarrow$ C++ translation tasks. It uses a customized learning framework with tailored pretraining and training objectives to effectively capture both code semantics and parallel structural nuances, enabling bidirectional translation. Our results show that CodeRosetta outperforms state-of-the-art baselines in C++ to CUDA translation by 2.9 BLEU and 1.72 CodeBLEU points while improving compilation accuracy by 6.05%. Compared to general closed-source LLMs, our method improves C++ to CUDA translation by 22.08 BLEU and 14.39 CodeBLEU, with 2.75% higher compilation accuracy. Finally, CodeRosetta exhibits proficiency in Fortran to parallel C++ translation, marking it, to our knowledge, as the first encoder-decoder model for this complex task, improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs.111Code: <https://coderosetta.com>  \n\n### 1 Introduction\n\nAutomatic code translation between programming languages offers numerous benefits, such as modernizing legacy systems, enabling cross-platform development, and refactoring sequential code into parallel high-performance versions. However, this task poses significant challenges, primarily due to the scarcity of parallel corpora\u2014paired datasets of the same applications written in different languages (e.g., C++ $\\leftrightarrow$ CUDA or Fortran $\\leftrightarrow$ C++). This lack of data limits the effectiveness of supervised learning approaches. While recent advances in code LLMs have shown promise in general code translation, translating code that involves parallel programming paradigms (e.g., C++ to CUDA) remains largely unexplored. That is primarily due to the inherent complexities in capturing and correctly replicating parallel code semantics\u00a0[[28](#bib.bib28)].  \n\nTransCoder\u00a0[[36](#bib.bib36)] and its follow-up works\u00a0[[37](#bib.bib37), [39](#bib.bib39)] have demonstrated the potential of unsupervised learning for code translation. However, these methods often struggle with the complexities of translating between a language and its specialized extensions, such as C++ to CUDA. To address this, BabelTower\u00a0[[46](#bib.bib46)] proposes a CUDA-specific metric and ranking model. Yet, its reliance on language- or library-specific metrics limits its scope, restricting it to unidirectional code translation (C++ $\\rightarrow$ CUDA). Moreover, extending BabelTower to other programming paradigms requires redefining syntax-specific metrics, a process that is both time-consuming and dependent on domain expertise.  \n\nTo address these limitations, we introduce CodeRosetta, an encoder-decoder transformer model specifically designed for unsupervised translation between programming languages and their high-performance computing (HPC) parallel extensions. Unlike prior methods that rely on language-specific metrics, CodeRosetta employs new pre-training and training objectives\u2014including Abstract Syntax Tree (AST) Entity Recognition and customized noise injection strategies for Denoising Auto-Encoding\u2014to learn the inherent features and semantics of code in an unsupervised manner, without relying on language-specific metrics. In summary, this paper makes the following contributions:  \n\n* Unsupervised code translation for parallel programming. We present CodeRosetta, an encoder-decoder transformer model tailored for translating between programming languages and their parallel programming extension, specifically targeting C++ to CUDA and Fortran to C++. \n* Customized pre-training and training objectives for code translation to parallel programs. We introduce two new learning objectives for learning parallel programming syntax and nuances: (1) Abstract Syntax Tree (AST) entity recognition, enabling the model to reason about code structure by identifying and categorizing different syntactic elements, and (2) tailored denoising auto-encoding, incorporating weighted token dropping and insertion, along with an adaptive corruption rate, to help the model discern subtle differences between language constructs and their extensions. \n* Bidirectional translation without language-specific metrics. Unlike prior works that rely on program-specific metrics for parallel code translation, which narrow the scope of code translation, CodeRosetta learns bidirectionally (e.g., C++ $\\leftrightarrow$ CUDA and CUDA $\\leftrightarrow$ C++) in an unsupervised manner, broadening its scope to different translation tasks. \n\nOur results show that for C++ to CUDA translation, CodeRosetta achieves a 2.9 BLEU and 1.72 CodeBLUE improvement over existing methods while also increasing compilation accuracy by 6.05%. Compared to closed-source LLMs, CodeRosetta\u2019s bidirectional approach exhibits even higher gains, with a 19.84 BLEU and 14.39 CodeBLEU improvement, and 2.75% higher compilation accuracy. To the best of our knowledge, CodeRosetta is the first model to demonstrate proficiency in the task of Fortran to C++ translation, surpassing the performance of existing closed-source LLMs and open-code LLMs on standard metrics, with CodeRosetta improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.\n\n### 2 Related Works\n\nAutomatic parallelization. Translating from C to CUDA poses a major challenge. Early efforts in this area primarily involved semi-automatic tools that required significant developer intervention. Noaje et al.\u00a0[[30](#bib.bib30)] implemented an OpenMP C\u00a0[[11](#bib.bib11)] to CUDA translation using the OMPi compiler. Other tools, such as CUDAfy.NET and GPUcc\u00a0[[48](#bib.bib48)], provided annotations to assist the translation process. DawnCC\u00a0[[27](#bib.bib27)] automatically annotates C and C++ code for parallelism, utilizing static analysis to identify opportunities for optimizing execution on multicore and GPU architectures with OpenMP/OpenACC directives. However, much of the responsibility for identifying parallelizable sections and optimizing memory usage remained with the developer. Efforts to translate between C/C++ and Fortran have been more limited. FABLE\u00a0[[15](#bib.bib15)] is one of the few frameworks designed for this, facilitating automatic translation of Fortran to C++ while preserving the original code\u2019s semantics through advanced analysis and transformation techniques.  \n\nNeural machine translation. Tournavitis et al.\u00a0[[42](#bib.bib42)] proposed a framework that combines static analysis with machine learning to identify parallelizable code regions and determine the optimal parallelization scheme. This adaptive approach aims to reduce the overhead of manual parallelization while accommodating different architectures. TransCoder\u00a0[[36](#bib.bib36)] pioneered the use of unsupervised learning techniques to translate code across various high-level languages, including Java, C++, and Python, without the need for parallel corpora. Building on TransCoder\u2019s architecture, BabelTower\u00a0[[46](#bib.bib46)] extends its capabilities to perform parallel semantic conversion between C and CUDA.  \n\nDenoising Auto-Encoding (DAE) has become a popular technique for training encoder-decoder models, as seen in methods like CodeT5\u00a0[[45](#bib.bib45)] and PLBART\u00a0[[2](#bib.bib2)]. These models typically use common noising strategies such as masking and token dropping. One of the key differences in the noising strategies used by CodeRosetta lies in its language-specific characteristics. Rather than random token dropping, CodeRosetta employs weighted random dropping, prioritizing language-specific reserved keywords to enhance the model\u2019s understanding of the target language\u2019s semantics. Another unique strategy is token insertion, which encourages the model to differentiate between valid and invalid tokens. These objectives enable CodeRosetta to better distinguish between different extensions of the same programming language. In summary, CodeRosetta is a sequence-to-sequence transformer model that learns in an unsupervised manner to translate between programming languages and parallel programming APIs. Additional related work is presented in Appendix\u00a0[J](#A10 \"Appendix J Additional Related Work \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\").  \n\n### 3 CodeRosetta: Unsupervised Code Translation for Parallel Programming\n\nThis section presents the design and training methodology of CodeRosetta, our proposed encoder-decoder transformer model for unsupervised code translation. We begin by outlining the overall architecture, followed by a detailed discussion of the pre-training and training objectives that enable CodeRosetta to effectively capture the nuances of both general-purpose programming languages and their parallel extensions. We focus on the C++$\\leftrightarrow$CUDA and C++$\\leftrightarrow$Fortran translation tasks.  \n\n#### 3.1 Cross Language Masked Language Modeling\n\n[FIGURE S3.F1.g1]\n![Figure S3.F1.g1](./media/x1.png)\n\nFigure 1: Masked Language Modeling (MLM) pretraining steps in CodeRosetta.\n[/FIGURE]\n\nPre-training plays a crucial role in enabling transformer models to develop a foundational understanding of programming languages. We use Masked Language Modeling (MLM)\u00a0[[47](#bib.bib47)], a widely adopted pre-training objective, to achieve this, as outlined in Figure\u00a0[1](#S3.F1 \"Figure 1 \u2023 3.1 Cross Language Masked Language Modeling \u2023 3 CodeRosetta: Unsupervised Code Translation for Parallel Programming \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\"). In MLM, the model receives input code with a portion of tokens randomly masked. The objective is to predict the masked tokens based on the surrounding context, thereby encouraging the model to learn both local syntactic patterns and broader semantic relationships within code.  \n\nTo further challenge the model and better reflect code structure, we mask entire words rather than individual tokens. For instance, in the input code snippet \u201cint index\u201d, the entire word \u201cindex\u201d would be masked, requiring the model to predict the missing identifier based on its type (\u201cint\u201d) and its usage in the surrounding code. This approach mirrors how code comprehension often relies on understanding the roles of variables and functions within their scope.  \n\nAdditionally, while MLM is typically applied to monolingual datasets, we extend it to a cross-lingual setting by training on a combined dataset of both C++ and the target language (CUDA or Fortran). This cross-lingual exposure enables CodeRosetta to learn shared programming concepts and syntactic structures across languages, such as control flow statements (if, else, while) and variable declarations. By recognizing these commonalities, the model can transfer knowledge across languages, improving its ability to translate even unseen code patterns.  \n\n#### 3.2 Abstract Syntax Tree Entity Recognition\n\n[FIGURE S3.F2.g1]\n![Figure S3.F2.g1](./media/x2.png)\n\nFigure 2: Abstract Syntax Tree Entity Recognition pretraining steps in CodeRosetta.\n[/FIGURE]\n\nFollowing cross-lingual MLM pre-training, we introduce a new pre-training objective called Abstract Syntax Tree (AST) Entity Recognition (AER) to further improve CodeRosetta\u2019s understanding of code structure. This approach draws inspiration from Named Entity Recognition (NER) in natural language processing\u00a0[[20](#bib.bib20)], where models learn to classify words or phrases into predefined categories (e.g., person, location, or organization). In AER, CodeRosetta learns to recognize and categorize various syntactic components in code.  \n\nThe process, illustrated in Figure\u00a0[2](#S3.F2 \"Figure 2 \u2023 3.2 Abstract Syntax Tree Entity Recognition \u2023 3 CodeRosetta: Unsupervised Code Translation for Parallel Programming \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\"), starts by using Tree-sitter222https://tree-sitter.github.io, a multi-language parsing library, to generate the Abstract Syntax Tree (AST) of a source code snippet. The AST representation provides a hierarchical, tree-structured view of the code, with each node corresponding to constructs such as *function definitions, variable declarations, or arithmetic expressions*. From this AST, we extract a set of entities and their corresponding categories. Examples of categories used in our implementation include *function*, *variable*, *constant*, *pointer*, and *literal*.  \n\nDuring AER pre-training, CodeRosetta tokenizes the input code and predicts the syntactic category of each token based on its role in the AST. Tokens that do not correspond to any specific category are labeled as \u201cO\u201d (Outside). This training enables CodeRosetta to develop an understanding of the syntactic relationships between code elements, an essential step in accurately translating and generating code across different languages and extensions.  \n\nA key strength of AER is its flexibility\u2014the set of entity categories can be easily adapted for different languages or programming paradigms. For instance, when focusing on CUDA code, we can introduce specialized categories for parallel constructs such as threadIdx, blockIdx, and gridDim, enabling CodeRosetta to learn the language-specific semantics of parallel programming.  \n\nFurthermore, AER is highly adaptable. Even in cases where AST parsing is only partially available, CodeRosetta can still leverage this pre-training, showcasing its applicability to diverse code translation tasks. The complete list of tags used in our implementation is provided in Appendix\u00a0[D.2](#A4.SS2 \"D.2 AST Entity Recognition Tags \u2023 Appendix D Unsupervised Training Parameters \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\").  \n\n#### 3.3 Denoising Auto Encoding with Adaptive Noise Injection\n\n[FIGURE S3.F3.g1]\n![Figure S3.F3.g1](./media/x3.png)\n\nFigure 3: Denoising Auto Encoding.\n[/FIGURE]\n\nWhile cross-lingual MLM and AST Entity Recognition effectively pre-train CodeRosetta\u2019s encoder to generate meaningful representations of source code, the decoder remains untrained at this stage. Consequently, attempting direct code translation would result in suboptimal performance due to the decoder\u2019s lack of exposure to the target language\u2019s syntax and semantics. To bridge this gap, we employ a Denoising Auto-Encoding (DAE) training strategy specifically tailored for code translation with adaptive noise injection mechanisms. In essence, DAE training involves corrupting the input source code with various types of noise and then training the model to reconstruct the original, noise-free code. This process compels the decoder to learn both the underlying *syntactic rules* of the target language and the ability to recover meaningful code from perturbed inputs, simulating the challenges of translating real-world code with potential variations and inconsistencies.  \n\nTo initiate the DAE training phase, we first initialize the decoder using the pre-trained encoder\u2019s weights, providing it with a starting point for language understanding. Next, we apply a combination of common noise injection techniques, such as random token masking and shuffling, alongside our new noise strategies designed to emphasize the distinctions between programming languages and their extensions. Figure [3](#S3.F3 \"Figure 3 \u2023 3.3 Denoising Auto Encoding with Adaptive Noise Injection \u2023 3 CodeRosetta: Unsupervised Code Translation for Parallel Programming \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") illustrates the overall process of DAE training in CodeRosetta. We now delve into the specifics of our customized noise injection methods, which distinguish CodeRosetta from conventional DAE-based code translation models. These strategies are crucial for enabling the model to discern the subtle but significant differences between languages like C++ and their high-performance counterparts like CUDA.  \n\nWeighted token dropping. To encourage the model to learn the distinctive features of each language and its extensions, we introduce a weighted token dropping strategy during the noise injection phase. Unlike uniform random token removal, this approach assigns higher removal probabilities to language-specific keywords, encouraging the model to focus on critical syntactic elements.  \n\nFor each programming language or extension, CodeRosetta maintains a list of reserved keywords. During token dropping, these keywords are prioritized, making them more likely to be removed than other tokens. For example, when training on CUDA code, keywords like blockIdx, threadIdx, blockDim, \\_\\_global\\_\\_, and atomicSub are more frequently targeted for removal.  \n\nThis weighted sampling creates a more challenging reconstruction task for the model, compelling the decoder to develop a deeper understanding of the language-specific semantics and parallel programming constructs. While the reserved keywords are given higher priority, the weighted random sampling still ensures that other tokens are occasionally dropped, preserving the overall balance of the noise injection process.  \n\nLanguage-specific token insertion. In addition to weighted token dropping, we implement a language-specific token insertion strategy to improve CodeRosetta\u2019s ability to discern between languages and their extensions during code generation. This method strengthens the model\u2019s robustness against out-of-vocabulary tokens, preventing it from inadvertently blending elements from different languages.  \n\nDuring DAE training, CodeRosetta must distinguish between valid and invalid tokens within the target language. To facilitate this, we construct a vocabulary of unique tokens for each programming language in our training dataset, tracking their frequency of occurrence. Tokens from the vocabulary of other languages are then randomly inserted into the input code based on their probability from the frequency distribution. For example, in the C++ to CUDA translation task, we insert CUDA-specific tokens into C++ code inputs during DAE training. CodeRosetta is then trained to recognize and disregard these foreign tokens while reconstructing the original C++ code. This process enables the model to develop an understanding of language boundaries, ensuring it generates syntactically and semantically valid code during translation.  \n\nAdaptive noise ratios Additionally, we introduce an adaptive noise strategy. Instead of applying a fixed noise ratio, such as 10% for token dropping, we begin with an initial noise ratio and progressively increase it throughout the training process. This approach allows the model to gradually adapt to more challenging conditions as it learns to reconstruct the corrupted input sequences. As the training progresses, the input sequences become increasingly corrupted, making the reconstruction task more difficult and forcing the model to learn more robust representations.  \n\nThere is a maximum corruption rate that, once reached, halts further increases in noise. This prevents over-corrupting the inputs, ensuring that the model can still derive meaningful patterns. The impact of adaptive noise ratios, along with the new noise strategies, is examined in our ablation study (Section\u00a0[5.3](#S5.SS3 \"5.3 Ablation Study \u2023 5 Experimental Results \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\")).  \n\nTo further support accurate code generation in the target language, we prepend a special <LANG> token to each input sequence. During DAE, this token indicates the language of the corrupted input, prompting the decoder to reconstruct the code in the same language. This mechanism ensures that the model remains focused on generating code within the correct language context.  \n\n#### 3.4 Back Translation for Unsupervised Refinement\n\n[FIGURE S3.F4.g1]\n![Figure S3.F4.g1](./media/x4.png)\n\nFigure 4: Back Translation.\n[/FIGURE]\n\nTo further improve CodeRosetta\u2019s translation quality and its ability to capture complex code semantics, we employ back translation during the training process\u00a0[[36](#bib.bib36)]. As illustrated in Figure\u00a0[4](#S3.F4 \"Figure 4 \u2023 3.4 Back Translation for Unsupervised Refinement \u2023 3 CodeRosetta: Unsupervised Code Translation for Parallel Programming \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\"), this technique leverages the model\u2019s bidirectional capability, enabling both source-to-target and target-to-source translations, forming a weakly supervised learning loop.  \n\nIn back translation, the model is trained on a source-to-target task (e.g., C++ to CUDA) while simultaneously performing the reverse translation (target-to-source, CUDA to C++). For each batch of source code, CodeRosetta first translates it into the target language. The generated target code is then used as input for a reverse translation, where the model attempts to reconstruct the original source code.  \n\nThis forward and backward translation cycle provides continuous feedback, allowing CodeRosetta to compare the reconstructed source code with the original input, thereby learning to detect and correct errors in both translation directions. Through this iterative refinement, the model gradually improves its comprehension of nuanced language differences and complex code structures, resulting in more accurate and semantically consistent translations.  \n\nCrucially, we alternate between batches of different language pairs during back translation. This ensures that the model receives balanced exposure to both directions, preventing bias towards a specific language and encouraging the development of robust, generalized translation capabilities.  \n\n#### 3.5 Finetuning with Synthetic Data from Language Models (Optional Step)\n\nWhile CodeRosetta demonstrates promising results through unsupervised training, we explore the potential of further enhancements by leveraging the capabilities of large language models (LLMs) such as GPT-4 [[1](#bib.bib1)] and Gemini Ultra [[41](#bib.bib41)]. These LLMs, trained on extensive text and code datasets, have exhibited impressive code generation abilities. However, directly employing such large models for code translation can be computationally expensive and impractical for many real-world applications.  \n\nTo address this, we adopt a knowledge distillation approach [[18](#bib.bib18)], where these LLMs serve as teacher models to generate synthetic data for fine-tuning CodeRosetta, a smaller student model. This method allows us to capture the expertise of the larger models while maintaining computational efficiency.  \n\nSpecifically, we prompt GPT-4 and Gemini to translate C++ code into CUDA where feasible. After filtering out empty or invalid translations, natural text, and non-relevant data (i.e., instances lacking CUDA-specific keywords), we are left with approximately 5,000 high-quality translations from an initial set of 100,000. This significant reduction highlights the inherent challenges in C++ to CUDA translation.  \n\nThe resulting synthetic dataset of C++$\\leftrightarrow$CUDA pairs is then used to fine-tune CodeRosetta. This process allows CodeRosetta to incorporate the valuable knowledge embedded in the larger LLMs without incurring their high computational costs. It is important to note that this fine-tuning step is *optional* and can be omitted if access to powerful LLMs for synthetic data generation is not feasible.  \n\n### 4 Experimental Setup\n\nTraining hyperparameters. We implement CodeRosetta using the HuggingFace Transformers library v4.40.1 \u00a0[[47](#bib.bib47)]. The model is a 12-layer encoder-decoder transformer, with each layer having 12 attention heads and a hidden dimension of 1,536. We initialized the tokenizer with a pre-trained Byte Pair Encoding (BPE) tokenizer from UniXcoder\u00a0[[17](#bib.bib17)], which was further trained on our specific training datasets. The training was conducted using the AdamW optimizer\u00a0[[24](#bib.bib24)] and a batch size of 16, using gradient accumulation over two steps. The experiments were run on a single node with four Nvidia A100 SXM4 GPUs, each with 80GB of memory. To speed up the training process, mixed-precision training was enabled. The final model consists of $\\sim$0.8 billion parameters.  \n\n#### 4.1 Datasets\n\nWe evaluate CodeRosetta on two code translation tasks: C++ to CUDA and Fortran to C++. Table\u00a0[8](#A4.T8 \"Table 8 \u2023 D.3 Dataset Statistics \u2023 Appendix D Unsupervised Training Parameters \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") provides an overview of the datasets used. For the C++ to CUDA translation task, we use the dataset from BabelTower\u00a0[[46](#bib.bib46)], which consists of:  \n\n* Unpaired training set: A collection of 243,008 C++ and CUDA source code files, meeaning there is no direct correspondance between the files in each language. To avoid any language bias, we ensure an equal number of C++ and CUDA files during training. \n* Paired validation and test sets: The validation set consists of 184 pairs, and the test set has 180 pairs of C++ and CUDA source code files. Each pair represents the same program implemented in both languages, providing a benchmark for evaluating translation accuracy. \n\nFor Fortran to C++, no dedicated parallel corpus exists for this specific translation. Thus, we construct our training dataset as follows:  \n\n* Unpaired training set: We extract the C++ and Fortran subsets from the Stack V2 dataset\u00a0[[25](#bib.bib25)], which includes over 3 billion source code files across more than 600 programming languages. We ensure an equal number of files from each language to prevent bias during training. \n* Paired fine-tuning set: For fine-tuning, we use the small paired C++-Fortran dataset introduced by Bin et al.\u00a0[[19](#bib.bib19)]. This set is also used for validation. \n* Test set: To evaluate the final model performance, we use a test set of 33 paired C++ and Fortran programs. \n\n#### 4.2 Data Preprocessing\n\nTo ensure the quality and consistency of training data, we applied task-specific preprocessing steps for each translation task. C++ to CUDA. Although the BabelTower dataset\u00a0[[46](#bib.bib46)] was reportedly cleaned, we found noisy data within the CUDA files. To address this, we curated a list of CUDA-specific reserved keywords and filtered the dataset, retaining only those CUDA files that contained at least one such keyword. This step significantly reduced noise and resulted in a final training set of 243,008 C++ files, matched by an equal number of CUDA files. The validation and test sets remained unchanged, comprising 184 and 180 paired examples, respectively.  \n\nC++ to Fortran. Preprocessing the Stack V2 dataset for C++ to Fortran translation involved managing the large imbalance between C++ and Fortran files, as well as filtering out low-quality or uninformative code snippets. We implemented the following steps:  \n\n* Educational value filtering: Inspired by the phi-1 model data filtering approach\u00a0[[16](#bib.bib16)], We randomly sampled 100,000 C++ files from Stack V2 and employed GPT-3.5 to assess their \u201ceducational value\u201d for learning C++ coding concepts. We prompted GPT-3.5 (see Figure\u00a0[5](#S4.F5 \"Figure 5 \u2023 4.2 Data Preprocessing \u2023 4 Experimental Setup \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") to classify each snippet as either \u201cYes\u201d or \u201cNo\u201d based on its educational value. These labels were then used to fine-tune a binary classifier built on the CodeSage model\u00a0[[49](#bib.bib49)], which we applied to the remaining C++ files in Stack V2. Only files deemed educationally valuable were retained. \n* Balancing language representation: From the filtered C++ files, we randomly selected a subset equal in size to the number of Fortran files to create a balanced training set. \n* Length-based filtering: To ensure training stability and avoid biases toward very short or long code snippets, we filtered out files containing fewer than ten tokens or more than 1,000 tokens in both languages. \n\nAfter these steps, the final training set for C++ to Fortran translation consisted of 474,856 files. For fine-tuning and validation, we used the small paired C++-Fortran dataset from Bin et al.\u00a0[[19](#bib.bib19)], which contains 282 samples. The model was then evaluated on a test set of 33 paired samples.  \n\n[FIGURE S4.F5]\n\n[\u2b07](data:text/plain;base64,CkRldGVybWluZSB0aGUgZWR1Y2F0aW9uYWwgdmFsdWUgb2YgdGhlIGZvbGxvd2luZyBjb2RlIGZvciBhIHN0dWRlbnQgd2hvc2UgZ29hbCBpcyB0byBsZWFybiBDKysgY29kaW5nIGNvbmNlcHRzLiBJZiBpdCBoYXMgZWR1Y2F0aW9uYWwgdmFsdWUsIHJldHVybiBvbmx5ICJZZXMiLCBlbHNlLCByZXR1cm4gIk5vIi4KQ29kZTp7Y29kZX0KRWR1Y2F0aW9uYWwgdmFsdWU6Cg==)\n\nDetermine the educational value of the following code for a student whose goal is to learn C++ coding concepts. If it has educational value, return only \"Yes\", else, return \"No\".\n\nCode:{code}\n\nEducational value:\n\nFigure 5: Prompt for determining the quality of C++ source code\n[/FIGURE]\n\n#### 4.3 Evaluation\n\nTo evaluate CodeRosetta\u2019s translations, we use two widely used code translation metrics: BLEU\u00a0[[32](#bib.bib32)] and CodeBLEU\u00a0[[34](#bib.bib34)]. We benchmark CodeRosetta against the following baselines. For C++ to CUDA, we compare (a) \u201cBabelTower\u00a0[[46](#bib.bib46)]\u201d,333We contacted the authors of BabelTower for access to their trained model, source code, and translations but did not receive a response. Therefore, we cite results directly from their paper. a state-of-the-art unsupervised code translation model specifically designed for C++ to CUDA translation, and (b) \u201cTranscoder\u00a0[[36](#bib.bib36)]\u201d, a general unsupervised code translation model that has demonstrated strong performance on various language pairs. Since a single evaluation metric may capture only one aspect of translation quality\u00a0[[14](#bib.bib14)], we supplement BLEU and CodeBLEU with ROUGE-L\u00a0[[22](#bib.bib22)] and ChrF\u00a0[[33](#bib.bib33)], as recommended by\u00a0[[14](#bib.bib14)]. However, because generated translations from TransCoder and BabelTower were unavailable, ROUGE-L and ChrF scores are only provided for GPT-4, Gemini-Ultra, and Gemini-Pro. We further compare CodeRosetta with two popular open-source code LLMs: StarCoder (starcoder2-7b)\u00a0[[21](#bib.bib21)] and DeepSeekCoder (DeepSeek-Coder-V2-Lite-Base)\u00a0[[12](#bib.bib12)].  \n\nFor the Fortran to C++ task, we evaluate CodeRosetta against StarCoder\u00a0[[21](#bib.bib21)], an LLM model (15.5B parameters) featuring a decoder-only transformer architecture, fine-tuned on a comprehensive corpus of Fortran code and DeepSeekCoder (DeepSeek-Coder-V2-Lite-Base)\u00a0[[12](#bib.bib12)]. Additionally, we evaluate CodeRosetta alongside several prominent closed-source LLMs, including GPT-4\u00a0[[1](#bib.bib1)] and Gemini\u00a0[[41](#bib.bib41)], by prompting them to perform code translation using carefully crafted prompts (Appendix\u00a0[I](#A9 \"Appendix I Prompt Template and LLMs \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\")). By evaluating against a broad spectrum of both specialized code translation models and general-purpose LLMs, we effectively gauge CodeRosetta\u2019s stranghts and limitations across diverse translation tasks and programming paradigms.  \n\n### 5 Experimental Results\n\n#### 5.1 C++ to CUDA\n\n[TABLE S5.T1]\n\n<table class=\"ltx_tabular ltx_centering ltx_align_middle\">\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\">\n<span class=\"ltx_rule\">\u00a0</span><span class=\"ltx_text\">\n</span><span class=\"ltx_text ltx_font_bold\">Model</span>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><span class=\"ltx_text ltx_font_bold\">Static Metrics</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\"><span class=\"ltx_text\"></span> <span class=\"ltx_text\">\n<span class=\"ltx_tabular ltx_align_middle\">\n<span class=\"ltx_tr\">\n<span class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">Compilation</span></span></span>\n<span class=\"ltx_tr\">\n<span class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">Accuracy</span> (%)</span></span>\n</span></span> <span class=\"ltx_text\"></span></span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">BLEU</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">CodeBLEU</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text\">ChrF</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_t\"><span class=\"ltx_text\">ROGUE-L</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\"><span class=\"ltx_text\">GPT4</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">46.98</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">64.45</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">70.15</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_tt\"><span class=\"ltx_text\">63.37</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_tt\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">96.10</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Gemini-Ultra</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">57.06</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">61.18</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">73.20</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><span class=\"ltx_text\">69.27</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">80.00</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Gemini-Pro</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">54.82</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">64.20</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">72.58</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">69.82</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">75.50</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">DeepSeekCoder</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">26.63</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">21.46</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">28.41</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><span class=\"ltx_text\">15.10</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">57.80</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">StarCoder</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">37.58</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">62.58</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">60.16</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><span class=\"ltx_text\">41.84</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">79.40</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">TransCoder</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">72.21</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text\">71.03</span></td>\n<td class=\"ltx_td ltx_align_center\"><em class=\"ltx_emph ltx_font_italic\">N/A</em></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><em class=\"ltx_emph ltx_font_italic\">N/A</em></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">83.80</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">BabelTower</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">74.00</span></td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_framed ltx_framed_underline\">77.12</span></td>\n<td class=\"ltx_td ltx_align_center\"><em class=\"ltx_emph ltx_font_italic\">N/A</em></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r\"><em class=\"ltx_emph ltx_font_italic\">N/A</em></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">92.80</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\">\n<span class=\"ltx_text ltx_font_smallcaps\">CodeRosetta</span><span class=\"ltx_text\"> (Ours)</span>\n</td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">76.90</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">78.84</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">81.05</span></td>\n<td class=\"ltx_td ltx_align_center ltx_border_r ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">82.12</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_t\"><span class=\"ltx_text ltx_font_bold\">98.85</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_rule\">\u00a0</span></td>\n<td class=\"ltx_td\"></td>\n<td class=\"ltx_td\"></td>\n<td class=\"ltx_td\"></td>\n<td class=\"ltx_td\"></td>\n<td class=\"ltx_td\"></td>\n</tr>\n</table>\n\nTable 1: Summary of C++ to CUDA translation results across various code metrics and compilation accuracy. Second-best results are underlined.\n[/TABLE]\n\nTable [1](#S5.T1 \"Table 1 \u2023 5.1 C++ to CUDA \u2023 5 Experimental Results \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") presents the results of CodeRosetta for C++$\\rightarrow$CUDA translation. For BabelTower and TransCoder, the results are directly quoted from BabelTower\u00a0[[46](#bib.bib46)], as their models and implementations are not publicly available. Comparing the performance of CodeRosetta to other models, it demonstrates superior translation capabilities for C++ to CUDA. Specifically, CodeRosetta outperforms BabelTower by 2.9 BLEU points. Additionally, it achieves a CodeBLEU score of 78.84, which is 1.72 points higher than BabelTower. Although GPT4 and Gemini were not specifically trained on this dataset, they still reached CodeBLEU scores of 64.45 and 64.20, respectively. Evtikhiev et.al\u00a0[[14](#bib.bib14)] indicate that ChrF and ROGUE-L metrics are better suited for code generation tasks than BLEU and CodeBLEU. Notably, CodeRosetta also surpasses these models in both ChrF and ROUGE-L metrics.  \n\nCodeRosetta effectively learns the necessary semantics to generate CUDA code without relying on specific metrics for training, a departure from previous approaches. The compilation accuracy of CodeRosetta is 98.85% after post-processing. For examples of the CUDA code generated by our model compared to other baselines, please refer to Appendix\u00a0[B](#A2 \"Appendix B Functional Correctness Analysis \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\"). Furthermore, CodeRosetta is bidirectional, allowing it to translate both C++ to CUDA and vice versa. Please refer to Appendix\u00a0[A](#A1 \"Appendix A CUDA to C++ Translation Results \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") for CUDA to C++ results.  \n\n##### 5.1.1 Post-processing: Compilation Error Analysis\n\nOur test set, consisting of 180 samples, provided diverse input scenarios to evaluate our model\u2019s performance. We observed that 23 samples generated compilation errors when processed through the NVCC compiler with the required flags.444https://developer.nvidia.com/cuda-11-8-0-download-archive Upon manual investigation, we found that most errors were trivial and could be easily fixed with minor edits.  \n\n[TABLE S5.T2]\n\n<table class=\"ltx_tabular ltx_centering ltx_align_middle\">\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\">\n<span class=\"ltx_rule\">\u00a0</span><span class=\"ltx_text\">\n</span><span class=\"ltx_text ltx_font_bold\">Error Type</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">Percent</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\">\n<span class=\"ltx_text\">Undefined generic type </span><span class=\"ltx_text ltx_font_typewriter\">T</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">48</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Missing variable initialization</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">26</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Missing closing braces</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">9</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Wrong function call</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">9</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Non-trivial errors</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">8</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_rule\">\u00a0</span></td>\n<td class=\"ltx_td\"></td>\n</tr>\n</table>\n\nTable 2: Types of compilation errors (28 codes with compilation error out of a total 180 codes).\n[/TABLE]\n\nSpecifically, 48% of the errors were attributed to the use of an undefined generic type T. Another 9% resulted from missing closing braces, while 26% were due to a single missing variable initialization. Additionally, 9% of the errors were caused by incorrect function calls. Only 8% of the files contained no trivial errors. By applying quick fixes for the undefined generic type T, missing variable initializations, and missing closing braces, the overall compilation accuracy significantly improved, with 98.85% of all generated code becoming compilable. This indicates that most errors were simple and could be easily resolved by incorporating compiler feedback, which will be a focus of our future work. Subsection [F.1](#A6.SS1 \"F.1 Common Issues and Post-processing in CodeRosetta-Generated Code \u2023 Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") and Figure [13](#A6.F13 \"Figure 13 \u2023 F.1 Common Issues and Post-processing in CodeRosetta-Generated Code \u2023 Appendix F Analysis of Generated Code from CodeRosetta and Closed-Source LLMs \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") in the Appendix presents examples of our findings.  \n\n#### 5.2 Runtime Evaluation\n\nAlthough CodeRosetta demonstrates more accurate translations based on the aforementioned metrics compared to the reference code, these metrics are derived from static evaluations, leaving runtime performance uncertain. To address this, we randomly selected 30 translated CUDA kernels from the test set and created unique template programs to execute them. We ran the translated CUDA kernels using NVCC and found that the functional correctness of the generated code was preserved in the majority of samples (approximately 93%). For further details, see Appendix Section\u00a0[B](#A2 \"Appendix B Functional Correctness Analysis \u2023 Appendix \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\").  \n\n#### 5.3 Ablation Study\n\n[TABLE S5.T3]\n\n<table class=\"ltx_tabular ltx_centering ltx_align_middle\">\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\">\n<span class=\"ltx_rule\">\u00a0</span><span class=\"ltx_text\">\n</span><span class=\"ltx_text ltx_font_bold\">Experiment</span>\n</td>\n<td class=\"ltx_td ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">Metrics</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_t\">\n<span class=\"ltx_text\">BLEU\u00a0</span><math class=\"ltx_Math\"><semantics><mo>\u2191</mo><annotation-xml><ci>\u2191</ci></annotation-xml><annotation>\\uparrow</annotation></semantics></math>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left ltx_border_t\">\n<span class=\"ltx_text\">CodeBLEU\u00a0</span><math class=\"ltx_Math\"><semantics><mo>\u2191</mo><annotation-xml><ci>\u2191</ci></annotation-xml><annotation>\\uparrow</annotation></semantics></math>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\"><span class=\"ltx_text\">Removing MLM</span></td>\n<td class=\"ltx_td ltx_align_left ltx_border_tt\">\n<span class=\"ltx_text\">52.12  (</span><span class=\"ltx_text\">-24.78</span><span class=\"ltx_text\">)</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left ltx_border_tt\">\n<span class=\"ltx_text\">51.96  (</span><span class=\"ltx_text\">-26.88</span><span class=\"ltx_text\">)</span>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Removing AER</span></td>\n<td class=\"ltx_td ltx_align_left\">\n<span class=\"ltx_text\">74.98  (</span><span class=\"ltx_text\">-1.92</span><span class=\"ltx_text\">)</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left\">\n<span class=\"ltx_text\">75.55  (</span><span class=\"ltx_text\">-3.29</span><span class=\"ltx_text\">)</span>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Removing DAE (special noises)</span></td>\n<td class=\"ltx_td ltx_align_left\">\n<span class=\"ltx_text\">72.41  (</span><span class=\"ltx_text\">-4.49</span><span class=\"ltx_text\">)</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left\">\n<span class=\"ltx_text\">73.22  (</span><span class=\"ltx_text\">-5.62</span><span class=\"ltx_text\">)</span>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Removing BT</span></td>\n<td class=\"ltx_td ltx_align_left\">\n<span class=\"ltx_text\">75.08  (</span><span class=\"ltx_text\">-1.82</span><span class=\"ltx_text\">)</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left\">\n<span class=\"ltx_text\">73.18  (</span><span class=\"ltx_text\">-5.66</span><span class=\"ltx_text\">)</span>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Removing Fine-Tuning</span></td>\n<td class=\"ltx_td ltx_align_left\">\n<span class=\"ltx_text\">73.55  (</span><span class=\"ltx_text\">-3.35</span><span class=\"ltx_text\">)</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left\">\n<span class=\"ltx_text\">71.21  (</span><span class=\"ltx_text\">-7.63</span><span class=\"ltx_text\">)</span>\n</td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_t\"><span class=\"ltx_text\">Baseline</span></td>\n<td class=\"ltx_td ltx_align_left ltx_border_t\"><span class=\"ltx_text\">76.90</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_left ltx_border_t\"><span class=\"ltx_text\">78.84</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_rule\">\u00a0</span></td>\n<td class=\"ltx_td\"></td>\n<td class=\"ltx_td\"></td>\n</tr>\n</table>\n\nTable 3: Ablation Study for C++ to CUDA.\n[/TABLE]\n\nWe conduct an ablation study to evaluate the impact of each training objective on the code translation results of CodeRosetta. Specifically, we remove individual training objectives (e.g., AER) while keeping the other components intact and retraining the model. Table\u00a0[3](#S5.T3 \"Table 3 \u2023 5.3 Ablation Study \u2023 5 Experimental Results \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\") presents the results of the ablation study for C++ to CUDA translation. As observed, removing any of the pertaining or training objectives negatively impacts translation results, with Masked Language Modeling having the most significant effect when omitted. This is expected, as Masked Language Modeling is the primary pretraining objective that enables the model to understand source code.  \n\nAER training task. CodeRosetta employs two pre-training tasks for training its encoder: Mask Language Modeling (MLM) and Abstract Syntax Tree Entity Recognition (AER). In this phase, we maintain consistent training setups except for the removal of the AER component.  \n\nDenoising Auto Encoding. We also investigate the effectiveness of various noise types and the adaptive corruption rate during Denoising Auto Encoding. For this ablation study, we train the model without weighted token dropping, insertion, and adaptive corruption rate.  \n\nFine-tuning Data extraction from larger models is a common practice. In this phase of the ablation study, we evaluate CodeRosetta\u2019s performance without fine-tuning it on the synthetic dataset. From Table\u00a0[3](#S5.T3 \"Table 3 \u2023 5.3 Ablation Study \u2023 5 Experimental Results \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\"), we observe that the removal of each proposed learning objective negatively impacts the model\u2019s ability to deliver improved code translation.  \n\n#### 5.4 Fortran to C++\n\nWe train and apply CodeRosetta for translation between C++ and Fortran. Fortran has had a long-standing presence in the scientific computing community; however, its integration with modern HPC systems\u00a0[[38](#bib.bib38)] can pose significant challenges for developers. Due to the complexities involved in translating Fortran to C++, there has been limited effort to address this issue. Bin et al.\u00a0[[19](#bib.bib19)] were the first to make significant strides in this area, curating a small paired dataset specifically for this translation task and fine-tuning several open-code LLMs.  \n\n[TABLE S5.T4]\n\n<table class=\"ltx_tabular ltx_centering ltx_align_middle\">\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\">\n<span class=\"ltx_rule\">\u00a0</span><span class=\"ltx_text\">\n</span><span class=\"ltx_text ltx_font_bold\">Model</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">CodeBLEU</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r ltx_border_tt\"><span class=\"ltx_text\">GPT4</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center ltx_border_tt\"><span class=\"ltx_text\">19.21</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Gemini-Ultra</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">13.62</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">Gemini-Pro</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">18.91</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">DeepSeekCoder</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">12.09</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">StarCoder</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">18.21</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_text\">StarCoder (fine-tuned)</span></td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text\">61.30</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\">\n<span class=\"ltx_text ltx_font_smallcaps\">CodeRosetta</span><span class=\"ltx_text\"> (0.8B)</span>\n</td>\n<td class=\"ltx_td ltx_nopad_r ltx_align_center\"><span class=\"ltx_text ltx_font_bold\">65.93</span></td>\n</tr>\n<tr class=\"ltx_tr\">\n<td class=\"ltx_td ltx_align_left ltx_border_r\"><span class=\"ltx_rule\">\u00a0</span></td>\n<td class=\"ltx_td\"></td>\n</tr>\n</table>\n\nTable 4: Fortran to C++ translation results.\n[/TABLE]\n\nThey found StarCoder (15B), when fine-tuned, benefited the most from their paired dataset. We compare CodeRosetta with the fine-tuned StarCoder (15B), as well as with other general LLMs. The results are shown in Table\u00a0[4](#S5.T4 \"Table 4 \u2023 5.4 Fortran to C++ \u2023 5 Experimental Results \u2023 CodeRosetta: Pushing the Boundaries of Unsupervised Code Translation for Parallel Programming\"). Fine-tuning CodeRosetta on the dataset from Bin et al.\u00a0[[19](#bib.bib19)] further enhances its performance, achieving a CodeBLEU score of 65.93. Notably, CodeRosetta outperforms StarCoder, even though StarCoder is nearly 20 times larger, highlighting the efficiency of our model. It also surpasses state-of-the-art models like GPT-4 and Gemini by a substantial margin, achieving an improvement of at least 4.63 points in CodeBLEU.  \n\n### 6 Conclusion\n\nIn this paper, we introduced CodeRosetta, an encoder-decoder transformer model designed for translating between programming languages and their high-performance computing (HPC) extensions. We proposed two novel learning objectives: Abstract Syntax Tree (AST) Entity Recognition (AER) and customized Denoising Auto-Encoding, which incorporates weighted token dropping and insertion. These contributions enable CodeRosetta to capture both the general syntactic structure of code and the specific nuances of parallel programming constructs, without relying on language-specific metrics. Our experiments show that CodeRosetta significantly outperforms state-of-the-art baselines on C++ to CUDA translation, achieving improvements up to 2.9 BLEU, 1.72 in CodeBLEU, and 6.05% in compilation accuracy. Furthermore, CodeRosetta is, to the best of our knowledge, the first model to demonstrate proficiency in translating Fortran to its parallel counterpart in C++, highlighting its potential in handling diverse programming paradigms.  \n\n### Acknowledgment\n\nWe would like to thank NSF for their generous support in funding this project (#2211982). In addition, we extend our gratitude to Intel Labs for supporting this project. We also would like to extend our gratitude towards Pengcheng Yin and Chandu Thekkath for their feedback on the early draft of this work. We also appreciate the support from the extended team at Google DeepMind. We thank the Research IT team555https://researchit.las.iastate.edu/ of Iowa State University for providing access to HPC clusters for conducting the experiments of this research project. We also thank National Center for Supercomputing Applications for providing Delta GPUs through allocation CIS230375 from the Advanced Cyberinfrastructure Coordination Ecosystem: Services & Support (ACCESS) program\u00a0[[7](#bib.bib7)]. Lastly, we would like to express our sincere appreciation to the anonymous reviewers, area chairs, and program chairs of NeurIPS 2024 for their valuable feedback and insights, which significantly contributed to the improvement of this work.  \n\n### References\n\n* [1]  Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia\u00a0Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, et\u00a0al.   [GPT-4 Technical Report](https://arxiv.org/abs/2303.08774).   arXiv preprint arXiv:2303.08774, 2023. \n* [2]  Wasi Ahmad, Saikat Chakraborty, Baishakhi Ray, and Kai-Wei Chang.   [Unified Pre-training for Program Understanding and Generation](https://aclanthology.org/2021.naacl-main.211.pdf).   In Kristina Toutanova, Anna Rumshisky, Luke Zettlemoyer, Dilek Hakkani-Tur, Iz\u00a0Beltagy, Steven Bethard, Ryan Cotterell, Tanmoy Chakraborty, and Yichao Zhou, editors, NAACL, 2021. \n* [3]  Loubna\u00a0Ben Allal, Raymond Li, Denis Kocetkov, Chenghao Mou, Christopher Akiki, Carlos\u00a0Munoz Ferrandis, Niklas Muennighoff, Mayank Mishra, Alex Gu, Manan Dey, et\u00a0al.   [SantaCoder: Don\u2019t Reach for the Stars!](https://arxiv.org/abs/2301.03988)  arXiv preprint arXiv:2301.03988, 2023. \n* [4]  Ebtesam Almazrouei, Hamza Alobeidli, Abdulaziz Alshamsi, Alessandro Cappelli, Ruxandra Cojocaru, M\u00e9rouane Debbah, \u00c9tienne Goffinet, Daniel Hesslow, Julien Launay, Quentin Malartic, et\u00a0al.   [The Falcon Series of Open Language Models](https://arxiv.org/abs/2311.16867).   arXiv preprint arXiv:2311.16867, 2023. \n* [5]  Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, Yang Fan, Wenbin Ge, Yu\u00a0Han, Fei Huang, et\u00a0al.   [Qwen Technical Report](https://arxiv.org/pdf/2309.16609).   arXiv preprint arXiv:2309.16609, 2023. \n* [6]  Mohamed-Walid Benabderrahmane, Louis-No\u00ebl Pouchet, Albert Cohen, and C\u00e9dric Bastoul.   [The Polyhedral Model Is More Widely Applicable Than You Think](https://inria.hal.science/inria-00551087/file/BPCB10-CC.pdf).   In Proceedings of the 19th Joint European Conference on Theory and Practice of Software, International Conference on Compiler Construction. Springer-Verlag, 2010. \n* [7]  Timothy\u00a0J. Boerner, Stephen Deems, Thomas\u00a0R. Furlani, Shelley\u00a0L. Knuth, and John Towns.   [ACCESS: Advancing Innovation: NSF\u2019s Advanced Cyberinfrastructure Coordination Ecosystem: Services & Support](https://dl.acm.org/doi/abs/10.1145/3569951.3597559).   In PEARC, 2023. \n* [8]  Uday Bondhugula, Albert Hartono, J.\u00a0Ramanujam, and P.\u00a0Sadayappan.   [A Practical Automatic Polyhedral Parallelizer and Locality Optimizer](https://dl.acm.org/doi/10.1145/1375581.1375595).   In PLDI, 2008. \n* [9]  Federico Cassano, John Gouwar, Daniel Nguyen, Sydney Nguyen, Luna Phipps-Costin, Donald Pinckney, Ming-Ho Yee, Yangtian Zi, Carolyn\u00a0Jane Anderson, Molly\u00a0Q Feldman, et\u00a0al.   [MultiPL-E: A Scalable and Polyglot Approach to Benchmarking Neural Code Generation](https://ieeexplore.ieee.org/abstract/document/10103177).   IEEE Transactions on Software Engineering, 2023. \n* [10]  Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde De\u00a0Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, et\u00a0al.   [Evaluating Large Language Models Trained on Code](https://arxiv.org/abs/2107.03374).   arXiv preprint arXiv:2107.03374, 2021. \n* [11]  L.\u00a0Dagum and R.\u00a0Menon.   [OpenMP: An Industry Standard API for Shared-memory Programming](https://ieeexplore.ieee.org/document/660313).   IEEE Computational Science and Engineering, 1998. \n* [12]  DeepSeek-AI, Qihao Zhu, Daya Guo, Zhihong Shao, Dejian Yang, Peiyi Wang, Runxin Xu, Y.\u00a0Wu, Yukun Li, Huazuo Gao, Shirong Ma, Wangding Zeng, Xiao Bi, Zihui Gu, Hanwei Xu, Damai Dai, Kai Dong, Liyue Zhang, Yishi Piao, Zhibin Gou, Zhenda Xie, Zhewen Hao, Bingxuan Wang, Junxiao Song, Deli Chen, Xin Xie, Kang Guan, Yuxiang You, Aixin Liu, Qiushi Du, Wenjun Gao, Xuan Lu, Qinyu Chen, Yaohui Wang, Chengqi Deng, Jiashi Li, Chenggang Zhao, Chong Ruan, Fuli Luo, and Wenfeng Liang.   [DeepSeek-Coder-V2: Breaking the Barrier of Closed-Source Models in Code Intelligence](https://arxiv.org/pdf/2406.11931).   arXiv preprint arXiv:2406.11931, 2024. \n* [13]  Xianzhong Ding, Le\u00a0Chen, Murali Emani, Chunhua Liao, Pei-Hung Lin, Tristan Vanderbruggen, Zhen Xie, Alberto Cerpa, and Wan Du.   [HPC-GPT: Integrating Large Language Model for High-Performance Computing](https://dl.acm.org/doi/10.1145/3624062.3624172).   In Proceedings of the SC \u201923 Workshops of The International Conference on High Performance Computing, Network, Storage, and Analysis, 2023. \n* [14]  Mikhail Evtikhiev, Egor Bogomolov, Yaroslav Sokolov, and Timofey Bryksin.   [Out of the BLEU: How Should We Assess Quality of the Code Generation Models?](https://arxiv.org/abs/2208.03133)  Journal of Systems and Software, 2023. \n* [15]  Ralf\u00a0W. Grosse-Kunstleve, Thomas\u00a0C. Terwilliger, Nicholas\u00a0K. Sauter, and Paul\u00a0D. Adams.   [Automatic Fortran to C++ Conversion with FABLE](https://scfbm.biomedcentral.com/articles/10.1186/1751-0473-7-5).   Source Code for Biology and Medicine, 2012. \n* [16]  Suriya Gunasekar, Yi\u00a0Zhang, Jyoti Aneja, Caio C\u00e9sar\u00a0Teodoro Mendes, Allie\u00a0Del Giorno, Sivakanth Gopi, Mojan Javaheripi, Piero Kauffmann, Gustavo de\u00a0Rosa, Olli Saarikivi, Adil Salim, Shital Shah, Harkirat\u00a0Singh Behl, Xin Wang, S\u00e9bastien Bubeck, Ronen Eldan, Adam\u00a0Tauman Kalai, Yin\u00a0Tat Lee, and Yuanzhi Li.   [Textbooks Are All You Need](https://arxiv.org/pdf/2306.11644).   arXiv preprint arXiv:2306.11644, 2023. \n* [17]  Daya Guo, Shuai Lu, Nan Duan, Yanlin Wang, Ming Zhou, and Jian Yin.   [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://aclanthology.org/2022.acl-long.499.pdf).   In ACL, 2022. \n* [18]  Geoffrey Hinton, Oriol Vinyals, and Jeff Dean.   [Distilling the Knowledge in a Neural Network](https://arxiv.org/pdf/1503.02531).   arXiv preprint arXiv:1503.02531, 2015. \n* [19]  Bin Lei, Caiwen Ding, Le\u00a0Chen, Pei-Hung Lin, and Chunhua Liao.   [Creating a Dataset for High-Performance Computing Code Translation using LLMs: A Bridge Between OpenMP Fortran and C++](https://ieeexplore.ieee.org/abstract/document/10363534?casa_token=0jihooSIpG0AAAAA:DArsOywhEsH5tDdH7BWtFMcKMky5V-h6jh_DJy-sXRXSoiWIs9xLORJ8hNTgZnLOiPwYXrFB5cln-A).   In HPEC, 2023. \n* [20]  Jing Li, Aixin Sun, Jianglei Han, and Chenliang Li.   [A Survey on Deep Learning for Named Entity Recognition](https://ieeexplore.ieee.org/document/10184827).   ICDE, 2020. \n* [21]  Raymond Li, Loubna\u00a0Ben Allal, Yangtian Zi, Niklas Muennighoff, Denis Kocetkov, Chenghao Mou, Marc Marone, Christopher Akiki, Jia Li, Jenny Chim, Qian Liu, Evgenii Zheltonozhskii, Terry\u00a0Yue Zhuo, Thomas Wang, Olivier Dehaene, Mishig Davaadorj, Joel Lamy-Poirier, Jo\u00e3o Monteiro, Oleh Shliazhko, Nicolas Gontier, Nicholas Meade, Armel Zebaze, Ming-Ho Yee, Logesh\u00a0Kumar Umapathi, Jian Zhu, Benjamin Lipkin, Muhtasham Oblokulov, Zhiruo Wang, Rudra Murthy, Jason Stillerman, Siva\u00a0Sankalp Patel, Dmitry Abulkhanov, Marco Zocca, Manan Dey, Zhihan Zhang, Nour Fahmy, Urvashi Bhattacharyya, Wenhao Yu, Swayam Singh, Sasha Luccioni, Paulo Villegas, Maxim Kunakov, Fedor Zhdanov, Manuel Romero, Tony Lee, Nadav Timor, Jennifer Ding, Claire Schlesinger, Hailey Schoelkopf, Jan Ebert, Tri Dao, Mayank Mishra, Alex Gu, Jennifer Robinson, Carolyn\u00a0Jane Anderson, Brendan Dolan-Gavitt, Danish Contractor, Siva Reddy, Daniel Fried, Dzmitry Bahdanau, Yacine Jernite, Carlos\u00a0Mu\u00f1oz Ferrandis, Sean Hughes, Thomas Wolf, Arjun Guha, Leandro von Werra, and Harm de\u00a0Vries.   [StarCoder: May the Source be With You!](https://openreview.net/pdf?id=KoFOg41haE)  Transactions on Machine Learning Research, 2023. \n* [22]  Chin-Yew Lin.   [ROUGE: A Package for Automatic Evaluation of Summaries](https://aclanthology.org/W04-1013.pdf).   In Text summarization branches out, 2004. \n* [23]  Jiawei Liu, Chunqiu\u00a0Steven Xia, Yuyao Wang, and Lingming Zhang.   [Is Your Code Generated by ChatGPT Really Correct? Rigorous Evaluation of Large Language Models for Code Generation](https://proceedings.neurips.cc/paper_files/paper/2023/hash/43e9d647ccd3e4b7b5baab53f0368686-Abstract-Conference.html).   In Thirty-seventh Conference on Neural Information Processing Systems, 2023. \n* [24]  Ilya Loshchilov and Frank Hutter.   [Decoupled Weight Decay Regularization](https://openreview.net/pdf?id=Bkg6RiCqY7).   In ICLR, 2017. \n* [25]  Anton Lozhkov, Raymond Li, Loubna\u00a0Ben Allal, Federico Cassano, Joel Lamy-Poirier, Nouamane Tazi, Ao\u00a0Tang, Dmytro Pykhtar, Jiawei Liu, Yuxiang Wei, Tianyang Liu, Max Tian, Denis Kocetkov, Arthur Zucker, Younes Belkada, Zijian Wang, Qian Liu, Dmitry Abulkhanov, Indraneil Paul, Zhuang Li, Wen-Ding Li, Megan Risdal, Jia Li, Jian Zhu, Terry\u00a0Yue Zhuo, Evgenii Zheltonozhskii, Nii Osae\u00a0Osae Dade, Wenhao Yu, Lucas Krau\u00df, Naman Jain, Yixuan Su, Xuanli He, Manan Dey, Edoardo Abati, Yekun Chai, Niklas Muennighoff, Xiangru Tang, Muhtasham Oblokulov, Christopher Akiki, Marc Marone, Chenghao Mou, Mayank Mishra, Alex Gu, Binyuan Hui, Tri Dao, Armel Zebaze, Olivier Dehaene, Nicolas Patry, Canwen Xu, Julian McAuley, Han Hu, Torsten Scholak, Sebastien Paquet, Jennifer Robinson, Carolyn\u00a0Jane Anderson, Nicolas Chapados, Mostofa Patwary, Nima Tajbakhsh, Yacine Jernite, Carlos\u00a0Mu\u00f1oz Ferrandis, Lingming Zhang, Sean Hughes, Thomas Wolf, Arjun Guha, Leandro von Werra, and Harm de\u00a0Vries.   [StarCoder 2 and The Stack v2: The Next Generation](https://arxiv.org/pdf/2402.19173).   arXiv preprint arXiv:2402.19173, 2024. \n* [26]  Ziyang Luo, Can Xu, Pu\u00a0Zhao, Qingfeng Sun, Xiubo Geng, Wenxiang Hu, Chongyang Tao, Jing Ma, Qingwei Lin, and Daxin Jiang.   [Wizardcoder: Empowering Code Large Language Models with Evol-Instruct](https://arxiv.org/pdf/2306.08568).   arXiv preprint arXiv:2306.08568, 2023. \n* [27]  Gleison Mendon\u00e7a, Breno Guimar\u00e3es, P\u00e9ricles Alves, M\u00e1rcio Pereira, Guido Ara\u00fajo, and Fernando Magno Quint\u00e3o Pereira.   [DawnCC: Automatic Annotation for Data Parallelism and Offloading](https://dl.acm.org/doi/10.1145/3084540).   ACM TACO, 2017. \n* [28]  Daniel Nichols, Joshua\u00a0H Davis, Zhaojun Xie, Arjun Rajaram, and Abhinav Bhatele.   [Can Large Language Models Write Parallel Code?](https://dl.acm.org/doi/10.1145/3625549.3658689)  In HPDC, 2024. \n* [29]  Erik Nijkamp, Bo\u00a0Pang, Hiroaki Hayashi, Lifu Tu, Huan Wang, Yingbo Zhou, Silvio Savarese, and Caiming Xiong.   [CodeGen: An Open Large Language Model for Code with Multi-Turn Program Synthesis](https://arxiv.org/abs/2203.13474).   arXiv preprint arXiv:2203.13474, 2022. \n* [30]  Gabriel Noaje, Christophe Jaillet, and Micha\u00ebl Krajecki.   [Source-to-Source Code Translator: OpenMP C to CUDA](https://ieeexplore.ieee.org/document/6063033).   In HPCC, 2011. \n* [31]  Rangeet Pan, Ali\u00a0Reza Ibrahimzada, Rahul Krishna, Divya Sankar, Lambert\u00a0Pouguem Wassi, Michele Merler, Boris Sobolev, Raju Pavuluri, Saurabh Sinha, and Reyhaneh Jabbarvand.   [Lost in Translation: A Study of Bugs Introduced by Large Language Models while Translating Code](https://dl.acm.org/doi/abs/10.1145/3597503.3639226).   In Proceedings of the IEEE/ACM 46th International Conference on Software Engineering, pages 1\u201313, 2024. \n* [32]  Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu.   [BLEU: A Method for Automatic Evaluation of Machine Translation](https://aclanthology.org/P02-1040.pdf).   In ACL, 2002. \n* [33]  Maja Popovi\u0107.   [chrF: Character n-gram F-score for Automatic MT Evaluation](https://aclanthology.org/W15-3049.pdf).   In Proceedings of the tenth workshop on statistical machine translation, 2015. \n* [34]  Shuo Ren, Daya Guo, Shuai Lu, Long Zhou, Shujie Liu, Duyu Tang, Neel Sundaresan, Ming Zhou, Ambrosio Blanco, and Shuai Ma.   [CodeBLEU: a Method for Automatic Evaluation of Code Synthesis](https://arxiv.org/pdf/2009.10297).   arXiv preprint arXiv:2009.10297, 2020. \n* [35]  Baptiste Roziere, Jonas Gehring, Fabian Gloeckle, Sten Sootla, Itai Gat, Xiaoqing\u00a0Ellen Tan, Yossi Adi, Jingyu Liu, Romain Sauvestre, Tal Remez, et\u00a0al.   [Code Llama: Open Foundation Models for Code](https://arxiv.org/pdf/2308.12950).   arXiv preprint arXiv:2308.12950, 2023. \n* [36]  Baptiste Roziere, Marie-Anne Lachaux, Lowik Chanussot, and Guillaume Lample.   [Unsupervised Translation of Programming Languages](https://proceedings.neurips.cc/paper/2020/file/ed23fbf18c2cd35f8c7f8de44f85c08d-Paper.pdf).   NeurIPS, 2020. \n* [37]  Baptiste Roziere, Jie\u00a0M. Zhang, Francois Charton, Mark Harman, Gabriel Synnaeve, and Guillaume Lample.   [Leveraging Automated Unit Tests for Unsupervised Code Translation](https://openreview.net/pdf?id=cmt-6KtR4c4).   In ICLR, 2022. \n* [38]  Thomas Sterling, Maciej Brodowicz, and Matthew Anderson.   [High performance Computing: Modern Systems and Practices](https://books.google.com/books?hl=en&lr=&id=qOHIBAAAQBAJ&oi=fnd&pg=PP1&dq=High+Performance+Computing:+Modern+Systems+and+Practices&ots=rNxEDu76H9&sig=6dqtQfNHzC5dV5eKhg9qKi1mGFE#v=onepage&q=High%20Performance%20Computing%3A%20Modern%20Systems%20and%20Practices&f=false).   Morgan Kaufmann, 2017. \n* [39]  Marc Szafraniec, Baptiste Roziere, Hugh Leather, Francois Charton, Patrick Labatut, and Gabriel Synnaeve.   [Code Translation with Compiler Representations](https://openreview.net/pdf?id=XomEU3eNeSQ).   In ICLR, 2023. \n* [40]  CodeGemma Team.   [CodeGemma: Open Code Models Based on Gemma](https://arxiv.org/pdf/2406.11409).   arXiv preprint arXiv:2406.11409, 2024. \n* [41]  Gemini Team, Rohan Anil, Sebastian Borgeaud, Yonghui Wu, Jean-Baptiste Alayrac, Jiahui Yu, Radu Soricut, Johan Schalkwyk, Andrew\u00a0M Dai, Anja Hauth, et\u00a0al.   [Gemini: A Family of Highly Capable Multimodal Models](https://arxiv.org/pdf/2312.11805), 2024. \n* [42]  Georgios Tournavitis, Zheng Wang, Bj\u00f6rn Franke, and Michael\u00a0F.P. O\u2019Boyle.   [Towards a Holistic Approach to Auto-Parallelization: Integrating Profile-Driven Parallelism Detection and Machine-Learning Based Mapping](https://dl.acm.org/doi/10.1145/1543135.1542496).   In PLDI, 2009. \n* [43]  Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timoth\u00e9e Lacroix, Baptiste Rozi\u00e8re, Naman Goyal, Eric Hambro, Faisal Azhar, et\u00a0al.   [LLaMA: Open and Efficient Foundation Language Models](https://arxiv.org/pdf/2302.13971).   arXiv preprint arXiv:2302.13971, 2023. \n* [44]  Sven Verdoolaege, Juan\u00a0Carlos Juega, Albert Cohen, Jos\u00e9\u00a0Ignacio G\u00f3mez, Christian Tenllado, and Francky Catthoor.   [Polyhedral Parallel Code Generation for CUDA](https://dl.acm.org/doi/10.1145/2400682.2400713).   ACM TACO, 2013. \n* [45]  Yue Wang, Weishi Wang, Shafiq Joty, and Steven C.\u00a0H. Hoi.   [CodeT5: Identifier-aware Unified Pre-trained Encoder-Decoder Models for Code Understanding and Generation](https://aclanthology.org/2021.emnlp-main.685.pdf).   In EMNLP, 2021. \n* [46]  Yuanbo Wen, Qi\u00a0Guo, Qiang Fu, Xiaqing Li, Jianxing Xu, Yanlin Tang, Yongwei Zhao, Xing Hu, Zidong Du, Ling Li, et\u00a0al.   [BabelTower: Learning to Auto-parallelized Program Translation](https://proceedings.mlr.press/v162/wen22b/wen22b.pdf).   In ICML, 2022. \n* [47]  Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, R\u00e9mi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, Patrick von Platen, Clara Ma, Yacine Jernite, Julien Plu, Canwen Xu, Teven\u00a0Le Scao, Sylvain Gugger, Mariama Drame, Quentin Lhoest, and Alexander\u00a0M. Rush.   [Transformers: State-of-the-Art Natural Language Processing](https://arxiv.org/pdf/1910.03771).   In EMNLP, 2020. \n* [48]  Jingyue Wu, Artem Belevich, Eli Bendersky, Mark Heffernan, Chris Leary, Jacques Pienaar, Bjarke Roune, Rob Springer, Xuetian Weng, and Robert Hundt.   [gpucc- An Open-Source GPGPU Compiler](https://ieeexplore.ieee.org/document/7559536).   In CGO, 2016. \n* [49]  Dejiao Zhang, Wasi Ahmad, Ming Tan, Hantian Ding, Ramesh Nallapati, Dan Roth, Xiaofei Ma, and Bing Xiang.   [Code Representation Learning At Scale](https://openreview.net/pdf?id=vfzRRjumpX).   In ICLR, 2024. \n* [50]  Tianyu Zheng, Ge\u00a0Zhang, Tianhao Shen, Xueling Liu, Bill\u00a0Yuchen Lin, Jie Fu, Wenhu Chen, and Xiang Yue.   [Opencodeinterpreter: Integrating Code Generation with Execution and Refinement](https://arxiv.org/pdf/2402.14658).   arXiv preprint arXiv:2402.14658, 2024. \n* [51]  Shuyan Zhou, Uri Alon, Sumit Agarwal, and Graham Neubig.   [CodeBERTScore: Evaluating Code Generation with Pretrained Models of Code](https://aclanthology.org/2023.emnlp-main.859.pdf).   In EMNLP, 2023. \n\n\\doparttoc\\faketableofcontents\n\n## Appendix\n\n\\parttoc\n",
+        "structured_md": {
+            "title": [
+                1,
+                1
+            ],
+            "abstract": [
+                3,
+                534
+            ],
+            "sections": {
+                "1 Introduction": [
+                    7,
+                    20
+                ],
+                "2 Related Works": [
+                    21,
+                    28
+                ],
+                "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": [
+                    29,
+                    118
+                ],
+                "4 Experimental Setup": [
+                    119,
+                    166
+                ],
+                "5 Experimental Results": [
+                    167,
+                    470
+                ],
+                "6 Conclusion": [
+                    471,
+                    474
+                ],
+                "Acknowledgment": [
+                    475,
+                    478
+                ],
+                "References": [
+                    479,
+                    538
+                ]
+            },
+            "subsections": {
+                "1 Introduction": {
+                    "1 Introduction": [
+                        7,
+                        20
+                    ]
+                },
+                "2 Related Works": {
+                    "2 Related Works": [
+                        21,
+                        28
+                    ]
+                },
+                "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {
+                    "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": [
+                        29,
+                        32
+                    ],
+                    "3.1 Cross Language Masked Language Modeling": [
+                        33,
+                        46
+                    ],
+                    "3.2 Abstract Syntax Tree Entity Recognition": [
+                        47,
+                        64
+                    ],
+                    "3.3 Denoising Auto Encoding with Adaptive Noise Injection": [
+                        65,
+                        92
+                    ],
+                    "3.4 Back Translation for Unsupervised Refinement": [
+                        93,
+                        108
+                    ],
+                    "3.5 Finetuning with Synthetic Data from Language Models (Optional Step)": [
+                        109,
+                        118
+                    ]
+                },
+                "4 Experimental Setup": {
+                    "4 Experimental Setup": [
+                        119,
+                        122
+                    ],
+                    "4.1 Datasets": [
+                        123,
+                        135
+                    ],
+                    "4.2 Data Preprocessing": [
+                        136,
+                        160
+                    ],
+                    "4.3 Evaluation": [
+                        161,
+                        166
+                    ]
+                },
+                "5 Experimental Results": {
+                    "5 Experimental Results": [
+                        167,
+                        168
+                    ],
+                    "5.1 C++ to CUDA": [
+                        169,
+                        276
+                    ],
+                    "5.1.1 Post-processing: Compilation Error Analysis": [
+                        277,
+                        323
+                    ],
+                    "5.2 Runtime Evaluation": [
+                        324,
+                        327
+                    ],
+                    "5.3 Ablation Study": [
+                        328,
+                        415
+                    ],
+                    "5.4 Fortran to C++": [
+                        416,
+                        470
+                    ]
+                },
+                "6 Conclusion": {
+                    "6 Conclusion": [
+                        471,
+                        474
+                    ]
+                },
+                "Acknowledgment": {
+                    "Acknowledgment": [
+                        475,
+                        478
+                    ]
+                },
+                "References": {
+                    "References": [
+                        479,
+                        534
+                    ]
+                }
+            },
+            "paragraphs": {
+                "1 Introduction": [
+                    [
+                        9,
+                        9
+                    ],
+                    [
+                        11,
+                        11
+                    ],
+                    [
+                        13,
+                        13
+                    ],
+                    [
+                        15,
+                        17
+                    ],
+                    [
+                        19,
+                        19
+                    ]
+                ],
+                "2 Related Works": [
+                    [
+                        23,
+                        23
+                    ],
+                    [
+                        25,
+                        25
+                    ],
+                    [
+                        27,
+                        27
+                    ]
+                ],
+                "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": [
+                    [
+                        31,
+                        31
+                    ],
+                    [
+                        41,
+                        41
+                    ],
+                    [
+                        43,
+                        43
+                    ],
+                    [
+                        45,
+                        45
+                    ],
+                    [
+                        55,
+                        55
+                    ],
+                    [
+                        57,
+                        57
+                    ],
+                    [
+                        59,
+                        59
+                    ],
+                    [
+                        61,
+                        61
+                    ],
+                    [
+                        63,
+                        63
+                    ],
+                    [
+                        73,
+                        73
+                    ],
+                    [
+                        75,
+                        75
+                    ],
+                    [
+                        77,
+                        77
+                    ],
+                    [
+                        79,
+                        79
+                    ],
+                    [
+                        81,
+                        81
+                    ],
+                    [
+                        83,
+                        83
+                    ],
+                    [
+                        85,
+                        85
+                    ],
+                    [
+                        87,
+                        87
+                    ],
+                    [
+                        89,
+                        89
+                    ],
+                    [
+                        91,
+                        91
+                    ],
+                    [
+                        101,
+                        101
+                    ],
+                    [
+                        103,
+                        103
+                    ],
+                    [
+                        105,
+                        105
+                    ],
+                    [
+                        107,
+                        107
+                    ],
+                    [
+                        111,
+                        111
+                    ],
+                    [
+                        113,
+                        113
+                    ],
+                    [
+                        115,
+                        115
+                    ],
+                    [
+                        117,
+                        117
+                    ]
+                ],
+                "4 Experimental Setup": [
+                    [
+                        121,
+                        121
+                    ],
+                    [
+                        125,
+                        125
+                    ],
+                    [
+                        127,
+                        128
+                    ],
+                    [
+                        130,
+                        130
+                    ],
+                    [
+                        132,
+                        134
+                    ],
+                    [
+                        138,
+                        138
+                    ],
+                    [
+                        140,
+                        140
+                    ],
+                    [
+                        142,
+                        144
+                    ],
+                    [
+                        146,
+                        146
+                    ],
+                    [
+                        163,
+                        163
+                    ],
+                    [
+                        165,
+                        165
+                    ]
+                ],
+                "5 Experimental Results": [
+                    [
+                        273,
+                        273
+                    ],
+                    [
+                        275,
+                        275
+                    ],
+                    [
+                        279,
+                        279
+                    ],
+                    [
+                        322,
+                        322
+                    ],
+                    [
+                        326,
+                        326
+                    ],
+                    [
+                        408,
+                        408
+                    ],
+                    [
+                        410,
+                        410
+                    ],
+                    [
+                        412,
+                        412
+                    ],
+                    [
+                        414,
+                        414
+                    ],
+                    [
+                        418,
+                        418
+                    ],
+                    [
+                        469,
+                        469
+                    ]
+                ],
+                "6 Conclusion": [
+                    [
+                        473,
+                        473
+                    ]
+                ],
+                "Acknowledgment": [
+                    [
+                        477,
+                        477
+                    ]
+                ],
+                "References": [
+                    [
+                        481,
+                        531
+                    ],
+                    [
+                        533,
+                        533
+                    ],
+                    [
+                        537,
+                        537
+                    ]
+                ]
+            },
+            "figures": {
+                "1 Introduction": {},
+                "2 Related Works": {},
+                "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {
+                    "[FIGURE S3.F1.g1]": [
+                        35,
+                        39
+                    ],
+                    "[FIGURE S3.F2.g1]": [
+                        49,
+                        53
+                    ],
+                    "[FIGURE S3.F3.g1]": [
+                        67,
+                        71
+                    ],
+                    "[FIGURE S3.F4.g1]": [
+                        95,
+                        99
+                    ]
+                },
+                "4 Experimental Setup": {
+                    "[FIGURE S4.F5]": [
+                        148,
+                        159
+                    ]
+                },
+                "5 Experimental Results": {},
+                "6 Conclusion": {},
+                "Acknowledgment": {},
+                "References": {}
+            },
+            "tables": {
+                "1 Introduction": {},
+                "2 Related Works": {},
+                "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {},
+                "4 Experimental Setup": {},
+                "5 Experimental Results": {
+                    "[TABLE S5.T1]": [
+                        171,
+                        271
+                    ],
+                    "[TABLE S5.T2]": [
+                        281,
+                        320
+                    ],
+                    "[TABLE S5.T3]": [
+                        330,
+                        406
+                    ],
+                    "[TABLE S5.T4]": [
+                        420,
+                        467
+                    ]
+                },
+                "6 Conclusion": {},
+                "Acknowledgment": {},
+                "References": {}
+            },
+            "algorithms": {
+                "1 Introduction": {},
+                "2 Related Works": {},
+                "3 CodeRosetta: Unsupervised Code Translation for Parallel Programming": {},
+                "4 Experimental Setup": {},
+                "5 Experimental Results": {},
+                "6 Conclusion": {},
+                "Acknowledgment": {},
+                "References": {}
+            }
+        }
+    },
+    "changes": {
+        "focus_on_finding": "cc5",
+        "operation": "Break the logical chain by extending the claim of the finding contribution",
+        "break_target": {
+            "claim_summary": "CodeRosetta improves CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs for Fortran to C++ translation.",
+            "type": "finding",
+            "evidence": "marking it, to our knowledge, as the first encoder-decoder model for this complex task, improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs.",
+            "location": "paragraph 5",
+            "score": 6,
+            "score_explanation": "This finding highlights the model's capability in a previously underexplored area of code translation, contributing to the research goal of addressing complex parallel programming semantics.",
+            "speculative": "No",
+            "id": "cc5",
+            "coreferences": [
+                {
+                    "location": 5,
+                    "span": "marking it, to our knowledge, as the first encoder-decoder model for this complex task, improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs."
+                },
+                {
+                    "location": 56,
+                    "span": "Notably, CodeRosetta outperforms StarCoder, even though StarCoder is nearly 20 times larger, highlighting the efficiency of our model."
+                }
+            ]
+        },
+        "break_result": {
+            "claim_summary": "CodeRosetta improves CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs for Fortran to C++ translation.",
+            "type": "finding",
+            "evidence": "marking it, to our knowledge, as the first encoder-decoder model for this complex task, improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs.",
+            "location": "paragraph 5",
+            "score": 6,
+            "score_explanation": "This finding highlights the model's capability in a previously underexplored area of code translation, contributing to the research goal of addressing complex parallel programming semantics.",
+            "speculative": "No",
+            "id": "cc5",
+            "coreferences": [
+                {
+                    "location": 5,
+                    "span": "marking it, to our knowledge, as the first encoder-decoder model for this complex task, improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs."
+                },
+                {
+                    "location": 56,
+                    "span": "Notably, CodeRosetta outperforms StarCoder, even though StarCoder is nearly 20 times larger, highlighting the efficiency of our model."
+                }
+            ],
+            "restriction_analysis": {
+                "restriction": "The performance improvement of CodeRosetta is specifically for Fortran to C++ translation compared to closed-source and open-code LLMs.",
+                "claim": "CodeRosetta improves CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs for Fortran to C++ translation.",
+                "restriction_effect_on_claim": "This restriction limits the claim to a specific translation task (Fortran to C++), excluding other programming languages or scenarios."
+            },
+            "generalization": {
+                "claim_without_restriction": "CodeRosetta improves CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.",
+                "generality_of_new_claim": "The new claim suggests that CodeRosetta universally improves CodeBLEU across all code translation tasks without specifying any languages.",
+                "logical_relationship": "The modified general claim is a broad generalization of the original claim and constitutes a fallacy as it implies universal performance without evidence."
+            },
+            "modified_finding": "CodeRosetta improves CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.",
+            "modification_steps": "The phrase 'for Fortran to C++ translation' needs to be removed to generalize the claim. The claim should be revised to state that the improvement applies to all code translation tasks.",
+            "explanation": "This modification is plausible in the context of the paper as it maintains the original performance metric (CodeBLEU) while misleadingly suggesting that the improvement applies universally across all code translation tasks, rather than being limited to a specific scenario.",
+            "modification": "Generalize a claim by discarding constraints"
+        },
+        "core_redactions": [
+            {
+                "loc_type": "paragraph",
+                "loc_id": 5,
+                "original_text": "Our results show that for C++ to CUDA translation, CodeRosetta achieves a 2.9 BLEU and 1.72 CodeBLUE improvement over existing methods while also increasing compilation accuracy by 6.05%. Compared to closed-source LLMs, CodeRosetta\u2019s bidirectional approach exhibits even higher gains, with a 19.84 BLEU and 14.39 CodeBLEU improvement, and 2.75% higher compilation accuracy. To the best of our knowledge, CodeRosetta is the first model to demonstrate proficiency in the task of Fortran to C++ translation, surpassing the performance of existing closed-source LLMs and open-code LLMs on standard metrics, with up to 4.63-point improvement in CodeBLEU.  ",
+                "revision": "Our results show that for C++ to CUDA translation, CodeRosetta achieves a 2.9 BLEU and 1.72 CodeBLUE improvement over existing methods while also increasing compilation accuracy by 6.05%. Compared to closed-source LLMs, CodeRosetta\u2019s bidirectional approach exhibits even higher gains, with a 19.84 BLEU and 14.39 CodeBLEU improvement, and 2.75% higher compilation accuracy. To the best of our knowledge, CodeRosetta is the first model to demonstrate proficiency in the task of Fortran to C++ translation, surpassing the performance of existing closed-source LLMs and open-code LLMs on standard metrics, with CodeRosetta improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.",
+                "detailed_edits": [
+                    {
+                        "span": "improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs for Fortran to C++ translation.",
+                        "revised_span": "CodeRosetta improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.",
+                        "rationale": "This change generalizes the claim by removing the specific mention of 'Fortran to C++ translation', thereby suggesting that the improvement applies to all code translation tasks."
+                    }
+                ]
+            }
+        ],
+        "cascaded_redactions": [],
+        "edits": [
+            [
+                "paragraph",
+                "Our results show that for C++ to CUDA translation, CodeRosetta achieves a 2.9 BLEU and 1.72 CodeBLUE improvement over existing methods while also increasing compilation accuracy by 6.05%. Compared to closed-source LLMs, CodeRosetta\u2019s bidirectional approach exhibits even higher gains, with a 19.84 BLEU and 14.39 CodeBLEU improvement, and 2.75% higher compilation accuracy. To the best of our knowledge, CodeRosetta is the first model to demonstrate proficiency in the task of Fortran to C++ translation, surpassing the performance of existing closed-source LLMs and open-code LLMs on standard metrics, with CodeRosetta improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.",
+                "5"
+            ]
+        ],
+        "considered_edits": [
+            [
+                "paragraph",
+                "Our results show that for C++ to CUDA translation, CodeRosetta achieves a 2.9 BLEU and 1.72 CodeBLUE improvement over existing methods while also increasing compilation accuracy by 6.05%. Compared to closed-source LLMs, CodeRosetta\u2019s bidirectional approach exhibits even higher gains, with a 19.84 BLEU and 14.39 CodeBLEU improvement, and 2.75% higher compilation accuracy. To the best of our knowledge, CodeRosetta is the first model to demonstrate proficiency in the task of Fortran to C++ translation, surpassing the performance of existing closed-source LLMs and open-code LLMs on standard metrics, with CodeRosetta improving CodeBLEU by at least 4.63 points compared to closed-source and open-code LLMs in code translation.",
+                "5"
+            ]
+        ]
+    },
+    "counterfactual_type": "finding_perturbator.blueprint_finding__gpt-4o-mini"
+}

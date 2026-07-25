@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+<title>[2310.15905] Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces</title><meta content="The ability to identify and control different kinds of linguistic information encoded in vector representations of words has many use cases, especially for explainability and bias removal. This is usually done via a se…" property="og:description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces" name="twitter:title"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" name="twitter:image:src"/>
+<meta content="ar5iv logo" name="twitter:image:alt"/>
+<meta content="Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces" property="og:title"/>
+<meta content="ar5iv" property="og:site_name"/>
+<meta content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png" property="og:image"/>
+<meta content="article" property="og:type"/>
+<meta content="https://ar5iv.labs.arxiv.org/html/2310.15905" property="og:url"/>
+<link href="https://ar5iv.labs.arxiv.org/html/2310.15905" rel="canonical" target="_blank"/>
+<!--Generated on Tue Feb 27 21:21:53 2024 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link href="/assets/ar5iv-fonts.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv.0.8.0.min.css" media="all" rel="stylesheet"/><link href="/assets/ar5iv-site.0.2.2.css" media="all" rel="stylesheet"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Is Probing All You Need? 
+<br class="ltx_break"/>Indicator Tasks as an Alternative to Probing Embedding Spaces</h1>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p" id="id4.id1">The ability to identify and control different kinds of linguistic information encoded in vector representations of words has many use cases, especially for explainability and bias removal. This is usually done via a set of simple classification tasks, termed <span class="ltx_text ltx_font_italic" id="id4.id1.1">probes</span>, to evaluate the information encoded in the embedding space. However, the involvement of a trainable classifier leads to entanglement between the probe’s results and the classifier’s nature. As a result, contemporary works on probing include tasks that do not involve training of auxiliary models.
+In this work we introduce the term <span class="ltx_text ltx_font_italic" id="id4.id1.2">indicator tasks</span>
+for non-trainable tasks which are used to query embedding spaces for the existence of certain properties, and claim that this kind of tasks may point to a direction opposite to probes, and that this contradiction complicates the decision on whether a property exists in an embedding space.
+We demonstrate our claims with two test cases, one dealing with gender debiasing and another with the erasure of morphological information from embedding spaces.
+We show that the application of a suitable indicator provides a more accurate picture of the information captured and removed compared to probes.
+We thus conclude that indicator tasks should be implemented and taken into consideration when eliciting information from embedded representations.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+<div class="ltx_para" id="S1.p1">
+<p class="ltx_p" id="S1.p1.1">Pre-trained vector representations of words have introduced a stark improvement in the performances of any NLP task they have been applied to, and proved to be effective in classification and prediction of real world tasks <cite class="ltx_cite ltx_citemacro_cite">Peters et al. (<a class="ltx_ref" href="#bib.bib36" title="">2018</a>); Devlin et al. (<a class="ltx_ref" href="#bib.bib14" title="">2018</a>); Liu et al. (<a class="ltx_ref" href="#bib.bib29" title="">2019b</a>); Zeng et al. (<a class="ltx_ref" href="#bib.bib45" title="">2021</a>)</cite>. This has led researchers to grow interest in analyzing the encoded linguistic features in the representations. To this end, probing tasks, initially proposed by <cite class="ltx_cite ltx_citemacro_citet">Köhn (<a class="ltx_ref" href="#bib.bib25" title="">2016</a>)</cite> and <cite class="ltx_cite ltx_citemacro_citet">Adi et al. (<a class="ltx_ref" href="#bib.bib1" title="">2016</a>)</cite>, are frequently used.</p>
+</div>
+<div class="ltx_para" id="S1.p2">
+<p class="ltx_p" id="S1.p2.1">Probing tasks (henceforth <span class="ltx_text ltx_font_italic" id="S1.p2.1.1">probes</span>) are designed to evaluate the information existing in representations
+by training a simple classification model <cite class="ltx_cite ltx_citemacro_cite">Conneau et al. (<a class="ltx_ref" href="#bib.bib12" title="">2018</a>); Niven and Kao (<a class="ltx_ref" href="#bib.bib33" title="">2019</a>)</cite>.
+The existence of a probing model that can classify the queried linguistic property is assumed to imply that the respective linguistic information exists in the representations <cite class="ltx_cite ltx_citemacro_cite">Alain and Bengio (<a class="ltx_ref" href="#bib.bib2" title="">2017</a>); Belinkov and Glass (<a class="ltx_ref" href="#bib.bib5" title="">2019</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p3">
+<p class="ltx_p" id="S1.p3.1">However, probes have several, frequently contemplated, drawbacks.
+Generally, probes are meant to ‘un-black-box’
+word representations, that is, to act as lenses into what information exists in the representations. Yet the actual relation between the probe’s results and the representations thereof remains unclear.
+This has led some researchers to claim that the probing classifiers should be kept simple <cite class="ltx_cite ltx_citemacro_cite">Conneau et al. (<a class="ltx_ref" href="#bib.bib12" title="">2018</a>)</cite>, others are in favor of complex ones <cite class="ltx_cite ltx_citemacro_cite">Pimentel et al. (<a class="ltx_ref" href="#bib.bib37" title="">2020a</a>)</cite>, and a few advocate for dispensing with probing classifiers altogether <cite class="ltx_cite ltx_citemacro_cite">Immer et al. (<a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p4">
+<p class="ltx_p" id="S1.p4.1">A solution frequent in the literature <cite class="ltx_cite ltx_citemacro_citep">(Wu et al., <a class="ltx_ref" href="#bib.bib43" title="">2020</a>; Zhou and Srikumar, <a class="ltx_ref" href="#bib.bib48" title="">2022</a>; Ravfogel et al., <a class="ltx_ref" href="#bib.bib40" title="">2022</a>, inter alia)</cite> is to accompany the results of probes that involve training an auxiliary classification model, with results over substantially different kind of tasks that are designed to query linguistic information directly from the representations, and do not require training another model.
+In this work we propose to collectively refer to such tasks by the name <span class="ltx_text ltx_font_italic" id="S1.p4.1.1">indicator tasks</span>, as they provide direct indication of the stored information. We claim that indicator tasks are generally superior to trainable probing models, and provide more faithful information regarding the complex structure of the embedding spaces.</p>
+</div>
+<div class="ltx_para" id="S1.p5">
+<p class="ltx_p" id="S1.p5.1">We substantiate our claim with two test cases that involves concept erasure: gender debiasing <cite class="ltx_cite ltx_citemacro_cite">Bolukbasi et al. (<a class="ltx_ref" href="#bib.bib7" title="">2016</a>)</cite> and morphological property removal. We show that in both cases
+the evaluation of erasures with indicators provides a fuller picture of the information erased and retained.
+Our two test cases are dissimilar in many ways. Gender debaising involves a single, binary, unwanted, social bias that models learn implicitly from the distribution of words in the corpus. Morphological features, on the other hand, are a series of multi-valued grammatical properties, expressed explicitly in the text, and are not undesired per se, yet their erasure may benefit processing tasks in morphologically rich languages.</p>
+</div>
+<div class="ltx_para" id="S1.p6">
+<p class="ltx_p" id="S1.p6.1">We apply two different concept erasure methods to them, respectively: RLACE <cite class="ltx_cite ltx_citemacro_cite">Ravfogel et al. (<a class="ltx_ref" href="#bib.bib40" title="">2022</a>)</cite> for gender debiasing, and INLP <cite class="ltx_cite ltx_citemacro_cite">Ravfogel et al. (<a class="ltx_ref" href="#bib.bib39" title="">2020</a>)</cite> expanded to multiple features for morphological features removal. We evaluate the success of these methods with standard linear probes, as well as with suitable indicator tasks: Word Embedding Association Test (WEAT, <cite class="ltx_cite ltx_citemacro_citep">Caliskan et al., <a class="ltx_ref" href="#bib.bib8" title="">2017</a></cite>) and KNN-bias correlation <cite class="ltx_cite ltx_citemacro_cite">Gonen and Goldberg (<a class="ltx_ref" href="#bib.bib17" title="">2019</a>)</cite> for gender debiasing, and for morphological information removal we present a novel Double Edged Outlier Detection (DEOD) that indicates on both morphological and lexical semantic information. All representations are obtained from contextualized BERT models <cite class="ltx_cite ltx_citemacro_cite">Devlin et al. (<a class="ltx_ref" href="#bib.bib14" title="">2018</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S1.p7">
+<p class="ltx_p" id="S1.p7.1">The results in both test cases, despite their dissimilarities, point to the same direction. They
+show that the conclusions pointed to by the indicators are contradictory to those obtained from the probes. When removing gender bias from the representations we found probes to report complete erasure of the bias while our indicators still manage to pick it up from the vectors. In the second test case, we compared two possible extensions of INLP and found that probes point to one extension possibility as superior, while the indicator points to the other,
+not only by indicating the removal of the morphological properties, but also by examining the overlapping dimension of semantics.</p>
+</div>
+<div class="ltx_para" id="S1.p8">
+<p class="ltx_p" id="S1.p8.1">We therefore conclude that when eliciting linguistic information from embedded spaces, results from indicator tasks should be presented alongside standard probes,
+and results from probes should not be overstated.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Background: The Probing Conundrum</h2>
+<div class="ltx_para" id="S2.p1">
+<p class="ltx_p" id="S2.p1.1">The question of evaluating linguistic properties in dense word representations has been a long standing one, entering alongside the introduction of static word embeddings <cite class="ltx_cite ltx_citemacro_cite">Mikolov et al. (<a class="ltx_ref" href="#bib.bib31" title="">2013</a>)</cite>.
+Nowadays, probing tasks are generally accepted as the primary method for querying linguistic information in dense vectors.
+A <span class="ltx_text ltx_font_italic" id="S2.p1.1.1">probe</span> is a classifier designed to elicit a property of interest directly from the representation <cite class="ltx_cite ltx_citemacro_cite">Adi et al. (<a class="ltx_ref" href="#bib.bib1" title="">2016</a>); Alain and Bengio (<a class="ltx_ref" href="#bib.bib2" title="">2017</a>)</cite>. Their simplicity and speed are appealing as opposed to the alternative of comparing performance over downstream tasks. However, researchers are yet to reach a consensus regarding several problems with probes <cite class="ltx_cite ltx_citemacro_cite">Immer et al. (<a class="ltx_ref" href="#bib.bib24" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S2.p2">
+<p class="ltx_p" id="S2.p2.1">Many issues with probes are derived from their usage of linear or neural models.
+Most prominently are the two interleaved problems of classifier and task selection. It is well received that a probing <span class="ltx_text ltx_font_italic" id="S2.p2.1.1">classifier</span> should be simple <cite class="ltx_cite ltx_citemacro_cite">Liu et al. (<a class="ltx_ref" href="#bib.bib28" title="">2019a</a>)</cite>, since as <cite class="ltx_cite ltx_citemacro_citet">Hewitt and Liang (<a class="ltx_ref" href="#bib.bib20" title="">2019</a>)</cite> stressed, with enough training data, a sufficiently expressive probe could solve any task regardless of the representations. On the other hand, <cite class="ltx_cite ltx_citemacro_citet">Pimentel et al. (<a class="ltx_ref" href="#bib.bib37" title="">2020a</a>)</cite> have shown that simple tasks are not informative enough when applied to contextual representations. Thus a probing <span class="ltx_text ltx_font_italic" id="S2.p2.1.2">task</span> should not be simplistic.
+However, researchers found that complex tasks often require a complex <span class="ltx_text ltx_font_italic" id="S2.p2.1.3">classifier</span> <cite class="ltx_cite ltx_citemacro_cite">Belinkov and Glass (<a class="ltx_ref" href="#bib.bib5" title="">2019</a>)</cite>, which are not recommended, as mentioned above.</p>
+</div>
+<div class="ltx_para" id="S2.p3">
+<p class="ltx_p" id="S2.p3.1">We are thus led to a three-way trade off between the complexity of the task, the complexity of the classifier, and the efficacy
+of the probe. Given that simple models do not fare well on complex tasks, we cannot prefer a simple probing model and a complex task simultaneously. However, opting for either a more complex model or a simpler task would limit the reliability and quality of information
+given by the probe on the existence of a property in the embedded space.</p>
+</div>
+<div class="ltx_para" id="S2.p4">
+<p class="ltx_p" id="S2.p4.1">Previous works suggested various solutions to mend these problems. <cite class="ltx_cite ltx_citemacro_citet">Hewitt and Liang (<a class="ltx_ref" href="#bib.bib20" title="">2019</a>)</cite> suggested to examine probes on control tasks, in which labels are distributed randomly, in addition to testing the probes on the desired task. Probes are then considered successful only if they perform well on the target task while failing on the control task.
+Alternatively, <cite class="ltx_cite ltx_citemacro_citet">Elazar et al. (<a class="ltx_ref" href="#bib.bib15" title="">2021</a>)</cite> suggested amnesic probing,
+in which a probe is considered successful only if it is possible to erase the information from the representations and make the same probe fail.
+The problem with these methods is that they take a process with complex problems and only complicate the process further, making it even harder to determine what in the results of a given probe is ascribable to representations, to the probe, or to the suggested new mechanism.</p>
+</div>
+<div class="ltx_para" id="S2.p5">
+<p class="ltx_p" id="S2.p5.1">Another line of works suggested amending the output of the probing process itself by adding description length <cite class="ltx_cite ltx_citemacro_cite">Voita and Titov (<a class="ltx_ref" href="#bib.bib41" title="">2020</a>)</cite>, mutual information <cite class="ltx_cite ltx_citemacro_cite">Pimentel et al. (<a class="ltx_ref" href="#bib.bib38" title="">2020b</a>)</cite> or Pareto hypervolume <cite class="ltx_cite ltx_citemacro_cite">Pimentel et al. (<a class="ltx_ref" href="#bib.bib37" title="">2020a</a>)</cite> to provide an indication on the <span class="ltx_text ltx_font_italic" id="S2.p5.1.1">ease of extraction</span> of properties rather than on their existence. These methods, while useful, embrace the aforementioned trade off and relinquish the attempt of solving it. We, on the other hand, advocate for a completely different approach that bypasses the entire debate.</p>
+</div>
+<div class="ltx_para" id="S2.p6">
+<p class="ltx_p" id="S2.p6.1">In general, the probing conundrum seems to stem from the presence of a train set which
+makes it unclear whether the probe employs artifacts in the training data to solve the task or evaluates the encoded information itself. Therefore an alternative that does not require a training set and a trainable model is warranted.</p>
+</div>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>Introducing: Indicators</h2>
+<div class="ltx_para" id="S3.p1">
+<p class="ltx_p" id="S3.p1.1">As a result of these various issues with probing, previous works had suggested to elicit linguistic properties from embedding spaces without the involvement of a trainable auxiliary model. These studies mostly relied on the similarity between vectors, either between the representations themselves <cite class="ltx_cite ltx_citemacro_cite">Wu et al. (<a class="ltx_ref" href="#bib.bib43" title="">2020</a>)</cite> or between attention weights <cite class="ltx_cite ltx_citemacro_cite">Htut et al. (<a class="ltx_ref" href="#bib.bib23" title="">2019</a>)</cite>. In addition, clustering was also taken as a possible task derived from vectors alone <cite class="ltx_cite ltx_citemacro_cite">Zhou and Srikumar (<a class="ltx_ref" href="#bib.bib47" title="">2021</a>)</cite>.
+Here we propose to refer to the different kinds of such tasks with the umbrella term <span class="ltx_text ltx_font_italic" id="S3.p1.1.1">indicator tasks</span>, as they indicate the presence or absence of a property in the representation without any intervention or entanglement of the task itself with the vectors it is supposed to study.</p>
+</div>
+<div class="ltx_para" id="S3.p2">
+<p class="ltx_p" id="S3.p2.1">By virtue of not involving a trainable classifier, indicators cancel out many of the arguments against probes.
+The tasks can be complex but still fast to devise and cheap to implement and run, without a risk of over-fitting the training data — as there is none. Most importantly, there is no other model that interjects, ascribing the performance directly to the embedded representations, where the task is essentially performed in a zero-shot setting.
+All it takes is to design or select the indicator that suits your needs.
+In a sense, indicators can be perceived as a resurgence of intrinsic evaluation methods that were popular with static representations. These methods were typically formulated as word similarity tasks, either explicitly <cite class="ltx_cite ltx_citemacro_cite">(Hill et al., <a class="ltx_ref" href="#bib.bib22" title="">2015</a>, inter alia)</cite> or implicitly <cite class="ltx_cite ltx_citemacro_cite">Levy and Goldberg (<a class="ltx_ref" href="#bib.bib27" title="">2014</a>)</cite>. Thus, in order to formulate the indicators in our case studies we draw inspiration from such tasks.</p>
+</div>
+<div class="ltx_para" id="S3.p3">
+<p class="ltx_p" id="S3.p3.1">The advantages of indicators have led to their use in various works, usually to complement the picture painted by standard probes. For example, <cite class="ltx_cite ltx_citemacro_citet">Zhou and Srikumar (<a class="ltx_ref" href="#bib.bib48" title="">2022</a>)</cite> used “DirectProbe” <cite class="ltx_cite ltx_citemacro_cite">Zhou and Srikumar (<a class="ltx_ref" href="#bib.bib47" title="">2021</a>)</cite> as an indicator in addition to a 2-layered non-linear classifier to reinforce and explain their conclusion that fine-tuning BERT does not always improve performance.
+Similarly, <cite class="ltx_cite ltx_citemacro_citet">Merchant et al. (<a class="ltx_ref" href="#bib.bib30" title="">2020</a>)</cite> used an MLP-based probe in addition to an indicator named “structural probe” <cite class="ltx_cite ltx_citemacro_cite">Hewitt and Manning (<a class="ltx_ref" href="#bib.bib21" title="">2019</a>)</cite> to show that after fine-tuning, word representations keep the linguistic structure they learn during pre-training. They completed the picture by showing with the indicator task of representational similarity analysis <cite class="ltx_cite ltx_citemacro_cite">Kriegeskorte et al. (<a class="ltx_ref" href="#bib.bib26" title="">2008</a>)</cite> that fine-tuning affects the top layers more than the bottom layers.
+Lastly, the work presenting the concept erasure method RLACE <cite class="ltx_cite ltx_citemacro_citet">Ravfogel et al. (<a class="ltx_ref" href="#bib.bib40" title="">2022</a>)</cite>, used in our first test case below, demonstrated its effectiveness by utilizing both probes and indicators.</p>
+</div>
+<div class="ltx_para" id="S3.p4">
+<p class="ltx_p" id="S3.p4.1">Here we demonstrate that despite having a shared goal, i.e., querying information from dense representations, probes and indicators may result in contradicting conclusions. The implication of such disharmonious results is that if we want a fuller picture of the information existing in the representations, probing results must be accompanied with those obtained by indicators.</p>
+</div>
+<div class="ltx_para" id="S3.p5">
+<p class="ltx_p" id="S3.p5.1">As will be demonstrated in the test cases below, the specific modus operandi of trainable probes makes them less likely to detect signals that exist in the embedding space but deviate from the pattern they were made to spot. We will demonstrate that by pitting linear probes, that were selected due to their simplicity in accordance with the issues laid out in the previous section, against simple similarly-based indicators.
+We will show that this difference is
+significant enough to make indicator tasks detect gender bias and morphological information that are undetectable by a probe.</p>
+</div>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Concept Erasure</h2>
+<div class="ltx_para" id="S4.p1">
+<p class="ltx_p" id="S4.p1.5">Concept erasure methods are aimed at removing information from word representations.
+Formally, their objective is, given a set of word representations <math alttext="X=\{x_{1},...x_{n}\in\mathbb{R}^{d}\}" class="ltx_Math" display="inline" id="S4.p1.1.m1.1"><semantics id="S4.p1.1.m1.1a"><mrow id="S4.p1.1.m1.1.1" xref="S4.p1.1.m1.1.1.cmml"><mi id="S4.p1.1.m1.1.1.3" xref="S4.p1.1.m1.1.1.3.cmml">X</mi><mo id="S4.p1.1.m1.1.1.2" xref="S4.p1.1.m1.1.1.2.cmml">=</mo><mrow id="S4.p1.1.m1.1.1.1.1" xref="S4.p1.1.m1.1.1.1.2.cmml"><mo id="S4.p1.1.m1.1.1.1.1.2" stretchy="false" xref="S4.p1.1.m1.1.1.1.2.cmml">{</mo><mrow id="S4.p1.1.m1.1.1.1.1.1" xref="S4.p1.1.m1.1.1.1.1.1.cmml"><mrow id="S4.p1.1.m1.1.1.1.1.1.2.2" xref="S4.p1.1.m1.1.1.1.1.1.2.3.cmml"><msub id="S4.p1.1.m1.1.1.1.1.1.1.1.1" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1.cmml"><mi id="S4.p1.1.m1.1.1.1.1.1.1.1.1.2" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1.2.cmml">x</mi><mn id="S4.p1.1.m1.1.1.1.1.1.1.1.1.3" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1.3.cmml">1</mn></msub><mo id="S4.p1.1.m1.1.1.1.1.1.2.2.3" xref="S4.p1.1.m1.1.1.1.1.1.2.3.cmml">,</mo><mrow id="S4.p1.1.m1.1.1.1.1.1.2.2.2" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.cmml"><mi id="S4.p1.1.m1.1.1.1.1.1.2.2.2.2" mathvariant="normal" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.2.cmml">…</mi><mo id="S4.p1.1.m1.1.1.1.1.1.2.2.2.1" lspace="0em" rspace="0em" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.1.cmml">​</mo><msub id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.cmml"><mi id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.2" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.2.cmml">x</mi><mi id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.3" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.3.cmml">n</mi></msub></mrow></mrow><mo id="S4.p1.1.m1.1.1.1.1.1.3" xref="S4.p1.1.m1.1.1.1.1.1.3.cmml">∈</mo><msup id="S4.p1.1.m1.1.1.1.1.1.4" xref="S4.p1.1.m1.1.1.1.1.1.4.cmml"><mi id="S4.p1.1.m1.1.1.1.1.1.4.2" xref="S4.p1.1.m1.1.1.1.1.1.4.2.cmml">ℝ</mi><mi id="S4.p1.1.m1.1.1.1.1.1.4.3" xref="S4.p1.1.m1.1.1.1.1.1.4.3.cmml">d</mi></msup></mrow><mo id="S4.p1.1.m1.1.1.1.1.3" stretchy="false" xref="S4.p1.1.m1.1.1.1.2.cmml">}</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.p1.1.m1.1b"><apply id="S4.p1.1.m1.1.1.cmml" xref="S4.p1.1.m1.1.1"><eq id="S4.p1.1.m1.1.1.2.cmml" xref="S4.p1.1.m1.1.1.2"></eq><ci id="S4.p1.1.m1.1.1.3.cmml" xref="S4.p1.1.m1.1.1.3">𝑋</ci><set id="S4.p1.1.m1.1.1.1.2.cmml" xref="S4.p1.1.m1.1.1.1.1"><apply id="S4.p1.1.m1.1.1.1.1.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1"><in id="S4.p1.1.m1.1.1.1.1.1.3.cmml" xref="S4.p1.1.m1.1.1.1.1.1.3"></in><list id="S4.p1.1.m1.1.1.1.1.1.2.3.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2"><apply id="S4.p1.1.m1.1.1.1.1.1.1.1.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1"><csymbol cd="ambiguous" id="S4.p1.1.m1.1.1.1.1.1.1.1.1.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1">subscript</csymbol><ci id="S4.p1.1.m1.1.1.1.1.1.1.1.1.2.cmml" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1.2">𝑥</ci><cn id="S4.p1.1.m1.1.1.1.1.1.1.1.1.3.cmml" type="integer" xref="S4.p1.1.m1.1.1.1.1.1.1.1.1.3">1</cn></apply><apply id="S4.p1.1.m1.1.1.1.1.1.2.2.2.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2"><times id="S4.p1.1.m1.1.1.1.1.1.2.2.2.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.1"></times><ci id="S4.p1.1.m1.1.1.1.1.1.2.2.2.2.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.2">…</ci><apply id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3"><csymbol cd="ambiguous" id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3">subscript</csymbol><ci id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.2.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.2">𝑥</ci><ci id="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.3.cmml" xref="S4.p1.1.m1.1.1.1.1.1.2.2.2.3.3">𝑛</ci></apply></apply></list><apply id="S4.p1.1.m1.1.1.1.1.1.4.cmml" xref="S4.p1.1.m1.1.1.1.1.1.4"><csymbol cd="ambiguous" id="S4.p1.1.m1.1.1.1.1.1.4.1.cmml" xref="S4.p1.1.m1.1.1.1.1.1.4">superscript</csymbol><ci id="S4.p1.1.m1.1.1.1.1.1.4.2.cmml" xref="S4.p1.1.m1.1.1.1.1.1.4.2">ℝ</ci><ci id="S4.p1.1.m1.1.1.1.1.1.4.3.cmml" xref="S4.p1.1.m1.1.1.1.1.1.4.3">𝑑</ci></apply></apply></set></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.1.m1.1c">X=\{x_{1},...x_{n}\in\mathbb{R}^{d}\}</annotation></semantics></math> and a corresponding property distributed over words <math alttext="P=\{p_{1},...p_{n}\}" class="ltx_Math" display="inline" id="S4.p1.2.m2.2"><semantics id="S4.p1.2.m2.2a"><mrow id="S4.p1.2.m2.2.2" xref="S4.p1.2.m2.2.2.cmml"><mi id="S4.p1.2.m2.2.2.4" xref="S4.p1.2.m2.2.2.4.cmml">P</mi><mo id="S4.p1.2.m2.2.2.3" xref="S4.p1.2.m2.2.2.3.cmml">=</mo><mrow id="S4.p1.2.m2.2.2.2.2" xref="S4.p1.2.m2.2.2.2.3.cmml"><mo id="S4.p1.2.m2.2.2.2.2.3" stretchy="false" xref="S4.p1.2.m2.2.2.2.3.cmml">{</mo><msub id="S4.p1.2.m2.1.1.1.1.1" xref="S4.p1.2.m2.1.1.1.1.1.cmml"><mi id="S4.p1.2.m2.1.1.1.1.1.2" xref="S4.p1.2.m2.1.1.1.1.1.2.cmml">p</mi><mn id="S4.p1.2.m2.1.1.1.1.1.3" xref="S4.p1.2.m2.1.1.1.1.1.3.cmml">1</mn></msub><mo id="S4.p1.2.m2.2.2.2.2.4" xref="S4.p1.2.m2.2.2.2.3.cmml">,</mo><mrow id="S4.p1.2.m2.2.2.2.2.2" xref="S4.p1.2.m2.2.2.2.2.2.cmml"><mi id="S4.p1.2.m2.2.2.2.2.2.2" mathvariant="normal" xref="S4.p1.2.m2.2.2.2.2.2.2.cmml">…</mi><mo id="S4.p1.2.m2.2.2.2.2.2.1" lspace="0em" rspace="0em" xref="S4.p1.2.m2.2.2.2.2.2.1.cmml">​</mo><msub id="S4.p1.2.m2.2.2.2.2.2.3" xref="S4.p1.2.m2.2.2.2.2.2.3.cmml"><mi id="S4.p1.2.m2.2.2.2.2.2.3.2" xref="S4.p1.2.m2.2.2.2.2.2.3.2.cmml">p</mi><mi id="S4.p1.2.m2.2.2.2.2.2.3.3" xref="S4.p1.2.m2.2.2.2.2.2.3.3.cmml">n</mi></msub></mrow><mo id="S4.p1.2.m2.2.2.2.2.5" stretchy="false" xref="S4.p1.2.m2.2.2.2.3.cmml">}</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.p1.2.m2.2b"><apply id="S4.p1.2.m2.2.2.cmml" xref="S4.p1.2.m2.2.2"><eq id="S4.p1.2.m2.2.2.3.cmml" xref="S4.p1.2.m2.2.2.3"></eq><ci id="S4.p1.2.m2.2.2.4.cmml" xref="S4.p1.2.m2.2.2.4">𝑃</ci><set id="S4.p1.2.m2.2.2.2.3.cmml" xref="S4.p1.2.m2.2.2.2.2"><apply id="S4.p1.2.m2.1.1.1.1.1.cmml" xref="S4.p1.2.m2.1.1.1.1.1"><csymbol cd="ambiguous" id="S4.p1.2.m2.1.1.1.1.1.1.cmml" xref="S4.p1.2.m2.1.1.1.1.1">subscript</csymbol><ci id="S4.p1.2.m2.1.1.1.1.1.2.cmml" xref="S4.p1.2.m2.1.1.1.1.1.2">𝑝</ci><cn id="S4.p1.2.m2.1.1.1.1.1.3.cmml" type="integer" xref="S4.p1.2.m2.1.1.1.1.1.3">1</cn></apply><apply id="S4.p1.2.m2.2.2.2.2.2.cmml" xref="S4.p1.2.m2.2.2.2.2.2"><times id="S4.p1.2.m2.2.2.2.2.2.1.cmml" xref="S4.p1.2.m2.2.2.2.2.2.1"></times><ci id="S4.p1.2.m2.2.2.2.2.2.2.cmml" xref="S4.p1.2.m2.2.2.2.2.2.2">…</ci><apply id="S4.p1.2.m2.2.2.2.2.2.3.cmml" xref="S4.p1.2.m2.2.2.2.2.2.3"><csymbol cd="ambiguous" id="S4.p1.2.m2.2.2.2.2.2.3.1.cmml" xref="S4.p1.2.m2.2.2.2.2.2.3">subscript</csymbol><ci id="S4.p1.2.m2.2.2.2.2.2.3.2.cmml" xref="S4.p1.2.m2.2.2.2.2.2.3.2">𝑝</ci><ci id="S4.p1.2.m2.2.2.2.2.2.3.3.cmml" xref="S4.p1.2.m2.2.2.2.2.2.3.3">𝑛</ci></apply></apply></set></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.2.m2.2c">P=\{p_{1},...p_{n}\}</annotation></semantics></math>, to learn a function <math alttext="r(\cdot)" class="ltx_Math" display="inline" id="S4.p1.3.m3.1"><semantics id="S4.p1.3.m3.1a"><mrow id="S4.p1.3.m3.1.2" xref="S4.p1.3.m3.1.2.cmml"><mi id="S4.p1.3.m3.1.2.2" xref="S4.p1.3.m3.1.2.2.cmml">r</mi><mo id="S4.p1.3.m3.1.2.1" lspace="0em" rspace="0em" xref="S4.p1.3.m3.1.2.1.cmml">​</mo><mrow id="S4.p1.3.m3.1.2.3.2" xref="S4.p1.3.m3.1.2.cmml"><mo id="S4.p1.3.m3.1.2.3.2.1" stretchy="false" xref="S4.p1.3.m3.1.2.cmml">(</mo><mo id="S4.p1.3.m3.1.1" lspace="0em" rspace="0em" xref="S4.p1.3.m3.1.1.cmml">⋅</mo><mo id="S4.p1.3.m3.1.2.3.2.2" stretchy="false" xref="S4.p1.3.m3.1.2.cmml">)</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.p1.3.m3.1b"><apply id="S4.p1.3.m3.1.2.cmml" xref="S4.p1.3.m3.1.2"><times id="S4.p1.3.m3.1.2.1.cmml" xref="S4.p1.3.m3.1.2.1"></times><ci id="S4.p1.3.m3.1.2.2.cmml" xref="S4.p1.3.m3.1.2.2">𝑟</ci><ci id="S4.p1.3.m3.1.1.cmml" xref="S4.p1.3.m3.1.1">⋅</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.3.m3.1c">r(\cdot)</annotation></semantics></math> such that <math alttext="r(X)=\{r(x_{1}),...r(x_{n})\}" class="ltx_Math" display="inline" id="S4.p1.4.m4.3"><semantics id="S4.p1.4.m4.3a"><mrow id="S4.p1.4.m4.3.3" xref="S4.p1.4.m4.3.3.cmml"><mrow id="S4.p1.4.m4.3.3.4" xref="S4.p1.4.m4.3.3.4.cmml"><mi id="S4.p1.4.m4.3.3.4.2" xref="S4.p1.4.m4.3.3.4.2.cmml">r</mi><mo id="S4.p1.4.m4.3.3.4.1" lspace="0em" rspace="0em" xref="S4.p1.4.m4.3.3.4.1.cmml">​</mo><mrow id="S4.p1.4.m4.3.3.4.3.2" xref="S4.p1.4.m4.3.3.4.cmml"><mo id="S4.p1.4.m4.3.3.4.3.2.1" stretchy="false" xref="S4.p1.4.m4.3.3.4.cmml">(</mo><mi id="S4.p1.4.m4.1.1" xref="S4.p1.4.m4.1.1.cmml">X</mi><mo id="S4.p1.4.m4.3.3.4.3.2.2" stretchy="false" xref="S4.p1.4.m4.3.3.4.cmml">)</mo></mrow></mrow><mo id="S4.p1.4.m4.3.3.3" xref="S4.p1.4.m4.3.3.3.cmml">=</mo><mrow id="S4.p1.4.m4.3.3.2.2" xref="S4.p1.4.m4.3.3.2.3.cmml"><mo id="S4.p1.4.m4.3.3.2.2.3" stretchy="false" xref="S4.p1.4.m4.3.3.2.3.cmml">{</mo><mrow id="S4.p1.4.m4.2.2.1.1.1" xref="S4.p1.4.m4.2.2.1.1.1.cmml"><mi id="S4.p1.4.m4.2.2.1.1.1.3" xref="S4.p1.4.m4.2.2.1.1.1.3.cmml">r</mi><mo id="S4.p1.4.m4.2.2.1.1.1.2" lspace="0em" rspace="0em" xref="S4.p1.4.m4.2.2.1.1.1.2.cmml">​</mo><mrow id="S4.p1.4.m4.2.2.1.1.1.1.1" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.cmml"><mo id="S4.p1.4.m4.2.2.1.1.1.1.1.2" stretchy="false" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.cmml">(</mo><msub id="S4.p1.4.m4.2.2.1.1.1.1.1.1" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.cmml"><mi id="S4.p1.4.m4.2.2.1.1.1.1.1.1.2" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.2.cmml">x</mi><mn id="S4.p1.4.m4.2.2.1.1.1.1.1.1.3" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.3.cmml">1</mn></msub><mo id="S4.p1.4.m4.2.2.1.1.1.1.1.3" stretchy="false" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.cmml">)</mo></mrow></mrow><mo id="S4.p1.4.m4.3.3.2.2.4" xref="S4.p1.4.m4.3.3.2.3.cmml">,</mo><mrow id="S4.p1.4.m4.3.3.2.2.2" xref="S4.p1.4.m4.3.3.2.2.2.cmml"><mi id="S4.p1.4.m4.3.3.2.2.2.3" mathvariant="normal" xref="S4.p1.4.m4.3.3.2.2.2.3.cmml">…</mi><mo id="S4.p1.4.m4.3.3.2.2.2.2" lspace="0em" rspace="0em" xref="S4.p1.4.m4.3.3.2.2.2.2.cmml">​</mo><mi id="S4.p1.4.m4.3.3.2.2.2.4" xref="S4.p1.4.m4.3.3.2.2.2.4.cmml">r</mi><mo id="S4.p1.4.m4.3.3.2.2.2.2a" lspace="0em" rspace="0em" xref="S4.p1.4.m4.3.3.2.2.2.2.cmml">​</mo><mrow id="S4.p1.4.m4.3.3.2.2.2.1.1" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.cmml"><mo id="S4.p1.4.m4.3.3.2.2.2.1.1.2" stretchy="false" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.cmml">(</mo><msub id="S4.p1.4.m4.3.3.2.2.2.1.1.1" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.cmml"><mi id="S4.p1.4.m4.3.3.2.2.2.1.1.1.2" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.2.cmml">x</mi><mi id="S4.p1.4.m4.3.3.2.2.2.1.1.1.3" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.3.cmml">n</mi></msub><mo id="S4.p1.4.m4.3.3.2.2.2.1.1.3" stretchy="false" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.cmml">)</mo></mrow></mrow><mo id="S4.p1.4.m4.3.3.2.2.5" stretchy="false" xref="S4.p1.4.m4.3.3.2.3.cmml">}</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S4.p1.4.m4.3b"><apply id="S4.p1.4.m4.3.3.cmml" xref="S4.p1.4.m4.3.3"><eq id="S4.p1.4.m4.3.3.3.cmml" xref="S4.p1.4.m4.3.3.3"></eq><apply id="S4.p1.4.m4.3.3.4.cmml" xref="S4.p1.4.m4.3.3.4"><times id="S4.p1.4.m4.3.3.4.1.cmml" xref="S4.p1.4.m4.3.3.4.1"></times><ci id="S4.p1.4.m4.3.3.4.2.cmml" xref="S4.p1.4.m4.3.3.4.2">𝑟</ci><ci id="S4.p1.4.m4.1.1.cmml" xref="S4.p1.4.m4.1.1">𝑋</ci></apply><set id="S4.p1.4.m4.3.3.2.3.cmml" xref="S4.p1.4.m4.3.3.2.2"><apply id="S4.p1.4.m4.2.2.1.1.1.cmml" xref="S4.p1.4.m4.2.2.1.1.1"><times id="S4.p1.4.m4.2.2.1.1.1.2.cmml" xref="S4.p1.4.m4.2.2.1.1.1.2"></times><ci id="S4.p1.4.m4.2.2.1.1.1.3.cmml" xref="S4.p1.4.m4.2.2.1.1.1.3">𝑟</ci><apply id="S4.p1.4.m4.2.2.1.1.1.1.1.1.cmml" xref="S4.p1.4.m4.2.2.1.1.1.1.1"><csymbol cd="ambiguous" id="S4.p1.4.m4.2.2.1.1.1.1.1.1.1.cmml" xref="S4.p1.4.m4.2.2.1.1.1.1.1">subscript</csymbol><ci id="S4.p1.4.m4.2.2.1.1.1.1.1.1.2.cmml" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.2">𝑥</ci><cn id="S4.p1.4.m4.2.2.1.1.1.1.1.1.3.cmml" type="integer" xref="S4.p1.4.m4.2.2.1.1.1.1.1.1.3">1</cn></apply></apply><apply id="S4.p1.4.m4.3.3.2.2.2.cmml" xref="S4.p1.4.m4.3.3.2.2.2"><times id="S4.p1.4.m4.3.3.2.2.2.2.cmml" xref="S4.p1.4.m4.3.3.2.2.2.2"></times><ci id="S4.p1.4.m4.3.3.2.2.2.3.cmml" xref="S4.p1.4.m4.3.3.2.2.2.3">…</ci><ci id="S4.p1.4.m4.3.3.2.2.2.4.cmml" xref="S4.p1.4.m4.3.3.2.2.2.4">𝑟</ci><apply id="S4.p1.4.m4.3.3.2.2.2.1.1.1.cmml" xref="S4.p1.4.m4.3.3.2.2.2.1.1"><csymbol cd="ambiguous" id="S4.p1.4.m4.3.3.2.2.2.1.1.1.1.cmml" xref="S4.p1.4.m4.3.3.2.2.2.1.1">subscript</csymbol><ci id="S4.p1.4.m4.3.3.2.2.2.1.1.1.2.cmml" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.2">𝑥</ci><ci id="S4.p1.4.m4.3.3.2.2.2.1.1.1.3.cmml" xref="S4.p1.4.m4.3.3.2.2.2.1.1.1.3">𝑛</ci></apply></apply></set></apply></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.4.m4.3c">r(X)=\{r(x_{1}),...r(x_{n})\}</annotation></semantics></math> are not predicative of <math alttext="P" class="ltx_Math" display="inline" id="S4.p1.5.m5.1"><semantics id="S4.p1.5.m5.1a"><mi id="S4.p1.5.m5.1.1" xref="S4.p1.5.m5.1.1.cmml">P</mi><annotation-xml encoding="MathML-Content" id="S4.p1.5.m5.1b"><ci id="S4.p1.5.m5.1.1.cmml" xref="S4.p1.5.m5.1.1">𝑃</ci></annotation-xml><annotation encoding="application/x-tex" id="S4.p1.5.m5.1c">P</annotation></semantics></math>, but preserve as much information as possible from <span class="ltx_text ltx_font_italic" id="S4.p1.5.1">X</span> <cite class="ltx_cite ltx_citemacro_cite">Ravfogel et al. (<a class="ltx_ref" href="#bib.bib40" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S4.p2">
+<p class="ltx_p" id="S4.p2.1">However, there is no consensus on how to evaluate the success of the erasure procedure. The evaluation methods presented in previous works usually rely specifically on the nature of the erasure method and the nature of the target property. In addition, timely field tendencies or “trends" are also influential, with earlier works devising intrinsic evaluation methods <cite class="ltx_cite ltx_citemacro_cite">Bolukbasi et al. (<a class="ltx_ref" href="#bib.bib7" title="">2016</a>); Zhao et al. (<a class="ltx_ref" href="#bib.bib46" title="">2018</a>); Gonen and Goldberg (<a class="ltx_ref" href="#bib.bib17" title="">2019</a>)</cite> and more recent works utilizing probes <cite class="ltx_cite ltx_citemacro_cite">Ravfogel et al. (<a class="ltx_ref" href="#bib.bib39" title="">2020</a>, <a class="ltx_ref" href="#bib.bib40" title="">2022</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="S4.p3">
+<p class="ltx_p" id="S4.p3.1">Our case studies, presented in detail in the following sections, systematically compare both evaluation methodologies, with an added effort of adjusting the former to <span class="ltx_text ltx_font_italic" id="S4.p3.1.1">contextualized</span> embeddings. Each of these test cases involves a different erasure method, a different property to be erased, and, to evaluate the success of the erasure method, different indicator(s) in addition to probes. Common to both cases is the contradicting conclusions drawn from evaluating the erasure method with probes compared to its evaluation with indicators.</p>
+</div>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Case Study 1: Gender Debiasing</h2>
+<div class="ltx_para" id="S5.p1">
+<p class="ltx_p" id="S5.p1.1">Of all unwanted social biases in word representations <cite class="ltx_cite ltx_citemacro_citep">(e.g, Nadeem et al., <a class="ltx_ref" href="#bib.bib32" title="">2021</a>)</cite>, gender bias is the most researched both as an end goal in and of itself, and as a test case for information removal. We adopt gender debiasing as a simple test case of removing a binary unwanted property from word representations, and we examine the efficacy of a recent state-of-the-art concept erasure method on contextualized embeddings.</p>
+</div>
+<section class="ltx_subsection" id="S5.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>RLACE</h3>
+<div class="ltx_para" id="S5.SS1.p1">
+<p class="ltx_p" id="S5.SS1.p1.1">Relaxed Linear Adversarial Concept Erasure (RLACE, <cite class="ltx_cite ltx_citemacro_citep">Ravfogel et al., <a class="ltx_ref" href="#bib.bib40" title="">2022</a></cite>) is a post hoc adversarial method for removing a single binary property from an embedding space. Unlike other adversarial methods that incorporate changes to the model during training, this method operates on the embedded vectors after the training is complete. It aims to identify a linear subspace from the representation and remove it, by solving a linear minimax game and projecting the vectors using the resulted matrix.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S5.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.2 </span>Experiments</h3>
+<div class="ltx_para" id="S5.SS2.p1">
+<p class="ltx_p" id="S5.SS2.p1.1">We assess the success of RLACE in removing gender bias from representations obtained from BERT <cite class="ltx_cite ltx_citemacro_cite">Devlin et al. (<a class="ltx_ref" href="#bib.bib14" title="">2018</a>)</cite>.<span class="ltx_note ltx_role_footnote" id="footnote1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_tag ltx_tag_note">1</span>We used HuggingFace implemented bert-base-uncased <cite class="ltx_cite ltx_citemacro_citep">(Wolf et al., <a class="ltx_ref" href="#bib.bib42" title="">2020</a>)</cite>.</span></span></span> We use a standard probe to classify words as masculine or feminine, and compare it to indicators from <cite class="ltx_cite ltx_citemacro_citet">Gonen and Goldberg (<a class="ltx_ref" href="#bib.bib17" title="">2019</a>)</cite> that are used to identify bias, and that were originally executed over non-contextualized embeddings.</p>
+</div>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Data</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px1.p1.1">To create the contextualized vocabulary we used GUM <cite class="ltx_cite ltx_citemacro_cite">Zeldes (<a class="ltx_ref" href="#bib.bib44" title="">2017</a>)</cite>, an English universal dependencies dataset <cite class="ltx_cite ltx_citemacro_cite">Nivre et al. (<a class="ltx_ref" href="#bib.bib34" title="">2020</a>)</cite>. Note that every word has several representations, each for every context. As is customary in gender bias works, we excluded from the vocabulary words that are explicitly gendered, such as <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px1.p1.1.1">man, queen</span> and the like, in order to examine only <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px1.p1.1.2">unjustified</span> gender bias.<span class="ltx_note ltx_role_footnote" id="footnote2"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup><span class="ltx_tag ltx_tag_note">2</span>In addition, we excluded sentences in which at least one word is explicitly gendered, since, in the contextualized embedding case, other words in a sentence could legitimately inherit gender-related properties from these gendered neighboring words. </span></span></span></p>
+</div>
+<figure class="ltx_figure" id="S5.F1">
+<p class="ltx_p ltx_align_center" id="S5.F1.1"><span class="ltx_text ltx_font_bold" id="S5.F1.1.1">Examples for male biased words
+<br class="ltx_break"/></span>successful,   general,   earned,   president,
+<br class="ltx_break"/>politician,   engineer,   captain,   fatal
+
+<br class="ltx_break"/><span class="ltx_text ltx_font_bold" id="S5.F1.1.2">Examples for female biased words
+<br class="ltx_break"/></span>aesthetic,   looks,   singer,   lipstick,   pink, 
+<br class="ltx_break"/>smiled,   skirts,   pretty</p>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>
+Examples from the 100 most biased words in the unperturbed embedding space induced by BERT. </figcaption>
+</figure>
+</section>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Tagging biased words</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px2.p1.2">In order to apply the indicator tasks, presented below, we first need to tag a set of words that are gender biased in the unperturbed space. Following <cite class="ltx_cite ltx_citemacro_citet">Bolukbasi et al. (<a class="ltx_ref" href="#bib.bib7" title="">2016</a>)</cite>, we tag words as gender biased if their vectors are similar to those of explicitly gendered words. In practice, this is done by projecting the vectors of all non-explicitly-gendered words onto a <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.2.1">“gender direction”</span>, calculated by a 1D-PCA on a sub space spanned by the difference vectors of several gendered word pairs, e.g., <math alttext="\vec{she}-\vec{he}" class="ltx_Math" display="inline" id="S5.SS2.SSS0.Px2.p1.1.m1.1"><semantics id="S5.SS2.SSS0.Px2.p1.1.m1.1a"><mrow id="S5.SS2.SSS0.Px2.p1.1.m1.1.1" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.cmml"><mover accent="true" id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.cmml"><mrow id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.cmml"><mi id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.2" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.2.cmml">s</mi><mo id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.1" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.3" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.3.cmml">h</mi><mo id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.1a" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.4" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.4.cmml">e</mi></mrow><mo id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.1" stretchy="false" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.1.cmml">→</mo></mover><mo id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.1" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.1.cmml">−</mo><mover accent="true" id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.cmml"><mrow id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.cmml"><mi id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.2" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.2.cmml">h</mi><mo id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.1" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.3" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.3.cmml">e</mi></mrow><mo id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.1" stretchy="false" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.1.cmml">→</mo></mover></mrow><annotation-xml encoding="MathML-Content" id="S5.SS2.SSS0.Px2.p1.1.m1.1b"><apply id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1"><minus id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.1.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.1"></minus><apply id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2"><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.1.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.1">→</ci><apply id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2"><times id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.1.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.1"></times><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.2.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.2">𝑠</ci><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.3.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.3">ℎ</ci><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.4.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.2.2.4">𝑒</ci></apply></apply><apply id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3"><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.1.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.1">→</ci><apply id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2"><times id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.1.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.1"></times><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.2.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.2">ℎ</ci><ci id="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.3.cmml" xref="S5.SS2.SSS0.Px2.p1.1.m1.1.1.3.2.3">𝑒</ci></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.SS2.SSS0.Px2.p1.1.m1.1c">\vec{she}-\vec{he}</annotation></semantics></math>, <math alttext="\vec{woman}-\vec{man}" class="ltx_Math" display="inline" id="S5.SS2.SSS0.Px2.p1.2.m2.1"><semantics id="S5.SS2.SSS0.Px2.p1.2.m2.1a"><mrow id="S5.SS2.SSS0.Px2.p1.2.m2.1.1" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.cmml"><mover accent="true" id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.cmml"><mrow id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.cmml"><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.2" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.2.cmml">w</mi><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.3" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.3.cmml">o</mi><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1a" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.4" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.4.cmml">m</mi><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1b" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.5" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.5.cmml">a</mi><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1c" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.6" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.6.cmml">n</mi></mrow><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.1" stretchy="false" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.1.cmml">→</mo></mover><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.1" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.1.cmml">−</mo><mover accent="true" id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.cmml"><mrow id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.cmml"><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.2" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.2.cmml">m</mi><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.1" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.3" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.3.cmml">a</mi><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.1a" lspace="0em" rspace="0em" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.1.cmml">​</mo><mi id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.4" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.4.cmml">n</mi></mrow><mo id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.1" stretchy="false" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.1.cmml">→</mo></mover></mrow><annotation-xml encoding="MathML-Content" id="S5.SS2.SSS0.Px2.p1.2.m2.1b"><apply id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1"><minus id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.1.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.1"></minus><apply id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2"><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.1.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.1">→</ci><apply id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2"><times id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.1"></times><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.2.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.2">𝑤</ci><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.3.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.3">𝑜</ci><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.4.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.4">𝑚</ci><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.5.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.5">𝑎</ci><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.6.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.2.2.6">𝑛</ci></apply></apply><apply id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3"><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.1.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.1">→</ci><apply id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2"><times id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.1.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.1"></times><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.2.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.2">𝑚</ci><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.3.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.3">𝑎</ci><ci id="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.4.cmml" xref="S5.SS2.SSS0.Px2.p1.2.m2.1.1.3.2.4">𝑛</ci></apply></apply></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.SS2.SSS0.Px2.p1.2.m2.1c">\vec{woman}-\vec{man}</annotation></semantics></math>, etc. The words corresponding to the 10,000 vectors with the highest positive projection are tagged <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.2.2">feminine</span> while those with the highest negative projection are tagged as <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px2.p1.2.3">masculine</span>.
+Figure <a class="ltx_ref" href="#S5.F1" title="Figure 1 ‣ Data ‣ 5.2 Experiments ‣ 5 Case Study 1: Gender Debiasing ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">1</span></a> exemplifies some of the words that appear to be with the strongest bias.</p>
+</div>
+<div class="ltx_para" id="S5.SS2.SSS0.Px2.p2">
+<p class="ltx_p" id="S5.SS2.SSS0.Px2.p2.1">The list of biased words is fixed throughout the experiments. That is to say, both probes and indicators were tasked with discerning between biased and unbiased words that were tagged only based on the original BERT representations.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Probes</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px3.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px3.p1.1">We train and test a linear classifier (Perceptron; <cite class="ltx_cite ltx_citemacro_citep">Pedregosa et al., <a class="ltx_ref" href="#bib.bib35" title="">2011</a></cite>) to predict <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px3.p1.1.1">masculine</span> and <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px3.p1.1.2">feminine</span> of the words in the list.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S5.SS2.SSS0.Px4">
+<h4 class="ltx_title ltx_title_paragraph">Indicators</h4>
+<div class="ltx_para" id="S5.SS2.SSS0.Px4.p1">
+<p class="ltx_p" id="S5.SS2.SSS0.Px4.p1.1">Our indicators for this tasks are the ones used by <cite class="ltx_cite ltx_citemacro_citet">Gonen and Goldberg (<a class="ltx_ref" href="#bib.bib17" title="">2019</a>)</cite>, extended here to a contextualized setting.</p>
+</div>
+<div class="ltx_para" id="S5.SS2.SSS0.Px4.p2">
+<p class="ltx_p" id="S5.SS2.SSS0.Px4.p2.1">One indicator is the Word Embedding Association Test (<span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px4.p2.1.1">WEAT</span>), introduced by <cite class="ltx_cite ltx_citemacro_citet">Caliskan et al. (<a class="ltx_ref" href="#bib.bib8" title="">2017</a>)</cite>. It fixes a set of words related to stereotypically gendered occupations and traits, and tests whether a group of words suspected as biased has a tendency for uneven association with one of the fixed word sets. We experimented with the sets related to career (stereotypically male) and family (female).<span class="ltx_note ltx_role_footnote" id="footnote3"><sup class="ltx_note_mark">3</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">3</sup><span class="ltx_tag ltx_tag_note">3</span><cite class="ltx_cite ltx_citemacro_citet">Caliskan et al. (<a class="ltx_ref" href="#bib.bib8" title="">2017</a>)</cite> have a couple of more fixed sets: art related words for female bias and mathematics and science for male. However, there was no bias detected with respect to these sets even before debiasing.</span></span></span> The metric reported is the standard <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px4.p2.1.2">WEAT’s d</span>, see <cite class="ltx_cite ltx_citemacro_citet">Caliskan et al. (<a class="ltx_ref" href="#bib.bib8" title="">2017</a>)</cite> for details.</p>
+</div>
+<div class="ltx_para" id="S5.SS2.SSS0.Px4.p3">
+<p class="ltx_p" id="S5.SS2.SSS0.Px4.p3.1">Another indicator, devised by <cite class="ltx_cite ltx_citemacro_citet">Gonen and Goldberg (<a class="ltx_ref" href="#bib.bib17" title="">2019</a>)</cite>, is meant to detect <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px4.p3.1.1">implicit</span> bias, i.e., the situation in which words are not more similar to explicitly gendered words, but they may be similar among themselves. For example, an erasure method may move the word "nurse" further from "woman", but its neighbors may still include high abundance of stereotypically gendered words like "receptionist".
+Therefore, the <span class="ltx_text ltx_font_italic" id="S5.SS2.SSS0.Px4.p3.1.2">KNN-bias correlation</span> indicator checks the Pearson correlation between the percentage of biased words in the 100 nearest neighbors of a target word and the bias in the target word itself, i.e., its projection onto the gender direction.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S5.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.3 </span>Results</h3>
+<figure class="ltx_table" id="S5.T1">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S5.T1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S5.T1.1.1.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t" id="S5.T1.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S5.T1.1.1.1.1.1">Method</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S5.T1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S5.T1.1.1.1.2.1">Original</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S5.T1.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S5.T1.1.1.1.3.1">RLACE</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S5.T1.1.2.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_tt" id="S5.T1.1.2.1.1">Probe (Accuracy)</th>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S5.T1.1.2.1.2">99.95</td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S5.T1.1.2.1.3"><span class="ltx_text ltx_font_bold" id="S5.T1.1.2.1.3.1">48.7</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T1.1.3.2">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S5.T1.1.3.2.1">WEAT (<span class="ltx_text ltx_font_italic" id="S5.T1.1.3.2.1.1">d</span>)</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T1.1.3.2.2"><span class="ltx_text ltx_font_bold" id="S5.T1.1.3.2.2.1">1.17</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S5.T1.1.3.2.3"><span class="ltx_text ltx_font_bold" id="S5.T1.1.3.2.3.1">1.13</span></td>
+</tr>
+<tr class="ltx_tr" id="S5.T1.1.4.3">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S5.T1.1.4.3.1">KNN-Bias (Pearson)</th>
+<td class="ltx_td ltx_align_center" id="S5.T1.1.4.3.2"><span class="ltx_text ltx_font_bold" id="S5.T1.1.4.3.2.1">0.638</span></td>
+<td class="ltx_td ltx_align_center" id="S5.T1.1.4.3.3"><span class="ltx_text ltx_font_bold" id="S5.T1.1.4.3.3.1">0.601</span></td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span> Measuring gender bias in BERT’s embedding space before and after RLACE projection. Both the probes and the indicators should not detect bias after the application of RLACE, so lower is better. While probes point to no bias at all, both indicators point only to a small drop.</figcaption>
+</figure>
+<div class="ltx_para" id="S5.SS3.p1">
+<p class="ltx_p" id="S5.SS3.p1.1">Table <a class="ltx_ref" href="#S5.T1" title="Table 1 ‣ 5.3 Results ‣ 5 Case Study 1: Gender Debiasing ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">1</span></a> includes the results for both probes and indicators before and after the application of RLACE.
+It shows that the probe’s classification accuracy drops from an almost perfect accuracy before the erasure to to 48.7% after it, faring a bit worse than a random guess. On the other hand, the indicators’ drop in performance after the RLACE application is far less impressive, with minor drops of 0.04 in WEAT’s <span class="ltx_text ltx_font_italic" id="S5.SS3.p1.1.1">d</span> and 0.037 drop in the KNN-bias’ Pearson correlation. In absolute terms, the indicators results still detect a bias, as 0.601 is by no means a negligible correlation and a <span class="ltx_text ltx_font_italic" id="S5.SS3.p1.1.2">d</span> score that is above 0.8 is considered high <cite class="ltx_cite ltx_citemacro_cite">Caliskan et al. (<a class="ltx_ref" href="#bib.bib8" title="">2017</a>)</cite>. Both results are significant with <math alttext="p" class="ltx_Math" display="inline" id="S5.SS3.p1.1.m1.1"><semantics id="S5.SS3.p1.1.m1.1a"><mi id="S5.SS3.p1.1.m1.1.1" xref="S5.SS3.p1.1.m1.1.1.cmml">p</mi><annotation-xml encoding="MathML-Content" id="S5.SS3.p1.1.m1.1b"><ci id="S5.SS3.p1.1.m1.1.1.cmml" xref="S5.SS3.p1.1.m1.1.1">𝑝</ci></annotation-xml><annotation encoding="application/x-tex" id="S5.SS3.p1.1.m1.1c">p</annotation></semantics></math>-values of 0.</p>
+</div>
+<div class="ltx_para" id="S5.SS3.p2">
+<p class="ltx_p" id="S5.SS3.p2.1">When judging the success of RLACE, it is clear that the probe and the indicators lead to markedly different conclusions. While the linear probe indicates the successful removal of the bias, it is only able to tell whether there is a linear separation between the potentially biased words. The indicators, on the other hand, are able to detect biases that are expressed by means that are not necessarily linear.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S5.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.4 </span>Discussion</h3>
+<div class="ltx_para" id="S5.SS4.p1">
+<p class="ltx_p" id="S5.SS4.p1.1">All in all, this test case demonstrates that indicators were able to expose information that linear probes could not. This should not surprise us as the probing model is quite simple with the ability to detect only a very specific kind of separation.</p>
+</div>
+<div class="ltx_para" id="S5.SS4.p2">
+<p class="ltx_p" id="S5.SS4.p2.1">Most probably RLACE was able to erase linear gender bias since it was designed primarily for linear concept erasure. However, as mentioned in Section <a class="ltx_ref" href="#S2" title="2 Background: The Probing Conundrum ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">2</span></a>, using a more complex probe that could detect non-linear separation would have come at a price of opacity. The indicators, on the other hand, were able to surface biases that were expressed in non-linear terms while still being simple and transparent due to the lack an auxiliary model.</p>
+</div>
+<div class="ltx_para" id="S5.SS4.p3">
+<p class="ltx_p" id="S5.SS4.p3.1">In the next section we present a more complicated test case that involves the erasure of multiple properties, and therefore includes multiple probes whose results are less easily interpretable.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S6">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">6 </span>Case Study 2: Morphological Properties</h2>
+<div class="ltx_para" id="S6.p1">
+<p class="ltx_p" id="S6.p1.1">In our second test case, we aim for representations that are ignorant of morphological features, such as tense, person etc. Using such representations can make the treatment of morphologically rich languages with many inflections per lemma simplified to a great extent, with models for downstream tasks not needing to worry about unseen inflections <cite class="ltx_cite ltx_citemacro_citep">(Gong et al., <a class="ltx_ref" href="#bib.bib18" title="">2018</a>; Czarnowska et al., <a class="ltx_ref" href="#bib.bib13" title="">2019</a>)</cite>.
+As success criteria for removing morphological knowledge from word representations, we utilize probes and a novel indicator.</p>
+</div>
+<div class="ltx_para" id="S6.p2">
+<p class="ltx_p" id="S6.p2.1">To this end, we extend an existing concept erasure method, Iterative Nullspace Projection <cite class="ltx_cite ltx_citemacro_cite">(INLP, Ravfogel et al., <a class="ltx_ref" href="#bib.bib39" title="">2020</a>)</cite>, to accommodate the erasure of multiple properties. We propose two possible, and novel, extensions and test these alternatives for their efficacy using standard probes, and using a novel indicator task that we design, which indicates on the presence of morphological and lexical semantic information simultaneously.</p>
+</div>
+<section class="ltx_subsection" id="S6.SS1">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.1 </span>Iterative Nullspace Projection</h3>
+<div class="ltx_para" id="S6.SS1.p1">
+<p class="ltx_p" id="S6.SS1.p1.2">INLP is a linear concept erasure method, with the objective that no linear classifier could do better than guess. The method constructs a subspace ignorant of a property <math alttext="P" class="ltx_Math" display="inline" id="S6.SS1.p1.1.m1.1"><semantics id="S6.SS1.p1.1.m1.1a"><mi id="S6.SS1.p1.1.m1.1.1" xref="S6.SS1.p1.1.m1.1.1.cmml">P</mi><annotation-xml encoding="MathML-Content" id="S6.SS1.p1.1.m1.1b"><ci id="S6.SS1.p1.1.m1.1.1.cmml" xref="S6.SS1.p1.1.m1.1.1">𝑃</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.SS1.p1.1.m1.1c">P</annotation></semantics></math> (e.g tense) by iteratively training linear classifiers predicting <math alttext="p\in P" class="ltx_Math" display="inline" id="S6.SS1.p1.2.m2.1"><semantics id="S6.SS1.p1.2.m2.1a"><mrow id="S6.SS1.p1.2.m2.1.1" xref="S6.SS1.p1.2.m2.1.1.cmml"><mi id="S6.SS1.p1.2.m2.1.1.2" xref="S6.SS1.p1.2.m2.1.1.2.cmml">p</mi><mo id="S6.SS1.p1.2.m2.1.1.1" xref="S6.SS1.p1.2.m2.1.1.1.cmml">∈</mo><mi id="S6.SS1.p1.2.m2.1.1.3" xref="S6.SS1.p1.2.m2.1.1.3.cmml">P</mi></mrow><annotation-xml encoding="MathML-Content" id="S6.SS1.p1.2.m2.1b"><apply id="S6.SS1.p1.2.m2.1.1.cmml" xref="S6.SS1.p1.2.m2.1.1"><in id="S6.SS1.p1.2.m2.1.1.1.cmml" xref="S6.SS1.p1.2.m2.1.1.1"></in><ci id="S6.SS1.p1.2.m2.1.1.2.cmml" xref="S6.SS1.p1.2.m2.1.1.2">𝑝</ci><ci id="S6.SS1.p1.2.m2.1.1.3.cmml" xref="S6.SS1.p1.2.m2.1.1.3">𝑃</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S6.SS1.p1.2.m2.1c">p\in P</annotation></semantics></math> (e.g past) and projecting the representations unto their nullspace. The process sets to eliminate the entries used to predict the features by various classifiers. For more details see <cite class="ltx_cite ltx_citemacro_cite">Ravfogel et al. (<a class="ltx_ref" href="#bib.bib39" title="">2020</a>)</cite>. While INLP is designed for a single property, here we would like to use it for a complete feature bundle.</p>
+</div>
+<section class="ltx_paragraph" id="S6.SS1.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Multi-Class Setting</h4>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p1.1">INLP is intended to remove a single property <math alttext="P" class="ltx_Math" display="inline" id="S6.SS1.SSS0.Px1.p1.1.m1.1"><semantics id="S6.SS1.SSS0.Px1.p1.1.m1.1a"><mi id="S6.SS1.SSS0.Px1.p1.1.m1.1.1" xref="S6.SS1.SSS0.Px1.p1.1.m1.1.1.cmml">P</mi><annotation-xml encoding="MathML-Content" id="S6.SS1.SSS0.Px1.p1.1.m1.1b"><ci id="S6.SS1.SSS0.Px1.p1.1.m1.1.1.cmml" xref="S6.SS1.SSS0.Px1.p1.1.m1.1.1">𝑃</ci></annotation-xml><annotation encoding="application/x-tex" id="S6.SS1.SSS0.Px1.p1.1.m1.1c">P</annotation></semantics></math> which can correspond to any morphological property we choose.
+However, we would like to erase as many properties as possible. We therefore extend INLP by iterating over a set of morphological properties by applying INLP for each property in a procedure we term <span class="ltx_text ltx_font_italic" id="S6.SS1.SSS0.Px1.p1.1.1">Iterative Iterative Nullspace Projection</span> or <span class="ltx_text ltx_font_italic" id="S6.SS1.SSS0.Px1.p1.1.2">I<sup class="ltx_sup" id="S6.SS1.SSS0.Px1.p1.1.2.1">2</sup>NLP</span>.</p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p2">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p2.1">Although intuitive, extending INLP in this manner could damage the embeddings beyond usability, as each removed property reduces the dimensionality rank of the vectors. Moreover, repeated multiplications could be numerically unstable. Therefore we explore two possible variants of I<sup class="ltx_sup" id="S6.SS1.SSS0.Px1.p2.1.1">2</sup>NLP.</p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px1.p3">
+<p class="ltx_p" id="S6.SS1.SSS0.Px1.p3.1">In the first variant, <span class="ltx_text ltx_font_italic" id="S6.SS1.SSS0.Px1.p3.1.1">Regressive</span>, the representations are projected after each property removal, before moving on to remove the next property. In the <span class="ltx_text ltx_font_italic" id="S6.SS1.SSS0.Px1.p3.1.2">Non-Regressive</span> variant, the representations are only projected after a projection matrix is calculated for all
+properties, at the end of the procedure.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS1.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Choosing a Variant</h4>
+<div class="ltx_para" id="S6.SS1.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS1.SSS0.Px2.p1.2">At first glance, the difference between the variants may seem small, but manipulating the input representations after each iteration, as done in the regressive variant, could affect the removal of the next properties significantly. The representations could encode properties using overlapping entries, which upon removal in prior iterations, cannot be relied on. This fact also leads this variant to be order dependant — it is unclear how would the removal of property <math alttext="P_{1}" class="ltx_Math" display="inline" id="S6.SS1.SSS0.Px2.p1.1.m1.1"><semantics id="S6.SS1.SSS0.Px2.p1.1.m1.1a"><msub id="S6.SS1.SSS0.Px2.p1.1.m1.1.1" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1.cmml"><mi id="S6.SS1.SSS0.Px2.p1.1.m1.1.1.2" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1.2.cmml">P</mi><mn id="S6.SS1.SSS0.Px2.p1.1.m1.1.1.3" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1.3.cmml">1</mn></msub><annotation-xml encoding="MathML-Content" id="S6.SS1.SSS0.Px2.p1.1.m1.1b"><apply id="S6.SS1.SSS0.Px2.p1.1.m1.1.1.cmml" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1"><csymbol cd="ambiguous" id="S6.SS1.SSS0.Px2.p1.1.m1.1.1.1.cmml" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1">subscript</csymbol><ci id="S6.SS1.SSS0.Px2.p1.1.m1.1.1.2.cmml" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1.2">𝑃</ci><cn id="S6.SS1.SSS0.Px2.p1.1.m1.1.1.3.cmml" type="integer" xref="S6.SS1.SSS0.Px2.p1.1.m1.1.1.3">1</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S6.SS1.SSS0.Px2.p1.1.m1.1c">P_{1}</annotation></semantics></math> affect the removal of property <math alttext="P_{2}" class="ltx_Math" display="inline" id="S6.SS1.SSS0.Px2.p1.2.m2.1"><semantics id="S6.SS1.SSS0.Px2.p1.2.m2.1a"><msub id="S6.SS1.SSS0.Px2.p1.2.m2.1.1" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1.cmml"><mi id="S6.SS1.SSS0.Px2.p1.2.m2.1.1.2" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1.2.cmml">P</mi><mn id="S6.SS1.SSS0.Px2.p1.2.m2.1.1.3" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1.3.cmml">2</mn></msub><annotation-xml encoding="MathML-Content" id="S6.SS1.SSS0.Px2.p1.2.m2.1b"><apply id="S6.SS1.SSS0.Px2.p1.2.m2.1.1.cmml" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1"><csymbol cd="ambiguous" id="S6.SS1.SSS0.Px2.p1.2.m2.1.1.1.cmml" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1">subscript</csymbol><ci id="S6.SS1.SSS0.Px2.p1.2.m2.1.1.2.cmml" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1.2">𝑃</ci><cn id="S6.SS1.SSS0.Px2.p1.2.m2.1.1.3.cmml" type="integer" xref="S6.SS1.SSS0.Px2.p1.2.m2.1.1.3">2</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="S6.SS1.SSS0.Px2.p1.2.m2.1c">P_{2}</annotation></semantics></math> and vise-versa.
+The non-regressive variant, on the other hand, is indifferent to order, but multiplying the projection matrices one after another could be numerically unstable.</p>
+</div>
+<div class="ltx_para" id="S6.SS1.SSS0.Px2.p2">
+<p class="ltx_p" id="S6.SS1.SSS0.Px2.p2.1">In order to decide between the variants we test both of them using both a probe and an indicator task we designed, presented in the next section.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S6.SS2">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.2 </span>The Morpho-Semantic Indicator</h3>
+<div class="ltx_para" id="S6.SS2.p1">
+<p class="ltx_p" id="S6.SS2.p1.1">Consider the quadruple (walked, hiked, strolling, bumped). Semantically, the words (walked, hiked, strolling) are related and (bumped) is the <em class="ltx_emph ltx_font_italic" id="S6.SS2.p1.1.1">semantic outlier</em>. Morphologically, the words (walked, hiked, bumped) are related as they share the -ed inflectional form, and (strolling) gerund is the <em class="ltx_emph ltx_font_italic" id="S6.SS2.p1.1.2">morphological outlier</em>. We follow this general scheme of quadruples with both a morphological and a semantic outliers to create a novel indicator task: <span class="ltx_text ltx_font_italic" id="S6.SS2.p1.1.3">double edged outlier detection</span> (DEOD).</p>
+</div>
+<div class="ltx_para" id="S6.SS2.p2">
+<p class="ltx_p" id="S6.SS2.p2.1">Outlier detection is an intrinsic method proposed by <cite class="ltx_cite ltx_citemacro_citet">Camacho-Collados and
+Navigli (<a class="ltx_ref" href="#bib.bib9" title="">2016</a>)</cite> with the objective of identifying a single outlier in a set of words. In our case the set contains two outliers, one semantic and the other morphological. By predicting a single outlier from each set, models take part in a zero sum game, and we get to evaluate which of the two dimensions of meaning is prioritized in the representations.</p>
+</div>
+<div class="ltx_para" id="S6.SS2.p3">
+<p class="ltx_p" id="S6.SS2.p3.1">In the case of morphological erasure, this indicator task is also used to verify that the representations keep as much of the lexical semantic information as possible. It is important to note that attempting a similar approach with probes, i.e., eliciting information of the interplay between two partially overlapping dimensions of word-level information, is tough to envision.</p>
+</div>
+<section class="ltx_paragraph" id="S6.SS2.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">Task Definition</h4>
+<div class="ltx_para" id="S6.SS2.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS2.SSS0.Px1.p1.1">Given a quadruple <math alttext="Q=\{w_{1},w_{2},w_{3},w_{4}\}" class="ltx_Math" display="inline" id="S6.SS2.SSS0.Px1.p1.1.m1.4"><semantics id="S6.SS2.SSS0.Px1.p1.1.m1.4a"><mrow id="S6.SS2.SSS0.Px1.p1.1.m1.4.4" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.cmml"><mi id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.6" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.6.cmml">Q</mi><mo id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.5" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.5.cmml">=</mo><mrow id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml"><mo id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.5" stretchy="false" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml">{</mo><msub id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.cmml"><mi id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.2" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.2.cmml">w</mi><mn id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.3" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.3.cmml">1</mn></msub><mo id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.6" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml">,</mo><msub id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.cmml"><mi id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.2" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.2.cmml">w</mi><mn id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.3" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.3.cmml">2</mn></msub><mo id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.7" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml">,</mo><msub id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.cmml"><mi id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.2" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.2.cmml">w</mi><mn id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.3" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.3.cmml">3</mn></msub><mo id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.8" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml">,</mo><msub id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.cmml"><mi id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.2" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.2.cmml">w</mi><mn id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.3" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.3.cmml">4</mn></msub><mo id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.9" stretchy="false" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml">}</mo></mrow></mrow><annotation-xml encoding="MathML-Content" id="S6.SS2.SSS0.Px1.p1.1.m1.4b"><apply id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4"><eq id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.5.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.5"></eq><ci id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.6.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.6">𝑄</ci><set id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.5.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4"><apply id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1"><csymbol cd="ambiguous" id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.1.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1">subscript</csymbol><ci id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.2.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.2">𝑤</ci><cn id="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.3.cmml" type="integer" xref="S6.SS2.SSS0.Px1.p1.1.m1.1.1.1.1.1.3">1</cn></apply><apply id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2"><csymbol cd="ambiguous" id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.1.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2">subscript</csymbol><ci id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.2.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.2">𝑤</ci><cn id="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.3.cmml" type="integer" xref="S6.SS2.SSS0.Px1.p1.1.m1.2.2.2.2.2.3">2</cn></apply><apply id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3"><csymbol cd="ambiguous" id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.1.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3">subscript</csymbol><ci id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.2.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.2">𝑤</ci><cn id="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.3.cmml" type="integer" xref="S6.SS2.SSS0.Px1.p1.1.m1.3.3.3.3.3.3">3</cn></apply><apply id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4"><csymbol cd="ambiguous" id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.1.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4">subscript</csymbol><ci id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.2.cmml" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.2">𝑤</ci><cn id="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.3.cmml" type="integer" xref="S6.SS2.SSS0.Px1.p1.1.m1.4.4.4.4.4.3">4</cn></apply></set></apply></annotation-xml><annotation encoding="application/x-tex" id="S6.SS2.SSS0.Px1.p1.1.m1.4c">Q=\{w_{1},w_{2},w_{3},w_{4}\}</annotation></semantics></math>, the task is to identify (one of) the outliers in a procedure based on cosine similarity. Our working hypothesis is that embedding spaces are capable to encode both lexical semantics and morphology to some extent and the interplay between them is affecting the decisions taken by the model when picking an outlier.</p>
+</div>
+<div class="ltx_para" id="S6.SS2.SSS0.Px1.p2">
+<p class="ltx_p" id="S6.SS2.SSS0.Px1.p2.1">We use the two metrics termed <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px1.p2.1.1">hard</span> and <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px1.p2.1.2">soft</span> outlier detection, proposed by <cite class="ltx_cite ltx_citemacro_citet">Camacho-Collados and
+Navigli (<a class="ltx_ref" href="#bib.bib9" title="">2016</a>)</cite>. Hard outlier detection is measured with accuracy. It is the percentage of quadruples in which the semantic (morphological) outlier was chosen. Soft outlier detection, measured with Outlier Position Percentage (OPP), is based on the position of the true outlier in the ranked quadruple and not only reflecting whether it was ranked first.
+See <cite class="ltx_cite ltx_citemacro_citet">Camacho-Collados and
+Navigli (<a class="ltx_ref" href="#bib.bib9" title="">2016</a>)</cite> for further details about these metrics.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS2.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Data Generation</h4>
+<div class="ltx_para" id="S6.SS2.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS2.SSS0.Px2.p1.1">In order to generate data for the DEOD task we used UniMorph <cite class="ltx_cite ltx_citemacro_cite">Batsuren et al. (<a class="ltx_ref" href="#bib.bib3" title="">2022</a>)</cite> to determine what words are of the same morphological category, and FastText embeddings <cite class="ltx_cite ltx_citemacro_cite">Bojanowski et al. (<a class="ltx_ref" href="#bib.bib6" title="">2017</a>)</cite>, to assess semantic similarity between words.<span class="ltx_note ltx_role_footnote" id="footnote4"><sup class="ltx_note_mark">4</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">4</sup><span class="ltx_tag ltx_tag_note">4</span>Static representations are used instead of contextualized ones since we need for the DEOD task a representations of complete words out of context.</span></span></span></p>
+</div>
+<div class="ltx_para" id="S6.SS2.SSS0.Px2.p2">
+<p class="ltx_p" id="S6.SS2.SSS0.Px2.p2.1">Specifically, from UniMorph we sampled a word with a certain morphological characterization <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.1">T</span>, e.g., <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.2">walked</span> which is characterized as a past tense form. Then, using the word embeddings, we add the 2 most similar words with the same morphological characterization, for example <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.3">hiked</span> and <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.4">strolled</span>, and one dissimilar word as the semantic outlier, like <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.5">bumped</span>. The morphological outlier is then created by inflecting one of the semantically similar words to another morphological category, for example we could replace <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.6">strolled</span> with <span class="ltx_text ltx_font_italic" id="S6.SS2.SSS0.Px2.p2.1.7">strolling</span>.
+The result is the quadruple (walked, hiked, strolling, bumped).
+This procedure is repeated until enough quadruples are sampled. Since this method is language agnostic, it can be applied for different languages.</p>
+</div>
+<div class="ltx_para" id="S6.SS2.SSS0.Px2.p3">
+<p class="ltx_p" id="S6.SS2.SSS0.Px2.p3.1">All in all, we created 2,000 quadruples for each language. Since both UniMorph and FastText cover many languages, the data generation method is easily applicable to many languages.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S6.SS3">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.3 </span>Experiments</h3>
+<section class="ltx_paragraph" id="S6.SS3.SSS0.Px1">
+<h4 class="ltx_title ltx_title_paragraph">The Languages</h4>
+<div class="ltx_para" id="S6.SS3.SSS0.Px1.p1">
+<p class="ltx_p" id="S6.SS3.SSS0.Px1.p1.1">We experimented with three languages: English, Spanish and Hebrew, these languages are typologically different both in the number of morphological features they express and in the means they employ to express them; with one isolating, one suffixing and one templatic language.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS3.SSS0.Px2">
+<h4 class="ltx_title ltx_title_paragraph">Probes</h4>
+<div class="ltx_para" id="S6.SS3.SSS0.Px2.p1">
+<p class="ltx_p" id="S6.SS3.SSS0.Px2.p1.1">In order to ascribe morphological information to words in their context we used the morphological layer of Universal Dependencies (UD; <cite class="ltx_cite ltx_citemacro_citep">Nivre et al., <a class="ltx_ref" href="#bib.bib34" title="">2020</a></cite>) as our data set.<span class="ltx_note ltx_role_footnote" id="footnote5"><sup class="ltx_note_mark">5</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">5</sup><span class="ltx_tag ltx_tag_note">5</span>In cases where UD breaks white-spaced words to multiple units we merged the morphological tags of all subwords.</span></span></span>
+This data was used both for determining what morphological properties are to be erased with I<sup class="ltx_sup" id="S6.SS3.SSS0.Px2.p1.1.1">2</sup>NLP
+and for training the probes over the final projected representations. The calculation of projection matrices as part of I<sup class="ltx_sup" id="S6.SS3.SSS0.Px2.p1.1.2">2</sup>NLP is done only using the train and dev sets, and the reported scores of the final probes are calculated over a test set of sentences that were not seen during training.</p>
+</div>
+<div class="ltx_para" id="S6.SS3.SSS0.Px2.p2">
+<p class="ltx_p" id="S6.SS3.SSS0.Px2.p2.1">The linear probing model for each morphological category is a multi-class version of an SGD linear classifier <cite class="ltx_cite ltx_citemacro_cite">Pedregosa et al. (<a class="ltx_ref" href="#bib.bib35" title="">2011</a>)</cite>.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS3.SSS0.Px3">
+<h4 class="ltx_title ltx_title_paragraph">Language Models</h4>
+<div class="ltx_para" id="S6.SS3.SSS0.Px3.p1">
+<p class="ltx_p" id="S6.SS3.SSS0.Px3.p1.1">For the contextualized representations we used the following models:</p>
+<ul class="ltx_itemize" id="S6.I1">
+<li class="ltx_item" id="S6.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S6.I1.i1.p1">
+<p class="ltx_p" id="S6.I1.i1.p1.1">Hebrew: AlephBERTGimmel <cite class="ltx_cite ltx_citemacro_cite">Guetta et al. (<a class="ltx_ref" href="#bib.bib19" title="">2022</a>)</cite></p>
+</div>
+</li>
+<li class="ltx_item" id="S6.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S6.I1.i2.p1">
+<p class="ltx_p" id="S6.I1.i2.p1.1">English: bert-base-uncased (HuggingFace implementation; <cite class="ltx_cite ltx_citemacro_citep">Wolf et al., <a class="ltx_ref" href="#bib.bib42" title="">2020</a></cite>)</p>
+</div>
+</li>
+<li class="ltx_item" id="S6.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S6.I1.i3.p1">
+<p class="ltx_p" id="S6.I1.i3.p1.1">Spanish: Beto <cite class="ltx_cite ltx_citemacro_cite">Cañete et al. (<a class="ltx_ref" href="#bib.bib10" title="">2020</a>)</cite></p>
+</div>
+</li>
+</ul>
+<p class="ltx_p" id="S6.SS3.SSS0.Px3.p1.2">Since the indicator requires words to be represented out of context, a single representation per word was obtained by averaging the contextualized representations of all its occurrences in the UD sentences.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS3.SSS0.Px4">
+<h4 class="ltx_title ltx_title_paragraph">Metrics</h4>
+<div class="ltx_para" id="S6.SS3.SSS0.Px4.p1">
+<p class="ltx_p" id="S6.SS3.SSS0.Px4.p1.1">For evaluating the I<sup class="ltx_sup" id="S6.SS3.SSS0.Px4.p1.1.1">2</sup>NLP variants using probes we report the classifier F1 score averaged over all morphological properties. We expect classifiers to perform poorly on representations that were obtained by a good I<sup class="ltx_sup" id="S6.SS3.SSS0.Px4.p1.1.2">2</sup>NLP variant.
+The evaluation of the I<sup class="ltx_sup" id="S6.SS3.SSS0.Px4.p1.1.3">2</sup>NLP variants using the DEOD indicator task is done using the task’s own metrics: accuracy for hard outlier detection and OPP for soft outlier detection. We expect a successful I<sup class="ltx_sup" id="S6.SS3.SSS0.Px4.p1.1.4">2</sup>NLP to prevent the detection of the morphological outlier. On the other hand, we expect higher performance in detecting the semantic outlier.</p>
+</div>
+</section>
+<section class="ltx_paragraph" id="S6.SS3.SSS0.Px5">
+<h4 class="ltx_title ltx_title_paragraph">Baseline and Skyline</h4>
+<div class="ltx_para" id="S6.SS3.SSS0.Px5.p1">
+<p class="ltx_p" id="S6.SS3.SSS0.Px5.p1.1">For both the probe and the indicator we provide as a baseline the respective metric assessed over the original representation, without application of any I<sup class="ltx_sup" id="S6.SS3.SSS0.Px5.p1.1.1">2</sup>NLP variant.</p>
+</div>
+<div class="ltx_para" id="S6.SS3.SSS0.Px5.p2">
+<p class="ltx_p" id="S6.SS3.SSS0.Px5.p2.1">As a skyline we evaluate the respective metric as it would be in an ideal situation, where all morphological information is completely erased from the representations. For the probe we provide the averaged F1 expected from a classifier that randomly guesses the morphological label. For the indicator we replaced all word vectors with those of the respective lemmas to ensure erasure of all morphological information.</p>
+</div>
+</section>
+</section>
+<section class="ltx_subsection" id="S6.SS4">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.4 </span>Results</h3>
+<figure class="ltx_table" id="S6.T2">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S6.T2.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S6.T2.1.1.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t" id="S6.T2.1.1.1.1"><span class="ltx_text ltx_font_bold" id="S6.T2.1.1.1.1.1">Lang</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S6.T2.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S6.T2.1.1.1.2.1">Before</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S6.T2.1.1.1.3"><span class="ltx_text ltx_font_bold" id="S6.T2.1.1.1.3.1">Reg</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S6.T2.1.1.1.4"><span class="ltx_text ltx_font_bold" id="S6.T2.1.1.1.4.1">Non-Reg</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" id="S6.T2.1.1.1.5"><span class="ltx_text ltx_font_bold" id="S6.T2.1.1.1.5.1">Skyline</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S6.T2.1.2.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S6.T2.1.2.1.1">Heb</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T2.1.2.1.2">94.52</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T2.1.2.1.3"><span class="ltx_text ltx_font_bold" id="S6.T2.1.2.1.3.1">61.89</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T2.1.2.1.4">79.62</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T2.1.2.1.5">40.28</td>
+</tr>
+<tr class="ltx_tr" id="S6.T2.1.3.2">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T2.1.3.2.1">Spa</th>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.3.2.2">92.99</td>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.3.2.3"><span class="ltx_text ltx_font_bold" id="S6.T2.1.3.2.3.1">50.32</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.3.2.4">76.88</td>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.3.2.5">33.89</td>
+</tr>
+<tr class="ltx_tr" id="S6.T2.1.4.3">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T2.1.4.3.1">Eng</th>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.4.3.2">92.80</td>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.4.3.3"><span class="ltx_text ltx_font_bold" id="S6.T2.1.4.3.3.1">46.39</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.4.3.4">64.24</td>
+<td class="ltx_td ltx_align_center" id="S6.T2.1.4.3.5">37.5</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 2: </span> Before and after projection in average F1 scores on classifying Tense, Gender, Number, Person, Case and VerbForm. The better I<sup class="ltx_sup" id="S6.T2.3.1">2</sup>NLP variant prevents classification so lower is better. The regressive variant appears as the better method.</figcaption>
+</figure>
+<div class="ltx_para" id="S6.SS4.p1">
+<p class="ltx_p" id="S6.SS4.p1.1">Table <a class="ltx_ref" href="#S6.T2" title="Table 2 ‣ 6.4 Results ‣ 6 Case Study 2: Morphological Properties ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">2</span></a> shows the average F1 scores of probes in predicting morphological features for both I<sup class="ltx_sup" id="S6.SS4.p1.1.1">2</sup>NLP variants. It is apparent that the regressive I<sup class="ltx_sup" id="S6.SS4.p1.1.2">2</sup>NLP is more effective than the non-regressive in removing morphological properties.</p>
+</div>
+<figure class="ltx_table" id="S6.T3">
+<div class="ltx_flex_figure ltx_flex_table">
+<div class="ltx_flex_cell ltx_flex_size_1">
+<figure class="ltx_table ltx_figure_panel" id="S6.T3.st1">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S6.T3.st1.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S6.T3.st1.1.1.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t" id="S6.T3.st1.1.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.1.1.1.1">Lang</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" colspan="4" id="S6.T3.st1.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.1.1.2.1">Morphological</span></th>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.2.2">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st1.1.2.2.1"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.2.2.1.1">Before</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st1.1.2.2.2"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.2.2.2.1">Reg</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st1.1.2.2.3"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.2.2.3.1">Non-Reg</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st1.1.2.2.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.2.2.4.1">Skyline</span></th>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.3.3">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_t" colspan="5" id="S6.T3.st1.1.3.3.1"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.3.3.1.1">Hard Outlier Detection</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S6.T3.st1.1.4.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S6.T3.st1.1.4.1.1">Heb</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.4.1.2">8.91</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.4.1.3">15.22</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.4.1.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.4.1.4.1">3.49</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.4.1.5">0.36</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.5.2">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st1.1.5.2.1">Spa</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.5.2.2">14.37</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.5.2.3">17.64</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.5.2.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.5.2.4.1">4.72</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.5.2.5">0.36</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.6.3">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st1.1.6.3.1">Eng</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.6.3.2">9.40</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.6.3.3">20.20</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.6.3.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.6.3.4.1">3.60</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.6.3.5">0.16</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.7.4">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t" colspan="5" id="S6.T3.st1.1.7.4.1"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.7.4.1.1">Soft Outlier Detection</span></th>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.8.5">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S6.T3.st1.1.8.5.1">Heb</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.8.5.2">56.74</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.8.5.3">56.20</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.8.5.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.8.5.4.1">49.73</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st1.1.8.5.5">26.97</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.9.6">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st1.1.9.6.1">Spa</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.9.6.2">61.26</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.9.6.3">56.95</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.9.6.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.9.6.4.1">52.44</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.9.6.5">27.71</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st1.1.10.7">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st1.1.10.7.1">Eng</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.10.7.2">58.59</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.10.7.3">59.50</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.10.7.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st1.1.10.7.4.1">50.00</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st1.1.10.7.5">26.77</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">(a) </span>Morphological outlier detection</figcaption>
+</figure>
+</div>
+<div class="ltx_flex_break"></div>
+<div class="ltx_flex_cell ltx_flex_size_1">
+<figure class="ltx_table ltx_figure_panel" id="S6.T3.st2">
+<table class="ltx_tabular ltx_centering ltx_guessed_headers ltx_align_middle" id="S6.T3.st2.1">
+<thead class="ltx_thead">
+<tr class="ltx_tr" id="S6.T3.st2.1.1.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_r ltx_border_t" id="S6.T3.st2.1.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.1.1.1.1">Lang</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_border_t" colspan="4" id="S6.T3.st2.1.1.1.2"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.1.1.2.1">Semantic</span></th>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.2.2">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st2.1.2.2.1"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.2.2.1.1">Before</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st2.1.2.2.2"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.2.2.2.1">Reg</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st2.1.2.2.3"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.2.2.3.1">Non-Reg</span></th>
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column" id="S6.T3.st2.1.2.2.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.2.2.4.1">Skyline</span></th>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.3.3">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_column ltx_th_row ltx_border_t" colspan="5" id="S6.T3.st2.1.3.3.1"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.3.3.1.1">Hard Outlier Detection</span></th>
+</tr>
+</thead>
+<tbody class="ltx_tbody">
+<tr class="ltx_tr" id="S6.T3.st2.1.4.1">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S6.T3.st2.1.4.1.1">Heb</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.4.1.2">74.41</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.4.1.3">49.56</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.4.1.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.4.1.4.1">84.11</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.4.1.5">85.34</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.5.2">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st2.1.5.2.1">Spa</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.5.2.2">70.85</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.5.2.3">44.82</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.5.2.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.5.2.4.1">86.58</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.5.2.5">86.28</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.6.3">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st2.1.6.3.1">Eng</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.6.3.2">77.45</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.6.3.3">41.10</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.6.3.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.6.3.4.1">88.70</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.6.3.5">87.76</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.7.4">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_t" colspan="5" id="S6.T3.st2.1.7.4.1"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.7.4.1.1">Soft Outlier Detection</span></th>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.8.5">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r ltx_border_t" id="S6.T3.st2.1.8.5.1">Heb</th>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.8.5.2">91.45</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.8.5.3">78.43</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.8.5.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.8.5.4.1">95.13</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S6.T3.st2.1.8.5.5">96.06</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.9.6">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st2.1.9.6.1">Spa</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.9.6.2">90.13</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.9.6.3">75.99</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.9.6.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.9.6.4.1">95.73</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.9.6.5">96.53</td>
+</tr>
+<tr class="ltx_tr" id="S6.T3.st2.1.10.7">
+<th class="ltx_td ltx_align_center ltx_th ltx_th_row ltx_border_r" id="S6.T3.st2.1.10.7.1">Eng</th>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.10.7.2">92.27</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.10.7.3">74.36</td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.10.7.4"><span class="ltx_text ltx_font_bold" id="S6.T3.st2.1.10.7.4.1">96.3</span></td>
+<td class="ltx_td ltx_align_center" id="S6.T3.st2.1.10.7.5">96.94</td>
+</tr>
+</tbody>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">(b) </span>Semantic outlier detection</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">Table 3: </span> Before and after projection indicator results. While Regressive distorts the embedding space completely, Non-Regressive achieves our goal - reducing the morphological affinity of the space while not harming the lexical semantics encoded.</figcaption>
+</figure>
+<div class="ltx_para" id="S6.SS4.p2">
+<p class="ltx_p" id="S6.SS4.p2.1">Table <a class="ltx_ref" href="#S6.T3" title="Table 3 ‣ 6.4 Results ‣ 6 Case Study 2: Morphological Properties ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">3</span></a> shows the results for the indicator task. The morphological outlier detection results in Table <a class="ltx_ref" href="#S6.T3.st1" title="In Table 3 ‣ 6.4 Results ‣ 6 Case Study 2: Morphological Properties ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">3(a)</span></a> show that the non-regressive I<sup class="ltx_sup" id="S6.SS4.p2.1.1">2</sup>NLP variant is better in removing morphological properties as the performance after the projection is worse both in term of hard and soft detection.<span class="ltx_note ltx_role_footnote" id="footnote6"><sup class="ltx_note_mark">6</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">6</sup><span class="ltx_tag ltx_tag_note">6</span>For soft outlier detection, the average OPP of a guess is 50% so the table points to an almost complete erasure.</span></span></span>
+Note that when compared to the performance over the original vectors,
+applying the regressive I<sup class="ltx_sup" id="S6.SS4.p2.1.2">2</sup>NLP makes it easier to spot the morphological outlier, in terms of hard outlier detection. This is the opposite of what is expected of a good morphological erasure method.</p>
+</div>
+<div class="ltx_para" id="S6.SS4.p3">
+<p class="ltx_p" id="S6.SS4.p3.1">This picture is reinforced by the results for the semantic outlier detection in Table <a class="ltx_ref" href="#S6.T3.st2" title="In Table 3 ‣ 6.4 Results ‣ 6 Case Study 2: Morphological Properties ‣ Is Probing All You Need? Indicator Tasks as an Alternative to Probing Embedding Spaces"><span class="ltx_text ltx_ref_tag">3(b)</span></a>, showing that the non-regressive variant is also better at preserving the semantic affinities of the space. Its results are impressively similar to those of the skyline, while the regressive variant hinders the performance even comparing to the baseline.
+This is in stark contradiction to the results of the probes on the same projected spaces, that pointed to the regressive I<sup class="ltx_sup" id="S6.SS4.p3.1.1">2</sup>NLP variant as the superior one.</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S6.SS5">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">6.5 </span>Discussion</h3>
+<div class="ltx_para" id="S6.SS5.p1">
+<p class="ltx_p" id="S6.SS5.p1.1">As with the previous test case, here as well probes and indicators point in polar opposite directions, with probes giving the advantage to the regressive I<sup class="ltx_sup" id="S6.SS5.p1.1.1">2</sup>NLP while the DEOD indicator showing that the non-regressive is the superior variant.
+Also similar to the previous test case is the probes’ lack of ability to detect non-linearly expressed information.
+However, unlike the gender bias case, the probes are still doing better than guessing, since even the results for the regressive variant show worse erasure than the skyline. That is to say that the probes were still able to detect residual linearly expressed morphological information.</p>
+</div>
+<div class="ltx_para" id="S6.SS5.p2">
+<p class="ltx_p" id="S6.SS5.p2.1">The indicator task, on the other hand, is much more complex than the indicators used for gender bias detection. It is not restricted to linear separation and it indicates simultaneously on two types of information in the representations: morphological and lexical semantics. The indicator allows us to verify that the non-regressive I<sup class="ltx_sup" id="S6.SS5.p2.1.1">2</sup>NLP erases better the information it is supposed to erase, while preserving better the information it is supposed to preserve.
+The indicator’s double purpose allows evaluation of more aspects of the space and examine the I<sup class="ltx_sup" id="S6.SS5.p2.1.2">2</sup>NLP variants not only from the morphological angle, and for this reason we argue in favor of preference to the non-regressive variant.</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S7">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">7 </span>Conclusions</h2>
+<div class="ltx_para" id="S7.p1">
+<p class="ltx_p" id="S7.p1.1">In this work we compare probes that do and do not require training an auxiliary classification model, offering <span class="ltx_text ltx_font_italic" id="S7.p1.1.1">indicator tasks</span> as a term that covers the latter kind. We show, in two different test cases, that although it is tempting to think of probes and indicators as complementary in understanding the inner structure of embedding spaces, sometimes the methods result in contradictory conclusions.</p>
+</div>
+<div class="ltx_para" id="S7.p2">
+<p class="ltx_p" id="S7.p2.1">We claim that the inherent problems with probes and the flexibility of indicators should lead to prioritizing the latter in interpreting the results of property removal procedures. Nevertheless, probes are of course still useful in inspecting embedding spaces, but their results should not be overstated and they should be used only when interested in the specific insights they hold, e.g., the existence of a linear separation in case of linear probes.</p>
+</div>
+<div class="ltx_para" id="S7.p3">
+<p class="ltx_p" id="S7.p3.1">Although the design of indicators requires more creativity and result in tasks that are mostly tailored for specific kinds of questions under investigation, we assert that the advantage they give in better understanding the information, that does and does not exist in word representations, is worth the effort.
+We therefore conclude that indicators should at the very least be presented alongside probes when examining embedding spaces.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx1">
+<h2 class="ltx_title ltx_title_section">Limitations</h2>
+<div class="ltx_para" id="Sx1.p1">
+<p class="ltx_p" id="Sx1.p1.1">The use of indicator tasks, as presented in this paper, solves many problems existing in the current use of probes to query linguistic information from embedded representations. However, there are of course issues that remain unsolved and may require further research.</p>
+</div>
+<div class="ltx_para" id="Sx1.p2">
+<p class="ltx_p" id="Sx1.p2.1">For example, the interpretability of the absolute results is still unclear with indicators as it is with probes. Suppose we ran a probing experiment or an indicator task and got 87%. Is it good? How could we tell? Could we safely declare the information exists in the representation? <cite class="ltx_cite ltx_citemacro_cite">Belinkov (<a class="ltx_ref" href="#bib.bib4" title="">2022</a>)</cite></p>
+</div>
+<div class="ltx_para" id="Sx1.p3">
+<p class="ltx_p" id="Sx1.p3.1">Another issue that may arise with the usage of indicator tasks is the lack of a simple recipe for the creation of such tasks.
+Despite their disadvantages, the design of probing tasks is simple and merely requires picking a target property and a classifier. On the other hand, the design of indicator tasks remains a tougher mission.
+In this paper we pointed to similarities between vectors as the main source of information for indicator tasks, and indeed from it can be derived many tasks such as clustering and comparison to other sources of similarity. However, the details may require some tailor-made decisions.</p>
+</div>
+<div class="ltx_para" id="Sx1.p4">
+<p class="ltx_p" id="Sx1.p4.1">In addition, as a conceptual continuation of intrinsic evaluation methods, the indicator DEOD task may suffer from the same problems that haunted intrinsic tasks, mostly with regards of the definition of similarity <cite class="ltx_cite ltx_citemacro_cite">Faruqui et al. (<a class="ltx_ref" href="#bib.bib16" title="">2016</a>)</cite>. However, our indicator is based on the outlier detection task that tended to these issues by examining similarity not in absolute terms but in relation to similarities between other pairs of words <cite class="ltx_cite ltx_citemacro_cite">Camacho-Collados and
+Navigli (<a class="ltx_ref" href="#bib.bib9" title="">2016</a>)</cite>. Another problem of intrinsic evaluation is the lack of guaranteed correlation with performance on downstream tasks <cite class="ltx_cite ltx_citemacro_cite">Chiu et al. (<a class="ltx_ref" href="#bib.bib11" title="">2016</a>)</cite>. However, this problem exists for probes as well <cite class="ltx_cite ltx_citemacro_cite">Conneau et al. (<a class="ltx_ref" href="#bib.bib12" title="">2018</a>)</cite>.</p>
+</div>
+<div class="ltx_para" id="Sx1.p5">
+<p class="ltx_p" id="Sx1.p5.1">Lastly, it is unclear whether indicator tasks in general, and our DEOD task in particular, can detect linear separability in the representations, which is the most common use of probes. For this reason we do not advocate for the abandonment of probes, but rather for limiting their usage to specific goals, like detection of linear separation.</p>
+</div>
+</section>
+<section class="ltx_section" id="Sx2">
+<h2 class="ltx_title ltx_title_section">Acknowledgements</h2>
+<div class="ltx_para" id="Sx2.p1">
+<p class="ltx_p" id="Sx2.p1.1">We thank Shauli Ravfogel and an anonymous reviewer (VEsr in openreview) for insightful comments and fruitful discussions. This research was funded by the European Research Council (ERC-StG grant number 677352), the Israeli Ministry of Science and Technology (MOST grant number 3-17992), and the Israeli Innovation Authority (IIA KAMIN grant), for which we are grateful.</p>
+</div>
+</section>
+<section class="ltx_bibliography" id="bib">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+<ul class="ltx_biblist">
+<li class="ltx_bibitem" id="bib.bib1">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Adi et al. (2016)</span>
+<span class="ltx_bibblock">
+Yossi Adi, Einat Kermany, Yonatan Belinkov, Ofer Lavi, and Yoav Goldberg. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.1608.04207" target="_blank" title="">Fine-grained
+analysis of sentence embeddings using auxiliary prediction tasks</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib2">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Alain and Bengio (2017)</span>
+<span class="ltx_bibblock">
+Guillaume Alain and Yoshua Bengio. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://openreview.net/forum?id=ryF7rTqgl" target="_blank" title="">Understanding
+intermediate layers using linear classifier probes</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib3">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Batsuren et al. (2022)</span>
+<span class="ltx_bibblock">
+Khuyagbaatar Batsuren, Omer Goldman, Salam Khalifa, Nizar Habash, Witold
+Kieraś, Gábor Bella, Brian Leonard, Garrett Nicolai, Kyle Gorman,
+Yustinus Ghanggo Ate, Maria Ryskina, Sabrina J. Mielke, Elena Budianskaya,
+Charbel El-Khaissi, Tiago Pimentel, Michael Gasser, William Lane, Mohit Raj,
+Matt Coler, Jaime Rafael Montoya Samame, Delio Siticonatzi Camaiteri, Benoît
+Sagot, Esaú Zumaeta Rojas, Didier López Francis, Arturo Oncevay,
+Juan López Bautista, Gema Celeste Silva Villegas, Lucas Torroba Hennigen,
+Adam Ek, David Guriel, Peter Dirix, Jean-Philippe Bernardy, Andrey
+Scherbakov, Aziyana Bayyr-ool, Antonios Anastasopoulos, Roberto Zariquiey,
+Karina Sheifer, Sofya Ganieva, Hilaria Cruz, Ritván Karahóǧa, Stella
+Markantonatou, George Pavlidis, Matvey Plugaryov, Elena Klyachko, Ali Salehi,
+Candy Angulo, Jatayu Baxi, Andrew Krizhanovsky, Natalia Krizhanovskaya,
+Elizabeth Salesky, Clara Vania, Sardana Ivanova, Jennifer White, Rowan Hall
+Maudslay, Josef Valvoda, Ran Zmigrod, Paula Czarnowska, Irene Nikkarinen,
+Aelita Salchak, Brijesh Bhatt, Christopher Straughn, Zoey Liu, Jonathan North
+Washington, Yuval Pinter, Duygu Ataman, Marcin Wolinski, Totok Suhardijanto,
+Anna Yablonskaya, Niklas Stoehr, Hossep Dolatian, Zahroh Nuriah, Shyam Ratan,
+Francis M. Tyers, Edoardo M. Ponti, Grant Aiton, Aryaman Arora, Richard J.
+Hatcher, Ritesh Kumar, Jeremiah Young, Daria Rodionova, Anastasia Yemelina,
+Taras Andrushko, Igor Marchenko, Polina Mashkovtseva, Alexandra Serova, Emily
+Prud’hommeaux, Maria Nepomniashchaya, Fausto Giunchiglia, Eleanor Chodroff,
+Mans Hulden, Miikka Silfverberg, Arya D. McCarthy, David Yarowsky, Ryan
+Cotterell, Reut Tsarfaty, and Ekaterina Vylomova. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.2205.03608" target="_blank" title="">Unimorph 4.0:
+Universal morphology</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib4">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Belinkov (2022)</span>
+<span class="ltx_bibblock">
+Yonatan Belinkov. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1162/coli_a_00422" target="_blank" title="">Probing classifiers:
+Promises, shortcomings, and advances</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib4.1.1">Computational Linguistics</em>, 48(1):207–219.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib5">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Belinkov and Glass (2019)</span>
+<span class="ltx_bibblock">
+Yonatan Belinkov and James Glass. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1162/tacl_a_00254" target="_blank" title="">Analysis Methods in
+Neural Language Processing: A Survey</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib5.1.1">Transactions of the Association for Computational Linguistics</em>,
+7:49–72.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib6">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bojanowski et al. (2017)</span>
+<span class="ltx_bibblock">
+Piotr Bojanowski, Edouard Grave, Armand Joulin, and Tomas Mikolov. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1607.04606" target="_blank" title="">Enriching word vectors with
+subword information</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib7">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Bolukbasi et al. (2016)</span>
+<span class="ltx_bibblock">
+Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai.
+2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1607.06520" target="_blank" title="">Man is to computer
+programmer as woman is to homemaker? debiasing word embeddings</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib8">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Caliskan et al. (2017)</span>
+<span class="ltx_bibblock">
+Aylin Caliskan, Joanna J. Bryson, and Arvind Narayanan. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1126/science.aal4230" target="_blank" title="">Semantics derived
+automatically from language corpora contain human-like biases</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib8.1.1">Science</em>, 356(6334):183–186.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib9">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Camacho-Collados and
+Navigli (2016)</span>
+<span class="ltx_bibblock">
+José Camacho-Collados and Roberto Navigli. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/W16-2508" target="_blank" title="">Find the word that does
+not belong: A framework for an intrinsic evaluation of word vector
+representations</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib9.1.1">Proceedings of the 1st Workshop on Evaluating Vector-Space
+Representations for NLP</em>, pages 43–50, Berlin, Germany. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib10">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Cañete et al. (2020)</span>
+<span class="ltx_bibblock">
+José Cañete, Gabriel Chaperon, Rodrigo Fuentes, Jou-Hui Ho, Hojin Kang, and
+Jorge Pérez. 2020.
+
+</span>
+<span class="ltx_bibblock">Spanish pre-trained bert model and evaluation data.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib10.1.1">PML4DC at ICLR 2020</em>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib11">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Chiu et al. (2016)</span>
+<span class="ltx_bibblock">
+Billy Chiu, Anna Korhonen, and Sampo Pyysalo. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/W16-2501" target="_blank" title="">Intrinsic evaluation of
+word vectors fails to predict extrinsic performance</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib11.1.1">Proceedings of the 1st Workshop on Evaluating Vector-Space
+Representations for NLP</em>, pages 1–6, Berlin, Germany. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib12">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Conneau et al. (2018)</span>
+<span class="ltx_bibblock">
+Alexis Conneau, German Kruszewski, Guillaume Lample, Loïc Barrault, and
+Marco Baroni. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/P18-1198" target="_blank" title="">What you can cram into
+a single $&amp;!#* vector: Probing sentence embeddings for linguistic
+properties</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib12.1.1">Proceedings of the 56th Annual Meeting of the Association
+for Computational Linguistics (Volume 1: Long Papers)</em>, pages 2126–2136,
+Melbourne, Australia. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib13">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Czarnowska et al. (2019)</span>
+<span class="ltx_bibblock">
+Paula Czarnowska, Sebastian Ruder, Edouard Grave, Ryan Cotterell, and Ann
+Copestake. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/D19-1090" target="_blank" title="">Don’t forget the long
+tail! a comprehensive analysis of morphological generalization in bilingual
+lexicon induction</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib13.1.1">Proceedings of the 2019 Conference on Empirical Methods in
+Natural Language Processing and the 9th International Joint Conference on
+Natural Language Processing (EMNLP-IJCNLP)</em>, pages 974–983, Hong Kong,
+China. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib14">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Devlin et al. (2018)</span>
+<span class="ltx_bibblock">
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1810.04805" target="_blank" title="">BERT: pre-training of deep
+bidirectional transformers for language understanding</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib14.1.1">CoRR</em>, abs/1810.04805.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib15">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Elazar et al. (2021)</span>
+<span class="ltx_bibblock">
+Yanai Elazar, Shauli Ravfogel, Alon Jacovi, and Yoav Goldberg. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1162/tacl_a_00359" target="_blank" title="">Amnesic probing:
+Behavioral explanation with amnesic counterfactuals</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib15.1.1">Transactions of the Association for Computational Linguistics</em>,
+9:160–175.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib16">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Faruqui et al. (2016)</span>
+<span class="ltx_bibblock">
+Manaal Faruqui, Yulia Tsvetkov, Pushpendre Rastogi, and Chris Dyer. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/W16-2506" target="_blank" title="">Problems with
+evaluation of word embeddings using word similarity tasks</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib16.1.1">Proceedings of the 1st Workshop on Evaluating Vector-Space
+Representations for NLP</em>, pages 30–35, Berlin, Germany. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib17">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gonen and Goldberg (2019)</span>
+<span class="ltx_bibblock">
+Hila Gonen and Yoav Goldberg. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/N19-1061" target="_blank" title="">Lipstick on a pig:
+Debiasing methods cover up systematic gender biases in word embeddings but
+do not remove them</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib17.1.1">Proceedings of the 2019 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long and Short Papers)</em>, pages 609–614, Minneapolis,
+Minnesota. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib18">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Gong et al. (2018)</span>
+<span class="ltx_bibblock">
+Chengyue Gong, Di He, Xu Tan, Tao Qin, Liwei Wang, and Tie-Yan Liu. 2018.
+
+</span>
+<span class="ltx_bibblock">Frage: Frequency-agnostic word representation.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib18.1.1">Advances in neural information processing systems</em>, 31.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib19">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Guetta et al. (2022)</span>
+<span class="ltx_bibblock">
+Eylon Guetta, Avi Shmidman, Shaltiel Shmidman, Cheyn Shmuel Shmidman, Joshua
+Guedalia, Moshe Koppel, Dan Bareket, Amit Seker, and Reut Tsarfaty. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.2211.15199" target="_blank" title="">Large pre-trained
+models with extra-large vocabularies: A contrastive analysis of hebrew bert
+models and a new one to outperform them all</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib20">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hewitt and Liang (2019)</span>
+<span class="ltx_bibblock">
+John Hewitt and Percy Liang. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/D19-1275" target="_blank" title="">Designing and
+interpreting probes with control tasks</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib20.1.1">Proceedings of the 2019 Conference on Empirical Methods in
+Natural Language Processing and the 9th International Joint Conference on
+Natural Language Processing (EMNLP-IJCNLP)</em>, pages 2733–2743, Hong Kong,
+China. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib21">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hewitt and Manning (2019)</span>
+<span class="ltx_bibblock">
+John Hewitt and Christopher D. Manning. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/N19-1419" target="_blank" title="">A structural probe
+for finding syntax in word representations</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib21.1.1">Proceedings of the 2019 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long and Short Papers)</em>, pages 4129–4138,
+Minneapolis, Minnesota. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib22">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Hill et al. (2015)</span>
+<span class="ltx_bibblock">
+Felix Hill, Roi Reichart, and Anna Korhonen. 2015.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.1162/COLI_a_00237" target="_blank" title="">SimLex-999:
+Evaluating semantic models with (genuine) similarity estimation</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib22.1.1">Computational Linguistics</em>, 41(4):665–695.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib23">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Htut et al. (2019)</span>
+<span class="ltx_bibblock">
+Phu Mon Htut, Jason Phang, Shikha Bordia, and Samuel R. Bowman. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.1911.12246" target="_blank" title="">Do attention heads
+in bert track syntactic dependencies?</a>
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib24">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Immer et al. (2022)</span>
+<span class="ltx_bibblock">
+Alexander Immer, Lucas Torroba Hennigen, Vincent Fortuin, and Ryan Cotterell.
+2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2022.acl-long.129" target="_blank" title="">Probing as
+quantifying inductive bias</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib24.1.1">Proceedings of the 60th Annual Meeting of the Association
+for Computational Linguistics (Volume 1: Long Papers)</em>, pages 1839–1851,
+Dublin, Ireland. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib25">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Köhn (2016)</span>
+<span class="ltx_bibblock">
+Arne Köhn. 2016.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/W16-2512" target="_blank" title="">Evaluating embeddings
+using syntax-based classification tasks as a proxy for parser performance</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib25.1.1">Proceedings of the 1st Workshop on Evaluating Vector-Space
+Representations for NLP</em>, pages 67–71, Berlin, Germany. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib26">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Kriegeskorte et al. (2008)</span>
+<span class="ltx_bibblock">
+Nikolaus Kriegeskorte, Marieke Mur, and Peter A Bandettini. 2008.
+
+</span>
+<span class="ltx_bibblock">Representational similarity analysis-connecting the branches of
+systems neuroscience.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib26.1.1">Frontiers in systems neuroscience</em>, page 4.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib27">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Levy and Goldberg (2014)</span>
+<span class="ltx_bibblock">
+Omer Levy and Yoav Goldberg. 2014.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.3115/v1/W14-1618" target="_blank" title="">Linguistic regularities
+in sparse and explicit word representations</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib27.1.1">Proceedings of the Eighteenth Conference on Computational
+Natural Language Learning</em>, pages 171–180, Ann Arbor, Michigan. Association
+for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib28">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2019a)</span>
+<span class="ltx_bibblock">
+Nelson F. Liu, Matt Gardner, Yonatan Belinkov, Matthew E. Peters, and Noah A.
+Smith. 2019a.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/N19-1112" target="_blank" title="">Linguistic knowledge
+and transferability of contextual representations</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib28.1.1">Proceedings of the 2019 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long and Short Papers)</em>, pages 1073–1094,
+Minneapolis, Minnesota. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib29">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Liu et al. (2019b)</span>
+<span class="ltx_bibblock">
+Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer
+Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. 2019b.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:198953378" target="_blank" title="">Roberta:
+A robustly optimized bert pretraining approach</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib29.1.1">ArXiv</em>, abs/1907.11692.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib30">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Merchant et al. (2020)</span>
+<span class="ltx_bibblock">
+Amil Merchant, Elahe Rahimtoroghi, Ellie Pavlick, and Ian Tenney. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.blackboxnlp-1.4" target="_blank" title="">What
+happens to BERT embeddings during fine-tuning?</a>
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib30.1.1">Proceedings of the Third BlackboxNLP Workshop on Analyzing
+and Interpreting Neural Networks for NLP</em>, pages 33–44, Online. Association
+for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib31">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Mikolov et al. (2013)</span>
+<span class="ltx_bibblock">
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean. 2013.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1301.3781" target="_blank" title="">Efficient estimation of word
+representations in vector space</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib32">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nadeem et al. (2021)</span>
+<span class="ltx_bibblock">
+Moin Nadeem, Anna Bethke, and Siva Reddy. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.acl-long.416" target="_blank" title="">StereoSet:
+Measuring stereotypical bias in pretrained language models</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib32.1.1">Proceedings of the 59th Annual Meeting of the Association
+for Computational Linguistics and the 11th International Joint Conference on
+Natural Language Processing (Volume 1: Long Papers)</em>, pages 5356–5371,
+Online. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib33">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Niven and Kao (2019)</span>
+<span class="ltx_bibblock">
+Timothy Niven and Hung-Yu Kao. 2019.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/P19-1459" target="_blank" title="">Probing neural network
+comprehension of natural language arguments</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib33.1.1">Proceedings of the 57th Annual Meeting of the Association
+for Computational Linguistics</em>, pages 4658–4664, Florence, Italy.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib34">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Nivre et al. (2020)</span>
+<span class="ltx_bibblock">
+Joakim Nivre, Marie-Catherine de Marneffe, Filip Ginter, Jan Hajič,
+Christopher D. Manning, Sampo Pyysalo, Sebastian Schuster, Francis Tyers, and
+Daniel Zeman. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.2004.10643" target="_blank" title="">Universal
+dependencies v2: An evergrowing multilingual treebank collection</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib35">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pedregosa et al. (2011)</span>
+<span class="ltx_bibblock">
+F. Pedregosa, G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O. Grisel,
+M. Blondel, P. Prettenhofer, R. Weiss, V. Dubourg, J. Vanderplas, A. Passos,
+D. Cournapeau, M. Brucher, M. Perrot, and E. Duchesnay. 2011.
+
+</span>
+<span class="ltx_bibblock">Scikit-learn: Machine learning in Python.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib35.1.1">Journal of Machine Learning Research</em>, 12:2825–2830.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib36">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Peters et al. (2018)</span>
+<span class="ltx_bibblock">
+Matthew E. Peters, Mark Neumann, Mohit Iyyer, Matt Gardner, Christopher Clark,
+Kenton Lee, and Luke Zettlemoyer. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/N18-1202" target="_blank" title="">Deep contextualized
+word representations</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib36.1.1">Proceedings of the 2018 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long Papers)</em>, pages 2227–2237, New Orleans,
+Louisiana. Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib37">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pimentel et al. (2020a)</span>
+<span class="ltx_bibblock">
+Tiago Pimentel, Naomi Saphra, Adina Williams, and Ryan Cotterell.
+2020a.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.emnlp-main.254" target="_blank" title="">Pareto
+probing: Trading off accuracy for complexity</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib37.1.1">Proceedings of the 2020 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>, pages 3138–3153, Online. Association
+for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib38">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Pimentel et al. (2020b)</span>
+<span class="ltx_bibblock">
+Tiago Pimentel, Josef Valvoda, Rowan Hall Maudslay, Ran Zmigrod, Adina
+Williams, and Ryan Cotterell. 2020b.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.acl-main.420" target="_blank" title="">Information-theoretic probing for linguistic structure</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib38.1.1">Proceedings of the 58th Annual Meeting of the Association
+for Computational Linguistics</em>, pages 4609–4622, Online. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib39">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ravfogel et al. (2020)</span>
+<span class="ltx_bibblock">
+Shauli Ravfogel, Yanai Elazar, Hila Gonen, Michael Twiton, and Yoav Goldberg.
+2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.2004.07667" target="_blank" title="">Null it out:
+Guarding protected attributes by iterative nullspace projection</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib40">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Ravfogel et al. (2022)</span>
+<span class="ltx_bibblock">
+Shauli Ravfogel, Michael Twiton, Yoav Goldberg, and Ryan Cotterell. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.2201.12091" target="_blank" title="">Linear adversarial
+concept erasure</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib41">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Voita and Titov (2020)</span>
+<span class="ltx_bibblock">
+Elena Voita and Ivan Titov. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.emnlp-main.14" target="_blank" title="">Information-theoretic probing with minimum description length</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib41.1.1">Proceedings of the 2020 Conference on Empirical Methods in
+Natural Language Processing (EMNLP)</em>, pages 183–196, Online. Association for
+Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib42">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wolf et al. (2020)</span>
+<span class="ltx_bibblock">
+Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue,
+Anthony Moi, Pierric Cistac, Tim Rault, Remi Louf, Morgan Funtowicz, Joe
+Davison, Sam Shleifer, Patrick von Platen, Clara Ma, Yacine Jernite, Julien
+Plu, Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama Drame, Quentin Lhoest,
+and Alexander Rush. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2020.emnlp-demos.6" target="_blank" title="">Transformers:
+State-of-the-art natural language processing</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib42.1.1">Proceedings of the 2020 Conference on Empirical Methods in
+Natural Language Processing: System Demonstrations</em>, pages 38–45, Online.
+Association for Computational Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib43">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Wu et al. (2020)</span>
+<span class="ltx_bibblock">
+Zhiyong Wu, Yun Chen, Ben Kao, and Qun Liu. 2020.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.48550/ARXIV.2004.14786" target="_blank" title="">Perturbed masking:
+Parameter-free probing for analyzing and interpreting bert</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib44">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zeldes (2017)</span>
+<span class="ltx_bibblock">
+Amir Zeldes. 2017.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/http://dx.doi.org/10.1007/s10579-016-9343-x" target="_blank" title="">The GUM corpus: Creating multilayer resources in the classroom</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib44.1.1">Language Resources and Evaluation</em>, 51(3):581–612.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib45">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zeng et al. (2021)</span>
+<span class="ltx_bibblock">
+Kun Zeng, Yibin Xu, Ge Lin, Likeng Liang, and Tianyong Hao. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://api.semanticscholar.org/CorpusID:236504618" target="_blank" title="">Automated
+classification of clinical trial eligibility criteria text based on ensemble
+learning and metric learning</a>.
+
+</span>
+<span class="ltx_bibblock"><em class="ltx_emph ltx_font_italic" id="bib.bib45.1.1">BMC Medical Informatics and Decision Making</em>, 21.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib46">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhao et al. (2018)</span>
+<span class="ltx_bibblock">
+Jieyu Zhao, Yichao Zhou, Zeyu Li, Wei Wang, and Kai-Wei Chang. 2018.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="http://arxiv.org/abs/1809.01496" target="_blank" title="">Learning gender-neutral word
+embeddings</a>.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib47">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhou and Srikumar (2021)</span>
+<span class="ltx_bibblock">
+Yichu Zhou and Vivek Srikumar. 2021.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2021.naacl-main.401" target="_blank" title="">DirectProbe: Studying representations without classifiers</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib47.1.1">Proceedings of the 2021 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language
+Technologies</em>, pages 5070–5083, Online. Association for Computational
+Linguistics.
+
+</span>
+</li>
+<li class="ltx_bibitem" id="bib.bib48">
+<span class="ltx_tag ltx_role_refnum ltx_tag_bibitem">Zhou and Srikumar (2022)</span>
+<span class="ltx_bibblock">
+Yichu Zhou and Vivek Srikumar. 2022.
+
+</span>
+<span class="ltx_bibblock"><a class="ltx_ref ltx_href" href="https://doi.org/10.18653/v1/2022.acl-long.75" target="_blank" title="">A closer look
+at how fine-tuning changes BERT</a>.
+
+</span>
+<span class="ltx_bibblock">In <em class="ltx_emph ltx_font_italic" id="bib.bib48.1.1">Proceedings of the 60th Annual Meeting of the Association
+for Computational Linguistics (Volume 1: Long Papers)</em>, pages 1046–1061,
+Dublin, Ireland. Association for Computational Linguistics.
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</article>
+</div>
+<div class="ar5iv-footer"><a class="ar5iv-nav-button ar5iv-nav-button-prev" href="/html/2310.15904">◄</a>
+<a class="ar5iv-home-button" href="/"><img alt="ar5iv homepage" height="40" src="/assets/ar5iv.png"/></a>
+<a class="ar5iv-text-button" href="/feeling_lucky">Feeling<br/>lucky?</a>
+<a aria-hidden="true" href="/land_of_honey_and_milk" rel="nofollow" tabindex="-1"></a>
+<a class="ar5iv-text-button ar5iv-severity-warning" href="/log/2310.15905">Conversion<br/>report</a>
+<a class="ar5iv-text-button" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&amp;title=Improve+article+2310.15905" target="_blank">Report<br/>an issue</a>
+<a class="ar5iv-text-button arxiv-ui-theme" href="https://arxiv.org/abs/2310.15905">View original<br/>on arXiv</a><a class="ar5iv-nav-button ar5iv-nav-button-next" href="/html/2310.15906">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+<div class="ltx_page_logo">Generated  on Tue Feb 27 21:21:53 2024 by <a class="ltx_LaTeXML_logo" href="http://dlmf.nist.gov/LaTeXML/" target="_blank"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img alt="Mascot Sammy" src="NOT_FOUND"/></a>
+</div></footer>
+</div>
+<script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+<script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,688 @@
+{
+    "title": [
+        1,
+        1
+    ],
+    "abstract": [
+        3,
+        6
+    ],
+    "sections": {
+        "1 Introduction": [
+            7,
+            87
+        ],
+        "2 Theory": [
+            88,
+            171
+        ],
+        "3 The SequentialAttention++ algorithm": [
+            172,
+            232
+        ],
+        "4 Experiments": [
+            233,
+            549
+        ],
+        "References": [
+            550,
+            605
+        ],
+        "Appendix A Missing proofs from Section [2](#S2 \"2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\")": [
+            606,
+            651
+        ],
+        "Appendix B OMPR via nonconvex regularization": [
+            652,
+            718
+        ],
+        "Appendix C Additional details on experiments": [
+            719,
+            743
+        ],
+        "Appendix D Ablations": [
+            744,
+            909
+        ]
+    },
+    "subsections": {
+        "1 Introduction": {
+            "1.1 Importance scoring and combinatorial optimization": [
+                13,
+                22
+            ],
+            "1.2 Theoretical results": [
+                23,
+                28
+            ],
+            "1.2.1 Differentiable pruning as nonconvex regularization": [
+                29,
+                46
+            ],
+            "1.2.2 Unique sparse global minima": [
+                47,
+                58
+            ],
+            "Theorem 1.1 (Unique sparse global minima).": [
+                59,
+                73
+            ],
+            "1.3 Empirical results: SequentialAttention++": [
+                74,
+                87
+            ]
+        },
+        "2 Theory": {
+            "2.1 Differentiable pruning as nonconvex regularization": [
+                92,
+                95
+            ],
+            "2.1.1 Unnormalized softmax": [
+                96,
+                101
+            ],
+            "Lemma 2.1 (Unnormalized softmax as log-sum regularization).": [
+                102,
+                110
+            ],
+            "2.1.2 $\\ell_{1}$-regularized masks": [
+                111,
+                114
+            ],
+            "Lemma 2.2 ($\\ell_{1}$-regularized masks as $\\ell_{q}$ regularization).": [
+                115,
+                121
+            ],
+            "2.1.3 Powerpropagation": [
+                122,
+                125
+            ],
+            "Lemma 2.3 (Group powerpropagation as Group LASSO).": [
+                126,
+                132
+            ],
+            "2.2 Unique sparse global minima": [
+                133,
+                140
+            ],
+            "Lemma 2.4.": [
+                141,
+                147
+            ],
+            "Proof.": [
+                161,
+                171
+            ],
+            "Lemma 2.5.": [
+                154,
+                160
+            ]
+        },
+        "3 The SequentialAttention++ algorithm": {
+            "3.1 The sparsification phase": [
+                219,
+                232
+            ]
+        },
+        "4 Experiments": {
+            "ImageNet Deng et\u00a0al. ([2009](#bib.bib7)).": [
+                237,
+                240
+            ],
+            "Criteo Diemert et\u00a0al. ([2017](#bib.bib8)).": [
+                241,
+                246
+            ],
+            "4.1 Baseline algorithms": [
+                247,
+                250
+            ],
+            "4.2 Results": [
+                251,
+                549
+            ]
+        },
+        "References": {},
+        "Appendix A Missing proofs from Section [2](#S2 \"2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\")": {
+            "Proof of Lemma [2.1](#S2.Thmtheorem1 \"Lemma 2.1 (Unnormalized softmax as log-sum regularization). \u2023 2.1.1 Unnormalized softmax \u2023 2.1 Differentiable pruning as nonconvex regularization \u2023 2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\").": [
+                608,
+                616
+            ],
+            "Proof of Lemma [2.2](#S2.Thmtheorem2 \"Lemma 2.2 (\u2113\u2081-regularized masks as \u2113_\ud835\udc5e regularization). \u2023 2.1.2 \u2113\u2081-regularized masks \u2023 2.1 Differentiable pruning as nonconvex regularization \u2023 2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\").": [
+                617,
+                625
+            ],
+            "Proof of Lemma [2.3](#S2.Thmtheorem3 \"Lemma 2.3 (Group powerpropagation as Group LASSO). \u2023 2.1.3 Powerpropagation \u2023 2.1 Differentiable pruning as nonconvex regularization \u2023 2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\").": [
+                626,
+                634
+            ],
+            "A.1 Unique sparse global minima": [
+                635,
+                636
+            ],
+            "Proof of Theorem [1.1](#S1.Thmtheorem1 \"Theorem 1.1 (Unique sparse global minima). \u2023 1.2.2 Unique sparse global minima \u2023 1.2 Theoretical results \u2023 1 Introduction \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\").": [
+                637,
+                651
+            ]
+        },
+        "Appendix B OMPR via nonconvex regularization": {
+            "Definition B.1.": [
+                658,
+                664
+            ],
+            "Definition B.2 (Restricted strong convexity and smoothness).": [
+                665,
+                700
+            ],
+            "Theorem B.3 (OMPR via nonconvex regularization).": [
+                701,
+                714
+            ],
+            "Proof.": [
+                715,
+                718
+            ]
+        },
+        "Appendix C Additional details on experiments": {
+            "C.1 Additional tricks": [
+                721,
+                726
+            ],
+            "C.2 Additional results": [
+                727,
+                743
+            ]
+        },
+        "Appendix D Ablations": {
+            "D.1 Importance of the sparsification phase.": [
+                746,
+                857
+            ],
+            "D.2 Choice of the sparsification exponent.": [
+                858,
+                909
+            ]
+        }
+    },
+    "paragraphs": {
+        "1 Introduction": [
+            [
+                9,
+                9
+            ],
+            [
+                11,
+                11
+            ],
+            [
+                15,
+                15
+            ],
+            [
+                17,
+                17
+            ],
+            [
+                19,
+                19
+            ],
+            [
+                21,
+                21
+            ],
+            [
+                25,
+                25
+            ],
+            [
+                27,
+                27
+            ],
+            [
+                31,
+                31
+            ],
+            [
+                33,
+                36
+            ],
+            [
+                38,
+                38
+            ],
+            [
+                40,
+                40
+            ],
+            [
+                42,
+                45
+            ],
+            [
+                49,
+                49
+            ],
+            [
+                51,
+                52
+            ],
+            [
+                54,
+                54
+            ],
+            [
+                56,
+                57
+            ],
+            [
+                61,
+                61
+            ],
+            [
+                63,
+                63
+            ],
+            [
+                65,
+                66
+            ],
+            [
+                68,
+                68
+            ],
+            [
+                70,
+                70
+            ],
+            [
+                72,
+                72
+            ],
+            [
+                76,
+                76
+            ],
+            [
+                78,
+                78
+            ],
+            [
+                86,
+                86
+            ]
+        ],
+        "2 Theory": [
+            [
+                90,
+                90
+            ],
+            [
+                94,
+                94
+            ],
+            [
+                98,
+                98
+            ],
+            [
+                100,
+                100
+            ],
+            [
+                104,
+                107
+            ],
+            [
+                109,
+                109
+            ],
+            [
+                113,
+                113
+            ],
+            [
+                117,
+                120
+            ],
+            [
+                124,
+                124
+            ],
+            [
+                128,
+                131
+            ],
+            [
+                135,
+                135
+            ],
+            [
+                137,
+                137
+            ],
+            [
+                139,
+                139
+            ],
+            [
+                143,
+                143
+            ],
+            [
+                145,
+                146
+            ],
+            [
+                150,
+                150
+            ],
+            [
+                152,
+                152
+            ],
+            [
+                156,
+                156
+            ],
+            [
+                158,
+                159
+            ],
+            [
+                163,
+                163
+            ],
+            [
+                165,
+                166
+            ],
+            [
+                168,
+                168
+            ],
+            [
+                170,
+                170
+            ]
+        ],
+        "3 The SequentialAttention++ algorithm": [
+            [
+                174,
+                174
+            ],
+            [
+                221,
+                221
+            ],
+            [
+                223,
+                223
+            ]
+        ],
+        "4 Experiments": [
+            [
+                235,
+                235
+            ],
+            [
+                239,
+                239
+            ],
+            [
+                243,
+                243
+            ],
+            [
+                245,
+                245
+            ],
+            [
+                249,
+                249
+            ],
+            [
+                253,
+                253
+            ],
+            [
+                255,
+                255
+            ],
+            [
+                380,
+                380
+            ]
+        ],
+        "References": [
+            [
+                552,
+                604
+            ]
+        ],
+        "Appendix A Missing proofs from Section [2](#S2 \"2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\")": [
+            [
+                610,
+                610
+            ],
+            [
+                612,
+                613
+            ],
+            [
+                615,
+                615
+            ],
+            [
+                619,
+                619
+            ],
+            [
+                621,
+                622
+            ],
+            [
+                624,
+                624
+            ],
+            [
+                628,
+                628
+            ],
+            [
+                630,
+                631
+            ],
+            [
+                633,
+                633
+            ],
+            [
+                639,
+                639
+            ],
+            [
+                641,
+                648
+            ],
+            [
+                650,
+                650
+            ]
+        ],
+        "Appendix B OMPR via nonconvex regularization": [
+            [
+                654,
+                654
+            ],
+            [
+                656,
+                656
+            ],
+            [
+                660,
+                660
+            ],
+            [
+                662,
+                663
+            ],
+            [
+                667,
+                667
+            ],
+            [
+                669,
+                670
+            ],
+            [
+                672,
+                672
+            ],
+            [
+                674,
+                675
+            ],
+            [
+                677,
+                677
+            ],
+            [
+                703,
+                703
+            ],
+            [
+                705,
+                706
+            ],
+            [
+                708,
+                708
+            ],
+            [
+                710,
+                711
+            ],
+            [
+                713,
+                713
+            ],
+            [
+                717,
+                717
+            ]
+        ],
+        "Appendix C Additional details on experiments": [
+            [
+                723,
+                723
+            ],
+            [
+                725,
+                725
+            ],
+            [
+                729,
+                729
+            ]
+        ],
+        "Appendix D Ablations": [
+            [
+                854,
+                854
+            ],
+            [
+                856,
+                856
+            ],
+            [
+                860,
+                860
+            ]
+        ]
+    },
+    "figures": {
+        "1 Introduction": {
+            "[FIGURE S1.F1.g1]": [
+                80,
+                84
+            ]
+        },
+        "2 Theory": {},
+        "3 The SequentialAttention++ algorithm": {
+            "[FIGURE S3.F2.g1]": [
+                225,
+                231
+            ]
+        },
+        "4 Experiments": {
+            "[FIGURE S4.F3.g1]": [
+                372,
+                378
+            ]
+        },
+        "References": {},
+        "Appendix A Missing proofs from Section [2](#S2 \"2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\")": {},
+        "Appendix B OMPR via nonconvex regularization": {},
+        "Appendix C Additional details on experiments": {
+            "[FIGURE A3.F4.g1]": [
+                731,
+                735
+            ],
+            "[FIGURE A3.F5.g1]": [
+                737,
+                742
+            ]
+        },
+        "Appendix D Ablations": {}
+    },
+    "tables": {
+        "1 Introduction": {},
+        "2 Theory": {},
+        "3 The SequentialAttention++ algorithm": {},
+        "4 Experiments": {
+            "[TABLE S4.T1]": [
+                257,
+                370
+            ],
+            "[TABLE S4.T2]": [
+                382,
+                548
+            ]
+        },
+        "References": {},
+        "Appendix A Missing proofs from Section [2](#S2 \"2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\")": {},
+        "Appendix B OMPR via nonconvex regularization": {},
+        "Appendix C Additional details on experiments": {},
+        "Appendix D Ablations": {
+            "[TABLE A4.T3]": [
+                748,
+                852
+            ],
+            "[TABLE A4.T4]": [
+                862,
+                907
+            ]
+        }
+    },
+    "algorithms": {
+        "1 Introduction": {},
+        "2 Theory": {},
+        "3 The SequentialAttention++ algorithm": {
+            "[ALGORITHM alg1]": [
+                176,
+                217
+            ]
+        },
+        "4 Experiments": {},
+        "References": {},
+        "Appendix A Missing proofs from Section [2](#S2 \"2 Theory \u2023 SequentialAttention++ for Block Sparsification: Differentiable Pruning Meets Combinatorial Optimization\")": {},
+        "Appendix B OMPR via nonconvex regularization": {
+            "[ALGORITHM alg2]": [
+                679,
+                699
+            ]
+        },
+        "Appendix C Additional details on experiments": {},
+        "Appendix D Ablations": {}
+    }
+}
