@@ -69,7 +69,9 @@ for pd_dir in paper_dirs:
         except Exception as e:
             row[f"{cond}_struct"] = None
             row[f"{cond}_judge"] = None
-            row[f"{cond}_error"] = str(e)
+            row[f"{cond}_free_chars"] = 0
+            row[f"{cond}_free_time"] = "0s"
+            row[f"{cond}_error"] = str(e)[:80]
         finally:
             if fid: GEN_CLIENT.files.delete(fid.id)
 
