@@ -66,30 +66,20 @@ def paired_ate_p(df, cond, baseline="Original", col="free_n_soundness_issues"):
 
 logic = ["blueprint_conclusion","blueprint_finding","blueprint_result"]
 fmt   = ["active_passive","british_american","language_error","paper_layout"]
+all_conds = logic + fmt
 
-# Soundness ATE — Free Judge
-logic_s = [paired_ate_p(main, c, col="free_n_soundness_issues") for c in logic]
-fmt_s   = [paired_ate_p(main, c, col="free_n_soundness_issues") for c in fmt]
-logic_s_avg = np.mean([a for a,_ in logic_s])
-fmt_s_avg   = np.mean([a for a,_ in fmt_s])
+def paired_deltas(df, cond, baseline="Original", col="free_n_soundness_issues"):
+    """Return per-paper Δ values for a given condition."""
+    o = df[df["condition"]==baseline].set_index("paper_id")[col].dropna()
+    c = df[df["condition"]==cond].set_index("paper_id")[col].dropna()
+    ix = o.index.intersection(c.index)
+    return (c.loc[ix] - o.loc[ix]).values
 
-# Soundness ATE — Struct (Pydantic schema n_soundness_issues)
-logic_ssnd = [paired_ate_p(main, c, col="n_soundness_issues") for c in logic]
-fmt_ssnd   = [paired_ate_p(main, c, col="n_soundness_issues") for c in fmt]
-logic_ssnd_avg = np.mean([a for a,_ in logic_ssnd])
-fmt_ssnd_avg   = np.mean([a for a,_ in fmt_ssnd])
-
-# Score ATE — Free Judge
-logic_fs = [paired_ate_p(main, c, col="free_extracted_rating") for c in logic]
-fmt_fs   = [paired_ate_p(main, c, col="free_extracted_rating") for c in fmt]
-logic_fs_avg = np.mean([a for a,_ in logic_fs])
-fmt_fs_avg   = np.mean([a for a,_ in fmt_fs])
-
-# Score ATE — Struct self (Generator rating_1_10)
-logic_ss = [paired_ate_p(main, c, col="rating_1_10") for c in logic]
-fmt_ss   = [paired_ate_p(main, c, col="rating_1_10") for c in fmt]
-logic_ss_avg = np.mean([a for a,_ in logic_ss])
-fmt_ss_avg   = np.mean([a for a,_ in fmt_ss])
+# Build box-plot data: Free Soundness Δ & Free Score Δ per condition
+fsound_data = [paired_deltas(main, c, col="free_n_soundness_issues") for c in all_conds]
+fscore_data = [paired_deltas(main, c, col="free_extracted_rating") for c in all_conds]
+ssound_data = [paired_deltas(main, c, col="n_soundness_issues") for c in all_conds]
+sscore_data = [paired_deltas(main, c, col="rating_1_10") for c in all_conds]
 
 orig = main[main["condition"]=="Original"]
 aspects = orig["n_strengths"] + orig["n_weaknesses"] + orig["n_soundness_issues"]
@@ -98,11 +88,9 @@ main["se"] = main["free_chars"] * 0.6
 print(f"Free ATE={ate_free:+.2f} p={p_free:.4f} | Struct ATE={ate_struct:+.2f} p={p_struct:.4f}")
 print(f"Weaknesses: Free ATE={ate_fw:+.2f} p={p_fw:.4f} | Struct ATE={ate_sw:+.2f} p={p_sw:.4f}")
 print(f"Soundness:  Free ATE={ate_fs:+.2f} p={p_fs:.4f} | Struct ATE={ate_ss:+.2f} p={p_ss:.4f}")
-print(f"RQ2 Soundness Free: Logic={logic_s_avg:+.2f} Format={fmt_s_avg:+.2f}")
-print(f"RQ2 Soundness Struct: Logic={logic_ssnd_avg:+.2f} Format={fmt_ssnd_avg:+.2f}")
-print(f"RQ2 Score Free: Logic={logic_fs_avg:+.2f} Format={fmt_fs_avg:+.2f}")
-print(f"RQ2 Score Struct (self): Logic={logic_ss_avg:+.2f} Format={fmt_ss_avg:+.2f}")
-print(f"RQ3: {aspects.mean():.1f} aspects | RQ4: Free var={main['free_extracted_rating'].var():.2f} Struct var={main['rating_1_10'].var():.2f} (all 240 rows)")
+# Quick RQ2 summary
+for i,c in enumerate(all_conds):
+    print(f"  {c:25s} FreeSoundΔ={np.mean(fsound_data[i]):+.2f}  FreeScoreΔ={np.mean(fscore_data[i]):+.2f}  StructSoundΔ={np.mean(ssound_data[i]):+.2f}  StructScoreΔ={np.mean(sscore_data[i]):+.2f}")
 
 plt.rcParams.update({'font.family':'serif','axes.spines.top':False,'axes.spines.right':False,'axes.labelsize':12,'axes.titlesize':14,'legend.frameon':False})
 fd = Path("outputs/figures"); fd.mkdir(parents=True,exist_ok=True)
@@ -241,48 +229,59 @@ plt.suptitle('RQ1: Score vs. Soundness — The \"Cognitive Firewall\" Effect',
 plt.tight_layout(); plt.savefig(fd/"rq1_scatter_firewall.png", dpi=300, bbox_inches='tight')
 print("Saved: rq1_scatter_firewall.png")
 
-# ═══ RQ2: Dual-Panel — Soundness ATE + Score ATE ═══
-fig,(ax1,ax2)=plt.subplots(1,2,figsize=(13,5.5))
+# ═══ RQ2: Box Plots — Logic vs. Format, Free vs. Struct ═══
+# Aggregate per-paper Δ into Logic (3 conds) and Format (4 conds) groups
+free_sound_logic = np.concatenate(fsound_data[:3])    # 3×30=90
+free_sound_format = np.concatenate(fsound_data[3:])   # 4×30=120
+free_score_logic = np.concatenate(fscore_data[:3])
+free_score_format = np.concatenate(fscore_data[3:])
+struct_sound_logic = np.concatenate(ssound_data[:3])
+struct_sound_format = np.concatenate(ssound_data[3:])
+struct_score_logic = np.concatenate(sscore_data[:3])
+struct_score_format = np.concatenate(sscore_data[3:])
 
-x_labels=["Logic\n(Defect)","Format\n(Surface)"]
-x=np.arange(len(x_labels));w=0.25;
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.5))
+FREE_C = '#fc8d59'; STRUCT_C = '#91bfdb'
+positions = [1, 2, 4, 5]  # Free-Logic, Struct-Logic, Free-Format, Struct-Format
 
-# Left: Soundness ATE (Free + Struct)
-free_s_vals=[logic_s_avg,fmt_s_avg]; struct_s_vals=[logic_ssnd_avg,fmt_ssnd_avg]
-all_s_vals=free_s_vals+struct_s_vals; s_ymin=min(all_s_vals)-0.15; s_ymax=max(all_s_vals)+0.2
-bars_fs=ax1.bar(x-w/2,free_s_vals,w,color='#fc8d59',edgecolor='black',lw=1,label='Prompt_Free')
-bars_ss=ax1.bar(x+w/2,struct_s_vals,w,color='#91bfdb',edgecolor='black',lw=1,label='Prompt_Structured')
-for b in bars_fs:
-    yv=b.get_height()
-    ax1.text(b.get_x()+b.get_width()/2, yv+(0.05 if yv>=0 else -0.12), f"{yv:+.2f}", ha='center', fontweight='bold', fontsize=9)
-for b in bars_ss:
-    yv=b.get_height()
-    ax1.text(b.get_x()+b.get_width()/2, yv+(0.05 if yv>=0 else -0.12), f"{yv:+.2f}", ha='center', fontweight='bold', fontsize=9)
-ax1.axhline(0,color='black',lw=1);ax1.set_xticks(x);ax1.set_xticklabels(x_labels,fontsize=10,fontweight='bold')
-ax1.set_ylabel(r"ATE ($\Delta$ Count)",fontsize=12)
-ax1.set_ylim(s_ymin,s_ymax)
-ax1.set_title("Soundness Issues",fontsize=12,fontweight='bold')
-ax1.legend(fontsize=8)
+for ax, sound_data, score_data, ylabel, title in [
+    (ax1, [free_sound_logic, struct_sound_logic, free_sound_format, struct_sound_format],
+           None, r'$\Delta$ Soundness Issues', 'Soundness Issues'),
+    (ax2, None,
+           [free_score_logic, struct_score_logic, free_score_format, struct_score_format],
+           r'$\Delta$ Score', 'Overall Score')]:
 
-# Right: Score ATE (Free + Struct)
-all_v=[logic_fs_avg,fmt_fs_avg,logic_ss_avg,fmt_ss_avg]; v_ymin=min(all_v)-0.1; v_ymax=max(all_v)+0.15
-bars_f=ax2.bar(x-w,[logic_fs_avg,fmt_fs_avg],w,color='#fc8d59',edgecolor='black',lw=1,label='Prompt_Free')
-bars_s=ax2.bar(x,[logic_ss_avg,fmt_ss_avg],w,color='#91bfdb',edgecolor='black',lw=1,label='Prompt_Structured')
-for b in bars_f:
-    yv=b.get_height()
-    ax2.text(b.get_x()+b.get_width()/2, yv+(0.03 if yv>=0 else -0.10), f"{yv:+.2f}", ha='center', fontweight='bold', fontsize=9)
-for b in bars_s:
-    yv=b.get_height()
-    ax2.text(b.get_x()+b.get_width()/2, yv+(0.03 if yv>=0 else -0.10), f"{yv:+.2f}", ha='center', fontweight='bold', fontsize=9)
-ax2.axhline(0,color='black',lw=1);ax2.set_xticks(x);ax2.set_xticklabels(x_labels,fontsize=10,fontweight='bold')
-ax2.set_ylim(v_ymin,v_ymax)
-ax2.set_ylabel(r"ATE ($\Delta$ Score)",fontsize=12)
-ax2.set_title("Score (Free Judge vs. Struct Self)",fontsize=12,fontweight='bold')
-ax2.legend(fontsize=9)
+    data = sound_data if sound_data is not None else score_data
+    bp = ax.boxplot(data, positions=positions, patch_artist=True, widths=0.55,
+                    medianprops=dict(color='black', lw=1.5),
+                    flierprops=dict(marker='o', markersize=3, alpha=0.4))
+    box_colors = [FREE_C, STRUCT_C, FREE_C, STRUCT_C]
+    for patch, bc in zip(bp['boxes'], box_colors):
+        patch.set_facecolor(bc); patch.set_edgecolor('black'); patch.set_linewidth(0.8)
 
-plt.suptitle("RQ2: Defect Discriminability — Logic-Perturbed vs. Format-Perturbed",y=1.02,fontsize=14,fontweight='bold')
-plt.tight_layout();plt.savefig(fd/"rq2_discriminability_bar.png",dpi=300,bbox_inches='tight')
-print("Saved: rq2_discriminability_bar.png")
+    # Jittered strip overlay
+    for i, (d, bc) in enumerate(zip(data, box_colors)):
+        jitter = np.random.RandomState(i+42).uniform(-0.18, 0.18, len(d))
+        ax.scatter(np.full(len(d), positions[i])+jitter, d, alpha=0.3, s=14,
+                   c=bc, edgecolors='none', zorder=10)
+
+    ax.axhline(0, color='gray', lw=0.8, linestyle='--')
+    ax.set_xticks([1.5, 4.5])
+    ax.set_xticklabels(['Logic-Perturbed\n(Defect)', 'Format-Perturbed\n(Surface)'], fontsize=11, fontweight='bold')
+    ax.set_ylabel(ylabel, fontsize=12, fontweight='bold')
+    ax.set_title(title, fontsize=13, fontweight='bold')
+    ax.set_xlim(0.3, 5.7)
+
+    # Legend
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(facecolor=FREE_C, label='Prompt_Free'),
+                        Patch(facecolor=STRUCT_C, label='Prompt_Structured')],
+              fontsize=9, loc='upper right')
+
+plt.suptitle(r'RQ2: Defect Discriminability — Logic vs. Format Perturbations',
+             y=1.02, fontsize=14, fontweight='bold')
+plt.tight_layout(); plt.savefig(fd/"rq2_discriminability_box.png", dpi=300, bbox_inches='tight')
+print("Saved: rq2_discriminability_box.png")
 
 # ═══ RQ3 ═══
 odf=main[main["condition"]=="Original"].copy()

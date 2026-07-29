@@ -116,9 +116,9 @@ Upload the 60 physical PDFs (30 Original + 30 Injected) via the **OpenAI Chat Co
 
 
 * **RQ2: Defect Discriminability & Selectivity**
-* *Operation:* Compare the $ATE$ (shift relative to `Original`) between the Logic-Perturbed group and the Format-Perturbed control group.
+* *Operation:* Compare the $ATE$ (shift relative to `Original`) between the Logic-Perturbed group and the Format-Perturbed control group, for both Prompt_Free and Prompt_Structured.
 * *Metrics:* $ATE_{soundness}$ and $ATE_{score}$, each with Free (Judge-extracted) and Struct (self-reported) variants. A successful result shows Logic > Format for soundness (identifying true flaws), while Format remains near baseline (ignoring surface noise).
-* *Visualization:* A grouped bar chart with error bars displaying the average `n_soundness_issues` across three main categories: Baseline, Format-Perturbed, and Logic-Perturbed. The visual starkly contrasting a high bar for Logic-Perturbed against low, baseline-level bars for Format-Perturbed will empirically demonstrate the model's precise defect discriminability.
+* *Visualization:* A 2×2 box plot aggregating all per-paper Δ values into Logic-Perturbed vs. Format-Perturbed groups, with Free (orange) and Struct (blue) side-by-side. The boxes expose the distributional reality: Free boxes wildly cross zero for both Logic and Format (zero discriminability), while Struct boxes collapse into narrow bands hugging zero (score compression even against genuine defects).
 
 
 * **RQ3: Review Comprehensiveness**
