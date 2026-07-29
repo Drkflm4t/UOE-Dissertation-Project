@@ -1,0 +1,158 @@
+Summary
+
+This paper introduces a new task setting for product attribute extraction in e-commerce: open-world attribute mining under light supervision. Instead of assuming a fixed ontology of attributes or requiring explicit descriptions of unseen attributes at inference time, the paper aims to (i) expand the value vocabulary of known seed attribute types and (ii) discover values of entirely new attribute types not covered by the seed set. To support this setting, the authors construct a new dataset, WOAM, spanning four product categories (tea, vitamin, sofa, phone case), with titles and bullet-point descriptions. They propose Amacer, a pipeline with three main ingredients: syntax-oriented candidate span generation using POS patterns, supervised contrastive learning from a curated seed attribute set, and two additional regularizers for open-world discovery—a self-supervised bullet-point co-occurrence objective and an unsupervised latent-attribute objective inspired by neural topic modeling. Final grouping is done via adaptive expansion for seed attributes plus DBSCAN for remaining candidates. Experiments show improvements over several baselines, including OA-Mine and tagging-based methods.
+
+Overall recommendation
+
+Weak Accept
+
+Confidence
+
+High
+
+Strengths
+
+1. Clear and practically motivated task formulation.
+The paper addresses a meaningful gap between closed-world extraction and zero-shot extraction with user-specified new attributes. The proposed setting is realistic for e-commerce, where attribute inventories evolve and exhaustive annotation is expensive.
+
+2. Strong dataset contribution.
+WOAM appears to be a valuable resource. The paper is careful in motivating why prior datasets are insufficient, especially regarding sparse/noisy seed attributes and lack of richer product context beyond titles. The inclusion of bullet points is important and increases realism. The statistics in Table 1 and Table 11 are useful, and the reported 42% unseen attribute types in the test set makes the benchmark genuinely open-world.
+
+3. Sensible method design for weak supervision.
+The pipeline is coherent. The POS-pattern candidate generation is simple but well motivated, especially compared with segmentation-based approaches that over-fragment bullet points. The adaptive expansion step for seed attributes is also intuitive and effective.
+
+4. Novel use of implicit signals for new attribute discovery.
+The self-supervised bullet-point regularization and the latent-attribute regularization are the most interesting technical aspects. The motivation is sound: unseen attributes lack direct supervision, so contextual structure should provide auxiliary signals.
+
+5. Solid empirical gains.
+The main results in Table 3 are convincing. Amacer improves substantially over OA-Mine and tagging baselines, especially on the proposed evaluation. The decomposed analyses in Tables 12–14 are helpful and support the claim that the regularization particularly helps new attribute discovery.
+
+6. Good qualitative analysis.
+The examples on pages 8–9 and Table 15 are informative. In particular, the examples of expanded flavor-profile values and the failure case where origin-related spans are grouped into existing attributes help the reader understand both the promise and the limitations of the approach.
+
+Weaknesses
+
+1. The evaluation protocol is somewhat unconventional and hard to interpret.
+The paper defines a “pseudo precision” by averaging Jaccard, ARI, and NMI, then combines it with recall into a pseudo-F1. This is unusual and makes it difficult to compare with prior work or assess practical extraction quality. Since clustering metrics and extraction recall measure different things, collapsing them into a single F1-like score is not fully principled.
+
+2. Candidate generation remains a major bottleneck.
+The paper acknowledges this, and Table 5 confirms low span-level precision and modest exact-match F1. Since the overall system depends heavily on candidate quality, the gains in clustering may partly mask extraction weaknesses. This is especially important because open-world discovery is only as good as the candidate pool.
+
+3. Limited comparison to stronger modern baselines.
+The baselines are reasonable relative to the cited literature, but the paper does not compare against more recent span-based or retrieval-based open extraction methods, nor against stronger clustering alternatives or metric-learning baselines beyond OA-Mine variants. It would strengthen the paper to include more competitive representation-learning baselines using the same candidate spans.
+
+4. Scope of the dataset is still relatively narrow.
+Although four categories are better than one, the benchmark remains limited to a small set of English Amazon categories. It is unclear how well the approach transfers to categories with very different syntax, noisier descriptions, or multilingual settings.
+
+5. Some methodological choices feel heuristic.
+This is not fatal given the practical framing, but several components rely on heuristics: POS-pattern mining, threshold relaxation in adaptive expansion, bullet-point window assumptions, and DBSCAN hyperparameters. The paper would benefit from deeper sensitivity analysis and stronger justification for these choices.
+
+6. New attribute discovery is still far from solved.
+The paper is honest about this, but the qualitative examples show that many new-type values are either missed or absorbed into existing seed types. The reported 39% new-type discovery recall is promising, but still leaves substantial room for improvement.
+
+Detailed comments
+
+Task and framing
+
+I think the task formulation is one of the strongest parts of the paper. The distinction from zero-shot extraction is clear and important: the system is not told what new attributes to look for. That makes the problem substantially harder and more realistic. The illustration in Figure 1 on page 1 is effective, especially the example where “Shelf Life” and “Origin” are discovered without being seed types.
+
+That said, the paper could sharpen the formal definition of what counts as a “reasonable attribute” in annotation. This matters because open-world extraction can easily become subjective. The annotation guideline says annotators label spans that are reasonable attribute values of either existing or new types, but the boundary between product attributes and general descriptive phrases may be fuzzy. Some examples in Table 15 suggest this ambiguity, especially for health-benefit phrases.
+
+Dataset
+
+The dataset contribution is substantial. The hybrid seed-set construction is a good compromise between scalability and quality. The paper does a nice job explaining why raw retailer-provided attributes are too noisy and sparse, and the appendix examples support this claim.
+
+The statistics are compelling:
+- Table 1 shows bullet points contain more new types and values than titles.
+- Table 11 shows 66 total test attribute types, 42.4% of which are unseen from the seed set.
+- The value novelty is very high (86.9% unseen values), which makes seed expansion nontrivial.
+
+A few concerns remain:
+- Inter-annotator agreement is not reported. For an open-world clustering benchmark, agreement on span boundaries and type assignments is especially important.
+- The paper says two in-house annotators labeled the test set, but it is unclear how disagreements were resolved.
+- More detail on the annotation schema for new types would help. Were annotators encouraged to normalize semantically equivalent new types across products/categories?
+
+Method
+
+The method is modular and easy to follow. Figure 2 on page 4 is a strong overview.
+
+Candidate generation:
+The syntax-oriented POS-pattern approach is refreshingly simple and appears effective. I appreciated the data-driven extraction of valid POS patterns from product profiles rather than hand-crafting them. This is a practical idea. The comparison against segmentation-based candidates is convincing both quantitatively and in runtime.
+
+Representation learning:
+The supervised contrastive objective is standard but appropriate. Replacing triplet/regression losses with in-batch supervised contrastive learning seems like a good simplification.
+
+Implicit regularization:
+This is the most novel part. The self-supervised bullet-point objective is intuitive, though somewhat noisy by construction. The latent-attribute objective is more ambitious. I like the idea of treating products as mixtures over latent attributes and using reconstruction over candidate spans. The formulation on pages 5–6 is understandable and reasonably grounded in neural topic modeling.
+
+Still, I have some questions:
+- Why should bullet-point co-occurrence imply attribute similarity rather than topical relatedness more broadly? The paper acknowledges noise, but more analysis would help.
+- The latent-attribute model is trained over candidate spans in a batch. How sensitive is it to batch composition and candidate vocabulary size?
+- Topic collapse is mentioned in the qualitative analysis, but not addressed. Since this directly affects the usefulness of the latent attributes, some mitigation attempt would have been valuable.
+
+Grouping:
+The two-stage grouping strategy is sensible. Adaptive expansion for seed attributes before DBSCAN for residual spans is a nice design choice and seems better aligned with the task than pure clustering.
+
+Experiments
+
+The main results are good. In Table 3, Amacer achieves the best exact and partial pseudo-F1, outperforming OA-Mine and the other variants. The ablations are also informative:
+- DBSCAN vs DBSCAN+AE shows adaptive expansion matters.
+- OA-Mine vs OA-Mine* and Amacer* vs Amacer-R show syntax-based candidates help.
+- Amacer-R vs Amacer shows the regularizers help, especially for new attributes.
+
+The decomposed results in Table 12 are particularly important. The jump on new attributes from 38.8 to 46.2 partial-F1 is meaningful and supports the paper’s central claim.
+
+However, I have several reservations about evaluation:
+1. The pseudo-F1 metric is difficult to interpret.
+2. Exact and partial matching are useful, but more standard extraction metrics at the span level and cluster level would help.
+3. Since the task mixes extraction and clustering, it would be useful to separately report:
+   - candidate generation recall/precision,
+   - clustering quality given gold spans,
+   - seed-type expansion quality,
+   - new-type discovery quality.
+Some of this is partially provided in Tables 5 and 14, but the main narrative still leans heavily on the pseudo-F1.
+
+Presentation
+
+The paper is generally well written and organized. The motivation, pipeline, and experiments are easy to follow. The figures and tables are helpful, especially:
+- Figure 1 on page 1 for task illustration,
+- Figure 2 on page 4 for the full pipeline,
+- Table 3 for main results,
+- Table 15 for qualitative examples of seed expansion.
+
+There are some minor language issues and awkward phrasings throughout, but nothing that blocks understanding. A careful proofreading pass would improve polish.
+
+Questions for the authors
+
+1. Can you report inter-annotator agreement for span selection and attribute typing on the test set?
+2. How stable are results across different numbers of latent attributes K and different DBSCAN settings?
+3. How much of the gain from Amacer over Amacer-R comes from the self-supervised bullet-point loss versus the latent-attribute loss individually?
+4. Can you provide more standard evaluation views, e.g., cluster purity/completeness, B3, or pairwise F1, in addition to the pseudo-F1?
+5. How often do annotators introduce semantically overlapping new attribute types, and how is normalization handled?
+6. Have you tested transfer to a held-out product category without category-specific POS patterns or seed curation?
+
+Suggestions for improvement
+
+1. Strengthen the evaluation section.
+Either justify the pseudo-F1 more rigorously or supplement it with standard clustering and extraction metrics that are easier to interpret.
+
+2. Add annotation-quality evidence.
+Agreement statistics and clearer annotation guidelines would increase confidence in the benchmark.
+
+3. Expand ablations on the regularizers.
+A cleaner breakdown of self-supervised vs latent-attribute contributions would help isolate what is truly driving new-type discovery.
+
+4. Analyze failure modes more systematically.
+The qualitative examples are good, but a categorized error analysis would be even better: missed spans, wrong boundaries, absorbed into seed types, fragmented new types, noisy candidates, etc.
+
+5. Consider stronger candidate filtering.
+Since candidate precision is low, adding a semantic plausibility filter or lightweight reranker could materially improve end-to-end performance.
+
+6. Discuss generalization more explicitly.
+The paper should be clearer about what parts are category-specific and what parts are expected to transfer.
+
+Final assessment
+
+I found this paper interesting and worthwhile. The problem is important, the dataset is useful, and the method is a thoughtful combination of simple practical ideas with a more novel latent-attribute regularization component. The empirical improvements are meaningful, especially on new attribute types, and the paper is honest about remaining limitations.
+
+My main concerns are the somewhat nonstandard evaluation, the still-weak candidate extraction quality, and the limited evidence on annotation reliability and robustness. Even so, I think the paper makes a solid contribution, particularly through the task formulation and benchmark, and I would lean toward acceptance.

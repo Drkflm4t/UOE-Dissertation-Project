@@ -1,0 +1,185 @@
+Summary
+
+This paper studies motion forecasting under a more realistic “continuous driving” setting, arguing that standard benchmarks and methods treat each scene independently and therefore ignore useful temporal continuity across successive forecasting calls. To address this, the authors propose RealMotion, which combines: (i) a scene context stream that propagates scene-level context over time, and (ii) an agent trajectory stream that relays prior predictions through a memory bank to refine current forecasts. The paper also introduces a data reorganization strategy that converts existing benchmark scenes into sequences of sub-scenes by splitting trajectories at multiple historical timestamps. Experiments on Argoverse 1 and 2, including multi-agent forecasting, show strong results, with particularly strong gains on Argoverse 2 single-agent forecasting.
+
+Overall assessment
+
+This is a strong and timely paper. The central premise is compelling: motion forecasting in deployment is indeed repeatedly invoked over time, and treating each invocation independently is an artificial simplification. The paper makes a meaningful conceptual contribution by reframing forecasting as a continuous process rather than a one-shot prediction problem. The proposed method is reasonably simple, modular, and practically motivated. Empirically, the results are strong, especially on Argoverse 2, and the efficiency discussion is useful.
+
+That said, the paper also has some important limitations. The proposed “continuous” setting is simulated through data reorganization rather than evaluated in a truly streaming benchmark or closed-loop system. As a result, some of the claimed realism remains indirect. In addition, the method’s gains appear to depend partly on the reorganized data protocol, and the fairness/comparability of evaluation versus prior methods deserves more careful discussion. Some methodological details are also underspecified, especially around memory bank management, training protocol, and how exactly the reorganized samples are constructed and used at test time.
+
+Strengths
+
+1. Important problem framing
+The paper identifies a real mismatch between benchmark practice and deployment reality. The motivation is clear and convincing. The illustration in Figure 1 (page 2) is effective: it shows how historical context can reveal currently occluded agents or explain current behavior. This is a meaningful perspective shift for motion forecasting.
+
+2. Clear and intuitive method design
+The two-stream design is easy to understand:
+- The scene context stream accumulates scene-level temporal context.
+- The agent trajectory stream uses prior predictions as a temporal prior for refinement.
+
+These are complementary ideas. The architecture diagram in Figure 3 (page 4) communicates this well.
+
+3. Practical data reorganization idea
+The data reorganization strategy is simple and potentially useful beyond this paper. Turning independent benchmark scenes into sequences of sub-scenes is a pragmatic way to study continuous forecasting without requiring a new dataset. The illustration in Figure 2 (page 3) is helpful.
+
+4. Strong empirical performance
+On Argoverse 2 test (Table 1, page 6), RealMotion improves over QCNet on minFDE1 and minADE1 and is competitive or best on most other metrics. The gains over the internal baseline RealMotion-I are substantial. Multi-agent results in Table 3 (page 7) are also strong.
+
+5. Good ablation coverage
+The paper includes ablations on:
+- data reorganization,
+- each stream,
+- alignment modules,
+- trajectory embedding,
+- split points,
+- gradient steps,
+- cross-attention depth.
+
+This is appreciated and helps support the design choices.
+
+6. Efficiency considerations
+The latency/parameter comparison in Table 6 (page 9) is useful. The model is relatively lightweight and appears practical for online use.
+
+Weaknesses and concerns
+
+1. The “continuous driving” setting is still synthetic
+The biggest concern is that the paper’s main claim is about continuous real-world forecasting, but the experiments are conducted on reorganized benchmark scenes rather than a native streaming dataset or an online evaluation protocol. The paper is honest about this to some extent, but the framing occasionally overstates what has been demonstrated.
+
+The proposed data reorganization is a reasonable approximation, but it is not equivalent to real continuous driving. For example:
+- The sub-scenes are derived retrospectively from the same original sample.
+- The temporal horizon and split points are manually chosen.
+- The scene context available across sub-scenes may differ from what a real online system would observe due to perception noise, track fragmentation, or changing map visibility.
+- The evaluation still seems to focus on the final sub-scene prediction for benchmark compatibility.
+
+Thus, the paper demonstrates that sequential reuse of benchmark history helps, but not yet that the method solves continuous forecasting in realistic deployment conditions.
+
+2. Fairness/comparability of benchmark claims needs more care
+The paper compares RealMotion against prior leaderboard methods in Table 1, but those methods were not designed for the reorganized continuous protocol. RealMotion benefits from additional structured temporal context extracted from the same original sample. This is a valid new setting, but then the comparison should be framed carefully.
+
+The appendix does include a useful experiment integrating the reorganized data into QCNet (Table 9, page 13), showing some gains even without the streams. This is good, but it also suggests that part of the improvement comes from the data protocol itself rather than the model alone. The main paper should emphasize this more clearly.
+
+Relatedly, RealMotion-I is defined as both removing the streams and not using data reorganization. This makes it a somewhat confounded baseline. Table 4 helps disentangle this, but the main comparison in Table 1 could mislead readers into attributing all gains to the architecture.
+
+3. Limited analysis of error accumulation and robustness
+A sequential forecasting system can suffer from drift or compounding errors, especially when prior predictions are fed back into future predictions. The paper argues that the trajectory stream improves consistency, but there is little analysis of failure modes related to memory contamination or error propagation.
+
+Questions that remain open:
+- What happens when earlier predictions are wrong?
+- Does the memory bank amplify mistakes?
+- How sensitive is performance to memory length n?
+- Is there any confidence-based filtering or forgetting beyond FIFO?
+- How robust is the method under abrupt maneuvers?
+
+The paper states that no filtering is applied to preserve multimodality, but this design choice deserves deeper analysis.
+
+4. Methodological details are underspecified
+Several implementation details are not fully clear:
+- How many trajectories/modes are stored per timestamp in the memory bank?
+- What is the memory length n in practice?
+- How are agents associated across sub-scenes? Is identity assumed perfect from the benchmark annotations?
+- How are disappearing/appearing agents handled?
+- In multi-agent forecasting, is there one memory bank per agent, and how is this managed computationally?
+- During training, are predictions from earlier sub-scenes teacher-forced, detached, or fully backpropagated through time?
+- The paper says gradients are computed for all segments; does this mean full unrolling across the sequence, or independent losses with shared weights?
+
+These details matter for reproducibility and for understanding whether the method would transfer to real systems.
+
+5. Novelty is moderate at the module level
+While the overall framing is novel and valuable, the technical components themselves are relatively incremental:
+- cross-attention-based temporal fusion,
+- feature alignment via motion-aware normalization,
+- memory-based refinement of predictions.
+
+These are sensible combinations, but the main novelty lies more in the problem formulation and system integration than in fundamentally new modeling machinery. This is acceptable, but should be judged accordingly.
+
+6. Argoverse 1 results are mixed
+On Argoverse 1 validation (Table 2, page 7), RealMotion achieves the best minADE6 but not the best minFDE6, where HPNet is better. This is not a major issue, but it somewhat tempers the “state-of-the-art” claim unless carefully qualified by dataset/metric.
+
+7. Limited comparison to the most directly related prior work
+The related work mentions streaming motion forecasting [27], but the experimental comparison does not include it. Since that work appears conceptually closest, a direct comparison or at least a more detailed discussion would strengthen the paper.
+
+Detailed comments
+
+1. Data reorganization
+This is a central contribution, but the exact protocol should be described more rigorously in the main paper. For example:
+- How are split points selected for each dataset?
+- Are all agents split at the same timestamps?
+- How is the local map cropped for each sub-scene?
+- Are future labels overlapping across sub-scenes?
+- How many training examples are generated per original scene?
+
+The current description is intuitive but not precise enough.
+
+2. Coordinate alignment
+The scene context stream aligns historical features using MLN with relative pose/time encoding (Eq. 1), while the trajectory stream aligns trajectories geometrically (Eq. 3). This makes sense, but the paper should better justify why feature-space alignment is sufficient in one stream and explicit geometric transformation is needed in the other. Also, the notation around Eq. 1 appears to have a missing parenthesis in the PDF.
+
+3. Decoder and prediction heads
+The paper says it uses “two MLP modules” for trajectory prediction and probability, plus a singular trajectory for auxiliary training. More detail would help:
+- How many modes are predicted?
+- How are mode features initialized?
+- Is the decoder query-based, anchor-based, or directly regressive?
+- What exactly is the auxiliary loss for other agents?
+
+4. Multi-agent setting
+The multi-agent results are promising, but the method seems primarily designed around an “agent of interest” formulation. It would help to clarify how the architecture is adapted for joint multi-agent prediction and whether any interaction modeling changes are needed.
+
+5. Efficiency reporting
+Table 6 distinguishes “online” and “offline” latency, which is useful. However, the comparison is not entirely apples-to-apples unless all methods are measured under the same protocol and implementation conditions. Also, the statement that offline latency for RealMotion is roughly three times online latency because only the final prediction is evaluated should be explained more carefully.
+
+6. Qualitative results
+The qualitative examples in Figure 4 (page 9) are convincing and support the progressive refinement claim. The failure cases in Figure 5 (page 14) are appreciated. It would be even better to include a failure case specifically showing error propagation from an incorrect earlier prediction.
+
+Questions for the authors
+
+1. How exactly is the memory bank configured in practice?
+Please specify memory length, number of stored modes per step, and whether memory is maintained per agent identity.
+
+2. How are agent identities handled across sub-scenes?
+Does the method assume perfect tracking/association from benchmark annotations? How would it behave under realistic tracking noise?
+
+3. How much of the gain comes from the reorganized data alone?
+Table 4 suggests a meaningful portion. Could the authors provide a stronger baseline where a prior SOTA model is trained and evaluated under the same reorganized protocol?
+
+4. How robust is the trajectory stream to incorrect prior predictions?
+Please provide an analysis of error accumulation, perhaps by perturbing earlier predictions or ablating memory quality.
+
+5. Why were split points (30, 40, 50) chosen for Argoverse 2?
+How sensitive are results to this choice beyond the limited ablation in Table 5?
+
+6. Can the method be applied when only short history is available?
+The limitation section mentions Waymo as unsuitable. Could the authors discuss whether the method still helps with fewer segments or shorter memory?
+
+7. How does RealMotion compare to the streaming benchmark/method in [27]?
+Even if datasets differ, a more direct conceptual or empirical comparison would be valuable.
+
+Suggestions for improvement
+
+1. Tone down the realism claim slightly
+The paper should more clearly distinguish:
+- continuous forecasting as a deployment motivation,
+- reorganized benchmark evaluation as a proxy.
+
+This would make the claims more precise and credible.
+
+2. Strengthen fairness of comparisons
+Include more same-protocol baselines in the main paper, ideally retraining one or two strong prior methods on the reorganized data. The QCNet appendix result is useful and should probably be moved into the main paper.
+
+3. Add robustness analysis
+A sequential method should be evaluated for drift/error accumulation. This would significantly strengthen the paper.
+
+4. Improve reproducibility
+Provide fuller implementation details for memory bank management, training unrolling, and multi-agent adaptation.
+
+5. Clarify what is evaluated online
+If the method is intended for real-time deployment, an explicit online evaluation protocol would be helpful, even if approximate.
+
+Recommendation
+
+I lean positive. The paper presents a compelling and practically important reformulation of motion forecasting, and the proposed method is effective, efficient, and well supported by experiments. The main caveat is that the “continuous driving” setting is approximated rather than truly evaluated in a streaming environment, and some of the benchmark comparisons need more careful framing. Still, I believe the paper makes a worthwhile contribution and would be of interest to the community.
+
+Tentative score: Accept / Weak Accept
+
+Confidence: Medium-High
+
+Reason for confidence: The paper is clearly written, the motivation is strong, and the empirical evidence is substantial. My reservations are mainly about evaluation realism and comparison fairness rather than fatal flaws in the core idea.

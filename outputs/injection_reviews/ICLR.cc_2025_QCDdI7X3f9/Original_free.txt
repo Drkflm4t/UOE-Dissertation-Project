@@ -1,0 +1,114 @@
+Summary:
+This paper studies “Model Equality Testing,” the problem of determining whether a black-box LLM API serves the same output distribution as a reference model or as an earlier version of itself. The authors formulate this as a two-sample hypothesis testing problem over prompt-completion pairs, and advocate kernel two-sample tests based on MMD. Empirically, they compare several tests and find that an MMD test with a simple Hamming-style string kernel is most powerful in their setting. They then apply the method to commercial APIs serving Llama models and report that 11 of 31 endpoints differ from Meta’s released reference weights. The paper also uses estimated MMD as an effect-size measure to compare models and providers.
+
+Overall, I found the paper timely, interesting, and practically relevant. The problem is important, the framing is clean, and the empirical audit of commercial APIs is compelling. The main methodological idea is not radically new from a statistical perspective—MMD and kernel two-sample testing are standard—but the adaptation to LLM API auditing is novel and useful. The paper is generally well written and supported by extensive experiments and appendices. My main concerns are around the exact semantics of the null hypothesis in realistic API settings, the dependence of conclusions on prompt distributions and decoding details, and the extent to which the chosen kernel captures meaningful distributional differences versus superficial formatting/style differences.
+
+Strengths:
+
+1. Important and timely problem.
+The paper addresses a real and growing issue: users increasingly rely on black-box inference APIs, including for nominally open-weight models, and often assume these APIs faithfully implement the advertised model. Auditing this assumption is valuable for benchmarking, reproducibility, and deployment.
+
+2. Clear problem formulation.
+The formalization in Section 2 is crisp. Framing API auditing as a two-sample test over prompt-completion pairs is natural and unifies several use cases, including reference-model fidelity and temporal drift.
+
+3. Strong empirical evaluation of candidate tests.
+The comparison among Hamming MMD, all-substrings MMD, one-hot MMD, and classical multinomial tests is useful. The sample-complexity plots in Figure 2 (pages 5–6) are convincing and show a meaningful practical advantage for the Hamming kernel in the low-sample regime.
+
+4. Practicality.
+The method only requires sample access, not logprobs, which is important in real APIs. The reported sample budgets and monetary costs in Section 5 are modest enough to make the approach actionable.
+
+5. Interesting real-world audit.
+The audit of 31 endpoints across 9 providers is the paper’s standout contribution. The result that 11/31 endpoints are flagged is notable, and the provider/model breakdown in Table 1 (page 9) is informative.
+
+6. Extensive appendix.
+The appendices are substantial and helpful. In particular, the discussion of kernel properties (Appendix A.1), permutation testing (A.2), goodness-of-fit comparisons (C.3), composite null behavior (C.6), and pairwise provider MMD heatmaps (pages 33–39) adds credibility.
+
+Weaknesses / concerns:
+
+1. The practical null hypothesis is more fragile than the paper sometimes suggests.
+The formal setup assumes the reference distribution P and API distribution Q operate on the same vocabulary and use the same decoding parameters. In practice, this is difficult to guarantee. Even for nominally identical models, differences in chat templates, tokenizer handling, stop conditions, hidden system prompts, server-side truncation, repetition penalties, or temperature implementations can induce detectable differences. Of course, these are part of what one may want to audit—but then the interpretation of rejection becomes broader: “the endpoint is not distributionally identical under the full serving stack,” not necessarily “the provider modified the underlying model.” The paper mostly acknowledges this, but some claims and framing still read as if the test identifies model substitution or quantization specifically.
+
+2. The Hamming kernel may emphasize shallow differences.
+The chosen kernel counts token/character matches by position. This is computationally simple and empirically powerful, but it is also sensitive to formatting, verbosity, boilerplate prefixes, and small alignment shifts. In character space especially, a single insertion can alter many downstream positions. The paper argues that this is acceptable because common distortions induce large Hamming distances, but this also means the test may be detecting stylistic or templating artifacts rather than semantically meaningful model changes. This does not invalidate the audit, but it affects interpretation.
+
+3. Character-space testing is a compromise with unclear consequences.
+For API comparisons across different tokenizers, the paper moves to character space (Section 4.3 and Section 5). This is understandable, but it changes the object being tested. Equality in token-space distributions does not map cleanly to equality in character-space distributions under different decoding/rendering conventions. The appendix notes reduced power in character space (Table 8, page 24), but I would have liked a deeper discussion of what exactly is being tested and how robust conclusions are to whitespace normalization, Unicode normalization, or code block formatting.
+
+4. Composite null in Section 5 is conservative and somewhat ad hoc.
+The audit tests whether an API matches either fp32 or fp16 reference weights by running two tests and rejecting only if both reject. This controls type I error, but it is conservative and may substantially reduce power. More importantly, why stop at fp16? Some providers may reasonably serve fp8, bf16, or other numerically close implementations. The choice of “commonly accepted precisions” is practical, but it also makes the audit conclusions partly normative. A provider could be flagged despite serving a high-quality implementation that differs from both chosen nulls for benign reasons.
+
+5. Limited theoretical development.
+The paper is primarily empirical. That is acceptable, but the methodological novelty would be stronger with more theory tailored to this setting. For example: why should the Hamming kernel be expected to dominate in low-sample, long-sequence regimes? Are there conditions under which it is minimax preferable or at least better aligned with certain distortion classes? As written, the kernel choice is justified mostly by experiments.
+
+6. Prompt-distribution dependence is important and underexplored.
+The paper correctly emphasizes that auditing should be task-specific, but this also means conclusions are only as broad as the chosen prompt distribution. The main simulation task is Wikipedia continuation over 25 prompts; the audit adds HumanEval and UltraChat for some models. Figure 8 (page 25) shows power depends on the number of prompts. More broadly, the set of flagged endpoints may depend strongly on prompt family, language, and completion length. This is not a flaw per se, but the paper could be more explicit that “endpoint X differs from reference” is always relative to a chosen prompt distribution and decoding setup.
+
+7. Some empirical choices could be better justified.
+Examples:
+- Why is temperature fixed at 1 throughout? Many real users sample at lower temperatures.
+- Why is Hamming MMD the final choice rather than, say, a learned embedding kernel or edit-distance-based kernel?
+- Why average rejection rates over 10 repeated tests and threshold at 0.5 in Section 5, instead of aggregating p-values more formally?
+- Why use spectral clustering with two components for the model/provider distance visualizations? This is visually useful but somewhat arbitrary.
+
+Detailed comments:
+
+1. On novelty.
+The core statistical machinery is standard MMD testing. The novelty lies in the problem formulation and empirical adaptation to LLM APIs. I think that is enough for a systems/ML measurement-style contribution, but the paper should be careful not to oversell the methodological novelty.
+
+2. On Figure 2 and the main empirical claim.
+The sample-complexity result is one of the strongest parts of the paper. The left panel on page 6 shows the Hamming MMD reaching substantial power at around 10 samples per prompt, outperforming alternatives. However, the fp16 case is clearly much harder, as also discussed in the right panel. This is important because it suggests the test is not uniformly sensitive to all practically relevant distortions. The paper is honest about this, which I appreciate.
+
+3. On finetuning detection.
+The finetuning experiment in Section 4.2 is interesting, especially the result that even out-of-distribution code finetuning is detectable on Wikipedia prompts. Still, the setup uses full finetuning with a small learning rate on 1000 examples. It would be useful to know whether the method remains sensitive to more realistic deployment changes such as LoRA adapters, safety tuning, or RLHF-style preference updates.
+
+4. On model-family distance estimation.
+The pairwise model MMD heatmap in Figure 3 (page 7) is interesting and potentially useful beyond auditing. The observation that models cluster more by family than by size is plausible. However, because the distance is kernel-dependent and only a pseudometric for the Hamming kernel, the interpretation should remain cautious. The paper notes this, but some of the discussion reads a bit strongly.
+
+5. On the API audit.
+The audit is compelling, but I would like more care in separating “endpoint differs from Meta reference” from “provider is doing something wrong.” For example, Fireworks and Together publicly disclose some optimizations; others may have undocumented but benign serving differences. Also, the dates queried span multiple days and sometimes weeks (Appendix B.1, pages 18–20), which introduces possible temporal drift within the collection window itself. This is probably unavoidable, but it weakens the clean interpretation of a single stationary Q.
+
+6. On repeated testing and multiplicity.
+The paper uses multiple prompt distributions and repeated samples, with Bonferroni correction in some places (footnote 7, page 8; Table 11/12, page 32). This is reasonable, but the overall testing protocol is somewhat complex. I would appreciate a clearer end-to-end statement of what exact family-wise error guarantee holds for the final “11 out of 31 endpoints” claim.
+
+7. On qualitative examples.
+The sample boxes in Appendix D are useful. In particular, the nf4 degeneration examples for Llama-3 70B (page 44) and the repetitive Perplexity code completions (pages 56–58) help ground the statistical findings. The examples also reinforce that some detected differences are qualitatively large, not just statistically significant.
+
+Questions for the authors:
+
+1. How sensitive are the audit outcomes to normalization choices in character space (e.g., stripping leading/trailing whitespace, collapsing repeated spaces, normalizing Unicode, removing markdown fences in code tasks)?
+
+2. Did you try any semantic kernels or embedding-based kernels over completions? If so, how did they compare in power and robustness?
+
+3. Can you quantify how much of the detected API deviation may be attributable to chat template mismatch or hidden system prompts rather than model/precision changes?
+
+4. Why was the final audit protocol based on averaging rejection rates over 10 runs and thresholding at 0.5, rather than combining p-values across runs?
+
+5. Have you tested temporal drift directly on the same endpoint over time, which is one of the motivating use cases in Figure 1 (page 2)?
+
+6. For providers flagged on HumanEval but not Wikipedia, do you have evidence that the difference is specifically related to code-generation serving stacks?
+
+Suggestions for improvement:
+
+1. Clarify the interpretation of rejection.
+The paper should more explicitly state that the test audits equality of the end-to-end sampled distribution under a specified prompting/decoding/rendering pipeline, not necessarily equality of underlying weights alone.
+
+2. Add robustness analyses for normalization and formatting.
+Especially for character-space tests and code tasks, simple normalization ablations would strengthen confidence that results are not driven by superficial formatting differences.
+
+3. Formalize the final audit aggregation more cleanly.
+A more principled multi-run aggregation method would improve statistical clarity.
+
+4. Expand discussion of alternative kernels.
+Even if Hamming wins empirically here, a short discussion of why richer kernels were not used—or failed—would help readers understand the design space.
+
+5. Include at least one direct temporal-drift case study.
+Since API drift is a major motivation, a concrete longitudinal audit would strengthen the paper.
+
+6. Temper some causal language around provider modifications.
+The evidence supports “distribution differs from chosen references,” but not always the exact cause.
+
+Recommendation:
+Weak Accept
+
+Rationale:
+This is a strong and useful paper on an important practical problem. The formulation is clean, the experiments are extensive, and the real-world audit is compelling. The main weakness is that the method detects end-to-end distributional differences without always isolating their cause, and the chosen kernel may emphasize shallow differences. Still, I think the contribution is significant enough, especially as a measurement/auditing paper, to merit acceptance.

@@ -1,0 +1,162 @@
+Summary
+
+This paper proposes an automated method to characterize NLI datasets into difficulty levels using training dynamics. The core idea is to extend dataset cartography-style signals with a richer feature set and to compute them not only for standard premise+hypothesis training, but also for hypothesis-only training, then cluster examples with a Gaussian Mixture Model into easy / ambiguous / hard subsets. The authors apply the method to SNLI, MultiNLI, and FEVER, arguing that the resulting “hard” subsets reduce spurious correlations and provide a more realistic stress test. They also apply the same characterization to training data and show that training on selected subsets can match or nearly match full-data performance, while outperforming Data Maps and AUM baselines in some settings.
+
+Overall, I find the paper interesting and timely. The motivation is strong: standard NLI benchmarks are known to contain annotation artifacts and hypothesis-only biases, and there is clear value in automatically extracting more challenging, naturalistic evaluation subsets from existing datasets rather than constructing synthetic stress tests. The paper is generally well written, the empirical study is fairly broad, and the results are promising. At the same time, there are several methodological and evaluation issues that should be clarified or strengthened before I would consider the claims fully established.
+
+Strengths
+
+1. Clear and important motivation
+The paper addresses a real problem in NLI evaluation: inflated performance due to spurious correlations and annotation artifacts. The framing is compelling, especially the goal of deriving harder test subsets from naturally occurring examples rather than manually engineered adversarial examples.
+
+2. Simple, intuitive, and reasonably general method
+The proposed pipeline is straightforward:
+- train on the target split for a few epochs,
+- collect training-dynamics features,
+- include both premise+hypothesis and hypothesis-only signals,
+- cluster examples with a GMM into three difficulty levels.
+
+This is easy to understand and potentially reusable beyond NLI. The inclusion of hypothesis-only dynamics is a particularly sensible addition for this task.
+
+3. Empirical evidence that the hard split is genuinely harder
+The results in Table 3 are striking: performance drops substantially on the hard subsets for SNLI and MultiNLI, and hypothesis-only accuracy approaches chance much more closely there. This supports the claim that the hard split is less driven by superficial artifacts.
+
+4. Useful analysis of heuristic artifact measures
+The analysis around word overlap, antonyms, negation, etc. is helpful. Figure 3 and the associated statistical testing suggest that the hard split reduces class-specific heuristic imbalances. This is one of the stronger parts of the paper because it connects the clustering output to interpretable artifact measures.
+
+5. Cross-model transfer is encouraging
+The comparison between RoBERTa and DeBERTa in Table 4 suggests that the induced difficulty splits are not entirely model-specific. That is important for the claim of model-agnostic characterization.
+
+6. Training-set characterization angle is interesting
+The second use case—filtering training data to improve data efficiency—is a nice extension. The results in Tables 5 and 6 suggest the method may be useful not only for evaluation but also for data selection.
+
+Weaknesses and concerns
+
+1. The method trains on the test set
+The biggest conceptual issue is that the proposed test-set characterization explicitly trains models on the test set to obtain training dynamics. The authors note that this is only for characterization and not for direct evaluation, but this still raises concerns.
+
+In a standard benchmark setting, the test set is supposed to remain untouched. Even if labels are not used to fit the final evaluated model, the characterization procedure itself uses labels and optimization on the test set. This makes the resulting “stress test” less clean as an evaluation resource, because its construction depends on supervised access to the test labels and on model fitting over the test examples.
+
+This does not invalidate the analysis, but it changes the interpretation. The paper should be much more explicit that this is a post hoc diagnostic characterization of an existing benchmark, not a deployable benchmark-construction method in the usual blind-test sense. As written, the framing sometimes overstates practicality.
+
+2. Limited novelty relative to existing training-dynamics work
+The method is a sensible extension of Data Maps/AUM, but the novelty is somewhat incremental:
+- add more features,
+- include hypothesis-only dynamics,
+- replace percentile thresholds with GMM clustering,
+- apply to test-set characterization.
+
+This is still useful, but the paper should position itself more carefully. The main novelty is in the application and feature combination, rather than in a fundamentally new learning principle.
+
+3. The choice of three clusters seems under-justified
+The paper fixes the number of clusters to three, partly following the easy/ambiguous/hard taxonomy from prior work. But if the motivation for GMM is to avoid arbitrary thresholds and better fit the data distribution, then fixing K=3 is itself a strong assumption. Why exactly three? Was model selection via BIC/AIC considered? Do the conclusions hold for K=2 or K=4? This matters because the hard split is quite small for SNLI/MultiNLI (~10–12%), and the practical conclusions may depend on this choice.
+
+4. Evaluation of “reduced spurious correlations” is still narrow
+The paper uses a small set of heuristics: word overlap, antonyms, length mismatch, misspellings, negation. These are reasonable, but they capture only a subset of known NLI artifacts. The claim that the hard split provides “a more accurate measure of real-world performance” is too strong based on these heuristics alone. At best, the paper shows reduction in several shallow artifact indicators and lower performance for current models.
+
+A stronger evaluation would include:
+- transfer to external challenge sets such as ANLI or HANS-like resources,
+- human validation of whether hard examples are indeed more semantically challenging,
+- comparison against existing hard subsets or adversarial benchmarks.
+
+5. Some evidence points to label distribution effects
+Figure 4 indicates that the hard split contains more neutral examples. Since neutral is often the hardest class in NLI, some of the performance drop may simply reflect label composition rather than artifact reduction per se. The paper discusses this, but does not fully disentangle it.
+
+A stronger analysis would control for label distribution, e.g.:
+- evaluate per-class accuracy within each split,
+- rebalance splits by label,
+- compare against random subsets matched for label proportions.
+
+Without such controls, it is hard to know how much of the hardness comes from reduced shortcuts versus class-mixture changes.
+
+6. Statistical analysis is incomplete
+The paper reports Mann-Whitney tests for heuristic differences, which is good, but many central claims are not accompanied by uncertainty estimates:
+- no variance across random seeds,
+- no confidence intervals for accuracies,
+- no significance testing for comparisons in Tables 3–6.
+
+Given that clustering and fine-tuning can be seed-sensitive, this is important. In particular, claims that one subset-selection method outperforms another should be backed by repeated runs.
+
+7. Potential circularity in defining hardness
+Hardness is defined using training dynamics from the same model family later used for evaluation. Although the cross-model experiment helps, there is still some circularity: examples are “hard” because a model trained on them behaves uncertainly, and then the same or similar models perform poorly on them. This is not necessarily wrong, but it means the notion of hardness is model-relative. The paper should be more careful not to equate this directly with intrinsic linguistic difficulty.
+
+8. FEVER setup needs more explanation
+The FEVER adaptation is interesting, but the formulation is less standard than SNLI/MultiNLI. The paper mentions premise/statement and hypothesis/evidence, and notes negative length mismatch due to long evidence passages. More detail is needed:
+- exactly how FEVER is converted to 3-way NLI,
+- whether evidence concatenation affects the dynamics,
+- whether the same heuristics are meaningful in this setting.
+
+As is, the FEVER results are suggestive but somewhat harder to interpret.
+
+9. Comparison baselines could be stronger
+The paper compares mainly against Data Maps and AUM for training-set characterization. For test-set characterization, there is less direct comparison. It would strengthen the paper to compare against simpler alternatives such as:
+- confidence-only ranking,
+- hypothesis-only confidence ranking,
+- entropy/margin-based ranking without clustering,
+- random subsets matched by size and label distribution.
+
+This would help isolate which components of the method matter most.
+
+Questions for the authors
+
+1. How sensitive are the results to the number of epochs used to collect training dynamics? Why was 5 chosen for test characterization?
+2. How sensitive are the clusters and downstream conclusions to random seed, GMM initialization, and encoder choice?
+3. Did you try selecting the number of GMM components via BIC/AIC rather than fixing it to 3?
+4. Can you provide per-class accuracies on easy/ambiguous/hard splits to control for the larger proportion of neutral examples in the hard split?
+5. How much does each feature contribute? An ablation over:
+   - P+H features only,
+   - H-only features only,
+   - without AUM,
+   - without correctness,
+   - GMM vs percentile thresholding,
+would be very informative.
+6. For the training-set characterization results, are the gains robust across multiple seeds?
+7. Could the method be applied using a held-out development split rather than the test split, then transferred to test examples via a learned scorer? That would avoid direct training on the test set.
+
+Suggestions for improvement
+
+1. Reframe the contribution more carefully
+I would present this primarily as a diagnostic framework for post hoc benchmark characterization, rather than as a standard benchmark-construction method. That would make the paper more precise and avoid objections about training on the test set.
+
+2. Add ablations
+This paper would benefit a lot from ablations on:
+- feature subsets,
+- clustering method,
+- number of clusters,
+- use/non-use of hypothesis-only dynamics.
+
+3. Control for label distribution
+Please report per-label performance and compare against label-matched random subsets. This is essential to support the claim that the hard split is not merely “more neutral-heavy.”
+
+4. Add robustness analysis
+Run multiple seeds for both characterization and downstream evaluation. Report mean and standard deviation.
+
+5. Strengthen external validation
+If possible, evaluate whether models that do well on your hard split also correlate better with performance on external challenge sets or human judgments of difficulty. That would make the “more realistic evaluation” claim much stronger.
+
+6. Clarify FEVER preprocessing
+A concise but precise description of the FEVER-to-NLI conversion should be included in the main paper.
+
+7. Improve discussion of limitations
+The current limitations section is too narrow. The main limitation is not only inability to detect mislabeled examples, but also the reliance on supervised training over the target split and the model-relative nature of the hardness notion.
+
+Minor comments
+
+1. There are several wording issues and typos throughout the paper. A careful proofreading pass would help.
+2. The paper sometimes uses “test set construction” language, but the method is really “test set partitioning/characterization” of an existing labeled set.
+3. Table 1 includes models trained on the test split; this is useful for methodology, but the presentation should make even clearer that these are not standard evaluation numbers.
+4. The qualitative examples in Table 7 are helpful. It may be worth adding a few examples from FEVER as well.
+5. The appendix pseudo-code is useful; some of that clarity could be moved into the main method section.
+
+Overall assessment
+
+This is a solid and interesting paper on benchmark diagnosis for NLI. Its main appeal is practical: it offers a relatively simple way to extract harder, more artifact-reduced subsets from existing datasets using training dynamics, and the empirical results are promising. I especially like the use of hypothesis-only dynamics and the analysis showing that the hard subsets reduce several known heuristic cues.
+
+However, I have reservations about the central evaluation protocol because the method relies on supervised training over the test set itself, and I think some of the claims are stronger than the evidence currently supports. The paper would be significantly improved by stronger ablations, robustness checks, and controls for label distribution.
+
+Recommendation: Weak Accept
+
+Confidence: 3/5
+
+Reason for recommendation:
+The paper tackles an important problem, proposes a sensible and useful method, and presents encouraging empirical evidence across multiple datasets and models. While the methodological concerns are real, especially regarding characterization via training on the test set, I think the paper still makes a worthwhile contribution as a benchmark analysis and data characterization study.

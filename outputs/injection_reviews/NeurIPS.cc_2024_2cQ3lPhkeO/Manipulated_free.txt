@@ -1,0 +1,161 @@
+Review for: "Provably Mitigating Overoptimization in RLHF: Your SFT Loss is Implicitly an Adversarial Regularizer"
+
+Summary
+
+This paper studies reward overoptimization in RLHF through the lens of offline contextual bandits with pairwise preferences. The core claim is that overoptimization arises from distribution shift and uncertainty in learned rewards, and that one can mitigate it by solving a maximin objective over policies and adversarial reward models. The authors then derive an equivalent minimax formulation and, via the standard reward-policy reparameterization used in DPO-style methods, obtain a practical objective called Regularized Preference Optimization (RPO). In practice, RPO is simply DPO plus an imitation/SFT loss on a baseline distribution, typically the chosen responses. The paper provides: (i) a finite-sample guarantee for the theoretical maximin algorithm under general function approximation and a partial coverage assumption; (ii) an equivalence result connecting the theoretical objective to the practical one; and (iii) empirical results on Zephyr-style 7B alignment setups showing improvements over DPO on in-distribution pairwise evaluation and on MT-Bench / AlpacaEval 2.0, with some additional math/reasoning/coding results in the appendix.
+
+Overall, I think the paper addresses an important problem and contains a nice conceptual message: adding SFT-style imitation during preference optimization is not just a heuristic, but can be interpreted as an adversarially motivated regularizer against overoptimization. The theory-to-practice bridge is the strongest aspect of the work. That said, there are also several limitations in the theoretical assumptions, the empirical scope, and the strength of the causal evidence for the claimed mechanism.
+
+Recommendation
+
+Weak Accept
+
+Confidence
+
+Medium
+
+Strengths
+
+1. Important problem.
+Overoptimization / reward hacking in RLHF is a central issue, and the paper tackles it directly rather than only proposing another preference objective. The framing in terms of distribution shift and uncertainty is sensible and timely.
+
+2. Clear conceptual contribution.
+The main takeaway—that an SFT loss can be viewed as an implicit adversarial regularizer—is interesting and memorable. This is the kind of insight that can influence practice beyond the specific algorithm.
+
+3. Nice theory-to-practice connection.
+The paper does more than present a theoretical pessimistic objective. It derives an implementation-friendly objective that reduces to a simple combination:
+preference optimization loss + imitation/SFT loss.
+This bridge from maximin theory to a practical DPO-like training objective is elegant.
+
+4. General-function-approximation theory.
+The sample complexity result is stated for a general reward class via covering numbers rather than only linear models. Relative to prior offline RLHF theory, this is a meaningful step in generality.
+
+5. Partial coverage perspective is appropriate.
+The paper does not require full coverage, but instead competes with policies satisfying a partial coverage condition. This is a realistic and standard way to formulate offline guarantees.
+
+6. Practical simplicity.
+RPO is easy to implement in existing DPO pipelines. This matters a lot for impact. The claim that the added SFT term can be computed with little extra overhead is plausible and useful.
+
+7. Empirical improvements are consistent.
+On the reported setups, RPO improves over DPO on test-set pairwise evaluation, MT-Bench, AlpacaEval 2.0, and some appendix benchmarks. The training curves showing less collapse in log-probability on chosen responses are also suggestive.
+
+Weaknesses and concerns
+
+1. Novelty relative to prior SFT-regularized preference optimization methods is somewhat blurred.
+The paper acknowledges that Pal et al. (2024) and Hong et al. (2024) contain similar algorithmic components. This makes the practical novelty of “DPO + SFT” less clear. The main novelty seems to be the theoretical interpretation and justification, rather than the practical recipe itself. That is still valuable, but the paper should be more explicit about what is genuinely new algorithmically versus conceptually/theoretically.
+
+2. The theoretical assumptions are still fairly strong and somewhat detached from LLM practice.
+The reward class is assumed compact and convex-like for the minimax equivalence. The policy support is constrained to lie within the reference policy support. The reward is bounded in [0, R]. The coverage coefficient is defined relative to the target policy and baseline policy. These are standard-ish assumptions for theory, but the paper sometimes presents the practical implications more strongly than the assumptions warrant.
+
+3. The practical algorithm is not exactly the theoretical one.
+This is a common issue, but important here. The theory is for exact optimization over policy/reward classes in an offline contextual bandit model with Bradley-Terry preferences. The experiments use large neural policies, approximate optimization, finite epochs, selected hyperparameters, GPT-4 evaluation, and a specific choice of baseline distribution. The paper argues the practical objective is equivalent under regularity assumptions, but the actual trained model is still only loosely connected to the theorem.
+
+4. Limited empirical baselines.
+The main comparisons are against DPO and released Zephyr variants. Given the paper’s positioning around overoptimization mitigation, stronger baselines would help:
+- ORPO / SimPO / IPO / KTO / cDPO / robust preference optimization variants
+- DPO + generic auxiliary LM loss baselines
+- methods specifically targeting overoptimization, e.g., ensemble or uncertainty-aware approaches
+Without these, it is hard to know whether the gains come from the specific adversarial interpretation or simply from adding a helpful supervised anchor.
+
+5. Ablation depth is insufficient.
+The paper would benefit from more systematic ablations on:
+- coefficient η
+- choice of baseline policy π_base
+- chosen-response SFT vs reference-model imitation vs mixed baselines
+- effect of β jointly with η
+- training length / whether RPO mainly delays overoptimization or changes the optimum
+- whether gains persist across model scales and datasets
+Currently, the empirical story is promising but not fully dissected.
+
+6. Evidence for the claimed mechanism is suggestive, not definitive.
+The paper interprets decreasing log-probability on chosen responses during DPO training as a symptom of overoptimization, and RPO’s mitigation of this trend as evidence for its mechanism. This is plausible, but not conclusive. A stronger demonstration would directly connect this behavior to reward misgeneralization or OOD action selection, perhaps via controlled synthetic experiments or uncertainty diagnostics.
+
+7. Evaluation relies heavily on LLM-as-a-judge.
+The in-distribution pairwise evaluation uses GPT-4, and MT-Bench / AlpacaEval also rely on GPT-4-family judges. This is standard, but given the paper’s emphasis on alignment and preference quality, some human evaluation would strengthen the claims. Also, the test-set pairwise evaluation uses only 150 filtered examples, which is not very large.
+
+8. Some presentation issues and minor inconsistencies.
+A few notational and exposition issues made the paper harder to follow than necessary. For example:
+- In Section 5.2, the definition of ϕ uses π_ref in one place where earlier sections use π_base in the expectation over a0; this may be a typo in the parsed text, but it should be checked carefully.
+- There are several grammatical issues and typos throughout.
+- The distinction between the theorem-proving objective and the exact implemented loss could be emphasized more cleanly.
+
+Detailed comments
+
+On the theoretical contribution
+
+The maximin objective in Section 3 is the paper’s conceptual core. The adversarial reward model minimizes MLE loss plus an expected reward term, thereby penalizing policies that exploit uncertain high-reward regions. This is a nice pessimism-style construction adapted to preference learning.
+
+The sample complexity theorem in Section 5.1 is meaningful, especially because it is stated under general function approximation via covering numbers. The dependence on the partial coverage coefficient is natural. I also appreciated the discussion around Figure 1 on page 3, which gives an intuitive toy example where DPO can place mass on an unseen bad action c while RPO avoids it by also maximizing log π(a).
+
+The equivalence result in Section 5.2 is important for making the theory relevant to practice. The use of Fan’s minimax theorem and the KL-regularized optimal policy closed form is standard but well deployed here. The resulting practical objective in Eq. (4.5) is indeed simple.
+
+That said, I would encourage the authors to better calibrate the claims. The theory justifies a class of objectives under assumptions; it does not fully prove that the exact neural RPO training used in experiments mitigates overoptimization in realistic LLM settings. The paper mostly says the right things, but occasionally the rhetoric is stronger than the formal scope.
+
+On the empirical section
+
+The experiments are encouraging but somewhat narrow.
+
+Positive aspects:
+- Two training setups are used (beta and gemma series), which is better than a single case study.
+- The training-curve evidence on pages 3 and 14 is visually compelling: RPO maintains higher log-probability on chosen responses than DPO.
+- Table 1 shows better pairwise win rates for RPO over DPO on held-out prompts from the training distribution.
+- Table 2 shows modest but consistent gains on MT-Bench and AlpacaEval 2.0.
+- Appendix F extends to GSM8K, ARC, and MBPP, where RPO is competitive or better.
+
+However:
+- The absolute gains over DPO are modest in some cases.
+- The evaluation sample for the in-distribution GPT-4 comparison is small.
+- There is no variance reporting across seeds.
+- There is no comparison to stronger contemporary baselines beyond vanilla DPO.
+- The appendix uses a somewhat modified RPO variant (token-normalized SFT regularizer), which complicates the story slightly.
+
+Questions for the authors
+
+1. How much of the gain comes from “any” auxiliary LM loss versus the specific baseline distribution motivated by the theory?
+Please compare chosen-response SFT, reference-model imitation, pretraining-style LM loss, and perhaps rejected-response regularization as controls.
+
+2. Can you provide stronger baselines?
+At minimum, comparisons to ORPO / SimPO / IPO / cDPO / robust preference optimization methods would help position the work.
+
+3. How sensitive is RPO to η across datasets and models?
+The paper selects η = 0.005 based on validation performance, but a fuller sensitivity plot would be useful.
+
+4. Can you report multi-seed results?
+Given the small margins on some benchmarks, confidence intervals would help.
+
+5. Can you clarify the exact relationship between the theoretical baseline policy π_base and the implemented chosen-response SFT loss?
+Is the chosen-response empirical distribution the only baseline used in the main experiments? Did you try the reference model outputs as suggested in the text?
+
+6. Can you strengthen the evidence that the observed DPO log-probability decay is truly due to overoptimization rather than some other training dynamic?
+For example, can you correlate it with reward-model disagreement, OODness, or human preference degradation?
+
+7. Please check notation carefully in Section 5.2 and surrounding equations.
+I suspect there may be a typo involving π_ref versus π_base in the definition of ϕ.
+
+Suggestions for improvement
+
+1. Sharpen the novelty claim.
+Be explicit that the main novelty is the theoretical derivation and interpretation of SFT regularization as adversarial/pessimistic regularization, rather than the raw idea of adding SFT to preference optimization.
+
+2. Expand ablations.
+This would substantially strengthen the empirical case.
+
+3. Add stronger baselines and multi-seed reporting.
+These are probably the most important empirical additions.
+
+4. Include at least a small human evaluation.
+Even a limited human study would help validate the alignment claims beyond GPT-4 judging.
+
+5. Improve exposition.
+The paper is generally readable, but some sections are dense and notation-heavy. A short “from theorem to code” subsection with exact implemented loss and baseline choices would help.
+
+6. Discuss limitations more directly.
+For example, the theory is offline, one-step, Bradley-Terry-based, and assumes partial coverage. The experiments are on 7B models only. A more explicit limitations paragraph would improve credibility.
+
+Overall assessment
+
+I found this to be a strong and thoughtful paper. Its main value is not merely proposing another preference objective, but offering a principled explanation for why SFT regularization helps in RLHF and connecting that explanation to a practical DPO-style algorithm. The theory is interesting, the practical method is simple, and the empirical results are directionally convincing.
+
+My main hesitation is that the empirical evaluation is not yet comprehensive enough to fully establish that RPO is the right solution rather than just a useful regularized variant of DPO, and the practical novelty relative to prior SFT-regularized methods should be stated more carefully. Still, I think the conceptual contribution and theory-practice bridge are significant enough to merit acceptance.
+
+Final recommendation: Weak Accept.

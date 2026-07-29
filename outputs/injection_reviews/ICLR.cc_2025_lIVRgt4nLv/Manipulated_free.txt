@@ -1,0 +1,109 @@
+Review for “Agent S: An Open Agentic Framework that Uses Computers Like a Human”
+
+Summary
+
+This paper presents Agent S, an open framework for desktop GUI agents that aims to autonomously complete long-horizon computer tasks by interacting with the GUI through mouse/keyboard-like abstractions. The core proposal combines three ingredients: (1) experience-augmented hierarchical planning, where a manager decomposes tasks into subtasks using both external web knowledge and internal narrative memory; (2) worker-level execution that retrieves episodic subtask experience and uses trajectory reflection; and (3) an Agent-Computer Interface (ACI) that provides dual-input perception (screenshot plus accessibility tree augmented with OCR) and a bounded language-based action space over GUI primitives.
+
+The paper evaluates Agent S primarily on OSWorld and additionally on WindowsAgentArena. On OSWorld, Agent S improves over the reported GPT-4o baseline from 11.21% to 20.58% overall success rate, with especially large gains in Daily and Professional categories (Table 1, page 8). The paper also includes ablations on retrieval/memory, ACI, hierarchical planning, and memory construction/update, plus an error analysis categorizing failures into planning, grounding, and execution errors.
+
+Overall, this is a timely and practically relevant paper on GUI agents. The paper is well motivated, the system design is coherent, and the empirical gains are meaningful. The work is strongest as a systems paper that integrates several ideas into a functioning open framework and demonstrates substantial benchmark improvements. The main weaknesses are around scientific isolation of contributions, evaluation methodology, and some ambiguity in what exactly is novel versus adapted from prior agent architectures.
+
+Strengths
+
+1. Important problem and strong practical relevance
+The paper addresses autonomous computer use through GUIs, which is an important and difficult problem. The motivation is compelling: desktop tasks are diverse, long-horizon, and require both perception and procedural knowledge. This is a meaningful benchmark domain for multimodal agents.
+
+2. Clear systems framing
+The architecture is easy to follow. Figure 3 on page 4 gives a good overview of the manager/worker/evaluator loop, memory stores, and ACI. The distinction between narrative memory for high-level planning and episodic memory for subtask execution is intuitive and well aligned with the hierarchical decomposition.
+
+3. Sensible use of external and internal experience
+The combination of online web search with retrieved prior experience is a practical design choice for GUI tasks, where application-specific procedures matter and interfaces change over time. The paper makes a reasonable case that web knowledge helps with domain-specific procedural knowledge while memory helps with adaptation and reuse.
+
+4. Useful ACI design
+The ACI is one of the more convincing parts of the paper. The dual-input strategy—using screenshots for visual state and an accessibility tree for grounding, augmented with OCR—is well motivated. The bounded action space also seems like a good abstraction for current MLLM agents. The discussion on pages 6–7 is thoughtful and grounded in the limitations of current models.
+
+5. Strong empirical improvement on OSWorld
+The reported gains are substantial. In Table 1, Agent S with GPT-4o reaches 20.58% versus 11.21% for GPT-4o baseline, and Agent S with Claude-3.5 reaches 20.48%. The category-level gains in Daily and Professional tasks are especially notable. Even though absolute performance remains low, the relative improvement is significant for this benchmark.
+
+6. Broad experimental coverage
+The paper includes main results, ablations, qualitative examples, and error analysis. The supplementary examples on pages 18–23 are helpful for understanding both successes and failures. The WindowsAgentArena transfer result is also a useful signal of cross-OS generalization.
+
+Weaknesses
+
+1. Novelty is somewhat incremental at the conceptual level
+The paper combines several familiar ingredients from agent literature: hierarchical planning, retrieval-augmented generation, memory, reflection, and constrained action interfaces. The contribution is primarily in integration and adaptation to GUI control rather than in a fundamentally new algorithmic idea. That is acceptable for a systems paper, but the paper sometimes overstates novelty.
+
+2. Limited rigor in isolating causal contributions
+Although the ablations are appreciated, they are conducted on a 65-example subset rather than the full benchmark. This is understandable due to cost, but it weakens confidence in some conclusions. Also, several components are bundled together. For example, “Agent S (ACI-only)” and “Agent S (ACI + Retrieval)” in Figure 6 help, but the exact differences between variants could be specified more cleanly.
+
+3. Evaluation remains narrow in terms of metrics
+The paper reports success rate only. The authors acknowledge in the conclusion that step count and wall-clock time are not evaluated. This is a significant omission for GUI agents, especially because hierarchical planning and retrieval may improve success at the cost of much longer trajectories. Efficiency matters a lot in this domain.
+
+4. Potential concerns about continual learning during inference
+The continual memory update mechanism is interesting, but it raises evaluation questions. If the agent updates memory while interacting with benchmark tasks, then results may depend on task order and may blur the line between test-time adaptation and benchmark contamination. The paper should be much more explicit about whether tasks are processed sequentially, whether memory persists across test tasks, and whether any benchmark-specific leakage could occur through web retrieval or memory accumulation.
+
+5. Comparison fairness is not fully airtight
+For OSWorld, the baseline is taken from reported results under the same input setting, which is reasonable. But Agent S uses a richer system design including OCR augmentation, retrieval, and memory built from synthetic exploration tasks. It would help to compare against stronger contemporary agent baselines implemented under the same inference budget and backbone conditions. For WindowsAgentArena, the comparison is to a “similar configuration” rather than the strongest system, which is understandable but still limits the strength of the claim.
+
+6. Absolute performance is still low
+Despite the strong relative gains, 20.58% success on OSWorld means the majority of tasks still fail. The error analysis in Tables 3 and Figure 13 shows execution and grounding remain major bottlenecks. This does not invalidate the contribution, but it tempers claims about “using computers like a human.”
+
+Detailed comments
+
+1. On the main contribution
+The strongest contribution is the end-to-end framework rather than any single module. In particular, the ACI plus hierarchical retrieval seems to be the practical recipe that makes the system work better. The paper should lean into this systems contribution and be more precise about what is new versus inherited from prior work on agent memory, reflection, and ACI in software engineering.
+
+2. On memory construction
+The self-supervised exploration pipeline in Figure 4 (page 6) is interesting, but underspecified. How many exploration tasks are generated? How diverse are they? How expensive is this phase? How sensitive are results to the amount and quality of exploration data? Since the memory appears important (Figure 7, page 9), these details matter.
+
+3. On retrieval and web knowledge
+The use of Perplexica/web search is practical, but it introduces reproducibility and stability concerns. Web results can change over time. The paper should discuss caching, retrieval settings, and whether experiments are reproducible from fixed retrieved artifacts. Also, online search may inadvertently expose benchmark-specific hints if task phrasing overlaps with public benchmark descriptions.
+
+4. On ACI
+The ACI section is strong, but I would like more quantitative analysis of where OCR augmentation helps. For example, how often does OCR add useful elements not present in the accessibility tree? Does it improve grounding accuracy directly? The current evidence is indirect through overall success.
+
+5. On error analysis
+The error taxonomy is useful. Table 3 on page 10 shows execution errors are most common overall (79.59%), followed by grounding errors (53.06%). Figure 13 on page 21 further breaks execution errors into self-induced, grounding-induced, and planning-induced. This is a nice analysis, but it would be even more useful if tied to concrete future interventions, e.g., better state verification, stronger grounding models, or action repair mechanisms.
+
+6. On qualitative examples
+The examples on pages 18–20 are helpful and show both the promise and brittleness of the system. I appreciated that the authors explicitly note cases where the task succeeds despite inefficient or partially incorrect intermediate behavior. That honesty improves the paper.
+
+Questions for the authors
+
+1. Does memory persist across benchmark test tasks during evaluation? If yes, in what order are tasks run, and how sensitive are results to ordering?
+2. How many exploration tasks are used to initialize memory, and how much compute/time does this require?
+3. Are retrieved web results cached and fixed for reproducibility?
+4. What is the average number of steps per successful task, and how does this compare to the baseline?
+5. How often does the FAIL signal trigger replanning, and how much does replanning contribute to final success?
+6. Can the authors provide a stronger apples-to-apples comparison against a baseline augmented with the same OCR/tree preprocessing and bounded action space but without hierarchical memory?
+
+Suggestions for improvement
+
+1. Clarify evaluation protocol around continual memory update
+This is the most important issue to address. The paper should explicitly state whether memory is updated during test evaluation, whether updates from one test task can help later test tasks, and how this affects fairness and reproducibility.
+
+2. Add efficiency metrics
+Please report average steps, wall-clock time, and perhaps token cost. Success alone is not enough for GUI agents.
+
+3. Strengthen ablations
+If full-benchmark ablations are too expensive, at least provide confidence intervals or multiple random subsets. The current 65-task subset may be noisy.
+
+4. Better isolate ACI effects
+A more direct grounding evaluation or a controlled comparison of screenshot-only, tree-only, tree+OCR, and full ACI would strengthen the claims.
+
+5. Tone down novelty claims
+The paper would be stronger if it framed itself as a well-engineered and effective integration of hierarchical planning, retrieval, memory, and ACI for GUI agents, rather than implying each ingredient is individually novel.
+
+6. Discuss safety and failure modes more concretely
+Since the system controls real GUIs, bounded actions help, but there are still risks. A short discussion of safeguards, especially for destructive actions, would be valuable.
+
+Overall assessment
+
+This is a strong systems paper on GUI agents with meaningful empirical gains and a coherent architecture. The ACI design is well motivated, the hierarchical memory structure is sensible, and the benchmark improvements are substantial enough to matter. The paper is less convincing as a fundamentally novel algorithmic contribution, and the evaluation protocol around continual memory update needs clarification. Still, I found the work technically interesting, practically relevant, and likely to be useful to the community.
+
+Recommendation: Weak Accept
+
+Confidence: 4/5
+
+Reason for recommendation
+I lean positive because the paper demonstrates a real advance on an important benchmark, provides an open framework, and includes enough analysis to support its main claims. My acceptance is tempered by concerns about novelty, evaluation rigor, and missing efficiency metrics, but overall I think the contribution is solid and worthy of discussion at a conference.

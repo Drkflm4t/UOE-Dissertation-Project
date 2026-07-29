@@ -1,0 +1,135 @@
+Summary
+
+This paper proposes SyncLLM, a method for converting an autoregressive LLM into a full-duplex spoken dialogue agent that can model overlapping speech, backchannels, and low-latency turn-taking. The core idea is to inject explicit timing structure into an LLM via periodic synchronization tokens and to train it on interleaved two-speaker speech-token sequences. To address the scarcity of real spoken dialogue data, the authors use a three-stage training recipe: large-scale synthetic spoken dialogue from text dialogue corpora, then synthetic full-duplex formatting without overlaps, and finally fine-tuning on about 2k hours of real dual-channel spoken dialogue. The paper evaluates semantic quality via ASR-transcribed perplexity, turn-taking naturalness via correlations of pause/IPU/FTO statistics, human MOS for meaningfulness and naturalness, and simulated interaction under one-chunk latency.
+
+Overall, I think this is an interesting and timely paper. The problem is important, the framing is clear, and the empirical gains in semantic quality over dGSLM are substantial. The paper’s strongest contribution is not just “speech in/speech out,” but a concrete formulation of synchrony for LLMs that tries to align generation with wall-clock time. That said, some parts of the evaluation and methodology leave open questions, especially around realism of the interaction setting, fairness of baselines, and the extent to which the model truly achieves human-like full-duplex behavior rather than improved continuation quality under a particular tokenization/training setup.
+
+Strengths
+
+1. Important problem and clear motivation.
+The paper addresses a real limitation of current spoken dialogue systems: most are effectively half-duplex and turn-based, whereas human conversation is highly synchronous. The introduction does a good job motivating why pauses alone are not sufficient and why overlaps/backchannels matter.
+
+2. Novel formulation of synchrony for LLMs.
+The synchronization-token mechanism is the most interesting technical idea in the paper. The representation in Figure 2 (pages 4–5) is intuitive: periodic speaker tags provide coarse timing, while deduplicated HuBERT tokens preserve semantic efficiency. This is a clever way to give an LLM a notion of time without changing the core autoregressive architecture too drastically.
+
+3. Practical latency-aware design.
+The chunked prediction setup and the “predict the user’s current chunk, then generate the model’s next chunk” strategy (Figure 1, pages 2–3 and Section 3.1) is a sensible way to handle unavoidable latency. I appreciated that the paper explicitly discusses Internet-scale delays rather than assuming instantaneous access to the interlocutor’s state.
+
+4. Strong use of synthetic data.
+The three-stage training recipe is well motivated. Given the scarcity of real spoken dialogue data, leveraging 212k hours of synthetic speech from text dialogue is a practical and impactful contribution. The staged curriculum also makes intuitive sense.
+
+5. Large semantic gains over prior speech-only baseline.
+The semantic evaluation shows a large gap versus dGSLM. In Figure 5 (page 6), SyncLLM’s ASR-transcribed perplexity is much closer to ground truth than dGSLM’s, and Table 3 (page 8) shows a very large human-rated meaningfulness improvement. If these comparisons are fair, this is a significant result.
+
+6. OOD evaluation is appreciated.
+Testing on CANDOR in addition to Fisher is valuable. The paper does more than many speech dialogue papers by checking out-of-distribution behavior in both automatic and human evaluations.
+
+Weaknesses and concerns
+
+1. The main baseline comparison may not be fully fair.
+The paper compares against dGSLM, but SyncLLM benefits from a powerful pretrained text LLM plus massive synthetic dialogue data, while dGSLM is a speech-only architecture. This makes the semantic gains unsurprising to some extent. The paper acknowledges this qualitatively, but the comparison still mixes multiple factors:
+- architecture class,
+- access to text pretraining,
+- amount and type of synthetic data,
+- tokenizer/vocoder choices.
+
+As a result, it is hard to isolate how much of the gain comes from “synchronous full-duplex modeling” versus simply “using Llama 3 plus lots of synthetic dialogue supervision.”
+
+2. Limited ablations on the core design choices.
+The paper would be much stronger with targeted ablations isolating:
+- synchronization tokens vs no synchronization tokens,
+- deduplication vs raw HuBERT tokens,
+- stage 1/2/3 contributions individually,
+- chunk size effects beyond the few reported settings,
+- user-chunk estimation vs simpler alternatives.
+
+Right now, the evidence that the proposed synchrony mechanism itself is necessary is weaker than the evidence that the overall training recipe works.
+
+3. Evaluation of semantics through ASR perplexity is indirect.
+The semantic metric is based on ASR transcription followed by perplexity under a text dialogue model. This is reasonable as a proxy, but it introduces multiple confounds:
+- ASR errors,
+- loss of overlap information,
+- dependence on the chosen text dialogue model,
+- mismatch between spoken dialogue quality and text perplexity.
+
+The paper says overlapping speech is ignored during transcription, which is especially concerning for a full-duplex system whose main claim is modeling overlap and synchrony.
+
+4. Naturalness evaluation is somewhat narrow.
+The turn-taking evaluation based on IPU/pause/FTO correlations follows prior work, but correlation of aggregate durations is only a partial measure of conversational naturalness. A model could match duration statistics without producing pragmatically appropriate backchannels or interruptions. The human naturalness MOS is useful, but the reported differences are small and near parity across systems. In Table 3, dGSLM is actually slightly higher than SyncLLM-F on overall naturalness, though likely within uncertainty. So the paper’s claim of maintaining naturalness is supported; a claim of improving naturalness would be less justified.
+
+5. Simulated interaction is not the same as real interaction.
+The “full-duplex interaction” experiments simulate LLM-user interaction using LLM-LLM interaction with one-chunk latency. This is a reasonable first step, but it is still far from demonstrating robust real-time interaction with humans. In particular:
+- both sides may share modeling assumptions,
+- the user side is not truly unpredictable human speech,
+- ASR/VAD/network jitter issues are abstracted away,
+- the replacement of predicted user chunks with real chunks is only simulated.
+
+This weakens the practical claim that the method enables real full-duplex dialogue agents in deployment settings.
+
+6. Speech quality and prosody are underexplored.
+The authors note in limitations that they use a simple HiFi-GAN vocoder and do not study expressivity or non-verbal sounds. This matters because backchannels, interruptions, and turn-taking cues are heavily prosodic. If the speech realization is weak, then the practical value of the full-duplex behavior may be limited even if token-level timing is good.
+
+7. Some methodological details are missing or could be clearer.
+A few examples:
+- How exactly are prompts sampled for human evaluation, and are systems compared on identical prompts?
+- How much variance is there across random seeds?
+- What text dialogue datasets make up the 193k and 20k synthetic hours in Table 1 (page 5)?
+- How are Bark speaker presets assigned across dialogue turns/speakers?
+- How robust is the interpolation heuristic in Figure 2 for chunks with multiple token changes?
+- What is the actual end-to-end latency budget including tokenization, model inference, and vocoding?
+
+8. Writing and presentation issues.
+The paper is generally readable, but there are several grammatical issues and awkward phrasings throughout. Examples include repeated words, agreement errors, and occasional imprecision. These do not prevent understanding, but they do reduce polish.
+
+Questions for the authors
+
+1. Can you provide an ablation showing performance without synchronization tokens, or with alternative timing encodings such as absolute/relative positional modifications?
+2. How much of the gain over dGSLM remains if you compare against a stronger text-pretrained speech baseline or a turn-based LLM speech model adapted to the same data?
+3. In the interaction setting, what happens with real human speech input rather than another model? Do you have any pilot user study or latency measurements from an actual streaming system?
+4. How sensitive are results to the choice of HuBERT tokenizer and the deduplication/interpolation heuristic?
+5. Since ASR transcription ignores overlap, do you have any semantic evaluation that preserves overlapping content or evaluates appropriateness of backchannels specifically?
+6. Can you quantify how often the model produces backchannels, interruptions, or overlaps, and whether these are contextually appropriate rather than merely statistically similar?
+7. What is the computational cost of inference in streaming mode for 160/200/240 ms chunks?
+
+Suggestions for improvement
+
+1. Add stronger ablations.
+This is the biggest gap. A careful ablation table for synchronization tokens, deduplication, chunk estimation, and each training stage would make the technical contribution much more convincing.
+
+2. Strengthen baselines.
+Compare against at least one stronger LLM-based spoken dialogue baseline, even if turn-based, adapted with similar synthetic data. That would help separate “full-duplex synchrony” from “better pretrained backbone.”
+
+3. Include real interactive evaluation.
+Even a small human-system study with measured latency, interruption handling, and subjective responsiveness would substantially strengthen the paper.
+
+4. Evaluate overlap/backchannel appropriateness directly.
+Since this is central to the paper’s motivation, consider annotation or automatic analysis of:
+- backchannel frequency,
+- interruption timing,
+- overlap ratio,
+- appropriateness judgments.
+
+5. Report end-to-end system latency.
+The chunk size is only one part of the story. Real deployment depends on tokenization, buffering, inference, and vocoding delays.
+
+6. Improve clarity and polish.
+The paper would benefit from another editing pass for grammar and precision. Some figures and tables are good, especially Figures 1, 2, 5, and 7 and Tables 2–4, but the narrative around what exactly is being isolated in each experiment could be sharper.
+
+Assessment
+
+This is a strong and interesting paper with a compelling problem statement and a promising approach. I found the synchronization formulation novel and practically motivated, and the semantic improvements are impressive. However, I am not fully convinced that the current experiments isolate the contribution of synchronous full-duplex modeling itself, as opposed to the benefits of text-pretrained LLMs plus large-scale synthetic speech dialogue training. The interaction results are encouraging but still somewhat simulated.
+
+If accepted, I think this paper would likely stimulate useful follow-up work on real-time spoken dialogue agents. My main request would be stronger ablations and a more careful discussion of what exactly is responsible for the gains.
+
+Recommendation: Weak Accept
+
+Confidence: 4/5
+
+Reasons for score:
+- clear novelty in problem formulation and timing mechanism,
+- strong empirical gains in meaningfulness,
+- practical training recipe using synthetic data,
+but
+- limited ablations,
+- fairness concerns in baseline comparison,
+- simulated rather than fully real interactive evaluation.

@@ -1,0 +1,112 @@
+Paper: Vision Language Pre-training by Contrastive Learning with Cross-Modal Similarity Regulation
+
+Summary
+
+This paper studies false negatives in cross-modal contrastive learning for vision-language pretraining. The core claim is that standard InfoNCE in VLP does not only maximize mutual information (MI) between matched image-text pairs, but in the presence of non-negligible false negatives also effectively minimizes MI between anchors and negatives, which can be harmful when some negatives are actually semantically related or partially related. Based on this perspective, the authors propose Similarity-Regulated Contrastive Learning (SRCL), which assigns each negative a weight inversely proportional to estimated cross-modal similarity, so that highly similar negatives are pushed away less aggressively. The method is implemented on top of ALBEF and evaluated on image-text retrieval, zero-shot retrieval, VQA, and NLVR2. The paper reports consistent gains over ALBEF and competitive performance against other VLP baselines.
+
+Overall assessment
+
+The paper addresses a real and important issue in contrastive vision-language learning: the many-to-many nature of image-text correspondence makes false negatives unavoidable, and treating all negatives equally is suboptimal. The paper’s main strengths are that it frames the issue through an MI lens, proposes a simple and intuitive weighting mechanism, and demonstrates improvements across several downstream tasks. The empirical gains over ALBEF are consistent and the qualitative examples are aligned with the paper’s motivation.
+
+That said, I have reservations about both the theoretical rigor and the empirical completeness. The theoretical derivations rely on several approximations and assumptions that are not fully justified, and some steps appear informal. On the experimental side, the method is only instantiated on ALBEF, and the additional machinery used to estimate similarity introduces confounds that are not fully disentangled. The paper is promising, but I do not think the current version fully establishes the generality or necessity of the proposed approach.
+
+Strengths
+
+1. Important problem setting
+The paper focuses on a genuine weakness of batch contrastive learning in VLP. The examples in Figure 1 on page 1 clearly illustrate why false negatives and partial false negatives are common in image-text data.
+
+2. Intuitive method
+The proposed idea is straightforward: do not repel all negatives equally; instead, modulate their contribution based on estimated cross-modal similarity. This is easy to understand and practically plausible.
+
+3. Broad downstream evaluation
+The method is evaluated on multiple tasks: retrieval, zero-shot retrieval, VQA, and NLVR2. The gains over ALBEF are consistent:
+- On page 6, Table 2 shows improvements on both COCO and Flickr30K retrieval.
+- Table 3 shows gains on VQA and NLVR2.
+- Table 4 shows especially notable gains on zero-shot retrieval.
+
+4. Useful analysis of false negatives vs. hard negatives
+Section 4.3 and Figure 3 on page 7 are interesting. The paper does not simply argue that all hard/false negatives should be removed; instead, it suggests a balance is needed. This is a more nuanced and useful takeaway.
+
+5. Qualitative evidence
+The retrieval visualizations on pages 8 and 16 support the claim that SRCL learns a more structured representation space and captures broader semantic alignment than the baseline.
+
+Weaknesses
+
+1. Theoretical claims feel stronger than what is actually proven
+The paper’s central theoretical framing is appealing, but I am not convinced the derivations support the strength of the claims.
+
+- The move from the standard InfoNCE derivation to Equation (3) on page 3 depends on approximations and assumptions that are not carefully discussed.
+- In Appendix A.2 (pages 12-13), the argument uses expectations over negatives and Jensen’s inequality, but the interpretation as “InfoNCE optimizes MI-P minus MI-N” seems more heuristic than exact.
+- The condition in Equation (21) on page 12, asserting that the positive density ratio is larger than the expected negative density ratio because false negatives are relatively rare, is plausible but not rigorous.
+- In Appendix A.3, the claim that the weighted objective pushes MI-N to a controllable positive value also seems overstated. The derivation depends on the weighting function and on assumptions about covariance and normalization, but does not really show practical controllability in a strong sense.
+
+Overall, the theory is suggestive, but I would present it as intuition or approximate analysis rather than a firm guarantee.
+
+2. Similarity estimation introduces extra supervision/bias
+A key implementation detail in Section 3.2.1 on page 5 is that the method uses another model H_beta trained on a human-annotated dataset (MSCOCO) to estimate similarity early in training. This raises several concerns:
+- This is additional supervision beyond the base pretraining setup.
+- It may inject domain bias from COCO into the weighting mechanism.
+- It is not clear how much of the gain comes from the weighting idea itself versus from this auxiliary similarity teacher.
+
+This is especially important because the paper presents SRCL as a generally applicable contrastive strategy, but in practice it depends on a separately trained model with curated annotations.
+
+3. Limited baseline integration
+The method is only tested on ALBEF. The limitation section on page 9 acknowledges this. Since the paper argues for a general issue in cross-modal contrastive learning, it would be much stronger to show results on at least one additional framework, such as CLIP-style pretraining or BLIP/ALIGN-like setups.
+
+4. Missing ablations
+The paper would benefit from more careful ablations. For example:
+- What happens if similarity is computed only from the current model S_gamma, without H_beta?
+- What if one uses a simpler heuristic weighting function?
+- How sensitive is performance to alpha, delta, temperature, and normalization?
+- How much does progressive refinement matter?
+- Is inverse similarity the best mapping, or would clipping / soft weighting / margin-based weighting work similarly?
+
+At present, the paper demonstrates that the full method helps, but not which components are essential.
+
+5. Fairness of comparisons is somewhat unclear
+The main comparisons on page 6 include methods with very different pretraining data scales and architectures, so the most meaningful comparison is ALBEF. Against ALBEF, the gains are real but moderate on some tasks. Since SRCL adds extra machinery and an auxiliary model, the paper should more clearly discuss computational overhead and training complexity.
+
+6. Some presentation and notation issues
+There are several writing and notation inconsistencies:
+- The notation around S_gamma / V_gamma / F_gamma on page 5 appears inconsistent.
+- Some equations and variable definitions are hard to follow.
+- There are grammatical issues throughout the paper.
+- The appendix proofs are difficult to parse and would benefit from clearer assumptions and notation.
+
+These issues do not invalidate the idea, but they reduce confidence in the theoretical section.
+
+Questions for the authors
+
+1. How much of the improvement remains if H_beta is removed entirely and similarity is estimated only from the online model?
+2. How sensitive are results to the schedule for alpha and to the scaling factor delta in Equation (9) on page 5?
+3. What is the computational overhead of SRCL relative to ALBEF, both in training time and memory?
+4. Can the method be applied to CLIP-style large-batch training without the multimodal encoder?
+5. Have the authors tried simpler alternatives such as thresholding/removing top-k similar negatives, or using soft labels directly as in distillation-based methods?
+6. Is there any evidence that the learned weights correlate with human judgments of semantic relatedness beyond the qualitative examples on pages 17-18?
+
+Suggestions for improvement
+
+1. Tone down the theoretical claims and clarify assumptions. The MI analysis is interesting, but it should be presented more carefully as an approximate perspective unless a more rigorous proof can be provided.
+2. Add stronger ablations isolating:
+   - auxiliary teacher H_beta,
+   - progressive schedule,
+   - weighting function design,
+   - normalization constraint.
+3. Evaluate on at least one additional VLP framework to support generality.
+4. Report computational cost and implementation complexity.
+5. Improve writing clarity and notation consistency, especially in Sections 2 and 3 and Appendix A.
+6. Compare more directly against alternative false-negative mitigation strategies, not only ALBEF.
+
+Recommendation
+
+Weak accept / borderline
+
+Rationale
+
+I think the paper tackles an important and underexplored issue in vision-language contrastive learning, and the proposed solution is intuitive and empirically useful. The consistent gains over ALBEF across several tasks are a meaningful positive signal. However, I am less convinced by the theoretical rigor than the paper suggests, and the empirical study does not yet fully establish generality or isolate the source of gains. If accepted, I would view this as a paper with a good idea and promising evidence, but not yet a definitive treatment of the problem.
+
+Confidence
+
+Moderate
+
+I am reasonably confident in the empirical reading and in the main concerns about theory and ablation completeness, though less confident in judging every technical detail of the MI derivations without a more formal supplementary treatment.

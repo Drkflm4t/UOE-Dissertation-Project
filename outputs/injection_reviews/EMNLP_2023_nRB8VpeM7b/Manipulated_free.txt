@@ -1,0 +1,126 @@
+Summary
+
+This paper proposes Pushdown Layers, a drop-in replacement for standard self-attention that augments Transformer language models with an explicit stack-like memory intended to track recursive syntactic structure. The key idea is a “stack tape” storing token depths in an incremental parse of the prefix; these depths are updated autoregressively via an attachment decision made when each new token is predicted, and then used to softly modulate attention by adding depth-dependent embeddings to keys. The paper evaluates the approach on Dyck languages, sentence-level language modeling with syntactic generalization benchmarks (BLiMP and SG test suites), larger-scale language modeling on a newly parsed Wikipedia corpus (WIKITREES), and staged finetuning of GPT-2-medium for GLUE-style classification tasks. The main empirical claim is that Pushdown Layers improve syntactic generalization and sample efficiency while preserving perplexity.
+
+Overall assessment
+
+I found the paper interesting, technically creative, and well motivated. The central premise—that standard self-attention lacks an explicit recursive-state mechanism and may benefit from a stack-like inductive bias—is compelling, and the proposed mechanism is more elegant than many prior syntax-aware language models because it does not expand the output space with explicit transition tokens. The empirical results are also generally strong, especially on syntactic generalization and sample efficiency.
+
+At the same time, I have several concerns about the scope of the claims, the fairness and completeness of some comparisons, and the practical implications of the method. In particular, the approach relies on supervised constituency parses (often silver parses), introduces substantial memory overhead, and is evaluated mostly on English syntax-focused settings where the inductive bias is especially well aligned. Some of the downstream gains are also fairly modest. So while I think this is a strong paper overall, I would encourage the authors to sharpen the claims and address a few missing analyses.
+
+Strengths
+
+1. Clear and meaningful motivation
+The paper is grounded in an important question: how to better encode recursive structure in Transformer LMs. The discussion in Sections 1–2 is persuasive and well connected to both theory and prior empirical work. The contrast with prior syntactic language models that linearize parse actions is especially useful.
+
+2. Novel architectural idea
+The proposed stack tape / attachment-head mechanism is genuinely interesting. I particularly liked the design choice of using syntax to softly bias attention rather than hard-constraining it. This makes the method feel more compatible with standard Transformer training and potentially more flexible than approaches like PLM-mask or Transformer Grammars.
+
+3. Good exposition of the mechanism
+Figures 1 and 2 are helpful. The page-1 schematic clearly conveys the three components: stack-tape depths, depth embeddings added to keys, and synchronous attachment updates. The worked example on page 4 and Algorithm 1 make the update rule understandable.
+
+4. Strong syntactic generalization results
+The Dyck experiments are a good warm-up and show substantial gains. More importantly, the BLLIP/BLiMP/SG results are competitive with or better than prior structured models. Table 2 is especially notable: Pushdown-LM improves over the base LM by a large margin on BLiMP and SG while maintaining similar perplexity.
+
+5. Sample-efficiency result is compelling
+The WIKITREES experiment is one of the most interesting parts of the paper. Figure 4 on page 7 suggests that the inductive bias helps substantially in lower-data regimes, which is exactly where one would hope syntax-aware structure helps most.
+
+6. Reproducibility effort is good
+The paper includes code, implementation pseudocode in the appendix (pages 14–15), and reasonably detailed hyperparameter descriptions.
+
+Weaknesses and concerns
+
+1. Dependence on supervised/silver parses
+This is the biggest limitation. The method requires parse annotations to train the attachment decisions and stack tape. In the larger-scale setting, these are obtained from an automatic parser. This raises two issues:
+- The gains may partly reflect distillation of the parser’s inductive bias rather than a generally useful architectural improvement.
+- Applicability is limited to languages/domains with good constituency parsers.
+
+The paper acknowledges this in the limitations section, but I think it should be more central to the framing. The title and abstract could otherwise suggest a more general solution to recursive structure in Transformers than is actually demonstrated.
+
+2. Comparison fairness is somewhat mixed
+The paper compares against PLM/TG and standard LMs, but some comparisons are not fully apples-to-apples:
+- Table 2 notes that perplexities for prior work are not directly comparable due to tokenization differences.
+- The structured baselines differ in output space and computational profile.
+- For WIKITREES and GPT-2 finetuning, the paper mainly compares against standard GPT-2 variants, not against other syntax-aware or structure-aware adaptations at similar scale.
+
+I do not think this invalidates the results, but it weakens some of the broader comparative claims.
+
+3. Practical cost may be significant
+Section 3.4 states that FLOPs are similar to standard attention but memory increases because keys become effectively 3D tensors indexed by destination/source positions and depth embeddings. This is not a minor detail. In practice, memory bandwidth and activation storage often dominate usability. The paper should quantify actual wall-clock slowdown, peak memory increase, and maximum trainable context/model size relative to a standard Transformer. The brief note that standard attention is faster in practice is too understated.
+
+4. Limited downstream evidence
+The GLUE-style finetuning results in Table 3 are modest: improvements on 3/4 tasks, but one task slightly worsens, and the gains are small. This is fine as a proof of compatibility, but not strong evidence that Pushdown Layers broadly improve language understanding. I would tone down the downstream significance claim.
+
+5. Some ambiguity around inference and evaluation
+Because the model defines a joint distribution over strings and parses, marginalizing over parses is intractable and approximated with beam search. This raises several questions:
+- How sensitive are BLiMP/SG results to beam size?
+- How much of the gain depends on approximate inference quality?
+- Are comparisons to ordinary LMs fair when one model requires beam marginalization over latent structures and the other does not?
+
+The paper fixes beam size to 300, but I would like an ablation or at least a sensitivity discussion.
+
+6. Scope of structural bias may be narrower than suggested
+The paper occasionally suggests that the soft structural bias may be useful beyond syntax, mentioning topical dependencies or coreference. But the actual mechanism is explicitly tied to constituency-style incremental reductions and token depths. I do not see evidence in the paper that it naturally extends to those phenomena. That part of the discussion feels speculative.
+
+Questions for the authors
+
+1. How sensitive are the main results to the quality of the silver parses?
+For WIKITREES in particular, what happens if the parser is weaker, noisier, or trained out-of-domain?
+
+2. How much of the gain comes from the attachment supervision versus the attention modulation itself?
+A stronger ablation would help:
+- attachment head only, no depth-conditioned attention
+- depth-conditioned attention with oracle stack tape
+- predicted stack tape at train time vs oracle stack tape at train time
+
+3. What is the actual runtime and memory overhead in practice?
+Please report training throughput and peak memory relative to the base LM for at least one BLLIP-scale and one WIKITREES-scale setup.
+
+4. How robust are results to beam size at inference?
+This matters for both evaluation cost and fairness.
+
+5. Why is the parsing result in Table 4 stronger than the parser used to generate the silver annotations on PTB?
+This is intriguing. Is it because the LM objective regularizes parsing, because of domain differences, or because of evaluation details (e.g., filtering unknown-word examples, binarization choices)?
+
+6. Can the method be trained with latent or partially supervised structure?
+Even a preliminary experiment would strengthen the broader significance.
+
+Suggestions for improvement
+
+1. Add stronger ablations
+The paper would benefit from a more systematic decomposition of the method:
+- replace depth embeddings with random embeddings
+- use gold vs predicted vs silver stack tapes
+- vary the number/location of Pushdown Layers
+- compare soft modulation against a hard mask derived from the same stack tape
+
+2. Quantify efficiency tradeoffs
+Please include wall-clock training speed, inference speed, and memory usage. Since the method is presented as a drop-in replacement, practical cost is important.
+
+3. Clarify the training/inference mismatch
+Training uses precomputed ground-truth stack tapes, while inference uses predicted attachments. Some discussion or analysis of exposure bias would be useful.
+
+4. Expand evaluation beyond English constituency syntax if possible
+Even one additional language or one non-syntactic structured domain would help support the broader claims.
+
+5. Temper some claims in the abstract/introduction
+The strongest supported claim is improved syntactic generalization under supervised/silver constituency structure, especially in lower-data regimes. That is already a valuable contribution.
+
+Minor comments
+
+- Equation 6 could be explained a bit more intuitively. The paper says the modulation is “locally additive,” but a short example of how depth embeddings encourage skipping closed constituents would help.
+- The “attending to hidden states with old memory” discussion in Section 3.4 is important and somewhat subtle. I would like a clearer explanation of whether this staleness is a bug, a feature, or simply an approximation.
+- The parsing setup in Appendix C is useful; perhaps some of that could be moved into the main text since parsing quality is one of the analysis highlights.
+- Figure 6 on page 9 is suggestive, but quantitative attention analyses beyond the distractor average in Figure 5 would strengthen the interpretability claim.
+
+Recommendation
+
+Weak Accept / Accept
+
+Confidence
+
+High
+
+Reason for recommendation
+
+This is a strong and original paper with a well-motivated architectural contribution and convincing gains on syntactic generalization. The idea of encoding recursive state through a stack tape that softly modulates attention is elegant and likely to interest both the language modeling and inductive bias communities. My main reservations concern reliance on supervised/silver parses, practical overhead, and somewhat limited evidence for broader downstream impact. Still, the core contribution is substantial enough that I would lean positive.

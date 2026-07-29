@@ -1,0 +1,103 @@
+Summary:
+This paper addresses an important and underexplored privacy problem: helping users identify and mitigate risky online self-disclosures. The authors make three main contributions: (1) a new taxonomy of 19 self-disclosure categories and a Reddit corpus with 2.4K posts and 4.8K annotated spans; (2) span-level self-disclosure detection models, complemented by a user study with Reddit users; and (3) a new task of self-disclosure abstraction, which rewrites disclosure spans into less specific alternatives while preserving utility, plus an importance-rating task to help decide what should be abstracted. The paper is ambitious, interdisciplinary, and clearly motivated by real user needs. I found the problem highly relevant and the combination of NLP modeling with HCI evaluation compelling. At the same time, there are several methodological and evaluation issues that limit how strongly I can trust the conclusions, especially around annotation reliability, evaluation design, and the practical meaning of the reported gains.
+
+Strengths:
+1. Important problem and strong motivation.
+The paper tackles a real privacy challenge that is increasingly relevant in social media and LLM-mediated communication. The framing is clear: unlike classic PII detection, many risky disclosures are contextual, voluntary, and utility-bearing. The distinction between masking and abstraction is useful and well argued.
+
+2. Novel task formulation.
+The proposed self-disclosure abstraction task is interesting and, to my knowledge, genuinely novel in this form. The examples in Figure 1 on page 1 and the task comparison in Table 3 on page 5 make the idea intuitive and practically meaningful.
+
+3. Broad taxonomy and span-level annotation.
+The 19-category taxonomy is richer than most prior work. Table 1 on page 2 is informative and shows good breadth across demographic attributes and personal experiences. Span-level detection is also more actionable than sentence-level classification.
+
+4. Human-centered perspective.
+The user study is a major asset. It is valuable that the authors did not stop at benchmark metrics and instead examined whether users actually find the tool useful. The finding that users want rewriting support directly motivates the abstraction task in a convincing way.
+
+5. Reasonable empirical breadth.
+The paper includes detection, abstraction, importance rating, prompted LLM baselines, human evaluation, and a small transfer experiment to ShareGPT. This gives the work a broad scope and makes it more than a single-task modeling paper.
+
+Weaknesses / Concerns:
+
+1. Annotation reliability is only moderate, and this affects the foundation of the work.
+The corpus is central to the paper, but agreement is not especially strong. The main paper reports Krippendorff’s alpha of 0.54 for the double-annotated portion, and Appendix A.2 shows much lower agreement for some important categories, e.g., mental health, pet, and relationship status. Since the task is subjective, this is understandable, but it also means the labels are noisy in ways that likely affect both training and evaluation. The paper acknowledges subjectivity, but I think it undersells how much this limits claims about category-level performance and downstream utility.
+
+Relatedly, only the final two batches were double-annotated and adjudicated, while earlier batches were singly annotated. The models are first trained on singly annotated data and then continually trained on adjudicated data. This is practical, but it creates a somewhat uneven supervision regime. I would have liked a clearer analysis of how much performance depends on the adjudicated subset, and whether evaluation on only the adjudicated test set may overestimate consistency relative to the full data distribution.
+
+2. Detection performance is promising but still modest for deployment.
+The headline result is “over 65% partial span F1,” but this metric is fairly forgiving. Full span F1 is much lower. Table 8 in the appendix shows average span F1 around 48.9 for DeBERTa, which is a more sobering number if the system is meant to highlight exact disclosures for users. Some categories are especially weak. For example, relationship status, pet, health, and appearance remain difficult. Since the tool is intended for real users, exactness matters. The paper should be more explicit about what kinds of errors users would see in practice.
+
+Also, the decision to use RoBERTa rather than the stronger DeBERTa model in the user study is surprising. Appendix C.2 says RoBERTa was used for the user study, while Table 2/page 3 and Table 8 show DeBERTa is generally better. This choice needs stronger justification, because the user study is being used to support real-world applicability.
+
+3. The user study is interesting but limited in evidential strength.
+The study includes 21 Reddit users, which is reasonable for qualitative HCI work, but the paper presents several percentages (82%, 62%, etc.) in a way that can sound more definitive than the sample supports. The study seems best interpreted as exploratory and formative rather than confirmatory.
+
+I also wanted more detail on the study protocol and analysis. For example:
+- How were participants’ posts selected and how many posts per participant were shown?
+- Were outputs from both binary and multiclass models shown side by side in a controlled way?
+- How were interview responses coded?
+- Were the quoted themes derived inductively, and was there any inter-coder reliability?
+Without this, the user-study findings are useful but somewhat anecdotal.
+
+4. Abstraction evaluation is the weakest part of the paper.
+The abstraction task is the most novel contribution, but its evaluation leaves several open questions.
+
+First, the training data for abstraction is generated by GPT-3.5, and the test references by GPT-4. This means the models are effectively being trained to imitate LLM-produced abstractions rather than human-produced ones. That is not necessarily wrong, but it should be framed more explicitly as distillation from proprietary teachers. The paper does include human evaluation, which helps, but the automatic metrics are then less meaningful as indicators of user value.
+
+Second, the human evaluation agreement is not very high. On page 7, the interval alpha is 0.28 for utility preservation, 0.46 for privacy increase, and 0.60 for diversity. The rank-based evaluation in Table 4/page 6 also has only fair agreement. Given that the top systems are close, the ranking claims should be softened.
+
+Third, the reported privacy gains seem moderate at best. Figure 2 on page 7 shows privacy increase around 3.3-3.4/5, while utility is around 4.0-4.2/5. That is encouraging, but it also suggests the system often only partially reduces risk. This is fine, but then the paper should discuss more concretely when abstraction is sufficient versus when deletion or stronger rewriting is needed.
+
+Fourth, some generated examples in Table 11/page 17 raise concerns. A few abstractions preserve utility well, but others may drift semantically or alter tone/register. For instance, replacing “I am gay” with “I am part of the rainbow community” changes style and may not match the user’s voice. Similarly, some mental-health abstractions may soften or reinterpret the original statement rather than simply abstract it. Since the paper emphasizes preserving the “essence,” more analysis of semantic drift would be valuable.
+
+5. Importance rating is interesting but not yet convincing.
+The importance-rating task is motivated by user feedback, but the formulation is highly subjective, and the agreement is low (alpha 0.29 on page 7). The evaluation metric is also lenient: a prediction is counted correct if it matches any one of the three annotations. This makes the reported ~80% accuracy hard to interpret. In a three-way task with disagreement, “matches any annotator” can substantially inflate performance. The comparison to GPT-3.5 is therefore not very informative.
+
+I think this task is promising, but in its current form it feels preliminary. It would benefit from either a more robust annotation protocol or a reframing as preference modeling / personalized ranking rather than categorical classification.
+
+6. Some methodological choices need clearer justification.
+A few examples:
+- Why were NSFW and Over_18 posts excluded? This is understandable ethically, but it may remove exactly the kinds of sensitive disclosures where privacy tools are most needed.
+- Why is the taxonomy fixed at 19 categories, and how exhaustive is it?
+- Why are disclosures about others grouped in certain ways (e.g., family) while some partner categories are split by gender?
+- Why are name/contact handled outside the main model rather than simply excluded from the main benchmark?
+These are not fatal issues, but the design choices shape the task substantially.
+
+7. Release policy is understandable but reduces reproducibility.
+The restricted release policy is ethically motivated and reasonable. Still, it limits reproducibility and benchmarking. Given that, the paper should provide as much implementation and annotation detail as possible. The appendix helps, but more examples of edge cases and failure modes would strengthen transparency.
+
+Questions for the authors:
+1. Why was RoBERTa used in the user study instead of the better-performing DeBERTa model?
+2. Can you report precision and recall separately for detection, especially for the user-facing setting where over-highlighting may be preferable to misses?
+3. How often do abstraction outputs introduce semantic drift, tone mismatch, or factual distortion? Did annotators explicitly track these failure modes?
+4. For importance rating, what is the majority-class baseline under your “match any annotator” metric?
+5. Did you consider personalized importance rating, given the strong subjectivity and user-specific privacy preferences?
+6. Can you provide more detail on qualitative error analysis for both detection and abstraction?
+
+Suggestions for improvement:
+1. Strengthen the evaluation framing.
+Be more cautious in interpreting partial span F1 and “match any annotator” accuracy. Report exact-span metrics more prominently and discuss deployment implications.
+
+2. Add deeper error analysis.
+A category-wise qualitative analysis would help a lot. For detection, show common false positives/negatives. For abstraction, analyze semantic drift, over-abstraction, under-abstraction, and style mismatch.
+
+3. Clarify the user study methodology.
+Include more detail on coding, analysis procedure, and how model outputs were presented. If possible, distinguish exploratory qualitative findings from quantitative claims.
+
+4. Reframe importance rating as preliminary.
+Given the low agreement, I would present this as an initial exploration rather than a mature task with strong performance claims.
+
+5. Discuss personalization more concretely.
+The paper already notes this in limitations. Since privacy preferences are highly individual and community-specific, a personalized or controllable abstraction system seems like a natural next step.
+
+6. Compare against simpler baselines for abstraction.
+Even if the task is novel, it would help to compare against rule-based generalization templates or retrieval-based rewriting for some categories. This would clarify how much the LLM is really adding.
+
+Overall assessment:
+I like this paper. It addresses an important problem, introduces a useful dataset and taxonomy, and proposes a novel abstraction task that is well motivated by user feedback. The interdisciplinary angle is a real strength. However, the paper currently overstates some conclusions relative to the noisiness of the annotations and the limitations of the evaluation. In particular, the abstraction and importance-rating results are promising but not yet fully convincing as mature solutions.
+
+If I were reviewing this for a conference, I would lean positive on novelty and significance, but I would want the authors to temper claims and strengthen the methodological discussion. My overall recommendation would be weak accept to borderline, depending on venue standards and whether the conference values human-centered, problem-formulation work alongside model performance.
+
+Recommendation: Weak Accept
+
+Confidence: Medium

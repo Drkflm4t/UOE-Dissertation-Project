@@ -1,0 +1,116 @@
+Summary:
+This paper develops general lower and upper bounds on the KL divergence between a full Bayesian posterior and its coreset approximation. The main contribution is a theory that applies beyond the restrictive settings covered by prior work, especially beyond exponential families and strongly log-concave smooth posteriors. The lower bounds are used to show fundamental limitations of importance-weighted coreset constructions and minimum size requirements for any coreset. The upper bounds are based on a generalized subexponentiality condition and are used to justify subsample-optimize methods. The paper also includes experiments on two deliberately challenging models: a multimodal/unidentifiable Cauchy location model and an unidentifiable heavy-tailed logistic regression model.
+
+Overall assessment:
+This is a strong theoretical paper. The problem is important, the results are nontrivial, and the paper appears to substantially broaden the scope of available guarantees for Bayesian coresets. I found the lower-bound side especially compelling: the negative results for importance-weighted coresets are crisp, practically relevant, and theoretically illuminating. The upper-bound side is also interesting, though somewhat less satisfying in practice because the key assumptions still require case-by-case verification and the main application result depends on an alignment condition that is not yet easy to check generically. Still, the paper makes a meaningful contribution and should be of interest to researchers in scalable Bayesian inference, coresets, and approximate posterior methods.
+
+Strengths:
+
+1. Important and timely problem.
+Bayesian coresets are widely used as a black-box route to scalable inference, but the theory has lagged behind practice. This paper addresses a real gap: existing guarantees are narrow, while empirical use often targets models with multimodality, weak identifiability, or heavy tails.
+
+2. Broadening of theory beyond prior restrictive assumptions.
+The paper’s central claim—that one can derive meaningful KL lower and upper bounds under much weaker assumptions than prior work—is convincing. In particular, the lower bounds rely on assumptions that look much closer to standard local asymptotic arguments than to global log-concavity.
+
+3. Strong negative results with practical implications.
+The results in Section 4 are particularly valuable. Corollaries 4.1 and 4.2 explain why importance-weighted coresets can perform poorly, even with post-hoc scaling. This is a useful corrective to a common intuition that unbiased likelihood approximation should suffice. The result that M must scale proportionally to N for bounded KL is sharp and practically important.
+
+4. Fundamental minimum-size lower bound.
+Corollary 4.3 gives a clean and interpretable statement: any coreset needs size exceeding the local parameter dimension d to maintain bounded KL. This is a nice structural result.
+
+5. Interesting upper-bound framework.
+The generalized subexponentiality condition in Definition 5.2 is elegant. Theorem 5.3 is simple and useful once the condition is verified, and Proposition 5.4 helps justify that the condition is not vacuous.
+
+6. Challenging experiments aligned with the theory.
+The experiments are well chosen. The posterior plots on page 6 / Figure 1 clearly show that the examples are not benign Gaussian-like settings. The empirical trends in Figures 2 and 3 support the theoretical claims well.
+
+7. Clear writing overall.
+For a theory-heavy paper, the exposition is relatively readable. The high-level interpretation of the theorems is usually given before the formal statements, which helps.
+
+Weaknesses and concerns:
+
+1. The upper-bound assumptions are still somewhat abstract and hard to operationalize.
+While the paper rightly emphasizes that Definition 5.2 is weaker than prior assumptions, it remains difficult to tell in advance whether a given model/data pair satisfies the needed subexponentiality with useful constants. Proposition 5.4 shows existence of a local bound under finite mgf conditions, but this is still not fully constructive. The paper acknowledges this limitation in Section 7, and I agree it is the main limitation.
+
+2. Corollary 6.1 depends on a nontrivial alignment condition.
+The condition in Eq. (6) is plausible and reminiscent of prior coreset analyses, but it is also the least satisfying part of the paper from a practical standpoint. It is not obvious how often it holds, how it depends on the sampling distribution p_n, or how one should design p_n to ensure it. As a result, the positive result for subsample-optimize methods is somewhat conditional.
+
+3. Asymptotic focus only.
+All guarantees are asymptotic in N. That is reasonable for this topic, but it limits practical interpretability. Some discussion of finite-N implications, even informal, would strengthen the paper.
+
+4. The KL objective is natural but not the only relevant notion of quality.
+The paper studies min/max of forward and reverse KL depending on the section. This is fine, but some readers may wonder how these results translate to posterior expectations, credible sets, or downstream decisions. A brief discussion would help contextualize the practical meaning of bounded or diverging KL.
+
+5. Experimental scope is narrow.
+The experiments are appropriate for validation of the theory, but they are limited to two synthetic models. Since the paper’s contribution is mainly theoretical, this is acceptable, but one additional example closer to a standard applied Bayesian workflow would improve accessibility.
+
+Detailed comments:
+
+1. On the lower bounds:
+Lemma 3.1 is a nice starting point. I especially appreciated the way it avoids dependence on tail behavior of the coreset posterior through the asymmetric treatment of B and B^c. The local expansion strategy in Theorems 3.3 and 3.5 is technically clever and seems broadly useful beyond this paper.
+
+The distinction between Theorem 3.3 and Theorem 3.5 is also well motivated: one theorem handles “reasonably good” coresets where local curvature and gradient matching are already decent, while the other handles poor constructions where gradient mismatch persists. This split makes the later applications easier to understand.
+
+2. On the importance-weighted negative results:
+These are among the strongest parts of the paper. The intuition on page 7 is excellent: both exact and coreset posteriors contract at rate 1/N, but the coreset posterior center fluctuates at M^{-1/2}, leading to KL of order N/M. This gives a very clear explanation for the empirical failures observed in earlier work.
+
+I also liked that the paper studies the post-hoc scaled variant (Algorithm 2), since that is an obvious attempted fix. Showing only a logarithmic improvement is valuable.
+
+3. On the minimum coreset size result:
+Corollary 4.3 is elegant, though I suspect some readers will want more intuition for assumption (A8). It is technically reasonable, but perhaps the main text could say more about when it is expected to hold generically. Right now, the proof machinery is in the appendix, but the practical meaning of the condition is easy to miss.
+
+4. On the upper bounds:
+Lemma 5.1 is clean and useful. Theorem 5.3 is appealingly simple once one accepts Definition 5.2. I think the paper could do a bit more to compare this condition to standard concentration assumptions in a more intuitive way. Proposition 5.4 helps, but the practical message is still somewhat buried.
+
+5. On Corollary 6.1:
+This is a meaningful positive result, but I would encourage the author to better separate what is proved from what is heuristic. The corollary says that if subexponentiality, polynomial variance growth, and the alignment condition hold, then polylog-sized subsample-optimize coresets achieve bounded KL. That is good, but the burden is shifted to verifying Eq. (6). I would like more discussion of whether Eq. (6) is expected under uniform sampling, leverage-style sampling, or other common choices.
+
+6. On experiments:
+The figures are informative. Figure 1 on page 6 is particularly useful because it visually establishes the pathologies: the Cauchy location posterior is multimodal and the logistic regression example is unidentifiable with heavy-tailed structure. Figure 2 then convincingly shows the predicted growth rates for importance-weighted methods, and Figure 3 shows very small KL for subsample-optimize coresets of size about 5 + 2 log N.
+
+That said, the experiments mostly validate asymptotic trends already predicted by theory. It would be nice to include runtime or construction-cost information, even briefly, since the paper’s desiderata in Section 2 explicitly include computational efficiency.
+
+Questions for the author:
+
+1. Can the author say more about how restrictive Eq. (6) is in Corollary 6.1 in practice? Are there natural sufficient conditions on the sampling probabilities p_n under i.i.d. models that imply it?
+
+2. Proposition 5.4 establishes existence of a subexponential constant beta under local mgf finiteness. Is there any hope of deriving generic scaling laws for beta in common Bayesian models, even if loose?
+
+3. For Corollary 4.3, how essential is assumption (A8)? Is it mainly technical, or are there realistic examples where the conclusion could fail without it?
+
+4. Do the lower bounds suggest any constructive design principles beyond “avoid importance weighting”? For example, do they imply that matching local gradients/curvature should be explicit objectives in coreset construction?
+
+Suggestions for improvement:
+
+1. Add more intuition around the upper-bound assumptions.
+A short paragraph or table comparing:
+- prior assumptions in the literature,
+- Definition 5.2,
+- what Proposition 5.4 buys,
+would help readers understand the practical gain.
+
+2. Expand discussion of Eq. (6).
+Even if a full generic theorem is out of scope, some heuristic guidance on when the alignment condition should hold would make Corollary 6.1 more actionable.
+
+3. Clarify the practical meaning of bounded KL.
+A brief discussion connecting KL control to posterior expectations or approximation fidelity would broaden the paper’s appeal.
+
+4. Consider adding one more empirical example or a small runtime discussion.
+Not necessary for acceptance, but it would strengthen the practical side.
+
+5. Minor exposition point:
+The notation KL(w) changes meaning between Sections 3 and 5: in Section 3 it is the minimum of forward/reverse KL, while in Section 5 it is the maximum. This is stated, but easy to miss. I would strongly recommend using different notation or making this distinction more visually prominent.
+
+Minor comments:
+- There are a few small typos in the introduction (“commerical”, “suprisingly”) and elsewhere.
+- The paper is generally well written, but some theorem statements are dense. Occasional reminder sentences after theorems would help.
+- The checklist is thorough and appropriate.
+
+Recommendation:
+Accept.
+
+Confidence:
+High.
+
+Reason for recommendation:
+The paper makes a substantial theoretical contribution to Bayesian coreset analysis. The lower bounds are especially strong and practically important, the upper-bound framework is meaningful and broader than prior work, and the experiments support the claims in challenging nonclassical settings. The main caveat is that the positive theory still depends on assumptions that are not yet fully operational, but this does not outweigh the novelty and value of the contribution.

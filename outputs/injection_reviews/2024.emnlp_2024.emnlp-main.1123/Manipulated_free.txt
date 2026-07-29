@@ -1,0 +1,196 @@
+Summary
+
+This paper introduces X-Topic, a multilingual tweet/X topic classification dataset covering four languages: English, Spanish, Japanese, and Greek. The dataset contains 4,000 annotated tweets total (1,000 per language), labeled with one or more of 19 predefined social-media-oriented topics. The paper also provides a fairly extensive empirical study across zero-shot, few-shot, monolingual, cross-lingual, and multilingual settings, comparing both fine-tuned multilingual encoders and prompted LLMs. The main findings are that (i) multilingual and cross-lingual supervised models are strong, (ii) domain-specific tweet-pretrained encoders outperform generic multilingual encoders, and (iii) few-shot LLMs, while competitive in some cases, generally do not surpass fine-tuned models trained on labeled data.
+
+Overall assessment
+
+I think this is a useful and timely resource paper with a solid experimental component. The problem is important: multilingual topic classification for social media remains under-resourced, and the paper addresses a real gap between English-centric benchmarks and the multilingual reality of online platforms. The dataset design is practical, the topic taxonomy is broad enough to be useful, and the experiments are more comprehensive than what is often seen in dataset papers.
+
+That said, I also have several concerns, mostly around dataset construction choices, annotation quality/aggregation, representativeness, and some aspects of the experimental framing. None of these are fatal, but they do affect how strong the claims can be.
+
+Recommendation
+
+Weak Accept
+
+Reasons for acceptance
+- Valuable new multilingual benchmark for social media topic classification.
+- Includes typologically diverse languages, including a relatively underrepresented one (Greek).
+- Strong breadth of experiments: zero-shot, few-shot, monolingual, cross-lingual, multilingual.
+- Useful comparison between generic multilingual models, tweet-specific encoders, and LLMs.
+- Paper is generally clear and well organized.
+- Dataset and models are released, increasing reproducibility and impact.
+
+Main strengths
+
+1. Clear contribution and practical relevance
+
+The paper’s main contribution is straightforward and meaningful. A multilingual, multi-label topic classification benchmark for X/Twitter fills a genuine gap. Existing topic resources are often either news-centric, monolingual, weakly labeled, or focused on other tasks such as sentiment or hate speech. The paper makes a convincing case for why social media topic classification deserves dedicated resources.
+
+2. Good language selection
+
+The choice of English, Spanish, Japanese, and Greek is sensible. It balances high-resource and lower-resource settings, and includes typologically distant languages. This makes the benchmark more interesting than a purely Indo-European setup. The inclusion of Greek is especially welcome.
+
+3. Broad and realistic taxonomy
+
+The 19-topic taxonomy appears practically motivated and tailored to social media rather than inherited from formal text domains. The examples in Table 1 (page 3) and the topic distribution figure (page 4) suggest the labels capture a wide range of everyday and public-discourse content. The multi-label setup is also appropriate, since many tweets naturally span multiple themes.
+
+4. Comprehensive empirical study
+
+The experimental section is one of the strongest parts of the paper. The authors do not stop at releasing a dataset; they use it to study several realistic scenarios:
+- zero-shot and few-shot prompting,
+- monolingual low-resource fine-tuning,
+- cross-lingual transfer from English TweetTopic,
+- multilingual training on all languages,
+- adding older English TweetTopic data.
+
+This gives the paper value beyond the dataset itself. The results in Table 3 (page 7) are informative and likely useful to future researchers choosing baselines.
+
+5. Useful findings on domain specificity
+
+A particularly useful result is that tweet-specific pretrained encoders (e.g., XLM-T, Bernice) outperform generic XLM-R, especially in lower-data settings. This is not shocking, but it is important to quantify on a multilingual topic benchmark. The paper also shows that multilingual training helps substantially over monolingual training.
+
+6. Reasonable error analysis
+
+The paper goes beyond aggregate scores and includes topic-level analysis and false negative patterns. Table 4 and Table 5 (page 8), plus the per-topic tables in the appendix (page 17), help identify which categories remain difficult, especially “Other Hobbies” and some lower-frequency topics. This is useful for future work.
+
+Main weaknesses and concerns
+
+1. Dataset size is modest
+
+The dataset has only 1,000 tweets per language. For a 19-label multi-label classification benchmark, this is fairly small. The authors partly compensate with 5-fold cross-validation, but the small size still limits the benchmark’s stability and the strength of conclusions about model differences. This is especially relevant for rare topics, where per-label estimates may be noisy.
+
+2. Sampling strategy may bias the dataset
+
+The collection pipeline raises some concerns about representativeness:
+- tweets with URLs are removed,
+- tweets with more than four emojis or mentions are removed,
+- final sampling is weighted by retweet count and follower count.
+
+These choices may improve readability/annotation quality, but they also likely skew the dataset away from important parts of real social media discourse. Removing URL-containing tweets may disproportionately exclude news, activism, promotion, and information-sharing behavior. Weighting by popularity may bias toward more mainstream or polished content and away from niche or ordinary users. The paper acknowledges realism as a goal, but these filtering/sampling choices move the dataset away from a natural distribution.
+
+I would have liked a more explicit discussion of this tradeoff, and ideally an ablation or comparison showing how much these choices affect topic distribution.
+
+3. Annotation aggregation is somewhat weakly justified
+
+The paper assigns a topic if at least two of five annotators selected it, explicitly avoiding majority voting. I understand the motivation of preserving ambiguity in multi-label data, but the threshold of 2/5 is permissive and may introduce noisy positives. This is especially concerning given the relatively low Krippendorff alpha values in Table 2 (page 4), around 0.21–0.26.
+
+The authors argue these values are comparable to other subjective multi-label tasks, which is fair to some extent. Still, topic classification is not exactly the same as emotion annotation, and the paper should better justify why 2/5 is the right threshold here. I would have liked:
+- comparison against majority-vote labels,
+- sensitivity analysis for 2/5 vs 3/5,
+- label cardinality and prevalence changes under different aggregation rules,
+- perhaps confidence-weighted labels or soft labels.
+
+As it stands, some of the benchmark difficulty may reflect annotation noise rather than task difficulty.
+
+4. Cross-lingual comparison is somewhat confounded
+
+The paper emphasizes that cross-lingual models trained on English TweetTopic outperform monolingual models trained on target-language X-Topic. But this comparison is heavily confounded by training set size: TweetTopic has 11,267 English tweets, while each target-language training fold has only 720 training examples. The paper does acknowledge this, but the framing still occasionally overstates the cross-lingual conclusion.
+
+A fairer comparison would include:
+- size-matched English subsets,
+- learning curves,
+- or multilingual transfer from equal-sized source data.
+
+Without that, the result is as much about data quantity as cross-lingual transfer.
+
+5. Limited baseline diversity
+
+The encoder baselines are reasonable, but the modeling space is still somewhat narrow. Most fine-tuned models are variants of RoBERTa/XLM-R. It would strengthen the paper to include at least one more architecturally distinct multilingual baseline, or a stronger modern multilingual instruction-tuned model for classification. The appendix includes SuperCTM, but that baseline is not very competitive and feels peripheral.
+
+6. Prompting setup for LLMs is underexplored
+
+The LLM comparison is interesting, but the prompting setup seems minimal. The prompt in Appendix B.3 is extremely simple. Since one of the paper’s conclusions is that few-shot LLMs underperform fine-tuned encoders, it would be better to ensure the LLMs are evaluated under stronger prompting conditions:
+- better task instructions,
+- explicit multi-label output formatting,
+- chain-of-thought hidden reasoning not necessary, but clearer label definitions,
+- calibration over multiple prompt templates,
+- perhaps constrained decoding or label selection from a fixed schema.
+
+Otherwise, the comparison may underestimate LLM performance.
+
+7. Some claims about “realistic distribution” should be softened
+
+The paper says the collection is “closer to the real distribution of content shared in X,” but given the substantial filtering and popularity-weighted sampling, this should be stated more cautiously. The dataset may be closer to an annotatable, curated slice of X than to the platform’s true distribution.
+
+8. Statistical significance reporting is not sufficiently described
+
+Table 3 indicates underlined scores are statistically significant relative to the second-best score, but I did not see enough detail in the main text about:
+- which statistical test was used,
+- whether significance is computed across folds,
+- whether corrections for multiple comparisons were applied.
+
+This should be clarified.
+
+Questions for the authors
+
+1. Why was 2/5 annotator agreement chosen as the threshold for assigning a label? Did you compare against 3/5 or majority vote?
+2. Can you report label prevalence and average labels per tweet under alternative aggregation rules?
+3. How much does removing URL-containing tweets alter the prevalence of “News & Social Concern” and related categories?
+4. Did you consider unweighted random sampling instead of popularity-weighted sampling? If yes, what changed?
+5. For the cross-lingual experiments, can you provide a size-controlled comparison using an English subset matched to the target-language training size?
+6. What statistical significance test was used for Table 3?
+7. Are tweet IDs and annotations released in a way compliant with platform policy, and are all five raw annotations per tweet included?
+
+Comments on presentation
+
+The paper is generally well written and easy to follow. The structure is logical, and the tables/figures are useful.
+
+A few minor presentation issues:
+- There are several typos and grammatical issues throughout (e.g., “limited explored area,” “surprasses,” “tha arise,” “The this trend can bee seen clearly”). A proofreading pass is needed.
+- Some terminology is inconsistent: “Twitter,” “X,” and “tweet” are all used; this is understandable but could be standardized.
+- The paper would benefit from a clearer summary table of dataset statistics beyond topic counts, including average labels per tweet, per-language topic entropy, and perhaps train/dev/test topic coverage.
+- The appendix is useful, especially the annotation guidelines and per-topic results.
+
+Specific comments by section
+
+Abstract / Introduction
+- Clear motivation.
+- Good positioning against unsupervised topic modeling and formal-domain classification datasets.
+- The distinction between ad hoc topic modeling and supervised topic classification is well made.
+
+Dataset construction
+- Strong practical detail.
+- I appreciate the inclusion of preprocessing steps and the counts in Table 6 (page 16).
+- However, the rationale for some filters should be discussed more critically, especially URL removal and popularity-based sampling.
+
+Annotation
+- Good that native speakers in the research team monitored the process.
+- Agreement is acceptable for a subjective multi-label task, but still low enough that stronger justification of label aggregation is needed.
+
+Experiments
+- Very comprehensive.
+- The 5-fold CV setup is appropriate given dataset size.
+- Good choice to report both macro-F1 and micro-F1.
+
+Results
+- Table 3 is informative and central.
+- The multilingual gains are convincing.
+- The cross-lingual conclusions should be framed more carefully due to data-size confounds.
+
+Error analysis
+- Helpful and not superficial.
+- Nice to see topic-level weaknesses identified.
+- Could be improved by including a few more qualitative examples per language.
+
+Ethics
+- Good to see attention to annotator compensation and privacy.
+- The stated average of £8/hour is acceptable but not especially generous by UK standards; still, it is good that compensation is explicitly discussed.
+- Replacing user mentions is useful, though privacy risks from tweet text itself may still remain if texts are released verbatim. Clarify release format.
+
+Suggestions for improvement
+
+If the paper is accepted, I strongly encourage the authors to revise in the following ways:
+1. Add a sensitivity analysis for annotation aggregation thresholds.
+2. Clarify the statistical significance methodology.
+3. Soften claims about realism/representativeness.
+4. Add a more careful discussion of sampling/filtering bias.
+5. Include at least one size-controlled cross-lingual comparison.
+6. Strengthen the LLM prompting setup or explicitly frame it as a simple prompting baseline.
+7. Proofread the paper for language issues.
+
+Final verdict
+
+This is a worthwhile dataset-and-analysis paper that should be useful to the community. Its main value lies in providing a multilingual benchmark for social media topic classification and in offering a broad empirical comparison across transfer settings and model families. While I have concerns about annotation aggregation, sampling bias, and some experimental confounds, I do not think these outweigh the contribution. With clearer discussion and some additional analysis, this could become a strong reference point for future work in multilingual social media understanding.
+
+Score: 6/10
+Confidence: 4/5

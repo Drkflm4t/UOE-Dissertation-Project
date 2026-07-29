@@ -1,0 +1,122 @@
+Paper: Fewer is More: Boosting LLM Reasoning with Reinforced Context Pruning
+
+Summary
+
+This paper proposes CoT-Influx, a plug-and-play method for improving mathematical reasoning in LLMs by increasing the effective amount of few-shot chain-of-thought context within a fixed context window. The core idea is to prune at two levels: first select useful CoT examples (“shot pruning”), then remove unimportant tokens within retained examples (“token pruning”). The pruning policy is trained with reinforcement learning using a reward that combines LLM loss, answer correctness, and token-budget pressure. The paper also introduces MRD3, a GPT-4-generated/evolved math reasoning dataset with diverse difficulty levels and reasoning steps, used to train the pruner. Experiments on LLaMA2-7B/13B/70B across GSM8K, AddSub, MultiArith, SVAMP, and SingleEq show consistent gains over standard few-shot CoT, retrieval baselines, and prompt compression baselines. The paper also reports compatibility with self-consistency and self-verification.
+
+Overall assessment
+
+This is an interesting and fairly well-executed paper on a practically relevant problem: how to better use limited context for few-shot reasoning. The central claim—that more CoT examples can help, but only if they are the right examples and are compressed in a reasoning-aware way—is plausible and supported by several experiments. The coarse-to-fine pruning design is intuitive, and the empirical results are generally strong, especially relative to retrieval and generic prompt compression baselines.
+
+That said, the paper also has important limitations. Some of the gains are modest in absolute terms on the main benchmark, the method depends heavily on GPT-4-generated data and GPT-4-based difficulty annotations, and several parts of the training/inference pipeline include heuristics that complicate the clean attribution of gains. I think the paper is promising and likely worthy of acceptance at a venue interested in prompting/reasoning methods, but I would want the authors to clarify several methodological issues.
+
+Strengths
+
+1. Clear motivation and practical relevance
+The paper addresses a real bottleneck in few-shot prompting for reasoning: context windows are limited, and naive retrieval or generic compression can hurt math performance. The motivating observations in Section 3 are useful and concrete. In particular:
+- Figure 1 on page 3 shows that increasing the number of retrieved CoT examples can initially help but eventually runs into token-budget issues.
+- Table 1 on page 3 shows that random extra examples can hurt, motivating learned selection.
+- Figure 2 on page 3 illustrates why generic compression can remove numerals/format tokens that are actually crucial for math reasoning.
+
+2. Sensible method design
+The coarse-to-fine decomposition into shot pruning and token pruning is natural and easy to understand. The workflow diagram in Figure 3 on page 4 is helpful: retrieve many candidates, prune examples, then prune tokens, then feed the compressed prompt to a frozen target LLM. Treating the target LLM as a black box is a practical advantage.
+
+3. Strong empirical comparison against relevant baselines
+The paper compares against:
+- zero-shot and zero-shot-CoT,
+- standard 8-shot CoT,
+- retrieval baselines (random, TopK, BM25),
+- prompt compression baselines (Selective Context, LLMLingua, GPT-4 compression).
+
+This is a reasonable baseline set for the paper’s claims. The results in Table 2 on page 7 are striking in one respect: generic compression baselines perform very poorly on GSM8K in this setting, while CoT-Influx preserves or improves performance. That supports the paper’s claim that math reasoning requires structure-aware compression.
+
+4. Consistent gains across models and datasets
+The method improves over few-shot CoT and retrieval baselines on multiple datasets. Table 3 on page 7 shows gains on AddSub, MultiArith, SVAMP, and SingleEq for both LLaMA2-7B and 13B. Table 5 on page 8 also suggests compatibility with self-consistency and self-verification.
+
+5. Useful analysis and ablations
+The paper includes several analyses beyond headline numbers:
+- Table 6 on page 8: effect of MRD3 versus weaker dataset variants.
+- Table 7 on page 8: both shot and token pruning matter.
+- Figure 5 on page 8: most compression comes from shot pruning, with additional gains from token pruning.
+- Appendix Table 11 on page 13: reward ablation.
+- Appendix Table 12 on page 13: some hyperparameter sensitivity.
+These help make the paper more convincing.
+
+Weaknesses and concerns
+
+1. Heavy reliance on GPT-4 weakens the “plug-and-play” story
+Although inference uses the target LLM as a black box, the overall method depends substantially on GPT-4:
+- generating formatted CoTs,
+- assigning difficulty scores,
+- evolving examples into MRD3.
+This is not just a minor implementation detail; it is central to the training data construction. The method may therefore be less accessible or reproducible than the framing suggests. Also, it is unclear how much of the gain comes from the pruning method versus simply having a large, GPT-4-curated/evolved demonstration pool.
+
+2. The evaluation may conflate multiple contributions
+The paper presents CoT-Influx as a pruning method, but the full system includes:
+- a new dataset MRD3,
+- GPT-4 evolution,
+- difficulty filtering,
+- RL training,
+- manual 8-shot CoTs appended during training/inference,
+- rule-based prompt reconstruction (Appendix C.5, page 20).
+This makes it harder to isolate what exactly is driving the gains. In particular, the rule-based reconstruction step seems important, since the paper itself notes that preserving tokens like “Q:”, “A:”, “Let’s think step by step”, and “The answer is” is critical. If reconstruction repairs structural damage after pruning, then the reported performance is not purely due to learned token pruning.
+
+3. Limited novelty at the conceptual level
+The high-level idea—retrieve many examples, then compress/select them under a budget—is intuitive and adjacent to prior work on retrieval, prompt compression, and RL-based prompt optimization. The main novelty is the specific combination of shot-level and token-level pruning trained with a math-specific reward. That is a meaningful engineering contribution, but the conceptual leap is moderate.
+
+4. RL formulation is somewhat under-specified and potentially brittle
+The paper uses REINFORCE over discrete pruning actions. This is reasonable, but several details raise questions:
+- The reward mixes token-level loss, exact-match correctness, and a token-budget term in a somewhat ad hoc way.
+- The token penalty exponent w is only lightly justified.
+- Training uses repeated sampling, EMA smoothing, difficulty filtering, and appended manual CoTs to stabilize learning.
+These choices may be necessary, but they suggest the method is fairly delicate. More discussion of variance, convergence, and failure cases would help.
+
+5. Comparisons to context extension are weak
+The appendix comparison to positional interpolation on page 12 is not very convincing as evidence against context extension methods. It uses LLaMA2-7B-32K with PI and shows degraded reasoning, but this is only one extension method and one setup. Since context extension quality varies a lot by implementation and tuning, I would not draw broad conclusions from this.
+
+6. Some claims are stronger than the evidence
+The paper sometimes frames results as “pushing the boundary” of few-shot CoT learning. But the main GSM8K gains over standard few-shot CoT are around 2–4.5 absolute points depending on model, which is good but not transformative. Also, the method is evaluated only on math reasoning; it is unclear whether the approach generalizes to other reasoning-heavy domains.
+
+7. Fairness of some baselines could be discussed more carefully
+The prompt compression baselines perform extremely poorly in Table 2. That may be real, but it also raises the question of whether they were used in the most favorable way for this task. Since those methods are not designed specifically for preserving CoT structure, the comparison is informative but perhaps not fully fair as a “state-of-the-art” reasoning baseline. Similarly, retrieval baselines are model-agnostic by design, while CoT-Influx is trained per target model family/settings.
+
+Questions for the authors
+
+1. How much of the gain remains if you remove rule-based prompt reconstruction at inference time?
+This seems important for understanding whether the token pruner truly learns structure preservation.
+
+2. How much of the gain comes from MRD3 alone?
+For example, what happens if one uses the same MRD3 retrieval pool with a stronger non-learned selector/compressor?
+
+3. Is the pruner trained separately for each target model?
+The paper suggests model-specific preferences matter. If so, what is the training cost per model, and how transferable is a pruner across models?
+
+4. How robust is the method to lower-quality CoT pools?
+Since the method depends on a large candidate set, it would be useful to know how performance changes if the pool is noisier or smaller.
+
+5. Can the method generalize beyond math?
+The paper’s arguments about preserving numerals and formatting are math-specific. It would be useful to know whether the same approach helps symbolic reasoning, commonsense multi-step QA, or code reasoning.
+
+Detailed comments
+
+- On page 4, the problem formulation is reasonable, but the notation is a bit rough in places and could be cleaned up.
+- On page 5, the state definitions are somewhat confusing: the text says “Based on the current states {sshot, sshot}” where presumably the second should be stoken.
+- The paper would benefit from a clearer distinction between training-time and inference-time prompt composition. Algorithm 1 suggests manual few-shot CoTs are appended; this is important and should be emphasized in the main text.
+- Table 8 on page 8 reports only LLaMA2-7B inference cost. It would be useful to see 13B/70B as well, or at least a discussion of scaling.
+- The appendix case study on pages 14–15 is useful. It clearly shows that generic compression methods often destroy prompt structure, while CoT-Influx preserves more of the reasoning scaffold.
+- The comparison to larger LLMs in Table 4 on page 7 is interesting, but should be interpreted cautiously because prompting setups and evaluation conditions may differ across cited systems.
+
+Recommendation
+
+Weak Accept
+
+Why
+I think this paper makes a useful contribution: it identifies an important failure mode of generic prompt compression for math reasoning, proposes a targeted pruning framework, and backs it up with solid empirical gains across several models and datasets. The method is practical and likely to be useful to others working on prompting under context constraints.
+
+My hesitation comes from the system’s complexity and dependence on GPT-4-generated/evolved data and several heuristics, which make the contribution less clean than the paper’s framing suggests. Still, the empirical evidence is fairly strong, and the paper offers a meaningful step toward reasoning-aware context optimization.
+
+Confidence
+
+4/5
+
+I read the paper carefully and feel comfortable assessing the method and experiments, though I am less certain about how much novelty a particular venue would require relative to adjacent retrieval/compression work.

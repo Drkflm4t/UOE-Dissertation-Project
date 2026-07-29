@@ -1,0 +1,161 @@
+Below is my review of the paper “A Deep Dive into the Trade-Offs of Parameter-Efficient Preference Alignment Techniques.”
+
+Summary
+
+This paper presents an empirical study of parameter-efficient preference alignment for LLMs, focusing on three axes: (1) alignment dataset, (2) alignment method, and (3) base model type. The authors compare HH-RLHF and BeaverTails, SFT and DPO, and pre-trained versus instruction-tuned 7B models (LLaMA-1/Vicuna-v1.3 and Mistral-7b/Mistral-7b-Instruct), using both LoRA and QLoRA. The study spans more than 300 experiments and evaluates on helpfulness-oriented benchmarks (MMLU, BBH, AlpacaEval) and harmlessness-oriented benchmarks (RealToxicity, Red-Instruct/DangerousQA). The main claims are that higher-quality preference data helps, SFT can outperform DPO for pre-trained models while DPO is better for instruction-tuned models, mixing distinct preferences often hurts, and model merging can mitigate some trade-offs.
+
+Overall assessment
+
+The paper addresses an important and timely question. Preference alignment is now widely practiced under PEFT constraints, but much of the literature still extrapolates from full fine-tuning or from narrow settings. A systematic empirical study of practical trade-offs is valuable. The paper’s main strength is breadth: it compares multiple datasets, methods, model families, and PEFT variants, and it tries to distill actionable guidance rather than only reporting isolated benchmark wins.
+
+That said, the paper is primarily observational, and several conclusions are stronger than what the evidence fully supports. There are also some methodological ambiguities and fairness issues in the comparisons that weaken causal interpretation. I think the paper is useful and likely of interest to practitioners, but it would benefit from tighter experimental control, clearer statistical reporting, and more careful framing of claims.
+
+Strengths
+
+1. Relevant problem and practical focus
+The paper studies a highly practical setting: alignment under single-GPU PEFT constraints. This is useful for a large part of the community and is more actionable than studies assuming full-model RLHF.
+
+2. Broad empirical coverage
+The scope is substantial. The paper varies:
+- datasets: HH-RLHF vs BeaverTails
+- methods: SFT vs DPO
+- models: pre-trained vs instruction-tuned, across two families
+- PEFT variants: LoRA and QLoRA
+
+The appendix tables on page 13 are especially helpful in showing the broader result matrix rather than only selected headline plots.
+
+3. Useful qualitative trends
+Several findings are interesting and plausible:
+- Higher-quality / more informative data tends to help alignment.
+- DPO appears more effective on instruction-tuned models than on raw pre-trained models.
+- SFT can degrade strong instruction-tuned models when the tuning data is mismatched to evaluation tasks.
+- Mixing orthogonal preferences can hurt.
+- Merging separately aligned models may partially recover trade-offs.
+
+These are the kinds of practical lessons many researchers want.
+
+4. Inclusion of both helpfulness and harmlessness evaluations
+The paper does not reduce alignment to a single benchmark. The use of both capability/helpfulness tasks and safety/harmlessness tasks is a strength.
+
+5. Attention to training accessibility
+The compute details in Appendix E and the explicit hyperparameter table (page 13, Table 6) improve reproducibility.
+
+Weaknesses and concerns
+
+1. Comparisons between SFT and DPO are not fully controlled
+This is my biggest concern. The paper compares SFT and DPO, but the training setups differ substantially:
+- different LoRA ranks and alphas
+- different learning rates
+- different target modules
+- different schedulers
+- possibly different effective optimization dynamics
+
+These differences are listed in Table 6 in the appendix. Because of this, some observed differences may reflect hyperparameter choices rather than intrinsic properties of SFT vs DPO. The authors say they selected best hyperparameters via validation, which is reasonable from a practical perspective, but then the conclusions should be framed as “best-found practical configurations” rather than clean method comparisons.
+
+2. Some claims are overstated relative to evidence
+For example:
+- “DPO performs better than SFT and is more faithful to explicit preferences” is too broad given the paper’s own results, which show strong dependence on model type and dataset.
+- “Pre-trained models generally align better with SFT, whereas instruction-tuned models align better with DPO” is an interesting trend, but the evidence comes from a limited set of 7B models and two preference domains.
+- The hypothesis that pre-trained models are weak reward models for DPO is plausible, but remains speculative.
+
+The paper would be stronger if it more clearly separated empirical observations from mechanistic explanations.
+
+3. Evaluation of harmlessness is somewhat narrow and metric-dependent
+The harmlessness analysis relies heavily on RealToxicity and Red-Instruct/DangerousQA. RealToxicity is measured using a reward model from Hugging Face, which introduces evaluator dependence. Also, “harmlessness” is broader than toxicity or attack refusal. The paper acknowledges safety complexity in the ethics section, but the main conclusions still read more generally than the evaluation supports.
+
+4. Dataset comparisons are confounded by more than “quality”
+The paper often interprets BeaverTails vs HH-RLHF as a quality/informativeness comparison. But these datasets differ in multiple ways:
+- annotation protocol
+- prompt distribution
+- response style
+- single-turn vs multi-turn structure (Appendix C)
+- size, especially for helpfulness split
+- construction of helpful/harmless subsets
+
+So the observed gains may not be attributable purely to “quality.” This should be discussed more carefully.
+
+5. Limited statistical reporting
+The paper states that all experiments are run with 5 seeds, which is good, but the main figures and tables do not appear to report variance, confidence intervals, or significance tests. Given that many differences are modest, uncertainty reporting is important. This is especially true for claims about trends across methods and datasets.
+
+6. Some benchmark choices raise interpretation issues
+MMLU and BBH are used as “helpfulness” proxies, but they are really general capability/knowledge/reasoning benchmarks. A drop on MMLU after alignment may reflect catastrophic forgetting or distribution shift rather than reduced helpfulness. AlpacaEval is more directly aligned with instruction following, but even there GPT-4-based evaluation has known biases. The paper should be more precise in mapping benchmarks to constructs.
+
+7. Model merging section is interesting but underdeveloped
+Section 6.2 is promising, but currently feels exploratory. The results in Table 3 on page 8 are mixed, and some merged variants improve one metric while hurting another. The statement that merged models “perform better on average” needs more rigorous aggregation or clearer qualification. Also, the merge hyperparameters and procedures are not described in enough detail for this to be a strong contribution on its own.
+
+8. Limited external validity
+The study is restricted to:
+- 7B models
+- two preference families
+- two alignment methods
+- mostly open-source model families from a particular era
+- PEFT only
+
+This is acceptable for a focused empirical paper, but the conclusions should be framed accordingly. The limitations section does mention this, which is good.
+
+Detailed comments by section
+
+On the dataset analysis (Section 4)
+The comparison between HH-RLHF and BeaverTails is one of the more useful parts of the paper. The radar plots on page 4 and the sample-efficiency trends in Figure 2 are informative. However, the paper repeatedly equates BeaverTails with “higher quality” and “more informative” data. That may be directionally true, but the evidence shown does not isolate why it helps. Since BeaverTails differs structurally from HH-RLHF, the conclusions should be softened.
+
+The data-mixture result in Table 2 on page 6 is interesting: mixing harmless and helpful preferences often underperforms separate alignment. This is plausible and practically relevant. Still, it would help to know whether the mixture was balanced, whether prompts overlapped semantically, and whether alternative mixture strategies were tried.
+
+On the method comparison (Section 5)
+The result that DPO is better for instruction-tuned models but not necessarily for pre-trained ones is probably the paper’s most important takeaway. Figure 4 on page 6 communicates this reasonably well. However, because the SFT and DPO setups differ in several hyperparameters and adapter configurations, the conclusion should be framed more cautiously.
+
+Also, the paper sometimes treats “faithfulness to preference” as established by better harmlessness metrics. That is suggestive, but not a complete operationalization of faithfulness.
+
+On base model effects (Section 6)
+The contrast between pre-trained and instruction-tuned models is useful. Figure 5 on page 7 supports the claim that SFT tends to help pre-trained models more, while DPO helps instruction-tuned models more. This is a practically meaningful observation.
+
+The model-merging subsection is intriguing but feels preliminary. The table on page 8 shows some gains, especially for DARE variants, but the story is not yet fully coherent. I would encourage the authors either to expand this part with more methodological detail and analysis, or to present it more explicitly as an exploratory add-on.
+
+On LoRA vs QLoRA (Section 7)
+It is good that the authors check whether trends persist across LoRA and QLoRA. Figure 6 on page 9 and the appendix tables suggest broadly similar patterns. This increases confidence that the main observations are not artifacts of quantization alone.
+
+Questions for the authors
+
+1. How exactly were the “best” hyperparameters selected for each method/model/dataset combination? Was the search budget comparable across SFT and DPO?
+2. Since SFT and DPO use different target modules and adapter ranks (Table 6), did you try any matched-control comparisons where only the objective changes?
+3. For the data-mixture experiments, how were harmless/helpful samples mixed? Equal proportions? Random interleaving? Any curriculum?
+4. Can you report standard deviations or confidence intervals for the main figures and tables, especially where differences are small?
+5. Did you observe any instability across seeds for DPO on pre-trained models, beyond mean degradation?
+6. In Appendix C, BeaverTails helpfulness is constructed by taking the “better” response. Could this create a preference signal that is not directly comparable to HH-RLHF helpfulness?
+7. For model merging, what interpolation coefficients or sparsity settings were used for Slerp and DARE? How sensitive are results to these choices?
+
+Suggestions for improvement
+
+1. Tighten the causal framing
+Rephrase conclusions to emphasize observed trends under the chosen practical configurations, rather than universal statements about SFT vs DPO.
+
+2. Add uncertainty estimates
+Include error bars in the main figures and variance/significance reporting in tables.
+
+3. Improve fairness of method comparisons
+If possible, add a controlled ablation where SFT and DPO share as much of the PEFT configuration as possible.
+
+4. Clarify dataset confounds
+Discuss more explicitly that HH-RLHF vs BeaverTails differs along multiple axes beyond quality.
+
+5. Strengthen the mixture analysis
+Provide details on mixture construction and perhaps compare naive mixing with balanced or curriculum-based mixing.
+
+6. Expand or trim the model-merging section
+Either deepen it with more methodological rigor or present it as a smaller exploratory result.
+
+7. Refine terminology
+Be careful using “helpfulness” to describe MMLU/BBH changes; “general downstream capability” may be more accurate.
+
+Recommendation
+
+Weak Accept
+
+Rationale
+
+I think this is a useful empirical paper with practical value, especially for researchers working on PEFT-based alignment under limited compute. The breadth of experiments is a real strength, and several findings are interesting and likely to influence practice. However, the paper is not yet as methodologically clean as I would like for strong claims: the SFT/DPO comparisons are somewhat confounded, statistical reporting is limited, and some interpretations overreach the evidence. Still, the paper contributes a meaningful empirical map of the design space, and I would lean toward acceptance if the venue values practical experimental studies and the authors can tighten the presentation.
+
+Confidence
+
+3/5
+
+I am reasonably confident in the main strengths and weaknesses, though some details of the experimental setup would benefit from clarification in rebuttal.

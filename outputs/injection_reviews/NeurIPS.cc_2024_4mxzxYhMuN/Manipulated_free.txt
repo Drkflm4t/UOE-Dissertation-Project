@@ -1,0 +1,141 @@
+Below is my review of the paper “Motion Forecasting in Continuous Driving.”
+
+Summary
+
+This paper studies motion forecasting from a more deployment-oriented perspective: instead of treating each scene independently, it argues that forecasting in autonomous driving should be modeled as a continuous process over successive scenes. To this end, the authors propose RealMotion, a framework with two temporal streams: (1) a scene context stream that propagates historical scene-level context across time, and (2) an agent trajectory stream that relays past predicted trajectories through a memory bank to refine current predictions. The paper also introduces a data reorganization strategy that converts standard benchmark scenes into sequences of sub-scenes, intended to better mimic continuous driving. Experiments on Argoverse 1 and 2, including multi-agent settings, show strong results, with RealMotion outperforming several prior methods on the reported benchmarks.
+
+Overall assessment
+
+The paper addresses an important and underexplored mismatch between benchmark formulation and real-world deployment in motion forecasting. The central idea—leveraging temporal continuity across successive forecasting calls rather than solving each scene independently—is intuitive, practically relevant, and well motivated. The proposed framework is reasonably simple and modular, and the empirical results are strong. At the same time, some aspects of the evaluation and problem formulation would benefit from deeper scrutiny, especially around fairness of comparison, the exact implications of the data reorganization protocol, and how much of the gain comes from benchmark reshaping versus the proposed temporal modeling itself.
+
+Strengths
+
+1. Important problem framing
+The paper’s main conceptual contribution is to challenge the standard independent-scene assumption in motion forecasting. This is a meaningful point. In practice, autonomous systems do forecast repeatedly over time, and exploiting continuity across calls is a natural and valuable direction. This framing is one of the strongest aspects of the paper.
+
+2. Clear architectural decomposition
+The two-stream design is easy to understand:
+- The scene context stream propagates scene-level context over time.
+- The agent trajectory stream propagates trajectory hypotheses and uses them to refine current predictions.
+This decomposition is sensible and aligns well with the stated motivation.
+
+3. Practical data reorganization idea
+The data reorganization strategy in Figure 2 on page 3 is a useful contribution in its own right. It provides a way to derive continuous sub-scenes from existing benchmarks without requiring new data collection. This is a pragmatic step toward evaluating continuous forecasting.
+
+4. Strong empirical performance
+The results in Table 1 on page 6 are impressive. RealMotion improves over QCNet on Argoverse 2 test in minFDE1, minADE1, minFDE6, MR6, and b-minFDE6, while remaining competitive on minADE6. The gains in single-mode metrics are especially notable. The multi-agent results in Table 3 on page 7 are also strong.
+
+5. Efficiency discussion
+The latency/parameter comparison in Table 6 on page 9 is useful. RealMotion appears substantially smaller than QCNet and reasonably efficient, which supports the practical motivation of the work.
+
+6. Good ablation coverage
+The paper includes ablations on core components, alignment modules, trajectory embedding, split points, gradient steps, and cross-attention depth. This helps support the design choices.
+
+Weaknesses and concerns
+
+1. Fairness of comparison is not fully convincing
+The biggest concern is whether the comparisons are fully apples-to-apples. RealMotion changes not only the model but also the effective problem setup through data reorganization and sequential processing. This may provide additional information or training structure not available to baselines in their standard form.
+
+The paper does include RealMotion-I and a QCNet-with-RealMotion-data result in the appendix (Table 9 on page 13), which is helpful, but this still feels insufficient. In particular:
+- The main leaderboard comparisons are against methods trained/evaluated under the standard benchmark protocol.
+- RealMotion’s “offline” evaluation appears to process multiple sub-scenes and only use the final prediction, which may not be directly comparable to one-shot methods unless the protocol is carefully standardized.
+- The paper should more explicitly clarify whether all methods are given exactly the same observable information at the final prediction time.
+
+2. Benchmark adaptation may be doing substantial work
+From Table 4 on page 8, the data reorganization alone already gives a meaningful gain over RealMotion-I. This is interesting, but it also raises the question of whether the main contribution is primarily the benchmark restructuring rather than the model architecture. The paper argues both matter, but the narrative sometimes over-attributes gains to the temporal streams.
+
+Relatedly, the appendix result integrating the reorganized data into QCNet improves QCNet from 1.27/0.73/0.16 to 1.24/0.71/0.15 in Table 9. This suggests the data protocol itself is a nontrivial factor.
+
+3. Limited theoretical or formal treatment of the setting
+The paper motivates “continuous driving” well, but the formalization remains somewhat loose. It would help to define more precisely:
+- what information is available at each forecasting step,
+- whether hidden state is allowed across steps,
+- how evaluation should be standardized for continuous forecasting,
+- and how this differs from online forecasting or streaming forecasting in prior work.
+
+As written, the setting is intuitive but not fully formalized.
+
+4. Some methodological choices are under-justified
+A few design decisions seem heuristic:
+- Why exactly three segments for Argoverse 2?
+- Why the chosen split points (30, 40, 50) beyond empirical tuning?
+- Why use predicted trajectories in memory rather than encoded hidden states only?
+- Why is the map-map temporal interaction restricted while agent features attend to the whole historical scene?
+The ablations partly address these, but more conceptual justification would strengthen the paper.
+
+5. Evaluation breadth could be stronger
+The paper evaluates on Argoverse 1 and 2, which is good, but the limitation section acknowledges that the method does not naturally apply to datasets with shorter history such as Waymo Open Motion. This somewhat narrows the generality of the claimed setting. Since the paper’s main claim is about practical continuous driving, it would be valuable to test on a broader range of datasets or at least simulate shorter-history robustness.
+
+6. Writing clarity and polish
+The paper is generally understandable, but there are many grammatical issues and awkward phrasings throughout. Examples include:
+- “RealMotion has far outperformed most of previous approaches”
+- “we anticipate to address”
+- “a singular trajectory”
+- inconsistent capitalization and notation
+These do not prevent understanding, but they reduce polish.
+
+Detailed comments
+
+1. On the scene context stream
+The context referencing module in Figure 3(c) on page 4 is intuitive. The use of motion-aware alignment before cross-attention is sensible. However, I would like more discussion of failure modes when alignment is imperfect, especially under large ego-motion or map cropping changes. Table 5 on page 8 shows alignment helps, but only modestly.
+
+2. On the trajectory memory bank
+The trajectory relaying module in Figure 3(d) on page 4 is interesting. Using trajectory embedding to retrieve/refine based on spatial similarity is a nice idea. Still, there are open questions:
+- How sensitive is performance to memory bank size n?
+- How are stale or low-quality predictions prevented from accumulating?
+- Does error propagation occur over long sequences?
+The paper says FIFO is used and no filtering is applied to preserve diversity, but this seems potentially risky.
+
+3. On online vs offline latency
+Table 6 on page 9 distinguishes online and offline latency. This is useful, but the comparison is a bit hard to interpret. RealMotion’s offline latency is 62 ms because it effectively processes three iterations, while online latency is 20 ms. This supports the deployment story, but the paper should explain more carefully how these numbers map to actual system operation and whether caching or state reuse is fully exploited.
+
+4. On qualitative results
+The qualitative examples in Figure 4 on page 9 and Figures 6–7 in the appendix are helpful. They do support the claim that predictions become progressively refined over time. The failure cases on page 14 are also appreciated; they show the method still struggles with complex turning behavior and subjective actions like parking.
+
+5. On multi-agent forecasting
+The multi-agent results in Table 3 on page 7 are promising, especially since the method is not heavily specialized for joint prediction. Still, the paper does not deeply analyze whether the sequential mechanism improves interaction consistency across agents, which would be a natural claim in this setting.
+
+Questions for the authors
+
+1. In the final benchmark evaluation, is RealMotion allowed to use information from multiple sub-scenes that would not be available to a standard one-shot predictor at the same nominal prediction timestamp? Please clarify precisely what is observed and when.
+
+2. How large is the trajectory memory bank, and how sensitive are results to this size?
+
+3. Does performance continue to improve with longer continuous sequences beyond three segments, assuming sufficient history is available?
+
+4. Can the authors provide a stronger apples-to-apples baseline where a competitive prior method is trained and evaluated under exactly the same reorganized sequential protocol?
+
+5. How robust is the method to accumulated prediction errors in long online rollouts?
+
+6. Could the scene context stream alone be implemented as a recurrent hidden-state baseline? How would that compare to the proposed cross-attention design?
+
+Suggestions for improvement
+
+1. Clarify the evaluation protocol much more explicitly.
+This is the most important revision. The paper should precisely define the continuous forecasting task and explain why the comparisons are fair.
+
+2. Add stronger sequential baselines.
+At minimum, adapt one or two strong baselines to the same reorganized data and sequential evaluation protocol.
+
+3. Analyze long-horizon rollout behavior.
+Since the method is motivated by continuous deployment, robustness over longer sequences would be valuable.
+
+4. Provide sensitivity studies for memory bank size and sequence length.
+These would help understand the practical operating regime.
+
+5. Improve writing and notation consistency.
+The technical content is good enough to merit a cleaner presentation.
+
+Recommendation
+
+Weak Accept
+
+Rationale
+
+I think this is a meaningful and timely paper with a strong practical motivation, a sensible method, and very good empirical results. The idea of continuous motion forecasting across successive scenes is compelling and likely important for real-world autonomous driving systems. My main hesitation is around evaluation fairness and the extent to which gains derive from changing the benchmark protocol versus the model itself. Still, the paper opens an interesting direction and provides enough technical and empirical substance to merit acceptance, provided the authors clarify the protocol and strengthen the discussion of comparability.
+
+Confidence
+
+3/5
+
+I am reasonably confident in my assessment of the paper’s strengths and weaknesses, though some concerns hinge on protocol details that are not fully specified in the manuscript.

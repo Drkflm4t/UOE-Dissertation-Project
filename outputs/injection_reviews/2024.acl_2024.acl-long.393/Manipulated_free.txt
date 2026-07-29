@@ -1,0 +1,146 @@
+Summary
+
+This paper proposes a pretraining-and-transfer framework for EEG-to-text decoding. The core contribution is CET-MAE, a contrastive EEG-text masked autoencoder that combines three objectives: masked text modeling, masked EEG reconstruction, and EEG-text contrastive alignment. The downstream framework, E2T-PTR, transfers the pretrained EEG-side modules into an EEG-to-text generation system built around BART. The method is evaluated on ZuCo 1.0/2.0 reading-task combinations, with results reported for 3-task, 4-task, and 5-task settings. The paper also studies masking ratios, ablations, leave-one-subject-out validation, and comparisons against variants using only contrastive learning or only masked modeling.
+
+Overall, the paper addresses an interesting and timely problem at the intersection of multimodal self-supervised learning, brain decoding, and language generation. The idea of jointly learning transferable EEG-text representations is appealing, and the empirical results suggest measurable gains over prior EEG-to-text baselines. At the same time, there are several methodological and evaluation issues that limit how strongly I would interpret the claims, especially around fairness of comparisons, the role of teacher forcing, the exact meaning of “open vocabulary” decoding here, and the realism of the evaluation setup.
+
+Strengths
+
+1. Important problem
+EEG-to-text decoding is a challenging and high-impact task. The paper is well motivated from both BCI and multimodal representation learning perspectives.
+
+2. Clear high-level idea
+The combination of cross-modal contrastive alignment with within-modality masked reconstruction is sensible. The architecture in Figure 2 on page 4 is helpful and communicates the intended interaction between EEG stream, text stream, and joint stream clearly.
+
+3. Reasonable technical novelty
+While the ingredients themselves are not individually new, their combination for EEG-text pretraining appears novel in this domain. In particular, the multi-stream design and the transfer of pretrained EEG-side modules into a BART-based decoder are meaningful contributions.
+
+4. Empirical improvements
+Table 1 on page 6 shows consistent gains over EEG2Text and DeWave in the 3-task setting, and gains over the reproduced EEG2Text baseline in the 5-task setting. The ablations in Table 5 on page 8 also support that sentence-level EEG features, CET-MAE pretraining, and E2T-PTR each contribute.
+
+5. Useful supplementary analysis
+The appendices include additional analyses on masking strategy, multi-stream design, subject-wise performance, and generated examples. Table 15 on page 15 is especially useful in showing that the forced masking strategy helps.
+
+Major concerns
+
+1. Evaluation setup and “teacher forcing” remain a central limitation
+The paper acknowledges in the limitations section on page 9 that current EEG-to-text systems, including this one, still depend on the “implicit use of teacher forcing.” This is a major issue, not a minor caveat. If the decoding setup conditions generation in a way that substantially relies on ground-truth text during training and perhaps evaluation, then the practical meaning of the reported BLEU/ROUGE gains for true brain-to-language decoding is limited.
+
+The paper should be much more explicit about:
+- what exactly is fed to BART during training and inference,
+- whether decoding is fully autoregressive at test time,
+- whether any gold text tokens or alignments are used beyond supervision,
+- how this differs from standard seq2seq teacher forcing,
+- and why this should still be considered open-vocabulary EEG-to-text decoding.
+
+As written, this remains somewhat ambiguous.
+
+2. Fairness and consistency of comparisons are not fully convincing
+The comparisons in Table 1 mix numbers from prior papers and reproduced baselines, and the training sample counts differ across methods. For example:
+- C-SCL is reported with 14567 samples, while the reproduced C-SCL* uses 14407.
+- EEG2Text and DeWave are compared at 10710 samples, but the 5-task comparison is only against EEG2Text*.
+- Some results are shown with and without removing repeated generated words, which complicates interpretation.
+
+This makes it difficult to assess whether the gains are due to the proposed pretraining, the larger task combination, preprocessing choices, evaluation protocol differences, or reproduction artifacts. A cleaner comparison would retrain all baselines under exactly the same data splits, preprocessing, and decoding settings.
+
+3. The leave-one-subject-out result is surprising and underexplained
+Table 4 on page 8 reports that leave-one-subject-out cross-validation performs better than the standard split-each-subject 8:1:1 strategy. This is counterintuitive: LOSO is usually harder because it tests cross-subject generalization. The paper interprets this as evidence of strong generalization, but that conclusion needs more scrutiny.
+
+Possible explanations could include:
+- larger effective training data in each LOSO fold,
+- differences in test-set composition,
+- leakage through sentence overlap across subjects,
+- or evaluation artifacts.
+
+Because ZuCo contains multiple subjects reading overlapping text, the paper must clarify whether the same sentences can appear in training for some subjects and in testing for held-out subjects. If so, LOSO may not be a true cross-subject-and-cross-sentence generalization test. This point is crucial.
+
+4. Potential leakage due to sentence overlap across subjects/tasks
+Related to the previous point, the paper does not clearly state whether train/validation/test splits are sentence-disjoint across subjects and across task combinations. Since ZuCo involves multiple readers and repeated textual material, there is a real risk that the model sees the same or highly similar target sentences during training from other subjects. If that happens, the task becomes partly retrieval or memorization-assisted generation rather than pure EEG-conditioned decoding.
+
+This is perhaps the most important experimental clarification needed.
+
+5. The generated examples still show weak decoding quality
+Although the quantitative metrics improve, many examples in Tables 2, 10, 11, and 12 still contain severe hallucinations, repetitions, malformed phrases, and incorrect named entities. In the 3-task and 4-task settings especially, outputs are often only partially grammatical and semantically loose. The 5-task examples on page 14 are stronger, but even there performance appears uneven across sentences.
+
+So while the paper demonstrates progress, the framing should be more measured. The system is not yet close to reliable sentence reconstruction from EEG.
+
+6. Novelty relative to existing multimodal SSL is moderate
+The paper claims “the first pre-trained EEG-text model for EEG-based language decoding.” This may be true in a narrow sense, but the methodological novelty is mainly an adaptation of known multimodal SSL ideas—contrastive learning plus masked autoencoding—to EEG-text. That is still valuable, but the claim should be calibrated carefully.
+
+7. Limited statistical rigor
+The paper reports point estimates only. There are no confidence intervals, significance tests, or variance across random seeds. Given the relatively small absolute gains in some settings, especially in Table 6 on page 8, it is hard to know whether improvements are robust.
+
+Specific comments and questions
+
+1. Data splitting
+Please clarify precisely:
+- Are train/val/test splits sentence-disjoint?
+- Are they subject-disjoint in the standard setting?
+- In LOSO, can the same sentence appear in training from other subjects and in testing for the held-out subject?
+- Are task combinations merged before splitting, or split per task then merged?
+
+2. Pretraining/test overlap
+The paper says the test set samples remained consistent throughout pretraining and fine-tuning. Does this mean pretraining excludes all downstream test sentences? Please state this explicitly and carefully.
+
+3. Use of BART
+The text encoder is described as BART encoder with frozen weights during CET-MAE pretraining, while E2T-PTR fully fine-tunes BART. This is reasonable, but it would help to know:
+- whether BART decoder cross-attends only to EEG embeddings,
+- whether any textual prompt is used at inference,
+- and whether generation starts from BOS only.
+
+4. “Open vocabulary”
+The paper repeatedly uses this term, but the setup still relies on a pretrained language model and supervised paired EEG-text data from a fixed corpus. In what sense is this open vocabulary beyond standard subword generation? Is the model evaluated on unseen words or only on held-out sentences from the same corpus distribution?
+
+5. Masking strategy
+The forced masking of sentence-level EEG is interesting. However, because sentence-level EEG is always masked, is the model effectively learning to reconstruct it mostly from word-level EEG and text? An analysis of reconstruction quality by token type would strengthen the claim.
+
+6. Contribution of sentence-level EEG
+The improvement from adding sentence-level EEG in Table 5 is modest but consistent. It would be useful to know whether gains are larger for sentences with higher natural masking ratio in word-level EEG.
+
+7. Comparison to simpler transfer baselines
+A stronger baseline would be:
+- pretraining EEG encoder with EEG-only masked modeling,
+- or directly fine-tuning the same E2T architecture without text-side pretraining but with matched parameter count and training budget.
+Some of this is partially addressed, but not fully.
+
+8. Metric choice
+BLEU and ROUGE-1 are standard but limited for this task. Since many outputs are paraphrastic or partially correct, semantic metrics such as BERTScore, BLEURT, or entity-level accuracy might be more informative.
+
+9. Qualitative analysis
+The examples suggest the model often gets syntactic scaffolding and some semantic fields right, but struggles with named entities and factual details. A more systematic error analysis would be valuable.
+
+10. Writing and presentation
+The paper is generally understandable, but there are many grammatical issues and awkward phrasings. Examples:
+- “Our goal L is minimizing is the summation...”
+- “specialized pre-trained model bridging EEG and text has been ignored”
+- “studiess”
+A careful proofreading pass is needed.
+
+Minor issues
+
+- Table 15 on page 15 appears to report ROUGE-1 F as 35.61 for the force-mask setting, but Table 5 reports 32.61 for what seems to be the same 3-task configuration. This discrepancy should be checked.
+- The notation around masking ratios and “overall masking ratio” is somewhat confusing.
+- The paper sometimes overstates conclusions from small gains, especially in Table 6.
+- The claim that higher masking ratios are better is based on a small grid and one dataset family; it should be presented as an empirical observation rather than a general principle.
+- The use of “SOTA” should be more cautious given the evaluation inconsistencies.
+
+Recommendation
+
+Weak Accept / Borderline
+
+Rationale
+
+I think the paper has a solid core idea and presents promising empirical progress on a difficult task. The proposed CET-MAE + E2T-PTR framework is coherent, and the combination of multimodal SSL with downstream EEG-to-text transfer is interesting enough for publication. However, I have substantial reservations about the evaluation protocol and the strength of the claims. In particular, the possibility of sentence overlap across subjects, the unclear implications of teacher forcing, and the surprising LOSO results need much clearer treatment. If these concerns are addressed satisfactorily, the paper would be significantly stronger.
+
+What I would like to see in a revision
+
+1. A precise and transparent description of train/val/test splitting, especially sentence overlap across subjects.
+2. Clarification of inference-time decoding and the exact role of teacher forcing.
+3. Stronger apples-to-apples baseline comparisons under identical splits and preprocessing.
+4. Statistical significance or multi-seed reporting.
+5. Additional semantic evaluation metrics and a more systematic error analysis.
+6. Careful proofreading and correction of inconsistencies in tables.
+
+Confidence
+
+Medium. The technical direction is clear, but some critical evaluation details are insufficiently specified, which affects confidence in the empirical claims.

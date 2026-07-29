@@ -1,0 +1,165 @@
+Review for “Towards a Common Understanding of Contributing Factors for Cross-Lingual Transfer in Multilingual Language Models: A Review”
+
+Summary
+
+This paper presents a review of the literature on factors affecting zero-shot cross-lingual transfer in multilingual language models (MLLMs). The authors organize prior work into five categories: linguistic similarity, lexical overlap, model architecture, pre-training settings, and pre-training data. The paper aims not only to summarize prior findings, but also to identify areas of consensus and explain apparent contradictions across studies. The review focuses primarily on encoder-style multilingual models such as mBERT, XLM, and XLM-R, and on the standard zero-shot transfer setup where a model is fine-tuned on a source language and evaluated directly on a target language.
+
+Overall, I found the paper useful and reasonably well structured. The topic is timely and important: cross-lingual transfer remains central to multilingual NLP, and the literature is indeed fragmented across tasks, models, and experimental setups. The paper’s main value lies in synthesizing this literature into a coherent taxonomy and in explicitly discussing why different papers may have reached different conclusions.
+
+Strengths
+
+1. Clear scope and motivation
+The paper addresses a real need. There are many empirical papers on multilingual transfer, but fewer attempts to consolidate what is known about why transfer works and what factors matter most. The motivation is well articulated in the introduction.
+
+2. Useful taxonomy
+The five-factor organization is intuitive and effective:
+- linguistic similarity
+- lexical overlap
+- model architecture
+- pre-training settings
+- pre-training data
+
+This structure makes the review easy to follow and should be useful for researchers entering the area.
+
+3. Good effort to reconcile conflicting findings
+A notable strength is that the paper does not merely list results. In several places, it tries to explain contradictions by pointing to differences in:
+- synthetic vs. natural language settings
+- task type
+- model family
+- feature interactions
+- regression/modeling choices used in meta-analyses
+
+This is especially helpful in the sections on word order and lexical overlap.
+
+4. Helpful tables
+Table 1 and Table 2 are valuable summary artifacts. In particular, Table 1 on page 3 compactly maps papers to tasks, models, language types, linguistic features, and metrics; Table 2 on page 13 summarizes the surveyed papers by task, model, language type, and factor category. These tables improve the paper’s utility as a reference.
+
+5. Balanced discussion of interactions and task dependence
+The paper repeatedly emphasizes that factors such as lexical overlap or linguistic similarity are not standalone explanations, and that their effects depend on other variables such as word order, script, resource level, and downstream task. This is an important and mature takeaway.
+
+Weaknesses
+
+1. Limited methodological transparency for a review paper
+The biggest weakness is that the paper does not describe a systematic review methodology in enough detail. For a survey/review paper, readers would benefit from:
+- explicit search strategy
+- inclusion/exclusion criteria
+- time window
+- venues/databases searched
+- how papers were categorized
+- whether any quality filtering was applied
+
+The paper acknowledges possible selection bias in the limitations section, but this does not fully compensate for the lack of a more systematic methodology.
+
+2. Some conclusions are stronger than the evidence warrants
+At several points, the paper moves from summarizing prior work to making interpretive claims that feel somewhat speculative. For example:
+- the suggestion that syntax may have been overestimated because random permutation/inversion is unnatural
+- the explanation of contradictory lexical-overlap findings via differences in modeling choices or interactions with word order
+These are plausible hypotheses, but often not decisively established by the reviewed evidence. The paper would benefit from more careful signaling of what is directly supported versus what is the authors’ interpretation.
+
+3. Coverage is somewhat narrow with respect to newer multilingual paradigms
+The review is centered on classic encoder-based MLLMs and zero-shot transfer. That is a reasonable scope, but the paper could better position itself relative to:
+- instruction-tuned multilingual models
+- multilingual seq2seq/generative models
+- large language models with emergent multilingual abilities
+- parameter-efficient transfer methods beyond the brief mention of adapters
+
+The discussion section does mention generative models as future work, but the omission still makes the review feel somewhat anchored in an earlier phase of multilingual NLP.
+
+4. Uneven depth across sections
+The sections on linguistic similarity and lexical overlap are the strongest and most detailed. By contrast, model architecture and pre-training settings are shorter and less comprehensive. For example, architecture discussion focuses mainly on depth, parameter sharing, attention heads, and embedding alignment, but does not deeply engage with architectural alternatives or scaling-related design choices.
+
+5. Some writing and presentation issues
+There are a number of minor language and formatting issues throughout the paper:
+- occasional awkward phrasing
+- some punctuation/spacing problems
+- a few typographical inconsistencies
+- double periods in places (e.g., page 2)
+These do not prevent understanding, but they reduce polish.
+
+Detailed comments
+
+1. Scope and framing
+The paper states that it focuses on the “traditional” zero-shot transfer process and excludes translation-based approaches to avoid introducing external factors. This is a fair choice, but I would encourage the authors to state more explicitly that their conclusions may not transfer to settings where translation, instruction tuning, retrieval augmentation, or multilingual prompting are involved.
+
+2. Linguistic similarity section
+This is probably the strongest section of the paper. The distinction between synthetic manipulation of linguistic features and natural-language similarity metrics is useful. The discussion of syntax/word order is nuanced, especially the point that random permutation and inversion may exaggerate the importance of word order relative to more realistic syntactic variation.
+
+That said, the conclusion that syntax may be “potentially the most important” contributor is still somewhat broad given the heterogeneity of tasks and setups. It may be better to frame this as “one of the most consistently implicated factors.”
+
+3. Lexical overlap section
+This section does a good job of showing that lexical overlap is neither irrelevant nor sufficient on its own. The proposed reconciliation—that lexical overlap matters more when word order differs or when source-language pre-training data is limited—is one of the more interesting synthesis points in the paper.
+
+Still, this section would benefit from a clearer distinction between:
+- overlap at the word level
+- overlap at the subword/tokenizer level
+- overlap induced by shared script
+These are related but not identical phenomena, and some of the surveyed studies seem to operationalize them differently.
+
+4. Model architecture section
+The section is informative but comparatively thin. It would help to discuss more explicitly whether the reviewed findings are robust across:
+- bilingual vs. massively multilingual settings
+- small vs. base/large models
+- encoder-only vs. encoder-decoder architectures
+
+The discussion of overparameterization and the “curse of multilinguality” is interesting, but the review could do more to clarify the tension between capacity helping multilingual coverage and excess capacity potentially reducing alignment.
+
+5. Pre-training settings and data
+These sections are useful, especially the points about:
+- NSP not helping and possibly hurting
+- subword training being preferable
+- tokenizer quality mattering more for token-level tasks
+- target-language corpus size being especially important for higher-level tasks
+- domain/source mismatch in pre-training corpora hurting transfer
+
+These are practical takeaways. However, the paper could better separate findings that are broadly replicated from those that come from only one or two studies.
+
+6. Related work
+The related work section is adequate, but it could more sharply articulate what distinguishes this review from prior surveys. The paper says earlier surveys either focused on transfer paradigms or discussed factors only briefly. That is likely true, but a more explicit comparison table or bullet list would strengthen the novelty claim.
+
+7. Discussion and future directions
+I appreciated the discussion of interactions among factors and the suggestion that multilingual modeling might eventually be organized around distributions of linguistic features rather than language identities. This is speculative, but thought-provoking.
+
+The call for more multilingual evaluation datasets and more work on generative models is also well taken.
+
+Questions for the authors
+
+1. How were the surveyed papers selected? Was there a systematic search process, or was the selection primarily manual?
+2. Did the authors consider organizing the evidence by strength or confidence level, e.g., “well supported,” “mixed evidence,” “preliminary”?
+3. Could the authors provide a more explicit mapping from factor to task type, perhaps in a summary figure or matrix?
+4. Why were some related multilingual transfer settings excluded beyond translation-based approaches, such as multilingual generation or instruction tuning?
+5. Did the authors consider publication bias beyond acknowledging it in limitations, for example by noting whether null-result papers are underrepresented?
+
+Suggestions for improvement
+
+1. Add a dedicated methodology section for the review process.
+This would substantially strengthen the paper’s credibility as a survey.
+
+2. Distinguish more clearly between evidence and interpretation.
+When proposing explanations for contradictory findings, label them explicitly as hypotheses unless directly validated.
+
+3. Expand the architecture and pre-training sections.
+These sections currently feel less developed than the language-related sections.
+
+4. Improve presentation quality.
+A careful proofreading pass would fix minor grammatical and formatting issues.
+
+5. Add a final synthesis table.
+For each factor, summarize:
+- overall direction of evidence
+- known interactions
+- task dependence
+- confidence level
+This would make the review even more actionable.
+
+Overall assessment
+
+This is a useful and relevant review paper that addresses an important question in multilingual NLP: what drives cross-lingual transfer in multilingual language models? Its main strengths are its clear taxonomy, practical synthesis of prior work, and explicit attempt to reconcile conflicting findings. Its main weaknesses are the lack of a systematic review methodology and somewhat uneven depth across sections.
+
+I think the paper would be valuable to researchers working on multilingual transfer, especially those seeking a structured overview of the literature. With stronger methodological framing and somewhat more cautious interpretation, it could become a solid reference piece.
+
+Recommendation: Weak Accept
+
+Confidence: 4/5
+
+Reason for recommendation:
+The paper makes a worthwhile synthesizing contribution and is likely to be useful to the community, even though it does not fully meet the methodological rigor one might ideally expect from a review paper.

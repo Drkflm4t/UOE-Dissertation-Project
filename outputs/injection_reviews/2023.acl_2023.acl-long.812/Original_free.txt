@@ -1,0 +1,175 @@
+Paper: Finding the Pillars of Strength for Multi-Head Attention
+
+Summary
+
+This paper studies redundancy and over-parameterization in multi-head attention (MHA). The authors argue that effective MHA should focus on representative and distinctive feature subsets using minimal resources. To this end, they propose a two-stage “divide-and-conquer” approach:
+
+1. Group-Constrained Training (GCT): heads are grouped via a self-supervised hidden-unit discovery system (HUDS), with an objective that encourages intra-group homogenization and inter-group diversification.
+2. Voting-to-Stay (V2S): after convergence, one “Pillar of Strength” (PS) head per group is retained and the remaining heads in the group are pruned/masked.
+
+The resulting architectures are called GHT (Grouped Head Transformer) and GHT-PS (Grouped Head Transformer with Pillars of Strength). Experiments are reported on machine translation, abstractive summarization, and language modeling. The paper claims consistent gains over vanilla Transformers and several efficiency-oriented baselines, while also reducing parameters and improving inference speed/FLOPs in the pruned variant.
+
+Overall assessment
+
+This is an interesting and fairly ambitious paper. The central idea—explicitly structuring attention heads into groups that are internally redundant but externally diverse, then pruning within-group redundancy—is intuitive and potentially useful. The paper also goes beyond pure empirical gains by trying to articulate a design principle for MHA: compact but diverse group structure may be beneficial. The empirical scope is broad, spanning three NLP tasks, and the ablations are reasonably extensive.
+
+That said, I have several concerns about clarity, methodological grounding, and fairness of some comparisons. The method introduces multiple moving parts (HUDS, hidden units, grouping objective, voting, pruning, fine-tuning), and some of these are not described with enough precision to make the approach fully reproducible or to isolate what truly drives the gains. In addition, some baseline comparisons are not entirely convincing, especially where architectures, training setups, or parameter budgets differ substantially. The paper is promising, but I think it needs stronger methodological clarification and tighter experimental validation.
+
+Recommendation: Weak Accept / Borderline
+
+Strengths
+
+1. Clear motivation
+The paper addresses a well-known issue in Transformers: many attention heads are redundant. The framing relative to prior work—homogenization, diversification, and significance-based pruning—is useful and helps position the contribution.
+
+2. Intuitive method
+The proposed combination of grouping plus pruning is conceptually appealing. Encouraging heads within a group to become similar while pushing groups apart is a sensible way to create structured redundancy that can later be exploited for compression.
+
+3. Broad empirical evaluation
+The paper evaluates on three standard tasks:
+- Machine translation (IWSLT and WMT)
+- Abstractive summarization (CNN/DailyMail)
+- Language modeling (WikiText-103)
+
+This breadth is a positive sign that the method is not narrowly tuned to one benchmark.
+
+4. Good ablation coverage
+The ablation table on page 6 is helpful. It tests removal of diversification, homogenization, GCT, group constraints, HUDS, and PS selection. These results support that the full pipeline matters.
+
+5. Useful analysis of group compactness
+The plots on page 7 are interesting. In particular, Figure 2 suggests a non-monotonic relationship between compactness metrics (Silhouette Coefficient and Dunn’s Index) and BLEU, which supports the claim that some grouping pressure helps but too much hurts. Figure 4 also gives some evidence that the proposed training objective changes head organization over time.
+
+Weaknesses and concerns
+
+1. Method description is not sufficiently precise
+The biggest issue is that the method is harder to pin down than it first appears.
+
+- HUDS is described as “such as K-means” (page 4), but it is unclear exactly how clustering is run during training. Is it recomputed every step, every epoch, or intermittently? On which representations exactly? Are the feature maps pooled over tokens/time before clustering? What is the dimensionality of the clustering input?
+- The notation around hidden units Z is confusing. Sometimes Z are categorical variables, sometimes continuous vectors. The paper says metric learning performs better and is used in experiments, but the exact implementation remains vague.
+- Equation 4 is central, but difficult to parse. In particular, the role of zi,l versus z_l^j, and how group assignments and group prototypes are represented, is not explained cleanly.
+- The V2S procedure also lacks detail. The “group pattern score” eta is defined briefly, but the exact voting mechanism across V, A, and O feature maps is underspecified. How are ties handled? Are votes aggregated equally across feature types? Is the mask fixed forever after one epoch of voting?
+
+Overall, the paper would benefit from a much more concrete algorithmic description.
+
+2. Computational overhead during training is not discussed
+The method may reduce inference cost after pruning, but GCT appears to require clustering and additional similarity computations during training. This could be substantial, especially for large models or long sequences.
+
+The paper reports inference speed and FLOPs, but not training time, training FLOPs, or memory overhead. Since the method relies on iterative grouping and self-supervision, this omission is important. A method that improves inference efficiency but significantly increases training cost should say so explicitly.
+
+3. Fairness of baseline comparisons is mixed
+Some comparisons are useful, but others are less convincing.
+
+- For MT, the paper compares against prior methods, but it is not always clear whether all baselines were retrained under the same codebase and hyperparameters or whether numbers were taken from prior work. This matters a lot.
+- In summarization and language modeling, the baseline set is heterogeneous. For example, Table 6 compares against models with very different scales and training regimes (S4, BERT-L-CAS, GPT-2 Large). These are not necessarily apples-to-apples comparisons.
+- The strongest claim should be against the backbone Transformer under identical training conditions. Those comparisons are more convincing than the broader SOTA claims.
+
+4. The gains are strong, but surprisingly strong
+Some improvements are quite large for what is essentially an attention-head regularization/pruning method:
+- +3.8% / +4.4% average BLEU gains on 7 MT datasets
+- large Rouge-2 gains on CNN/DailyMail
+- lower perplexity than strong LM baselines
+
+These results are impressive, but they also raise questions. It is not obvious whether the gains come from the grouping principle itself, from extra regularization, from task-specific tuning of alpha/beta/FM choices, or from differences in optimization/training budget. The appendix tables on pages 12–13 show that alpha, beta, and even the chosen feature map differ by dataset and by whether GHT or GHT-PS is used. This suggests substantial per-dataset tuning, which may contribute materially to the gains.
+
+5. Hyperparameter tuning burden seems high
+The method introduces several new choices:
+- number of groups
+- alpha and beta
+- feature map used for supervision (V, A, or O)
+- possibly tau weights
+- convergence threshold for voting
+- fine-tuning after pruning
+
+The appendix shows different settings across datasets. This weakens the claim of a generally applicable method unless tuning cost is discussed. It would help to know how sensitive performance is to these choices and whether a single default works reasonably well.
+
+6. Limited analysis of what groups mean
+The paper argues that each group captures an “essential but distinctive feature subset,” but there is little qualitative or mechanistic evidence for this. For example:
+- Do groups correspond to syntactic vs semantic patterns?
+- Are groups stable across random seeds?
+- Are PS heads interpretable or specialized in known ways?
+- Do different layers exhibit different optimal group counts?
+
+Without such analysis, the “pillar of strength” terminology is evocative but not deeply validated.
+
+7. Pruning setup is somewhat constrained
+The method keeps one head per group. This is simple, but also rigid. It assumes each group should collapse to a single representative head. It is not clear whether this is always optimal, especially in deeper layers or larger models. A learned per-group retention count or adaptive pruning ratio might be more appropriate.
+
+8. Writing and presentation issues
+The paper is understandable overall, but there are many language issues and notation inconsistencies:
+- “homology” appears where “homogeneity” is likely intended
+- some notation is overloaded or ambiguous
+- several sentences are grammatically awkward
+- the method section is denser than necessary and could be simplified
+
+These issues make the technical contribution harder to evaluate than it should be.
+
+Detailed comments
+
+On the method
+
+The diagram on page 3 is helpful in conveying the high-level idea: heads are partitioned into groups, supervised by discovered hidden units, and non-PS heads are later culled. However, the actual mechanics remain opaque. In particular, I could not fully reconstruct how the hidden units are updated jointly with the model. If K-means is used, is it run on minibatch-level head features? On accumulated features? Is it differentiable only through the assignment targets, or are assignments treated as fixed pseudo-labels?
+
+Equation 4 is intended to unify categorical and continuous hidden units, but in practice this makes the presentation harder. Since the experiments use the metric-learning version, I would strongly suggest centering the exposition on that version and moving the categorical variant to an appendix.
+
+On the experiments
+
+The MT results in Tables 1 and 2 are the strongest part of the paper. The comparisons at matched parameter counts are useful, and the fact that GHT-PS remains competitive after pruning is encouraging. The ablation study in Table 3 also supports the necessity of both grouping and PS selection.
+
+The compactness analysis on page 7 is interesting, but still somewhat correlational. Since alpha and beta are used to control compactness, it would be stronger to show a more systematic sweep with confidence intervals and perhaps multiple seeds.
+
+The efficiency analysis in Table 5 is directionally useful, but I would like more detail:
+- Are speeds measured with identical decoding settings and implementation optimizations?
+- Does “real head removal” require custom kernels or architecture rewriting?
+- Are FLOPs theoretical or measured?
+The appendix on page 12 says FLOPs are computed with fvcore at fixed input length 30 and inference speed uses beam size 5, batch size 256, max decoding length 10 on an RTX A6000. This is helpful, but training efficiency is still missing.
+
+On significance and novelty
+
+The novelty is moderate rather than radical. Prior work has already explored head diversification, head homogenization, and head pruning. The main novelty here is combining these ideas into a grouped structure: first induce structured redundancy, then prune within groups. That is a meaningful synthesis, and likely the paper’s main contribution.
+
+However, the conceptual claim that “representative and distinctive features with minimum resources” are the key to better MHA is still more of a motivating hypothesis than a firmly established principle. The evidence is suggestive, not definitive.
+
+Questions for the authors
+
+1. How often is HUDS/clustering run during training, and on what exact tensor shapes?
+2. How are head feature maps reduced before clustering/similarity computation? Over tokens? Over batch? Flattened?
+3. What is the training-time overhead of GCT relative to vanilla Transformer?
+4. How sensitive are results to the number of groups, alpha, beta, and feature-map choice? Can one default configuration work across tasks?
+5. Were all baselines retrained in the same codebase with matched optimization settings?
+6. How stable are the discovered groups and PS heads across random seeds?
+7. Why does the method sometimes improve accuracy after pruning? Is this due to regularization, lottery-ticket effects, or removal of noisy heads?
+
+Suggestions for improvement
+
+1. Clarify the algorithm substantially
+Provide pseudocode for GCT itself, not only V2S. Explicitly state:
+- when clustering happens
+- what inputs it uses
+- how assignments/prototypes are updated
+- how gradients flow
+
+2. Report training cost
+Include training wall-clock time, memory usage, and/or training FLOPs. This is essential for an efficiency paper.
+
+3. Strengthen fairness of comparisons
+Focus more on matched-backbone comparisons under identical training settings. If external baselines are included, clearly distinguish reproduced vs reported numbers.
+
+4. Add robustness analysis
+Report mean and standard deviation over multiple seeds, especially for key MT results and compactness analyses.
+
+5. Reduce tuning complexity
+Show that a small set of default hyperparameters works across datasets, or at least quantify sensitivity.
+
+6. Add interpretability analysis
+A qualitative study of what groups/PS heads attend to would make the paper much more compelling.
+
+7. Improve writing and notation
+The paper would benefit from careful editing for grammar, notation consistency, and readability.
+
+Final recommendation
+
+Weak Accept / Borderline
+
+The paper presents a compelling idea and strong empirical results across multiple tasks. The grouped-head perspective is interesting and potentially impactful for efficient Transformer design. However, the method is under-specified in important ways, training overhead is not analyzed, and some comparisons and claims need tighter support. With clearer exposition and stronger validation, this could become a solid contribution. As it stands, I lean positive because the core idea is novel enough and the empirical evidence is broad, but I do have nontrivial reservations.
+
+Confidence: 3/5

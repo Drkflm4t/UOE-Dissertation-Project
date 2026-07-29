@@ -1,0 +1,146 @@
+Summary
+
+This paper studies hybrid reinforcement learning in linear MDPs, where an agent has access to both an offline dataset and online interaction. It considers two distinct hybrid paradigms: (i) online-to-offline, where reward-agnostic online exploration augments the offline dataset before offline policy learning; and (ii) offline-to-online, where offline data warm-starts an online regret-minimization algorithm. The paper proposes RAPPEL for PAC-style policy learning and HYRULE for regret minimization, both computationally efficient in finite-action linear MDPs. The main claims are that these algorithms improve over prior hybrid RL guarantees in linear MDPs, do not require single-policy concentrability, and can improve upon the best known offline-only or online-only rates depending on the regime.
+
+Overall assessment
+
+I found the paper interesting, timely, and technically ambitious. The question it addresses is important: whether hybrid RL can provably beat the barriers of purely offline or purely online RL in non-tabular settings without strong concentrability assumptions. The paper gives a fairly compelling affirmative answer for linear MDPs, and the split treatment of PAC and regret settings is a strength. The results appear novel relative to prior hybrid RL work, especially in linear MDPs.
+
+That said, I also have several concerns. Some are about clarity and positioning, some about the exact interpretation of the guarantees, and some about the practical and theoretical assumptions needed to realize the claimed improvements. In particular, the role of the partition X_off / X_on, the need to choose tolerance/d_on in RAPPEL, the burn-in/sample-size requirements, and the extent to which the “improvement over lower bounds” claim should be interpreted all deserve more careful discussion. The experiments are suggestive but limited.
+
+My inclination is positive, but not without reservations.
+
+Strengths
+
+1. Important problem and clear motivation.
+The paper addresses a central open question in hybrid RL beyond the tabular setting. The introduction does a good job motivating why hybrid RL is interesting and why the linear MDP setting is a natural next step.
+
+2. Two complementary algorithmic paradigms.
+I appreciated that the paper does not focus only on one hybrid protocol. RAPPEL addresses PAC learning via online-to-offline exploration, while HYRULE addresses regret minimization via offline-to-online warm start. This makes the contribution broader and more useful.
+
+3. Strong theoretical positioning relative to prior work.
+Table 1 and especially Table 2 are helpful. The paper makes a plausible case that these are the sharpest known hybrid RL guarantees for linear MDPs at present. The comparison to Wagenmaker and Pacchiano (2023), Song et al. (2023), Nakamoto et al. (2023), Amortila et al. (2024), and Tan and Xu (2024) is valuable.
+
+4. No single-policy concentrability assumption.
+This is a major conceptual strength. The paper explicitly targets the regime where the behavior policy may be poor, and the guarantees are framed in terms of partial coverage/coverability quantities rather than requiring global coverage of the optimal policy.
+
+5. Technically nontrivial improvements.
+The dimension refinement from d^2-type dependence to terms involving d_on and c_off(X_off), and the effort to maintain H^3 dependence, seem technically meaningful. The use of projections and the truncation argument are interesting proof ideas.
+
+6. Computational efficiency in finite-action settings.
+The algorithms are built from known efficient components (OPTCOV, LinPEVI-ADV+, LSVI-UCB++), which makes the results more compelling than purely information-theoretic statements.
+
+Weaknesses and concerns
+
+1. The main claims are somewhat overstated unless carefully qualified.
+The title says “breaks sample size barriers,” and the abstract says the algorithms “achieve sharper error or regret bounds that are no worse than, and can improve on, the optimal sample complexity in offline RL and online RL ... regardless of the quality of the behavior policy.” This is directionally true in the sense of upper bounds parameterized by a favorable partition, but it needs more qualification.
+
+For RAPPEL, the guarantee depends on choosing a partition and on a burn-in cost involving N*(tau), plus polynomial terms in d, H, c_off, log(1/delta). For HYRULE, the guarantee requires N_on, N_off = \tilde{\Omega}(d^{13} H^{14}), which is extremely large. So while the asymptotic leading terms improve over pure offline or online rates, the practical and even theoretical significance of “breaking barriers” is tempered by these substantial preconditions.
+
+I strongly recommend softening the wording throughout, especially in the title, abstract, and contribution bullets, unless the authors more explicitly state “in the leading term” or “up to burn-in/sample-size conditions.”
+
+2. The partition-based guarantees are elegant but somewhat existential.
+A central theme is splitting the state-action-time space into X_off and X_on. The bounds are then expressed in terms of c_off(X_off) and d_on. This is a nice conceptual framework, but in practice the partition is not directly given.
+
+For Algorithm 1, the user must choose the tolerance, effectively choosing d_on. The paper acknowledges this on page 9 (“Requirement of choosing d_on”), but this is a substantial issue. The claimed gains depend on selecting a good partition/tolerance, yet the theory does not provide a data-driven procedure with guarantees for doing so.
+
+For Algorithm 2, the algorithm is “unaware of the partition,” which is nice, but the theorem still takes an infimum over partitions in the analysis. This is theoretically elegant, but it would help to explain more concretely what kinds of environments yield favorable partitions and how often one should expect meaningful gains.
+
+3. Assumption 2 and the role of feature preprocessing deserve more scrutiny.
+For RAPPEL, Assumption 2 requires full-rank projected covariates on the online partition. The paper argues this is achievable “for any linear MDP via a transformation of the features that amounts to a projection onto the eigenspace corresponding to the nonzero singular values” (page 7). This discussion felt too quick.
+
+If the transformation is based on the offline covariance, then in poorly covered directions the empirical singular structure may itself be unreliable. More importantly, the assumption is not merely a benign normalization; it encodes an explorability condition. I think the paper should be more explicit that this is still a substantive assumption, even if milder than global coverage.
+
+4. The burn-in/sample-size requirements are very large.
+For RAPPEL, the dependence on N*(tau) is inherited from OPTCOV and may be unavoidable for that exploration strategy, but it is still a serious limitation. For HYRULE, the requirement N_on, N_off = \tilde{\Omega}(d^{13} H^{14}) is especially concerning. Even if this is only a proof artifact, it weakens the practical relevance of the regret result.
+
+The discussion section mentions nontrivial burn-in costs, but I think this limitation should be highlighted much earlier and more prominently.
+
+5. The experimental section is too limited for the scope of the claims.
+The experiments are all on a scaled-down Tetris environment with projected one-hot features. They are useful as sanity checks, but they do not really validate the broader theoretical story.
+
+Specific issues:
+- Only one environment family is used.
+- The experiments do not directly test the scaling predicted by the theory.
+- There is no ablation on the partition/tolerance choice for RAPPEL.
+- There is no comparison to more hybrid baselines beyond online-only/offline-only variants.
+- The implementation substitutes LSVI-UCB for FORCE inside OPTCOV and LinPEVI-ADV for LinPEVI-ADV+ (footnote on page 12), which means the experiments are not exactly evaluating the proposed algorithms as analyzed.
+
+This last point is important. The paper should be clearer that the experiments are illustrative rather than direct empirical validation of the exact algorithms/theorems.
+
+6. Some notation and exposition are hard to follow.
+The paper is mathematically dense, and several parts could be clearer:
+- The notation around covariance matrices Lambda_h, Sigma_h, Sigma_h^*, and their weighted variants is heavy and introduced quickly.
+- The distinction between c_off(X_off), c_on? / con(X_on), and standard concentrability/coverability is easy to lose.
+- The proof sketches are helpful, but some steps are too compressed for readers not already deeply familiar with the cited analyses.
+- There are several places where the prose could better separate “what the algorithm does” from “how the proof analyzes it.”
+
+7. Some comparisons in Table 2 could be explained more carefully.
+Table 2 is useful, but it mixes error and regret quantities with different assumptions and regimes. In particular, the offline row references bounds under single-policy concentrability, while the hybrid rows do not require it. This is favorable to the paper, but the comparison should be verbally unpacked more carefully so readers do not over-interpret apples-to-oranges entries.
+
+Detailed comments
+
+1. RAPPEL theorem interpretation.
+Theorem 1 gives two forms of the bound in (8), one with H^4 and one with H^3 but worse dependence on c_off and d_on. This is interesting, but the presentation could be improved. Right now it is not immediately obvious in which regimes each term is preferable. A short corollary or remark spelling out the crossover would help.
+
+2. Corollary 1 for tabular MDPs.
+This is a nice specialization. However, the paper should more explicitly compare it to Li et al. (2023b), since that is the main prior positive result for hybrid RL without concentrability assumptions. Even if the settings differ, readers will want a sharper discussion of how the tabular specialization relates.
+
+3. HYRULE PAC conversion.
+Algorithm 2 outputs both a greedy policy and a uniform mixture for PAC guarantee. Since one of the motivations for the online-to-offline approach is avoiding randomized deployment, it would be useful to discuss whether any deterministic policy extraction is possible from HYRULE without losing too much.
+
+4. Possible typo discussion.
+The footnote about He et al. (2023) using H instead of sqrt(H) is useful, but it is a bit distracting in the main text. If possible, move this to an appendix or phrase it more neutrally.
+
+5. Computational efficiency claims.
+The paper says Algorithm 2 has complexity O~(d^4 H^3 N |A|), following He et al. (2023). It would help to state more explicitly whether the offline warm-start changes memory or preprocessing costs in a meaningful way.
+
+6. Discussion of “regardless of behavior policy quality.”
+This phrase appears in the abstract and elsewhere. Strictly speaking, the guarantees do not degrade via a global concentrability coefficient, which is good, but they still depend on c_off(X_off), and the usefulness of the partition depends on the offline data geometry. So “regardless of the quality of the behavior policy” is too strong unless interpreted carefully. A very poor behavior policy could still make c_off(X_off) unfavorable except on a tiny subspace.
+
+7. Numerical figures.
+The figures on pages 12–13 are readable and support the qualitative claims. Figure 1 is especially helpful in showing coverage under uniform vs adversarial offline data and online-only. Still, I would like confidence intervals and axes discussed more carefully in the text. Also, Figure 2’s value comparison would benefit from reporting exact means/stds in a table.
+
+Questions for the authors
+
+1. Can you provide a more explicit characterization of when the optimal partition yields substantial gains? For example, are there natural structural conditions under which c_off(X_off) << d and d_on << d simultaneously?
+
+2. Is there a principled, data-driven way to choose the tolerance/partition for RAPPEL with theoretical guarantees, perhaps via model selection or Lepski-style adaptation?
+
+3. How severe is the N_on, N_off = \tilde{\Omega}(d^{13} H^{14}) requirement in Theorem 2? Which parts of the proof drive this, and do you believe it can be substantially reduced?
+
+4. For RAPPEL, how should one think about N*(tau) relative to the leading terms in realistic regimes? Are there examples where the asymptotic gain is visible before the burn-in dominates?
+
+5. Can the techniques extend beyond linear MDPs to linear mixture MDPs or more general Bellman-complete classes?
+
+Suggestions for improvement
+
+1. Temper the headline claims.
+I would revise the title and abstract to make clear that the improvements are in the leading statistical terms and subject to burn-in/sample-size conditions.
+
+2. Improve the exposition around the partition framework.
+Add a dedicated intuitive subsection or figure explaining X_off/X_on, c_off(X_off), and d_on, ideally with a simple geometric example.
+
+3. Discuss limitations earlier.
+The need to choose tolerance in RAPPEL and the large sample-size assumptions in HYRULE should be stated prominently in the main theorem discussion, not mainly deferred to later remarks.
+
+4. Strengthen experiments.
+At minimum:
+- add ablations over tolerance choice / effective d_on,
+- compare against stronger hybrid baselines if available,
+- include another environment,
+- clarify that the implementations are proxies rather than exact realizations of the analyzed algorithms.
+
+5. Clarify theorem regimes.
+For each main theorem, add a short paragraph explaining when the bound is better than pure offline/online baselines and when the auxiliary costs may dominate.
+
+6. Polish notation and presentation.
+A notation table would help. So would a cleaner separation between assumptions used only for Algorithm 1 versus those used globally.
+
+Recommendation
+
+Weak accept.
+
+Rationale
+
+The paper tackles an important open problem and appears to make genuinely new theoretical progress for hybrid RL in linear MDPs. The two algorithms are well motivated, the results are stronger than prior work, and the technical ideas seem meaningful. My main reservations concern overstatement of the claims, the practical significance of the assumptions and burn-in/sample-size requirements, and limited empirical validation. If the authors can better calibrate the claims and improve clarity, I think this would be a valuable contribution.

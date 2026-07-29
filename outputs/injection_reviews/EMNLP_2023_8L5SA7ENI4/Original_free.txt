@@ -1,0 +1,210 @@
+Summary:
+This paper presents a critical survey of sentiment analysis (SA) as a sociotechnical field. The authors review 189 papers spanning applications, models, datasets, surveys, and frameworks, and argue that SA lacks clear, interdisciplinary definitions of “sentiment.” They contrast technical uses of sentiment with psychological/sociological notions, analyze application domains and publicly available models/datasets, discuss bias and opacity, and propose an ethics sheet with ten questions for practitioners.
+
+Overall assessment:
+The paper addresses an important and timely topic. Sentiment analysis is widely deployed, often in socially consequential settings, and the field does indeed suffer from conceptual slippage between sentiment, opinion, emotion, affect, and subjectivity. The paper’s central thesis—that this conceptual ambiguity has technical, ethical, and sociotechnical consequences—is compelling. The survey is broad, the motivation is strong, and the proposed ethics sheet is potentially useful as a practical artifact.
+
+That said, the paper currently reads more like a position paper plus broad literature review than a rigorous survey with a clearly reproducible methodology and tightly supported claims. Several empirical claims are interesting but under-specified, some categorizations feel coarse, and the proposed recommendations, while sensible, are not yet validated or deeply operationalized. I would view this as a promising paper with clear value, but one that would benefit from stronger methodological grounding, sharper framing, and more careful calibration of its claims.
+
+Recommendation:
+Weak Accept / Borderline
+
+Strengths:
+
+1. Important problem framing
+The paper identifies a real issue in SA: the field often treats “sentiment” as self-evident, despite drawing on multiple distinct constructs. This is a valuable intervention, especially as SA is used in healthcare, finance, governance, and social media analysis.
+
+2. Broad coverage
+Reviewing 189 papers is substantial. The paper spans applications, models, datasets, surveys, and frameworks, which gives readers a useful panoramic view of the field.
+
+3. Interdisciplinary perspective
+The contrast between technical and social/psychological understandings of sentiment is one of the paper’s strongest contributions. The discussion in Sections 3.1 and 3.2, and Table 5 on page 21, help clarify why conflating sentiment with opinion, emotion, or subjectivity is problematic.
+
+4. Practical orientation
+The ethics sheet in Section 6 is a concrete output rather than a purely critical conclusion. Questions about framework definition, public availability, intended users, bias testing, and interdisciplinary consultation are useful prompts for practitioners.
+
+5. Attention to harms and bias
+The discussion of bias in Section 4.3 is relevant and well motivated. The TextBlob example in Table 4 on page 7 is simple but effective in illustrating how sentiment systems can encode harmful priors.
+
+Major concerns:
+
+1. Survey methodology is not rigorous enough for the strength of the claims
+The paper repeatedly makes quantitative claims, e.g., that very few works explicitly define sentiment, or that only certain proportions of models release code/data. However, the methodology for paper collection, filtering, coding, and analysis is not described in enough detail to support these claims robustly.
+
+Specific issues:
+- The search strategy is only loosely described. Keywords such as “sentiment analysis” and “applications” are mentioned, but not the exact queries, date ranges, inclusion/exclusion criteria, or deduplication process.
+- The paper says 243 papers were collected and 189 retained (Figure 3 on page 19), but the path from search to final corpus is not sufficiently transparent.
+- The coding protocol is underdeveloped. For example, what counted as “defining sentiment” versus “defining the SA framework”? Were borderline cases adjudicated? Was inter-annotator agreement measured?
+- The categories in Table 1 and the thematic application categories in Table 3 are useful, but the process by which papers were assigned to them is not formalized enough.
+
+Because the paper’s main contribution is a critical survey, methodological transparency is essential.
+
+2. Some claims are overstated relative to the evidence
+The paper argues that the lack of explicit definitions leads to bias, opacity, and social harm. This is plausible, but the causal chain is not always demonstrated. In several places, the paper moves from:
+(a) conceptual ambiguity in the literature,
+to
+(b) inconsistent metrics,
+to
+(c) harmful bias in deployed systems.
+
+These are related, but not identical, problems. Bias in SA systems can arise from training data, annotation practices, model architecture, domain shift, or social stereotypes, even when a task is clearly defined. The paper would be stronger if it distinguished more carefully between:
+- conceptual ambiguity,
+- measurement inconsistency,
+- dataset bias,
+- deployment opacity,
+- and downstream harm.
+
+At present, these are sometimes bundled together too quickly.
+
+3. The notion of “sentiment” remains somewhat underspecified even in the critique
+The paper rightly criticizes the field for vague definitions, but its own alternative remains mostly negative/diagnostic rather than constructive. It argues for a “nuanced, socially informed, and theoretically motivated framework,” but does not clearly propose what such a framework should minimally contain.
+
+For example:
+- Is the authors’ position that SA should stop using “sentiment” as an umbrella term?
+- Or that papers should explicitly choose among sentiment/opinion/emotion/subjectivity?
+- Or that sentiment should be treated as domain-specific and task-specific?
+- Or that a hierarchical ontology is needed?
+
+The ethics sheet helps, but it does not fully substitute for a clearer conceptual proposal.
+
+4. Analysis of models/datasets is interesting but shallow
+The paper analyzes 43 models and 19 datasets, but the discussion remains fairly high-level. For example:
+- The “11 distinct metrics” claim is potentially valuable, but the paper does not synthesize these into a deeper taxonomy beyond categorization vs regression.
+- Accessibility analysis focuses on code, data, and paywalls, which is useful, but “AI as a Service” may not be the right framing for many academic models/datasets that were not intended as production services.
+- The average citation count note on page 6 (“average citation count of 1130”) is surprising and not contextualized.
+
+This section would benefit from more systematic tables in the main paper, not only in the appendix/GitHub, and from clearer justification of why these particular models/datasets were selected.
+
+5. The ethics sheet is sensible but not yet validated
+The ethics sheet is a promising artifact, but it currently feels preliminary.
+Questions:
+- Why these ten questions and not others?
+- Were they derived systematically from the survey findings?
+- Were they reviewed by domain experts outside NLP?
+- How should they be used in practice: as a checklist for papers, datasets, benchmarks, or deployed systems?
+- Are all questions equally applicable to lexicon-based tools, supervised classifiers, and foundation-model-based systems?
+
+Without some validation or usage scenario, the ethics sheet risks being seen as a generic checklist rather than a tested contribution.
+
+Minor concerns:
+
+1. Writing and style
+The paper is generally readable, but there are many grammatical issues and awkward phrasings. Examples include:
+- “We now chronologically analyzing various surveys” (Section 2)
+- “We conducted an analysis 60 papers” (Section 4.1)
+- “such work tend to not disclose details” (Section 4.3)
+There are also occasional repetitions and imprecise wording.
+
+2. Terminological consistency
+The paper sometimes uses “sentiment regression” in a nonstandard way and then clarifies that it does not mean ML regression techniques. This is confusing. A different term such as “scalar sentiment scoring” or “continuous sentiment rating” would be clearer.
+
+3. Overlap between sections
+Sections 3, 4, and 5 partially repeat the same point: that sentiment is vaguely defined and inconsistently measured. Some consolidation would improve flow.
+
+4. Use of examples
+The TextBlob example in Table 4 is illustrative, but one toy example is not enough to support broader claims about deployed SA harms. It should be framed more explicitly as anecdotal illustration rather than evidence.
+
+5. References and scope
+The paper cites relevant work, including Mohammad (2022), Stark and Hoey (2021), and Blodgett et al. (2020). Still, the paper could engage more directly with measurement theory, construct validity, and benchmarking literature, since many of its concerns are fundamentally about validity rather than only ethics.
+
+Detailed comments by section:
+
+Abstract
+Clear and well motivated. However, the abstract slightly overstates the empirical certainty of the findings. “Our study exposes a lack...” could be softened to reflect the survey-based nature of the evidence.
+
+Section 1
+Good motivation. Figure 1 on page 1 effectively shows the growth of SA publications over time. However, the introduction could better distinguish between:
+- SA as a family of tasks,
+- sentiment as a construct,
+- and SA systems as deployed sociotechnical artifacts.
+
+Section 2: A Survey of Surveys
+Useful overview, but somewhat descriptive. It would help to synthesize prior surveys more analytically:
+- What dimensions did prior surveys ignore?
+- How exactly does this paper differ from them?
+Right now the novelty claim is present, but the comparative positioning could be sharper.
+
+Section 3: Examination of Sentiment
+This is one of the strongest sections. Table 2 on page 3 is helpful in showing the diversity of frameworks used in SA. The discussion of opinions, feelings/emotions, and subjectivity in Section 3.2 is also valuable.
+However, the section would benefit from a more explicit conceptual synthesis at the end. For instance, a figure or schema showing relationships among sentiment, opinion, emotion, affect, and subjectivity would make the contribution more concrete.
+
+Section 4.1: Applications
+The thematic categorization into health/medicine, government/policy, business analytics, social media analytics, and finance is reasonable. Figure 2 on page 5 is easy to read and shows health/medicine as the largest category.
+Still, the categories are broad and somewhat overlapping. For example, finance and business analytics could overlap; government/policy and social media analytics may intersect when public opinion is mined from social platforms. The paper should discuss category boundaries and ambiguity.
+
+Section 4.2: Models and datasets
+This section raises important concerns about framework definition, metrics, and accessibility. But it needs more methodological detail and more nuanced interpretation. For example, lack of code release in older papers may reflect historical norms rather than a specific SA problem. Similarly, not all datasets/models are intended as public services.
+
+Section 4.3: Bias and harm
+Important section. The cited literature is relevant. However, the paper should be careful not to imply that all SA systems are inherently discriminatory because of definitional ambiguity alone. The argument should be more precise.
+
+Section 5: Weaknesses in SA
+This section summarizes the paper’s critique well, but it is somewhat repetitive. It may work better as a concise synthesis table mapping:
+problem -> evidence from survey -> consequence -> recommendation.
+
+Section 6: Recommendations and ethics sheet
+Useful and practical. The questions are sensible. I especially liked the emphasis on intended users and use cases, not just model internals.
+Still, the sheet would be stronger if accompanied by:
+- an example of how to fill it out for one existing SA system,
+- or a short case study showing how it changes evaluation or deployment decisions.
+
+Section 7 and limitations
+The limitations section is appreciated and appropriately candid. It is good that the authors acknowledge non-exhaustiveness and underrepresentation of multilingual work. That said, multilinguality is not a minor omission here: if the paper argues that sentiment is socially and culturally contextual, then the English-centric nature of the survey is a substantial limitation and should be emphasized more strongly.
+
+Questions for the authors:
+
+1. Can you provide a fully reproducible survey protocol, including exact search strings, databases, dates, inclusion/exclusion criteria, and annotation guidelines?
+
+2. Did you compute any inter-annotator agreement for the qualitative coding of papers into categories or for identifying whether a paper “defines sentiment”?
+
+3. How do you distinguish “sentiment” from “opinion,” “emotion,” and “subjectivity” in a way that is actionable for NLP task design? Could you propose a minimal ontology or decision tree?
+
+4. Why is “AI as a Service” the right framing for the model/dataset analysis, given that many surveyed works are academic artifacts rather than deployed services?
+
+5. Have you considered validating the ethics sheet with practitioners, reviewers, or interdisciplinary experts?
+
+6. How would your recommendations apply to modern LLM-based sentiment systems, where the task may be prompted rather than tied to a fixed classifier or dataset?
+
+Suggestions for improvement:
+
+1. Strengthen the survey methodology
+Add a dedicated methodology section with:
+- exact search queries,
+- corpus construction details,
+- coding rubric,
+- annotator process,
+- inter-annotator agreement,
+- and limitations of the sampling strategy.
+
+2. Sharpen the conceptual contribution
+Move beyond critique and propose a clearer framework. Even a lightweight taxonomy would help, e.g.:
+- opinion analysis,
+- affect/emotion analysis,
+- subjectivity detection,
+- evaluative stance toward target,
+with guidance on when each is appropriate.
+
+3. Separate different sources of harm
+Distinguish more clearly between:
+- construct validity problems,
+- annotation/label problems,
+- representational harms,
+- allocational harms,
+- and transparency/reproducibility issues.
+
+4. Improve the empirical presentation
+Bring more of the quantitative breakdown into the main paper. For example:
+- a table summarizing how many papers define sentiment, define SA, release code, release data, test bias, etc.
+- a taxonomy of the 11 sentiment metrics with examples and frequencies.
+
+5. Validate or instantiate the ethics sheet
+Apply it to 2–3 representative SA systems from different domains (e.g., finance, healthcare, social media) to show its practical value.
+
+6. Improve writing and editing
+The paper needs careful proofreading for grammar, syntax, and consistency.
+
+Final verdict:
+This is a thoughtful and timely paper that raises important questions about the conceptual foundations and ethical deployment of sentiment analysis. Its interdisciplinary framing is valuable, and the ethics sheet is a promising practical contribution. However, for a survey paper, the methodology and evidentiary grounding need to be stronger, and the conceptual proposal should be more explicit and constructive. With revisions, this could become a useful reference for researchers thinking critically about SA as a sociotechnical practice rather than just a benchmark task.
+
+Score: 6/10
+Confidence: 0.79
