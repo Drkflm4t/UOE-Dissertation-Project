@@ -283,21 +283,49 @@ plt.suptitle(r'RQ2: Defect Discriminability — Logic vs. Format Perturbations',
 plt.tight_layout(); plt.savefig(fd/"rq2_discriminability_box.png", dpi=300, bbox_inches='tight')
 print("Saved: rq2_discriminability_box.png")
 
-# ═══ RQ3 ═══
+# ═══ RQ3: Free vs. Struct Comprehensiveness ═══
+import json as _json
+free_aspects = _json.loads((Path("outputs") / "rq3_free_aspects.json").read_text("utf-8"))
+
 odf=main[main["condition"]=="Original"].copy()
 odf.sort_values(by='rating_1_10',ascending=False,inplace=True)
+# Merge Free aspects (Judge-extracted)
+odf["free_n_strengths"] = [free_aspects.get(pid, {}).get("free_n_strengths", 0) for pid in odf["paper_id"]]
+odf["free_n_weaknesses"] = [free_aspects.get(pid, {}).get("free_n_weaknesses", 0) for pid in odf["paper_id"]]
+odf["free_n_soundness"] = [free_aspects.get(pid, {}).get("free_n_soundness_issues", 0) for pid in odf["paper_id"]]
 labels=[p.split('.')[-1] for p in odf['paper_id']]
-fig,ax=plt.subplots(figsize=(12,6))
+
+fig,(ax1,ax2)=plt.subplots(1,2,figsize=(16,6))
 x=np.arange(len(labels))
-ax.bar(x,odf['n_strengths'].values,width=0.6,label='Strengths',color='#91bfdb')
-ax.bar(x,odf['n_weaknesses'].values,width=0.6,bottom=odf['n_strengths'].values,label='Weaknesses',color='#fee090')
-ax.bar(x,odf['n_soundness_issues'].values,width=0.6,bottom=odf['n_strengths'].values+odf['n_weaknesses'].values,label='Soundness Issues',color='#fc8d59')
-ax.set_xticks(x);ax.set_xticklabels(labels,rotation=90,fontsize=7)
-ax.set_ylabel("Count",fontsize=12);ax.set_xlabel("Sampled Papers (n=30)",fontsize=12)
-ax.set_title("RQ3: Comprehensiveness of Structured Reviews (Baseline)",pad=15,fontsize=14,fontweight='bold')
-ax.legend(title="Review Aspect",bbox_to_anchor=(1.05,1),loc='upper left')
+
+# Left: Struct stacked bar (Pydantic self-report)
+ax1.bar(x,odf['n_strengths'].values,width=0.6,label='Strengths',color='#91bfdb')
+ax1.bar(x,odf['n_weaknesses'].values,width=0.6,bottom=odf['n_strengths'].values,label='Weaknesses',color='#fee090')
+ax1.bar(x,odf['n_soundness_issues'].values,width=0.6,bottom=odf['n_strengths'].values+odf['n_weaknesses'].values,label='Soundness Issues',color='#fc8d59')
+struct_total = (odf['n_strengths']+odf['n_weaknesses']+odf['n_soundness_issues']).mean()
+ax1.axhline(struct_total,color='black',lw=1.2,linestyle='--')
+ax1.text(len(labels)-1,struct_total+0.5,f'Mean={struct_total:.1f}',fontsize=10,ha='right',fontweight='bold')
+ax1.set_xticks(x);ax1.set_xticklabels(labels,rotation=90,fontsize=6)
+ax1.set_ylabel("Count",fontsize=12,fontweight='bold');ax1.set_xlabel("Sampled Papers (n=30)",fontsize=11)
+ax1.set_title('Prompt_Structured (Pydantic self-report)',fontsize=12,fontweight='bold')
+ax1.legend(title="Review Aspect",fontsize=8,loc='upper right')
+
+# Right: Free stacked bar (Judge-extracted, same 3 dimensions)
+ax2.bar(x,odf['free_n_strengths'].values,width=0.6,label='Strengths',color='#91bfdb')
+ax2.bar(x,odf['free_n_weaknesses'].values,width=0.6,bottom=odf['free_n_strengths'].values,label='Weaknesses',color='#fee090')
+ax2.bar(x,odf['free_n_soundness'].values,width=0.6,bottom=odf['free_n_strengths'].values+odf['free_n_weaknesses'].values,label='Soundness Issues',color='#fc8d59')
+free_total = (odf['free_n_strengths']+odf['free_n_weaknesses']+odf['free_n_soundness']).mean()
+ax2.axhline(free_total,color='black',lw=1.2,linestyle='--')
+ax2.text(len(labels)-1,free_total+0.5,f'Mean={free_total:.1f}',fontsize=10,ha='right',fontweight='bold')
+ax2.set_xticks(x);ax2.set_xticklabels(labels,rotation=90,fontsize=6)
+ax2.set_ylabel("Count",fontsize=12,fontweight='bold');ax2.set_xlabel("Sampled Papers (n=30)",fontsize=11)
+ax2.set_title('Prompt_Free (Judge-extracted)',fontsize=12,fontweight='bold')
+ax2.legend(title="Review Aspect",fontsize=8,loc='upper right')
+
+plt.suptitle('RQ3: Review Comprehensiveness — Free vs. Structured (Original Condition)',y=1.02,fontsize=14,fontweight='bold')
 plt.tight_layout();plt.savefig(fd/"rq3_comprehensiveness_stacked.png",dpi=300,bbox_inches='tight')
 print("Saved: rq3_comprehensiveness_stacked.png")
+print(f"  RQ3: Struct total={struct_total:.1f}, Free total={free_total:.1f}")
 
 # ═══ RQ4 ═══
 fig,(ax1,ax2)=plt.subplots(1,2,figsize=(12,5))
