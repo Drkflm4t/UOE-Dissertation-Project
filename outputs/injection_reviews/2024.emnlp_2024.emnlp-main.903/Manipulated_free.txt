@@ -1,146 +1,31 @@
-Summary
+This paper studies a practically important but underexplored question in continual pre-training (CPT) of language models: how to choose the mixture ratio between replayed general data and domain-specific data. The central claim is that there exists a “Critical Mixture Ratio” (CMR), defined as the largest domain-data proportion that still preserves general capability within a tolerance while improving domain loss, and that this CMR follows a predictable scaling law with training tokens. The paper supports this claim with experiments on models from 460M to 3.1B parameters, primarily on a finance domain and with an additional academic-papers domain for generalization. Overall, I found the paper interesting, timely, and quite valuable. It addresses a real pain point in domain adaptation of LLMs, proposes a clear conceptual framework, and backs it with a substantial empirical study and a reasonably interpretable mathematical formalization.
 
-This paper studies continual pre-training (CPT) of language models with mixed general-domain and domain-specific data, focusing on how to choose the mixture ratio. The authors define a Critical Mixture Ratio (CMR): the largest domain-data proportion that still preserves general capability within a tolerance while improving domain loss. They empirically study several model sizes (460M, 940M, 1.6B, 3.1B), mainly on a Finance domain and additionally on Academic Papers, and propose simple power-law fits relating loss to mixture ratio and training token volume. From these fits, they derive a “CMR scaling law” intended to predict the best mixture ratio under a fixed CPT budget.
+The strongest aspect of the paper is that it elevates what is often treated as a heuristic engineering choice into a principled optimization target. In many CPT pipelines, the replay/domain mixture is indeed chosen ad hoc, and the paper’s framing of CPT as a trade-off between preserving general ability and acquiring domain knowledge is both intuitive and useful. The definitions of feasible mixture ratios and CMR are easy to understand, and the visualizations are effective. In particular, the domain-general loss trajectory plots on pages 3 and 5 are helpful in conveying the geometric intuition behind the feasible region and the existence of a maximal acceptable ratio. The paper’s emphasis that “more domain data is not always better” under finite compute is important and practically relevant.
 
-Overall, the paper addresses an important practical question. The central idea—formalizing the trade-off between domain adaptation and general retention, then using scaling-law-style fits to predict a suitable replay ratio—is interesting and potentially useful. However, while the empirical trends are suggestive, I found the theoretical formalization somewhat loose, the notion of “optimality” debatable, and the experimental validation not yet strong enough to fully support the paper’s broader claims. The work is promising, but in its current form I see it as more of an exploratory empirical study than a fully established scaling law.
+A second major strength is the empirical regularity the authors uncover. The paper shows that domain loss decreases monotonically with mixture ratio while general loss is initially stable and then rises, and that these relationships can be fit well by simple power-law forms. The plots on page 6 are especially convincing in showing smooth dependence of both domain and general validation loss on mixture ratio. Likewise, the token-scaling fits on pages 7 and 9 capture the rise-then-fall behavior of general loss during CPT, which is an interesting phenomenon in itself and aligns with recent observations about transient instability or forgetting during continued training. The reported fitting quality is strong: Table 2 and Table 3 indicate very small prediction errors and high R-squared values across settings. Even if one remains cautious about extrapolation, the empirical fit quality within the studied regime is impressive.
 
-Strengths
+A third strength is the practical orientation of the work. The proposed CMR scaling law is not merely descriptive; it is intended to help practitioners estimate a good mixture ratio from limited pilot runs. This is exactly the kind of result that can matter in real training pipelines, where exhaustive grid search over ratios is expensive. The paper also provides fitted coefficients in the appendix, detailed plots across model sizes and ratios, and a transparent description of the data setup and training procedure. I appreciated the effort to make the study reproducible and inspectable.
 
-1. Important practical problem
-Choosing the replay/domain mixture in CPT is indeed a real and under-studied systems question. Many papers set this ratio heuristically, so a principled treatment would be valuable.
+The cross-domain comparison is also a nice touch. The result that the 460M model has a higher predicted CMR for Academic Papers than for Finance, attributed to smaller distribution gap from the general corpus, is plausible and potentially insightful. The figures on pages 7 and 8 support this claim, and the discussion connects it to prior work on continual pre-training and domain similarity. This broadens the contribution beyond a single-domain empirical artifact.
 
-2. Clear high-level intuition
-The paper’s main intuition is easy to understand: too little domain data wastes adaptation opportunity, too much risks forgetting; therefore there should be a critical boundary. This framing is useful.
+That said, there are several issues that should be addressed to strengthen the paper further.
 
-3. Empirical effort across multiple scales
-The authors train multiple models from scratch and then run CPT across several mixture ratios. That is a nontrivial experimental investment.
+My main concern is around the exact definition of “optimality” and how much of it is a modeling choice rather than an empirically validated optimum. The paper defines CMR as the maximum feasible ratio under a tolerance constraint on general loss. This is a reasonable operational definition, but it is not the only possible notion of optimality. In practice, users may care about downstream task utility, weighted combinations of general and domain performance, or compute-normalized gains. The paper acknowledges this partially, but the wording sometimes overstates the result by calling CMR “the optimal mixture ratio” without sufficiently emphasizing that this is optimal relative to the chosen tolerance-based objective. I would encourage the authors to sharpen this distinction. Doing so would not weaken the paper; rather, it would make the contribution more precise and more broadly acceptable.
 
-4. Attempt to connect CPT with scaling-law methodology
-The paper tries to move beyond one-off heuristics and toward predictive laws. Even if the current formulation is imperfect, this is a worthwhile direction.
+Relatedly, the tolerance parameter epsilon is central to the definition of feasibility and hence to CMR, but its treatment is somewhat underdeveloped. The appendix explains that epsilon is set to 0.05 based on empirical observation and that conclusions do not depend on it, but this is not fully demonstrated. Since CMR is defined as the largest ratio satisfying a general-loss constraint, one would expect its numerical value to depend materially on epsilon. A sensitivity analysis over several epsilon values would substantially strengthen the paper. This seems especially important if the method is to be used in practice, because different applications will tolerate different levels of general-capability degradation. I view this as an important missing experiment, though it appears straightforward to add.
 
-5. Some evidence of cross-domain variation
-The comparison between Finance and Academic Papers is interesting. The observation that a domain closer to the original pretraining distribution may admit a larger feasible domain ratio is plausible and useful.
+A second concern is that the theoretical derivation is more of a formalization than a predictive theory in the strict sense. The Lagrangian setup is sensible as a way to encode the trade-off, but some steps in the derivation feel heuristic. For example, the feasible-ratio condition based on the existence of a point T0 where the derivative of the objective with respect to training tokens becomes non-positive is intuitive, but the connection between this condition and the end-of-training feasibility criterion could be explained more rigorously. Similarly, Equation (7)/(32) is implicit in T0 because T0 appears on both sides through the second power-law term, and the practical solution procedure is not described in enough detail. None of this invalidates the empirical findings, but the paper would benefit from being more explicit that the “scaling law” is primarily an empirical law motivated by the formalization, rather than a theorem derived from first principles.
 
-Main concerns
+There is also some ambiguity in notation and exposition. The paper uses F both for the Lagrangian objective and for the feasible set, which is confusing. There are a few typographical and grammatical issues throughout, and some equations and definitions could be cleaned up. For example, the definition of the mixed dataset and ratio on page 2 is slightly awkward, and the derivation in Appendix B occasionally switches notation or uses symbols in ways that require effort to parse. These are presentation issues rather than scientific flaws, but given the mathematical emphasis of the paper, clarity matters.
 
-1. The definition of CMR as “optimal” is too strong
-The paper defines CMR as the maximum feasible mixture ratio under a tolerance on general loss, then calls it the optimal ratio. This is only optimal under a very specific objective: maximize domain-data proportion subject to a hard general-loss constraint and fixed training budget. That is not the only reasonable objective for CPT.
+On the experimental side, the study is substantial but still somewhat narrow relative to the breadth of the claims. The largest model is 3.1B, which is meaningful but still far from the scale at which many CPT decisions are made in current frontier or production settings. The authors are transparent about this limitation. I do think the observed trends are likely useful, but stronger evidence on larger models would increase confidence that the same laws hold without regime changes. Similarly, the main experiments are on one domain, with only a single-model generalization study on a second domain. This is a good start, but more domains with varying similarity to the base corpus would make the “distribution gap affects CMR” claim much more compelling.
 
-For example:
-- If one cares about downstream domain performance rather than ratio itself, the best ratio may not coincide with the maximum feasible one.
-- If compute efficiency is measured by achieved domain improvement per token, the optimum may differ.
-- If general performance is valued smoothly rather than via a hard threshold, a Pareto frontier view may be more appropriate than a single critical point.
+Another limitation is the reliance on validation pre-training loss as the sole primary metric. The paper cites prior work showing correlation between loss and downstream performance, which is fair, and for a scaling-law paper this choice is understandable. Still, because the paper’s motivation is practical CPT for specialized domains, at least a small downstream evaluation would make the contribution much stronger. In particular, it would be valuable to know whether the predicted CMR indeed corresponds to the best trade-off on domain tasks and general benchmarks, compared with nearby ratios such as 1/4, 1/3, or 1/2. This would help bridge the gap between loss-based optimality and application-level usefulness.
 
-So the paper’s “optimality” claim should be softened. CMR is better described as the largest feasible domain ratio under the authors’ chosen constraint, not the universally optimal mixture ratio.
+I also think the comparison to prior work could be sharpened. The paper positions itself against D-CPT law by arguing that prior work ignores the general/domain trade-off, which is a fair distinction. However, a more direct empirical comparison would be very informative. For example, if one used the prior method to choose a ratio and compared it against the proposed CMR on both domain loss and general retention, that would make the practical advantage much more concrete. As written, the novelty is clear conceptually, but the empirical superiority over alternatives is not fully established.
 
-2. The theoretical derivation is not very convincing
-The Lagrangian formalization sounds principled, but in practice it does not seem to add much rigor.
+Despite these concerns, I view the paper positively. The core idea is strong, the problem is important, and the empirical evidence is substantial and thoughtfully presented. The paper contributes a useful conceptual vocabulary—feasible mixture ratios and CMR—for thinking about CPT, and it provides evidence that these quantities are predictable from small-scale observations. Even where the theory is not fully rigorous, it serves as a coherent scaffold for the empirical findings. I also appreciate that the authors openly discuss limitations and future directions, including scaling to larger models and incorporating model-size scaling more directly.
 
-Specific issues:
-- The feasible-set definition depends on existence of a point T0 where dF/dT <= 0 after some stage of training. This condition is not obviously equivalent to the stated CPT objective.
-- The derivation around pages 13–15 relies on fitted functional forms and an implicit equation for T0, but the interpretation of this T0 as the key feasibility boundary is not fully justified.
-- The role of lambda is unclear. It is introduced as a Lagrange multiplier, but then appears to be treated more like a tunable balancing constant. The paper notes lambda can be very large, but does not explain how it is selected in practice or how sensitive conclusions are to it.
-- The slope condition dL_gen / dL_dom = -1/lambda is visually appealing in Figure 1 (page 3), but it is not clear that this is the right operational criterion for feasibility.
+For improvement, I would most strongly recommend the following additions or clarifications in a revision. First, include a sensitivity analysis over epsilon and discuss how practitioners should choose it. Second, add at least a modest downstream evaluation on both general and domain tasks to validate that the loss-based CMR aligns with task-level trade-offs. Third, clarify the derivation and practical computation of T0 and CMR, including whether Equation (7) is solved numerically and how stable that procedure is. Fourth, improve notation and exposition, especially avoiding reuse of F for multiple meanings. Fifth, if possible, include a direct comparison against a baseline ratio-selection strategy, whether heuristic fixed ratios or a prior scaling-law method.
 
-Overall, the math gives a veneer of formalism, but the contribution is fundamentally empirical. I think the paper would be stronger if it embraced that and simplified the theory.
-
-3. Validation of the “scaling law” is limited
-The paper claims a CMR scaling law, but the evidence is fairly narrow:
-- Only four model sizes, all relatively small by modern LLM standards.
-- Only two domains, with the second domain tested only on the 460M model.
-- Mixture ratios are sparse (mostly 1/8, 1/4, 1/3, 1/2, sometimes 3/4 and 1).
-- The main extrapolations go far beyond the observed token range (e.g., Figure 5 on page 7 extrapolates to 500B tokens despite CPT experiments using 20B tokens).
-
-This is enough to suggest a trend, but not enough to establish a robust scaling law. At present, the work demonstrates that simple curves can fit these experiments, not that the law is broadly predictive.
-
-4. Heavy reliance on validation loss rather than downstream behavior
-The paper explicitly uses validation loss as the sole capability metric, citing prior work that loss correlates with downstream performance. That is reasonable for an initial study, but here the paper makes practical recommendations for optimizing CPT in specialized domains. For such claims, downstream evaluation is important.
-
-In particular, the paper should show whether predicted CMR:
-- improves domain task performance relative to heuristic ratios,
-- preserves general benchmarks better than more aggressive ratios,
-- outperforms simpler baselines such as fixed replay ratios.
-
-Without downstream results, it is hard to assess whether the proposed criterion is truly useful in practice.
-
-5. Tolerance epsilon is under-justified
-The whole notion of feasibility depends on epsilon, set to 0.05. The appendix says this was chosen empirically and does not affect conclusions, but that is not demonstrated convincingly. Since CMR is defined as the maximum ratio satisfying the general-loss tolerance, changing epsilon could materially change CMR. A sensitivity analysis over epsilon seems essential.
-
-6. Baseline comparisons are weak
-The related work mentions D-CPT law and other mixture-scaling papers, but the experiments do not directly compare against:
-- heuristic fixed ratios commonly used in CPT,
-- ratio selection by grid search under the same budget,
-- alternative predictive methods such as D-CPT law,
-- simpler criteria like selecting the largest ratio whose final general loss stays below threshold, without the proposed T0/slope machinery.
-
-This makes it difficult to isolate what is new and necessary in the proposed method.
-
-7. Some claims are stronger than the evidence
-Examples:
-- “CMR does exist” is argued from observed curves and the authors’ definitions, but existence may depend on tolerance, budget, and domain.
-- “CMR can be predicted” is shown only in a limited interpolation/extrapolation setting.
-- “The smaller the distribution gap, the larger the CMR” is plausible, but the paper only provides one cross-domain comparison and a rough corpus-overlap argument.
-
-These should be framed as empirical observations under the studied setup, not general laws.
-
-Questions and requests for clarification
-
-1. How exactly is lambda chosen in practice for determining feasibility and CMR? Is there one lambda per model, per ratio, per domain? How sensitive are results to this choice?
-
-2. Why is the existence of some T0 with dF/dT <= 0 the right criterion for feasibility? Why not define feasibility directly by final losses at Tmax, which seems closer to the stated objective?
-
-3. How stable are the fitted exponents and coefficients across random seeds? Were experiments repeated?
-
-4. How often does the predicted CMR match the empirically best ratio from a denser grid? Right now the paper seems to infer CMR from sparse ratios and fitted curves rather than validate against a held-out search.
-
-5. Can the authors provide downstream evaluations, even on a small set of general and domain benchmarks, to verify that loss-based CMR selection is practically beneficial?
-
-6. How sensitive are conclusions to epsilon? A plot of predicted CMR versus epsilon would be very informative.
-
-7. In Figures 5 and 6, the extrapolation range is very large relative to observed data. Do the authors have any evidence that these extrapolations remain valid?
-
-Comments on presentation
-
-The paper is readable at a high level, but there are several issues with precision and writing quality.
-
-- The terminology around “optimal,” “feasible,” and “critical” should be tightened.
-- Some mathematical notation is inconsistent or overloaded. For example, F is used both as the objective and as the feasible set in different places.
-- There are grammatical issues throughout the paper.
-- Some derivations in the appendix are difficult to follow and seem more complicated than necessary.
-- Several figures are visually interesting but not always easy to interpret. Figure 1 is central, but the slope-based criterion is not immediately clear without substantial appendix reading.
-- The paper would benefit from a concise algorithm box: given a small pilot CPT sweep, how exactly does one estimate CMR?
-
-Suggestions for improvement
-
-1. Reframe the contribution more modestly
-Present CMR as a useful operational criterion under a specific constrained objective, not as the uniquely optimal mixture ratio.
-
-2. Strengthen empirical validation
-Add:
-- downstream domain and general benchmarks,
-- sensitivity to epsilon,
-- sensitivity to lambda,
-- multiple seeds,
-- denser ratio sweeps around predicted CMR,
-- direct comparison to heuristic and prior-law baselines.
-
-3. Simplify the theory
-A more direct empirical definition of feasibility may be preferable to the current Lagrangian derivation. The current math does not yet provide strong explanatory power.
-
-4. Expand generalization tests
-Testing more domains and at least one additional model size in the second domain would make the cross-domain claims more credible.
-
-5. Clarify practical usage
-Explain exactly how many pilot runs are needed, what data points are fit, and how much compute is saved relative to naive search.
-
-Recommendation
-
-Weak Reject
-
-Confidence
-
-3/5
-
-Rationale for recommendation
-
-I like the problem and the empirical direction, and I think the paper contains a potentially useful idea. However, the current evidence does not yet justify the strength of the claims around a general “CMR scaling law,” nor does it convincingly establish that the proposed criterion is practically superior to simpler alternatives. The work feels promising but preliminary. With stronger validation, clearer definitions, and more careful framing, this could become a solid paper.
+In summary, I think this is a meaningful and well-executed paper on an important practical question in continual pre-training. Its main contribution is not just another fitted curve, but a useful reframing of CPT data mixing as a constrained trade-off problem with a predictable critical point. The empirical results are strong within the studied regime, the visualizations are informative, and the practical implications are significant. While there are some limitations in scope, theoretical precision, and downstream validation, these feel like opportunities to strengthen an already solid contribution rather than fundamental weaknesses. I would be supportive of acceptance.

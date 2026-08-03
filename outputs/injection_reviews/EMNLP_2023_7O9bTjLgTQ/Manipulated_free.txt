@@ -1,105 +1,33 @@
-Review of "VISIT: Visualizing and Interpreting the Semantic Information Flow of Transformers"
+This paper presents VISIT, a visualization and analysis framework for tracing “semantic information flow” in GPT-style transformers using vocabulary-space projections of hidden states and weights. The core idea is to extend logit-lens-style interpretation beyond residual-stream states and MLPs into the internals of attention, especially dynamic memory values, and then to build an interactive flow-graph that displays a forward pass at the level of selected hidden states and neurons. The paper combines empirical observations about attention semantics with a practical visualization tool, and illustrates the approach through case studies on indirect object identification, layer normalization, and a class of frequently activated neurons termed “regularization neurons.”
 
-Summary
+Overall, I found the paper interesting, creative, and potentially quite useful for the interpretability community. Its main strength is that it tries to bridge a real gap between mechanistic interpretability analyses, which are often technically demanding and fragmented, and practical exploratory tools that help researchers inspect model internals in a more integrated way. The paper is also commendably ambitious: it does not merely introduce a visualization interface, but first motivates the design through a sequence of empirical analyses about how semantic content appears to propagate through attention heads, memory values, and residual updates. This coupling of analysis and tool-building is a strong aspect of the work.
 
-This paper studies semantic information flow inside autoregressive transformers, focusing especially on attention modules. Building on the logit lens literature, the authors analyze how attention values, heads, and outputs can be projected into vocabulary space and compared semantically. They report several empirical patterns: (i) attention values become interpretable when projected through the OV circuit; (ii) only a small number of high-norm heads tend to dominate the semantic contribution of an attention block; (iii) the top-attended memory values are most aligned with head outputs; (iv) layer norms appear to act as semantic filters that suppress function words and promote content-bearing alternatives; and (v) some MLP neurons are persistently active and may function as “regularization neurons,” related to rogue/outlier dimensions.
+The most compelling technical contribution is the analysis in Section 3 of how to interpret attention internals. The paper argues, with quantitative evidence, that raw outputs of WV or head vectors Aj are not meaningfully interpretable in vocabulary space unless they are first projected through WO, i.e., via the OV circuit. The comparison in Figure 2 on page 4 is a clear and useful result: without WO, alignment with attention/block/final outputs is negligible, whereas with WO, semantic alignment emerges and strengthens in deeper layers. This is a valuable clarification for practitioners using projection-based interpretability methods, and it aligns well with circuit-based intuitions from prior work. Similarly, the observation that only a small number of high-norm heads dominate the semantic contribution of an attention block (Figure 3, page 4) is intuitive but still useful to quantify, especially because it directly informs the pruning strategy used later in the visualization.
 
-Based on these observations, the paper introduces VISIT, an interactive flow-graph visualization tool for GPT-style models. The graph represents hidden states and selected neurons as nodes labeled by their top projected tokens, and interactions as edges weighted by activation, norm, or attention score. The paper illustrates the tool with several case studies, including factual recall prompts and indirect object identification (IOI), where the visualization is compared qualitatively to prior mechanistic findings.
+I also appreciated the analysis of memory values. The finding that the top-attended memory values are the ones most semantically aligned with the resulting head output gives a plausible and interpretable account of how attention retrieves semantically meaningful content. Figure 5 on page 5 and the broader appendix plots on page 16 support this claim reasonably well. This is one of the more novel aspects of the paper, since much prior work either focuses on attention weights alone or on static circuits, whereas here the emphasis is on dynamic recalled values during a specific forward pass.
 
-Overall assessment
+The visualization itself appears thoughtfully designed. The examples in Figures 1, 4, 6, and 11 are informative and visually rich. In particular, the annotated example on page 5 for “The capital of Japan is the city of” does a good job of showing how the graph can connect input tokens, recalled memory values, dominant heads, output neurons, and the residual stream into a coherent narrative. Likewise, the IOI example on page 6 is a convincing demonstration that the tool can recover qualitatively similar structure to prior mechanistic analyses such as Wang et al. (2022), while presenting it in a more intuitive and localized form. I think this kind of interface could be genuinely useful for hypothesis generation, pedagogy, and exploratory analysis.
 
-The paper is interesting and timely. It sits at the intersection of interpretability and visualization, and its main practical contribution is a tool that tries to make transformer internals more accessible at a finer granularity than prior visualization systems. The qualitative examples are compelling, especially the figures showing how a factual answer like “Tokyo” or “Argentina” emerges from a small number of attention/value pathways. I also found the observations about layer norm and persistent neurons thought-provoking.
+Another notable contribution is the discussion of layer normalization as a semantic filter. The plots on pages 7, 18, and 19 suggest that LN systematically suppresses high-probability function words and promotes more content-bearing alternatives in the projected token distribution. This is an intriguing observation. Even if one remains cautious about over-interpreting logit-lens projections, the phenomenon itself seems robust across layers and across both ln1 and ln2. The paper is right to highlight that LN may play a more semantically structured role than merely numerical stabilization. This is the kind of observation that could motivate follow-up work.
 
-That said, the paper is stronger as a visualization/system paper with exploratory empirical findings than as a rigorous interpretability paper establishing causal mechanisms. Many claims are based on correlations in projected token overlap, and the evaluation is mostly qualitative or descriptive. The paper acknowledges some of these limitations, but they remain important for judging the strength of the conclusions.
+The “regularization neurons” discussion is also interesting. The paper identifies neurons in later FF2 layers that are activated very frequently, have high norm, relatively high-entropy projections, and contain outlier weights associated with rogue dimensions. The plots on pages 7 and 8 make this plausible. I think the terminology and interpretation here are somewhat speculative, but the empirical pattern itself seems worth reporting. At minimum, the paper draws a useful connection between neuron-level activation patterns and the literature on outlier dimensions.
 
-Strengths
+In terms of novelty, I would characterize the paper as moderately novel in methodology and strongly novel in presentation/integration. The underlying ingredients—logit lens, OV/QK circuit ideas, neuron projection, pruning by activation magnitude, and interactive visualization—are individually connected to prior work. However, the paper’s contribution lies in combining them into a coherent framework for tracing semantic flow through attention and MLP components during a single forward pass. That integration is meaningful, and the resulting tool seems more than a superficial wrapper around existing ideas. The paper also contributes several empirical observations that are not merely restatements of prior work, especially regarding dynamic memory values and LN behavior.
 
-1. Clear motivation and useful tool contribution
-The paper addresses a real usability gap in interpretability research: many existing analyses are technically sophisticated but difficult to inspect interactively. VISIT appears to provide a more intuitive, neuron/hidden-state-level view than prior tools. The screenshots and descriptions, especially on pages 5, 6, and 14, make the tool’s intended use fairly concrete.
+That said, there are some limitations that should be addressed or at least discussed more sharply. The biggest one is that the paper’s notion of “semantic alignment” relies heavily on top-k token overlap under the standard logit lens. This is a fairly brittle proxy. The authors acknowledge this in the limitations section, but it remains central to nearly every claim. Two vectors may be semantically related while having low token overlap, and conversely shared top tokens may reflect decoding biases rather than genuine shared semantics. The appendix discussion around projection without lnf on pages 18–20 reinforces how sensitive these analyses can be to projection choices. I do not think this invalidates the work, but it does mean that many conclusions should be framed as suggestive rather than definitive.
 
-2. Interesting analysis of attention values
-The paper’s focus on dynamic memory values is a useful extension beyond prior work that emphasized MLPs or static circuits. The empirical observation that projecting WV outputs only becomes meaningful after WO/OV projection is sensible and well illustrated by Figure 2 on page 4.
+Relatedly, the paper does not provide causal validation for most of its semantic-flow claims. For example, when the graph suggests that a particular memory value or head is responsible for promoting “Tokyo” or “Mary,” this is based on projection alignment and activation magnitude, not on interventions showing necessity or sufficiency. The authors are transparent about this, and they explicitly state that the tool is not meant to replace causal analyses such as those in Wang et al. (2022). Still, the paper would be stronger with at least a small number of intervention-based sanity checks. Even simple ablations of highlighted heads or neurons in a few case studies would help establish that the graph is not merely narratively plausible but causally informative.
 
-3. Good qualitative case studies
-The examples are effective. The “capital of Japan” example in Figures 1 and 4 is intuitive and helps explain the proposed semantic flow story. The IOI case study on page 6 is also a nice sanity check against Wang et al. (2022): the visualization seems to recover qualitatively similar roles for name mover and negative name mover heads.
+A second concern is the pruning strategy. The graph only shows top-scoring edges and highly activated neurons, based on the assumption that these dominate the computation. This is reasonable for visualization, but it introduces a strong selection bias: the tool may encourage users to over-attribute model behavior to the displayed components while ignoring distributed or lower-magnitude contributors. The paper does mention this in the limitations section, but I would have liked a more systematic evaluation of pruning fidelity. For instance, how stable are the displayed explanations under different pruning thresholds? How much of the output logit mass or residual norm is accounted for by the retained nodes? Such quantitative diagnostics would make the visualization more trustworthy.
 
-4. Potentially novel observations
-The claims about layer norm acting as a semantic filter and about always-active “regularization neurons” are intriguing. Even if not fully nailed down, they could motivate follow-up work. The plots on pages 7, 18, and 19 provide some evidence that LN systematically reshapes token distributions.
+The experimental scope is also somewhat narrow. Most quantitative analyses are conducted on GPT-2 medium using 100 CounterFact prompts that the model answers correctly, with some appendix confirmation on GPT-2 XL. This is enough for an initial study, but not enough to establish broad generality. The paper argues that similar patterns appear without filtering for correctness (page 15), which is helpful, but I would still like to see more diversity in tasks and models. In particular, because the tool is intended as a general framework for GPT-style models, stronger evidence on non-factual prompts, longer contexts, or more recent architectures would improve confidence in its applicability.
 
-5. Honest limitations section
-The paper is commendably explicit that the method is limited to GPT-like English models, depends on projection-based interpretation, uses pruning heuristics, and does not establish causality.
+I also found the treatment of QK less conclusive. The appendix on page 17 reports little semantic alignment between projected queries/keys and values or between queries and keys, even when using the QK circuit. This is an interesting negative result, but the interpretation remains underdeveloped. The paper offers two possible explanations—different promoted tokens versus a different embedding space—but does not resolve them. Since the main text emphasizes semantic tracing through attention, the inability to interpret Q/K in the same framework is an important caveat. It would help to discuss more explicitly what this means for the completeness of the proposed “semantic flow” picture.
 
-Weaknesses
+On presentation, the paper is generally clear and engaging, especially given the complexity of the topic. The figures are central and mostly effective. The examples on pages 5, 6, and 14 are particularly helpful. However, some claims occasionally read more strongly than the evidence warrants. Phrases like “the model uses LN to introduce new tokens into the top tokens that it compares at each block” or the naming of “regularization neurons” suggest a mechanistic certainty that is not fully established. A slightly more cautious tone would improve scientific precision without reducing the paper’s impact.
 
-1. Limited rigor of the central semantic claims
-The paper’s main analytic primitive is top-k token overlap under logit-lens projection, measured by Ik. This is a fairly weak proxy for semantic similarity. Two vectors can share top tokens for superficial reasons, and two semantically similar vectors may have low overlap due to lexical variation. The paper notes this, but many conclusions still rely heavily on this metric.
+There are also a few methodological details that could be clarified. The choice of k=50 in the intersection metric seems somewhat arbitrary; some sensitivity analysis would be useful. The paper should also better justify why top-token overlap is the right metric for all components, especially when comparing high-entropy vectors. In addition, because the visualization depends on projecting small groups of neurons and hidden states, it would be useful to know how robust the displayed labels are to small perturbations or to alternative labeling schemes beyond the single top token.
 
-2. Heavy dependence on the basic logit lens
-The work intentionally uses the original logit lens rather than tuned-lens-style corrections. That is defensible for consistency across components, but it also weakens the reliability of early-layer interpretations. Indeed, several plots show low alignment in early layers. Since the paper’s claims concern semantic flow throughout the network, this dependence is a substantial limitation.
+Despite these concerns, I think the paper makes a meaningful contribution. It offers a practical and conceptually appealing framework for inspecting transformer computations, and it surfaces several interesting empirical patterns that are likely to stimulate further work. The tool seems genuinely useful, the analyses are thoughtful, and the paper is well connected to prior interpretability literature. While some claims would benefit from stronger causal support and broader validation, the work succeeds as an exploratory interpretability paper and system contribution.
 
-3. Mostly correlational, not causal
-The paper often uses language suggesting that certain heads or values “create,” “promote,” or “determine” semantics. But the evidence is largely correlational: projection overlap, norms, and attention scores. There are no interventions showing that removing the highlighted nodes/edges changes the predicted token in the expected way. This is especially important for claims about layer norm and regularization neurons.
-
-4. Evaluation of the visualization is weak
-For a paper centered on a visualization tool, there is little systematic evaluation of the tool itself. There is no user study, no comparison of task completion against baselines, and no quantitative evidence that VISIT helps researchers discover mechanisms faster or more accurately than existing tools such as exBERT or LM-Debugger. The paper argues plausibly that it is useful, but does not really demonstrate this.
-
-5. Pruning choices may bias the story
-The graph is heavily pruned based on activation magnitude, norm, and top attention scores. This is necessary for readability, but it also risks producing a misleadingly clean narrative. The paper acknowledges this, but I would have liked stronger validation that the omitted components are indeed negligible for the displayed conclusions.
-
-6. Scope of experiments is narrow
-Most quantitative analysis uses 100 CounterFact prompts that GPT-2-medium answers correctly. This is a small and specialized sample. Although the appendix includes some checks on unfiltered CounterFact prompts and GPT-2 XL, the empirical base remains limited. It is unclear how well the findings generalize to broader prompt types, longer contexts, or stronger models.
-
-7. Some claims feel overstated
-The layer norm interpretation as a “semantic filter” is suggestive, but the evidence currently seems preliminary. Likewise, the “regularization neurons” hypothesis is interesting, but the paper does not yet convincingly distinguish these neurons from known outlier-dimension phenomena or show their functional role.
-
-Detailed comments
-
-- Figure quality and explanatory value are generally good. The annotated attention example on page 5 is especially helpful. The walkthrough on page 14 also clarifies how a user would inspect a graph.
-- The appendix is substantial and useful. In particular, the formal graph construction in Appendix A helps make the system contribution more precise.
-- The comparison to Wang et al. (2022) is a nice qualitative validation, but it would be stronger if the paper quantified agreement between VISIT-identified heads and previously established head roles.
-- The discussion of QK projections in Appendix D.3 is appreciated. The negative result is informative and helps bound the method’s applicability.
-- The LN analysis on pages 7 and 18–20 is interesting, but I would like to see whether the observed suppression of function words persists across datasets and models, and whether it survives alternative projection methods.
-- The “regularization neurons” section would benefit from ablations: zeroing these neurons, rescaling them, or removing the outlier dimensions they induce, then measuring effects on perplexity and on the projected distributions.
-
-Questions for the authors
-
-1. How sensitive are the main findings to the choice of k in Ik? Would the trends in Figures 2, 3, 5, and 15 remain similar for k=10, 20, 100?
-2. How robust are the visual narratives to pruning thresholds? If one includes more heads/neurons, do the same dominant pathways remain visible?
-3. Did you try validating highlighted nodes/edges with interventions, e.g., patching or ablation, at least on a subset of examples?
-4. Can the tool support alternative projection methods where applicable, even if only for hidden states between blocks?
-5. For the layer norm claim, can you quantify whether LN systematically improves rank/probability of the correct answer token, beyond changing the distribution toward content words?
-6. For “regularization neurons,” do these neurons overlap with previously identified outlier dimensions, or are they a distinct phenomenon?
-
-Suggestions for improvement
-
-1. Add causal validation
-Even a small number of intervention experiments would substantially strengthen the paper. For example, ablate the top highlighted head/value path in a factual recall example and show the predicted token changes accordingly.
-
-2. Strengthen evaluation of the tool
-A lightweight user study or expert case comparison would help justify the visualization contribution. For instance, compare how quickly users can identify relevant heads with VISIT versus a tabular baseline.
-
-3. Broaden empirical coverage
-Include more prompt types beyond CounterFact, perhaps syntactic prompts, commonsense prompts, or open-ended continuations. Also consider at least one stronger modern model if feasible.
-
-4. Calibrate claims
-The paper would benefit from more cautious wording around “semantic flow,” “filter,” and “regularization neurons,” making clearer what is observed directly versus hypothesized.
-
-5. Analyze robustness
-Report sensitivity to k, model size, prompt selection, and pruning hyperparameters in the main paper rather than mostly in the appendix.
-
-6. Compare against stronger semantic similarity measures
-Even if top-k overlap remains the main metric, adding embedding-based or lexical-semantic comparisons could help validate that the observed alignments are not artifacts of token overlap.
-
-Recommendation
-
-Weak Accept / Borderline
-
-Rationale
-
-I think this is a valuable and creative paper, especially as a systems/visualization contribution with exploratory interpretability analyses. The tool seems genuinely useful, and several empirical observations are interesting enough to merit dissemination. However, the paper falls short of fully substantiating its stronger interpretability claims, largely because the evidence is correlational and the evaluation of both the tool and the scientific findings is limited.
-
-If judged primarily as a visualization/system paper for interpretability, I lean positive. If judged as a mechanistic interpretability paper making strong claims about transformer internals, I would be more cautious. On balance, I would support acceptance if the venue values practical interpretability tools and exploratory analyses, but I would encourage the authors to tighten claims and add stronger validation in a revision.
-
-Confidence
-
-4/5. I read the paper carefully and feel comfortable assessing its strengths and weaknesses, though I am less certain about how the venue weighs visualization utility versus mechanistic rigor.
+My recommendation is positive. I would be inclined to accept the paper, especially if the venue values interpretability tools, exploratory mechanistic analysis, and interfaces that can accelerate research. The strongest reasons in favor are the novel attention-memory perspective, the coherent flow-graph abstraction, the practical utility of the visualization, and the interesting observations about layer norm and frequently activated neurons. The main improvements I would encourage in a revision are: adding at least a few causal sanity checks for highlighted components; quantifying pruning fidelity and threshold sensitivity; broadening evaluation beyond the current factual-prompt setup; and tempering some mechanistic claims where the evidence is primarily correlational. Even with these caveats, I found the paper strong, useful, and likely to be of interest to the community.

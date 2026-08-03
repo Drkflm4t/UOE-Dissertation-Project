@@ -1,174 +1,31 @@
-Summary
+This paper studies how to customize the mixer Hamiltonian in QAOA as a function of both the problem instance and the available circuit depth, and proposes MG-Net, a learned framework that predicts mixer structure from the problem graph and depth budget. The paper combines a theoretical discussion based on symmetry/effective-dimension arguments with a two-stage neural architecture that first learns a cost estimator for QAOA performance and then trains a generator to output mixer/operator-grouping choices that minimize the estimated cost. Empirically, the method is evaluated on weighted Max-Cut and TFIM instances, including simulations up to 64 qubits, and is reported to outperform standard QAOA, multi-angle QAOA, ADAPT-QAOA, and classical baselines on the tested settings.
 
-This paper studies how the choice of mixer Hamiltonian and parameter grouping affects QAOA performance under circuit-depth constraints, and proposes MG-Net, a learned framework that predicts a customized mixer Hamiltonian conditioned on the problem instance and the allowed depth p. The paper combines: (i) a theoretical discussion linking parameter grouping, symmetry, effective dimension, and convergence; and (ii) a two-stage estimator-generator architecture that first learns to predict achievable QAOA cost for a given problem/mixer/depth tuple, then trains a generator to output mixers that minimize the estimator’s predicted cost. Experiments on weighted Max-Cut and TFIM, including instances up to 64 qubits, suggest that the learned mixers outperform standard QAOA, ma-QAOA, and ADAPT-QAOA in approximation ratio and optimization behavior.
+Overall, I found the paper interesting, ambitious, and potentially impactful. The central idea is compelling: rather than fixing a single mixer family or manually engineering symmetry-aware parameter sharing, the method attempts to learn the appropriate mixer/operator grouping conditioned on the instance and depth. This is a meaningful problem in the QAOA literature, especially because the usefulness of additional parameters is known to depend strongly on depth and problem structure. The paper’s framing of a “depth-aware customization” problem is well motivated, and the proposed estimator-generator decomposition is a sensible way to avoid requiring labels of globally optimal mixers, which would be prohibitively expensive to obtain.
 
-Overall assessment
+A major strength is the breadth of the contribution. The paper is not merely an empirical architecture-search paper, nor merely a theoretical note on symmetry. It tries to connect the two. The discussion in Sections 2–3 about symmetry, parameter grouping, and effective dimension gives a useful conceptual lens for why fully grouped, partially grouped, and non-grouped parameterizations may behave differently as depth changes. In particular, the message that the best grouping strategy is both problem-dependent and depth-dependent is important and aligns with practical experience in variational quantum algorithms. Even if some parts of the theory are somewhat stylized, the paper succeeds in extracting a design principle that directly motivates the learning framework.
 
-The paper addresses an interesting and timely problem: how to adapt QAOA ansatz structure to hardware-imposed depth limits. The central idea—learning depth-aware mixer customization rather than hand-designing mixers—is appealing and potentially impactful. The paper also tries to bridge theory and practice, which is commendable.
+The MG-Net framework itself is also thoughtfully designed. The two-stage training pipeline shown in Figure 2 on page 5 is clear and well motivated: first train a surrogate cost estimator from problem/mixer/depth triples, then freeze it and optimize a generator against that surrogate. This is a practical workaround for the combinatorial search space over operator types and parameter-sharing patterns. I also appreciated the decomposition of mixer generation into two subproblems—operator-type prediction and parameter-group prediction—and the graph-based encodings of both the problem and the mixer. The use of a DAG encoding for the problem unitary and a graph encoding for the mixer Hamiltonian is a reasonable attempt to obtain a unified representation across tasks.
 
-That said, while the empirical results are promising, I have significant concerns about the rigor and clarity of the theoretical claims, the fairness and completeness of the experimental protocol, and the exact meaning of some reported results. In its current form, I find the paper interesting but not fully convincing.
+The empirical section contains several encouraging results. The plots on pages 8–9 suggest that the learned cost estimator tracks actual QAOA performance reasonably well, and the qualitative transition in the generated number of parameters as depth increases is one of the most interesting findings in the paper. The behavior in Figure 5(a,b) on page 9—where MG-Net tends toward more expressive/non-grouped structures at small depth and more grouped structures at larger depth—nicely matches the paper’s theoretical narrative. The convergence curves in Figure 5(c) and the additional curves in Appendix E.4 on pages 27–28 are also useful, because they show not only final approximation ratios but optimization dynamics and gradient norms. The Max-Cut comparison in Table 1 on page 9 is striking, especially at 16 and 64 qubits, and the appendix results for TFIM and additional graph families further support the claim that the method is not narrowly tuned to a single toy setting.
 
-Strengths
+That said, there are also several issues that should be addressed for the paper to be fully convincing.
 
-1. Important problem setting
-The paper targets a real bottleneck in QAOA: finite depth and hardware constraints. The motivation is well articulated in the introduction, and the depth-awareness angle is practically relevant.
+My main concern is the strength and precision of the theoretical claims. Theorem 3.1 is presented as a convergence theorem for QAOA, but the assumptions and conclusions seem weaker and more indirect than the presentation suggests. In Appendix B, the argument relies on results for over-parameterized PQCs under Haar-like assumptions and then transfers these to QAOA via effective dimension. However, actual QAOA ansätze with structured generators are far from Haar-random, and the theorem ultimately gives only an ordering statement under sufficiently large depth and an unspecified threshold. Moreover, the equality deff(AFG)=deff(APG) while claiming improved convergence intuition from partial grouping is somewhat subtle and could confuse readers. The paper’s real theoretical contribution seems more like a qualitative principle relating symmetry/commutants/effective dimension to grouping choices, rather than a sharp predictive theorem for practical QAOA. I would encourage the authors to moderate the wording around “rigorous theoretical analysis” and clarify exactly what is proved versus what is heuristic extrapolation.
 
-2. Novel framing
-The idea of learning a mixer Hamiltonian conditioned jointly on the problem instance and circuit depth is a nice contribution. The decomposition into operator-type generation and parameter-group generation is also sensible.
+Relatedly, the notion of “effective dimension” used here is not the standard statistical learning notion but a symmetry-restricted reachable-subspace dimension. That is fine, but the exposition could be clearer about how this quantity is computed in practice for the reported experiments, especially for larger systems. Figure 5(b) on page 9 compares effective dimensions of circuits achieving high approximation ratio, but the computational procedure for obtaining these values is not sufficiently transparent in the main text. Since this quantity is central to the paper’s narrative, more explicit methodology would help.
 
-3. Clever training strategy
-The estimator-generator setup is a practical way to avoid requiring labels for optimal mixers. This is one of the stronger aspects of the paper. The two-stage pipeline in Figure 2 (page 5) is clear and conceptually useful.
+A second major concern is evaluation fairness and reproducibility of the QAOA baselines. The reported baseline numbers in Table 1 are surprisingly poor for standard QAOA and especially ma-QAOA at 16 and 64 qubits, with ma-QAOA reported as 0.0 at 64 qubits. This may reflect optimization difficulty under the authors’ training budget, but then the comparison is partly between “which ansatz is easiest to optimize under this specific optimizer/initialization/epoch budget” rather than intrinsic representational quality. Since MG-Net is explicitly designed to improve trainability, this is not illegitimate, but the paper should be much more careful in stating that the gains are under a fixed optimization protocol. In particular, all QAOA variants appear to be optimized for only 40 epochs with Adam at learning rate 0.15. For difficult nonconvex landscapes, this may be insufficient or poorly tuned for some baselines. A stronger comparison would include more robust baseline tuning, multiple optimizers, or parameter initialization heuristics known in the QAOA literature. Without that, the very large margins over QAOA/ma-QAOA are harder to interpret.
 
-4. Broad empirical scope
-The paper evaluates on both Max-Cut and TFIM, includes multiple baselines, and reports results across different depths. The additional appendix experiments on asymmetric graphs, 2D TFIM, and larger operator pools are useful.
+A third concern is the training-data construction and possible leakage of computational effort. The paper emphasizes that MG-Net avoids collecting labels of optimal mixers, which is true, but Stage 1 still requires labels equal to the minimum cost achievable by a QAOA instance after repeated optimization over parameters. According to Appendix D.1, each label is obtained by running the same QAOA circuit 10 times for 40 epochs and taking the minimum. This is not cheap, and it means the method shifts substantial cost into offline surrogate construction. That may still be a good tradeoff, but the paper should quantify it more explicitly. For example, how many candidate mixers per problem/depth are sampled? What is the total offline cost relative to simply running a stronger baseline search online? The claim of efficiency would be much stronger with a wall-clock or query-complexity accounting.
 
-5. Good intuition about depth-dependent ansatz design
-The empirical trend shown in Figure 5(a-b) on pages 8-9—that shallow circuits benefit from less grouping while deeper circuits move toward more grouped structures—is interesting and aligns with the paper’s intended message.
+The 64-qubit experiments also deserve more scrutiny. The paper states in Appendix D.1 that the training data for 64-node Max-Cut are built using a divide-and-conquer strategy inspired by QAOA-in-QAOA, where 64-node graphs are partitioned into eight 8-node subgraphs and labels are derived from independent 8-qubit QAOAs, while testing uses tensor-network simulation of the original 64-qubit QAOA. This is an interesting engineering choice, but it introduces a mismatch between the training surrogate and the true target problem. It would be helpful to know how sensitive the results are to this approximation, and whether the strong 64-qubit gains persist when training and evaluation are aligned on smaller sizes where exact simulation is possible. As written, the 64-qubit results are promising but somewhat indirect.
 
-Weaknesses and concerns
+There are also some modeling choices that seem under-justified. The mixer search space in the main experiments is restricted to single-qubit X/Y operators with parameter grouping, later extended in the appendix to include XX/YY. This is reasonable as a first step, but the paper sometimes speaks broadly about “optimal mixer Hamiltonians,” which overstates what is actually searched. The initial state is fixed to |+>^N even when the predicted mixer includes Y terms or more general structures; Appendix D.4 acknowledges that this may not be the ground state of the mixer and appeals to counterdiabatic intuition. This may work empirically, but it weakens the connection to standard QAOA/alternating-operator design principles and deserves more discussion.
 
-1. Theoretical claims appear overstated and possibly not fully justified
+I also found some presentation issues. The paper occasionally conflates “cost,” “loss,” and “approximation ratio,” sometimes with sign changes that are not always easy to track. For example, the estimator predicts “minimum loss” while the main QAOA objective earlier is framed as maximizing expectation value. The notation around Eqns. (6)–(7) and the figures would benefit from a cleaner, consistent convention. There are also several grammatical issues and a few statements that are too strong relative to the evidence, especially in the abstract and contributions list. These are fixable, but tightening the exposition would improve readability.
 
-The main theorem (Theorem 3.1, page 4) is presented as a convergence result for QAOA under different grouping strategies. However, the actual statement seems much weaker and more conditional than the prose suggests.
+Despite these concerns, I think the paper has substantial merit. The problem is important, the proposed framework is novel in the QAOA context, and the empirical evidence—while not yet airtight—suggests a genuinely useful phenomenon: the best mixer/parameter-sharing structure changes systematically with depth, and a learned generator can exploit this. I especially like that the paper goes beyond simply adding more parameters and instead tries to learn when to add or remove parameter correlations. That is a more nuanced and practically relevant contribution than many prior “larger ansatz” proposals.
 
-- The theorem relies on a sufficiently large depth threshold C and on over-parameterization arguments.
-- The proof in Appendix B appears to invoke a convergence lemma for Haar-random unitaries over special unitary matrices (Lemma B.5, page 16), which is a very strong assumption and not representative of actual QAOA circuits.
-- The step from generic over-parameterized VQA theory to concrete grouped-vs-ungrouped QAOA convergence seems heuristic rather than rigorous.
-- The equality TPG = TFG in Eq. (4) is surprising and not very intuitive, especially since PG and FG have different parameterizations and practical optimization landscapes.
-- The theorem is framed as about “iterations required to achieve the same approximation ratio,” but the proof seems to reason via overlap with the ground state and effective dimension under assumptions that may not hold in the actual optimization setting used in experiments.
+To strengthen the paper, I would recommend the following concrete revisions. First, clarify the theorem statements and temper claims so that the theory is presented as motivation plus partial justification, not as a complete convergence characterization of practical QAOA. Second, provide a more careful baseline protocol, ideally with stronger tuning and perhaps warm-start or Fourier/interpolation heuristics for standard QAOA and ma-QAOA. Third, quantify the offline computational cost of Stage 1 dataset construction and compare it to alternative search procedures. Fourth, explain more explicitly how effective dimension is computed in experiments and how the 64-qubit divide-and-conquer training labels relate to the final evaluation target. Fifth, if space permits, include an ablation on the importance of operator-type prediction versus parameter-group prediction, since it is currently unclear which component contributes most of the gain.
 
-In short, the theory provides intuition, but I do not think it supports the strong claims made in the introduction and contributions. The paper should tone down “rigorous theoretical analysis” unless the assumptions and scope are made much more explicit.
-
-2. Effective dimension discussion is somewhat confusing
-
-The paper repeatedly uses effective dimension as the key explanatory quantity. But several aspects remain unclear:
-
-- Definition 2.1 (page 3) depends on a decomposition and a subspace V* containing both reachable states and the ground state. In practice, how is this computed for the studied instances?
-- Figure 5(b) reports effective dimensions for circuits achieving r >= 0.995, but the exact computational procedure is not clearly described.
-- The theorem states deff(AFG) = deff(APG) <= deff(ANG), yet the practical distinction between FG and PG is central to the paper’s motivation. If FG and PG have equal effective dimension, then the theory does not seem to explain why PG can empirically outperform FG at finite depth except through parameter count/over-parameterization arguments.
-- The notion of “transition point” in p is empirically emphasized, but the theory does not seem to predict it quantitatively.
-
-3. Experimental protocol raises fairness questions
-
-Several comparisons need clarification.
-
-a) Optimization budget fairness
-All QAOA variants are optimized for 40 epochs with Adam (pages 8 and 25). This may not be a fair budget across methods with very different parameter counts and optimization difficulty. For example, ma-QAOA has many more parameters than standard QAOA, and ADAPT-QAOA has a different iterative structure. A fixed epoch budget may disadvantage some baselines.
-
-b) Baseline tuning
-It is unclear whether baselines were carefully tuned. For example:
-- Was the learning rate 0.15 used for all methods?
-- Were multiple learning rates or initialization strategies tried?
-- For ADAPT-QAOA, what operator pool and stopping criteria were used exactly?
-Without careful tuning, the large performance gaps in Table 1 (page 9) are hard to interpret.
-
-c) Very poor baseline numbers
-Some baseline results look suspiciously weak:
-- Standard QAOA on 64-qubit Max-Cut has approximation ratio 0.19.
-- ma-QAOA on 64-qubit Max-Cut is reported as 0.0.
-These values are so poor that they raise concerns about optimization failure, implementation issues, or an unfair setup. Since GW gets 0.91 and the proposed method gets 0.96, the gap is dramatic. The paper needs much more explanation here.
-
-d) Comparison to classical methods
-The comparison to greedy and GW is useful, but not entirely apples-to-apples. The learned method requires substantial offline training and classical simulation effort, while GW is a direct classical solver. The paper should discuss total computational cost more honestly.
-
-4. The 64-qubit evaluation is not fully transparent
-
-The paper emphasizes experiments “up to 64 qubits,” but the training data for 64-node Max-Cut is constructed using QAOA-in-QAOA style decomposition into 8 subgraphs of 8 nodes (Appendix D.1, page 22). This is an important caveat.
-
-Questions that arise:
-- Is MG-Net trained on surrogate labels derived from decomposed subproblems, but tested with tensor-network simulation on the full 64-qubit circuit?
-- How faithful is the decomposed training signal to the true full-system objective?
-- Are the reported 64-qubit gains robust if training labels are generated differently?
-- How much classical compute is required for this pipeline?
-
-This does not invalidate the approach, but the headline “up to 64 qubits” should be interpreted carefully.
-
-5. Search space and mixer parameterization are still limited
-
-The generalized mixer in Eq. (5) only allows single-qubit X/Y operators with grouping over qubits in the main setup. While the appendix includes an experiment with XX and YY in the candidate pool (page 27-28), the main method is still restricted relative to the broader space of possible QAOA mixers.
-
-This limitation matters because the paper’s framing suggests “dynamic formulation of optimal mixer Hamiltonians,” but in practice it is selecting within a constrained family. The wording should be more precise.
-
-6. Some methodological details are underspecified
-
-Important details are missing or too brief:
-
-- How exactly are labels y for the cost estimator defined? The text says “minimum cost value achievable” by repeatedly executing QAOA with varying initial parameters (page 6), and Appendix D.1 says 10 runs x 40 epochs are used. This is only a lower bound from a limited search, not the true achievable optimum.
-- Since the estimator is trained on approximate labels, how sensitive is MG-Net to estimator bias?
-- What is the variance across random seeds for the final MG-Net-generated mixers?
-- How often does the generator produce invalid or degenerate grouping structures?
-- How is K, the number of groups, recovered from predicted pairwise links?
-- Are transitivity inconsistencies in predicted links post-processed?
-
-7. Claims about generalization are stronger than the evidence
-
-The paper repeatedly emphasizes strong generalization from limited data. But the experiments are still within narrow families:
-- weighted 3-regular graphs for Max-Cut,
-- 1D TFIM with sampled couplings,
-- small asymmetric/2D variants in the appendix.
-
-This is useful, but not enough to support broad claims about generalization across “a broad spectrum of combinatorial problems.” The evidence supports within-family generalization, not broad cross-domain generalization.
-
-8. Writing and presentation issues
-
-The paper is readable overall, but there are several issues:
-
-- Some claims are too strong relative to evidence.
-- There are grammatical problems and awkward phrasing throughout.
-- The notation is occasionally inconsistent. For example, the paper sometimes discusses maximizing objective value and elsewhere minimizing “cost/loss,” which can be confusing.
-- The theorem/proof section could be much clearer about assumptions and scope.
-- Some tables/figures need more precise captions and setup details.
-
-Questions for the authors
-
-1. Can you clarify the exact assumptions under which Theorem 3.1 should be interpreted? Is it intended as a formal statement about practical QAOA optimization, or mainly as an intuition derived from over-parameterized VQA theory?
-
-2. How is effective dimension computed in practice for the experiments in Figure 5(b)?
-
-3. Why are the 64-qubit baseline results for QAOA and especially ma-QAOA so poor? Were these methods tuned comparably to MG-Net-assisted QAOA?
-
-4. For ADAPT-QAOA, what operator pool, stopping rule, and optimization budget were used?
-
-5. How are predicted pairwise grouping links converted into valid parameter groups? Is there a connected-components post-processing step?
-
-6. How sensitive is performance to the quality of the cost estimator? For example, what happens if the estimator ranking is imperfect?
-
-7. Can MG-Net trained on one graph family transfer to another, or is retraining required for each task family?
-
-Suggestions for improvement
-
-1. Reframe the theory more modestly
-Present the theory as motivation and qualitative guidance rather than a rigorous explanation of practical convergence unless stronger proofs are provided.
-
-2. Strengthen experimental fairness
-Tune baselines carefully, report hyperparameter sweeps, and equalize optimization effort in a more principled way.
-
-3. Add stronger ablations
-Useful ablations would include:
-- no depth embedding,
-- operator-type only vs grouping-only generation,
-- estimator quality vs final performance,
-- training set size sensitivity,
-- effect of restricting to X-only mixers,
-- effect of allowing larger operator pools.
-
-4. Clarify 64-qubit methodology
-Be explicit in the main text that training labels for 64-qubit instances come from decomposed surrogate simulations.
-
-5. Report computational cost
-Include offline training cost, label-generation cost, and inference cost. This is especially important when comparing against classical baselines.
-
-6. Expand generalization tests
-Test transfer across graph distributions, sizes, or problem families to better support the generalization claim.
-
-Recommendation
-
-Weak Reject
-
-Confidence
-
-3/5
-
-Reason for recommendation
-
-The paper has a compelling idea and promising empirical direction, and I appreciate the attempt to connect symmetry-aware QAOA theory with learned ansatz customization. However, I am not yet convinced by the theoretical rigor, the fairness and transparency of the experimental comparisons, or the strength of the generalization claims. With clearer positioning, stronger baseline evaluation, and more careful methodological detail, this could become a strong paper. In its current form, I think it falls short of the bar.
+In summary, this is a creative and timely paper that tackles an important bottleneck in QAOA design with a technically interesting combination of symmetry analysis and learned mixer generation. While I have reservations about the sharpness of the theory and the fairness/interpretation of some empirical comparisons, I believe the core idea is strong and the results are sufficiently promising to merit serious consideration. With clearer positioning and somewhat stronger experimental validation, this could become a valuable contribution at the intersection of quantum optimization and machine learning. My overall assessment is positive.

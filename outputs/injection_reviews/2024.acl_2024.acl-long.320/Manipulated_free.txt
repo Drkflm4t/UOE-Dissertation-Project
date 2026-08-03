@@ -1,113 +1,31 @@
-Summary:
-This paper proposes Masked thought Fine-Tuning (MFT), a very simple training modification for mathematical reasoning: randomly mask some tokens in the chain-of-thought during supervised fine-tuning, while keeping the original target reasoning as labels. The authors argue that this acts as a useful regularizer for reasoning, improving robustness and encouraging longer-range dependencies on the question and earlier steps rather than over-reliance on nearby tokens. Empirically, they report consistent gains over standard SFT across GSM8K, MATH, MathInstruct, MetaMathQA, and RFT-augmented datasets, on Llama-2 and Mistral backbones. They also compare against several alternative noise/regularization methods and provide analyses on dependency patterns, distractor robustness, and error types.
+This paper proposes Masked thought Fine-Tuning (MFT), a very simple training modification for mathematical reasoning: randomly mask some tokens in the chain-of-thought during supervised fine-tuning while keeping the original target reasoning as the label. The central claim is that this lightweight perturbation improves reasoning performance, especially by encouraging the model to rely less on fragile local continuation patterns and more on longer-range dependencies, particularly the original question. Empirically, the paper reports consistent gains over standard SFT across GSM8K-, MATH-, and augmentation-based training settings, with additional robustness improvements on GSM-IC and some evidence of complementarity with existing data augmentation pipelines.
 
-Overall recommendation:
-Weak Accept
+Overall, I found the paper interesting, well-motivated, and surprisingly strong for such a simple idea. The main appeal is precisely that the intervention is minimal yet appears to produce meaningful gains. In a literature where many reasoning improvements depend on expensive data generation, larger teacher models, or RL-style pipelines, the paper makes a compelling case that a cheap regularization-style modification can recover a nontrivial fraction of those benefits. I think this is a valuable contribution, both practically and conceptually.
 
-Confidence:
-High
+The strongest aspect of the paper is the empirical simplicity-to-impact ratio. On page 4, Table 1 shows fairly consistent improvements from MFT over SFT across two base models and multiple training datasets. For example, with Llama-2-7B trained on GSM8K, accuracy rises from 41.6 to 47.1; with Mistral-7B on GSM8K, from 60.9 to 64.0; with MathInstruct, gains persist for both backbones. These are meaningful improvements for a method that requires only token masking during training and no external supervision. The robustness result on GSM-IC is also notable: page 8, Table 7 reports much larger gains on distractor-heavy inputs than on standard GSM8K, which supports the authors’ claim that MFT encourages better use of relevant premises from the question rather than over-reliance on nearby reasoning tokens.
 
-Strengths:
-1. Simple, practical idea with strong empirical appeal.
-The core method is extremely simple and low-cost: replace some reasoning tokens with [mask] or random tokens during fine-tuning. This is easy to implement and potentially broadly useful. The paper makes a compelling case that such a lightweight intervention can yield nontrivial gains.
+I also appreciated the comparison to more expensive alternatives. Page 5, Table 2 is particularly effective in positioning the method: MFT on the original 7K GSM8K data reaches performance comparable to SFT trained on much larger RFT-augmented datasets, and combining MFT with RFT data improves further. This makes the paper practically relevant. Even if MFT does not fully replace stronger data generation or RL pipelines in all settings, it appears to be a highly attractive add-on because of its low implementation cost and favorable compute/data tradeoff.
 
-2. Consistent improvements across several settings.
-The main results in Table 1 are solid. On page 4, MFT improves over SFT across most training datasets and both Llama-2-7B and Mistral-7B. The gains are especially notable on GSM8K-trained Llama-2-7B (+5.5) and remain positive even when using stronger augmented datasets such as MathInstruct and MetaMathQA.
+Another strength is that the paper goes beyond reporting gains and tries to explain them. The dependency analysis in Figures 1, 7, 8, and 9 is one of the more interesting parts of the paper. The authors argue that MFT shifts the model toward longer-distance dependencies and stronger dependence on the question. The charts on page 2 show this most clearly for Llama-2-7B on GSM8K: compared with SFT, MFT reduces short-range dependence within the chain while increasing dependence on more distant tokens and on question tokens. The case studies on pages 8 and 20 are also helpful in making this intuition concrete. Whether or not one fully accepts the causal story, the paper does a good job of connecting the empirical effect to a plausible mechanism rather than leaving the method as a pure black-box trick.
 
-3. Complementarity with existing augmentation pipelines.
-The paper does a good job positioning MFT as complementary rather than competitive with data-generation-heavy methods. Table 2 on page 5 is particularly useful: MFT on plain GSM8K reaches performance comparable to SFT on RFT-100, and MFT also improves further when applied on top of RFT data.
+The regularization comparison is another positive. On pages 6–7, the paper situates MFT within a broader noise-injection framework and compares against dropout, NEFTune, scheduled sampling, and different masking/replacement variants. Table 5 is useful because it suggests two practical principles: preserve some clean context, and make corrupted positions semantically uninformative. This is a nice distillation. It also strengthens the paper’s claim that the gains are not just due to “adding any noise,” but depend on where and how the corruption is applied.
 
-4. Useful robustness result on distractors.
-The GSM-IC results in Table 7 on page 8 are interesting and arguably among the strongest pieces of evidence for the paper’s hypothesis. MFT substantially outperforms both SFT and RFT under irrelevant-context perturbations, suggesting the method is doing more than merely overfitting to answer patterns.
+That said, there are several limitations and open questions that should be discussed more carefully.
 
-5. Good breadth of ablations.
-The comparison with other regularization/noising methods in Table 5 on page 7 is valuable. It strengthens the claim that not all noise helps, and that where and how noise is injected matters. The paper also studies mask ratio and warmup (Figure 3, page 6), sample efficiency (Figure 2, page 5), and some OOD transfer behavior (Table 3, page 5).
+First, the fairness of some comparisons is not ideal because MFT is trained for more epochs than SFT. On page 4 and in the implementation details on page 18, SFT is typically trained for 3 epochs while MFT is trained for 5 or 10 epochs. The authors do acknowledge that MFT needs more steps to converge and show sample-efficiency curves on page 5, but this still complicates attribution: some portion of the gain may come from longer optimization rather than the masking itself. The paper partially addresses this by stating that extending SFT training does not yield better results, but this point would be much stronger with a systematic compute-matched comparison in the main tables. For example, reporting SFT at its best validation checkpoint under the same total token budget or wall-clock budget would make the empirical claim cleaner.
 
-6. Mechanistic analysis is thoughtful.
-The dependency analysis in Figure 1 (page 2) and the follow-up discussion in Section 2.2 are interesting. Even if not definitive, they provide a plausible explanation for why masking reasoning tokens could help: it may reduce reliance on local shortcuts and increase dependence on the question and earlier premises.
+Second, while the dependency analysis is intriguing, it remains somewhat correlational. The paper is careful in the limitations section on page 10, but the main text occasionally reads more causally than the evidence warrants. The disturbance-based dependency metric over numeric tokens is clever, yet it is still a proxy. It would help to more clearly separate “observed association” from “established mechanism.” For instance, one could imagine that masking improves robustness through a more generic denoising or anti-overfitting effect, with dependency shifts being a consequence rather than the primary cause. I do not think this undermines the paper’s empirical contribution, but the mechanistic claims should be framed a bit more cautiously.
 
-Weaknesses:
-1. The central explanation remains suggestive rather than conclusive.
-The paper’s main mechanistic claim is that MFT improves reasoning by shifting dependency toward longer-range/question-relevant information. The evidence is interesting, but still correlational. The dependency metric based on perturbing numeric tokens is somewhat narrow, and it is not fully established that this shift is the causal driver of the accuracy gains.
+Third, the OOD generalization story is mixed. Page 5, Table 3 shows that MFT helps in some multi-source settings, especially MathInstruct with Mistral, but hurts in at least one case (MetaMathQA with Mistral: 51.4 to 50.1 average). The authors offer a plausible explanation that diverse multi-task data may be needed for transfer, but this section would benefit from a more systematic analysis. As written, the paper’s strongest claims are clearly about in-domain math reasoning and distractor robustness, while broader reasoning generalization remains tentative.
 
-2. Fairness of training-budget comparisons is not fully convincing.
-The paper states that MFT often trains for more epochs than SFT (e.g., 10 vs 3 on smaller datasets; page 4 and Table 9 on page 18). While the authors discuss sample efficiency and argue SFT does not benefit similarly from more epochs, the main tables still compare methods under unequal optimization budgets. This weakens the cleanliness of the headline gains. A stronger controlled comparison would match total update steps, tokens seen, or wall-clock compute.
+Fourth, the method seems somewhat sensitive to hyperparameters and dataset characteristics. On page 6, the authors note that GSM8K tolerates a relatively high mask ratio, whereas MATH requires smaller ratios. This is reasonable, but it suggests that the method may need dataset-specific tuning. Since one of the selling points is simplicity, it would be useful to provide a clearer default recipe or heuristic for selecting mask ratio based on measurable dataset properties, beyond qualitative statements about formula density.
 
-3. Some baselines are missing or underdeveloped.
-Although Table 5 compares several regularization methods, the paper does not compare against some natural reasoning-specific baselines, such as label smoothing, stronger dropout variants in the decoder stack, prefix corruption, span masking, or partial-step deletion at the sentence/step level. Since the method is so simple, stronger baseline coverage would be important.
+Fifth, the paper’s evaluation is centered on final-answer accuracy, with only limited process-level validation. The false-positive analysis on pages 9 and 21–23 is a good start, and I appreciate that the authors checked whether MFT merely increases lucky answer matching. However, the analysis is small-scale and relies on GPT-4 as judge. A somewhat larger human-verified or rule-based step-level evaluation would strengthen confidence that MFT improves reasoning quality rather than only answer calibration. Similarly, the error taxonomy on page 26 is informative, but again based on a relatively small sample.
 
-4. OOD generalization evidence is mixed.
-Table 3 on page 5 shows only modest average gains, and one setting even degrades (MetaMathQA-Mistral: -1.3). This does not invalidate the method, but it weakens broader claims about generalization. The paper is appropriately cautious in places, but some framing in the introduction and contributions feels stronger than the evidence supports.
+There are also a few presentation issues. Some terminology could be tightened: the paper sometimes uses “source” and “target” token noise in ways that are not immediately intuitive, and the notation in Eq. (1) could be explained more carefully. A few tables would benefit from clearer highlighting of whether comparisons are compute-matched. The discussion relating MFT to RL/RFT in Appendix B is interesting, but the claim that MFT can be regarded as a special case of RL feels more metaphorical than formal; I would avoid overstating that connection.
 
-5. Evaluation relies heavily on final-answer accuracy.
-For reasoning papers, final-answer accuracy is standard, but the paper’s claims concern reasoning quality and dependency structure. The step-level analysis is limited: Table 8 on page 9 uses GPT-4 judgments on only 200 samples, and the false-positive/error analyses in the appendix are relatively small-scale and somewhat noisy. More rigorous process-level evaluation would strengthen the paper.
+Despite these concerns, I think the paper is a strong submission. The idea is simple, novel in this specific reasoning-finetuning context, easy to reproduce, and empirically effective across multiple settings. Importantly, the paper does more than present a trick: it offers a coherent hypothesis about why the trick works, supported by several complementary analyses, including the dependency histograms on pages 2 and 19, the robustness results on page 8, and the regularization ablations on page 7. Even where the mechanistic story is not fully nailed down, the evidence is thoughtful and useful.
 
-6. The role of [mask] versus random replacement is somewhat unclear.
-Table 5 suggests random replacement can be as good as or slightly better than [mask] in some settings, and the implementation details (page 18) indicate different defaults across datasets. This raises questions about what exactly matters: semantic erasure, distribution shift, token rarity, or something else. The paper discusses this, but the final design choice feels a bit under-justified.
+If accepted, I would encourage the authors in a revision to strengthen three points: add stricter compute-matched baselines for SFT versus MFT; temper causal language around dependency transfer unless further evidence is added; and expand the discussion of when MFT helps or fails, especially across heterogeneous datasets and non-math instruction tuning. None of these issues are fatal, and all seem addressable.
 
-Detailed comments:
-1. Novelty and significance
-The idea is not architecturally novel, and masking/noising tokens is of course a classic regularization/data augmentation strategy. However, the application to chain-of-thought fine-tuning for reasoning, together with the empirical finding that partial corruption of reasoning traces helps rather than hurts, is interesting and somewhat counterintuitive. I think this is enough novelty for a conference paper if the empirical evidence is solid.
-
-2. Main empirical evidence
-The strongest evidence is:
-- Table 1 (page 4): broad gains across datasets/models.
-- Table 2 (page 5): competitiveness with RFT-style augmentation.
-- Table 7 (page 8): especially strong gains on GSM-IC distractor robustness.
-These results make the paper worth attention.
-
-That said, I would have liked:
-- variance/error bars in more places, not just “average across three seeds”;
-- significance testing or at least standard deviations in the main tables;
-- matched-compute comparisons;
-- a stronger large-model setting, since all main experiments are at 7B/13B scale.
-
-3. Analysis quality
-The dependency analysis is creative. Figure 1 on page 2 and the analogous appendix figures on page 19 suggest a consistent pattern: MFT reduces short-range dependence and increases dependence on the question. The case studies on pages 8 and 20 are intuitive and help explain the phenomenon.
-
-Still, the metric itself deserves more scrutiny. It focuses on numeric-token perturbations and whether later numeric tokens change. This may capture some arithmetic dependency, but it is not obvious that it generalizes to broader reasoning dependencies. Also, perturbation sensitivity can reflect many things besides “better reasoning,” including instability or lexical anchoring.
-
-4. Comparison to RL/RFT
-The discussion in Appendix B is thoughtful. I appreciated the attempt to relate MFT to RL/RFT conceptually. However, the claim that MFT can achieve “comparable” effects to explicit reasoning-path generation should be stated carefully. In Table 2, the comparison is favorable, but only in a limited setup. Online RL or stronger verifier-based methods are not really evaluated here.
-
-5. Robustness and limitations
-The paper is commendably honest in the limitations section (page 10). In particular:
-- the mechanism is not proven;
-- the method seems specific to reasoning-rich data;
-- mask ratios may need dataset-specific tuning;
-- mixed-data effects are not explored.
-This transparency is appreciated.
-
-Questions for the authors:
-1. Can you provide matched-budget comparisons where SFT and MFT see the same number of optimization steps and/or tokens? This is important because MFT often trains longer.
-2. How sensitive are results to masking contiguous spans or whole reasoning steps instead of individual tokens?
-3. Why is random-token replacement sometimes slightly better than [mask]? Do you think the benefit comes mainly from semantic erasure, from harder denoising, or from distributional mismatch?
-4. Have you tested whether masking only numbers, only operators, or only content words changes the effect?
-5. Can you report standard deviations across seeds in Tables 1–3 and 7?
-6. Does MFT still help when the chain-of-thought quality is noisy or partially incorrect, as in automatically collected reasoning traces without filtering?
-7. Since the question is never masked, how much of the gain comes from simply forcing more attention to the prompt? Did you compare against explicit prompt-attention regularization or question-copying objectives?
-
-Suggestions for improvement:
-1. Add a compute-controlled comparison to eliminate the concern that gains come partly from longer training.
-2. Expand the baseline set with stronger corruption variants:
-   - span masking,
-   - step-level masking/deletion,
-   - question masking,
-   - label smoothing,
-   - decoder dropout tuned for reasoning.
-3. Strengthen process-level evaluation with human or verifier-based step correctness on a larger sample.
-4. Clarify the recommended default corruption scheme. Right now the paper sometimes prefers random replacement and sometimes [mask], which makes the practical takeaway less crisp.
-5. Tone down the OOD generalization claims or support them with broader experiments.
-6. If possible, include one stronger backbone or larger-scale setting to show the method is not confined to relatively small open models.
-
-Minor issues:
-1. There are several grammatical issues and awkward phrasings throughout the paper. A careful proofreading pass would help readability.
-2. Some notation and terminology are slightly inconsistent, especially around “source/target tokens” and the exact masking setup.
-3. Table 9 on page 18 appears to contain a likely typo: for GSM8K-RFT-100 under Llama2-7B, the second row says “SFT” with mask ratio 0.4, which presumably should be MFT.
-4. The dependency-analysis methodology should be described more precisely in the main paper rather than relying on brief intuition.
-5. The paper should more clearly distinguish regularization from data augmentation, since the method has aspects of both.
-
-Final assessment:
-I found this paper interesting and practically useful. The main contribution is not conceptual depth so much as a surprisingly effective and easy-to-adopt training trick, backed by reasonably broad experiments and some thoughtful analysis. The biggest concern is experimental fairness due to longer MFT training and the still-speculative nature of the proposed mechanism. Even so, the empirical gains, especially on distractor robustness and across multiple reasoning datasets, make this a worthwhile contribution.
-
-Recommendation: Weak Accept
+In summary, this is a compelling paper with a surprisingly effective and practical idea. It makes a meaningful empirical contribution to reasoning fine-tuning, offers useful insight into the role of dependency structure in chain-of-thought learning, and should be of broad interest to researchers working on LLM reasoning, training efficiency, and regularization. I lean positive and would support acceptance.

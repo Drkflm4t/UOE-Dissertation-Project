@@ -1,156 +1,37 @@
-Paper: Vision Language Pre-training by Contrastive Learning with Cross-Modal Similarity Regulation
+This paper studies false negatives in cross-modal contrastive learning for vision-language pre-training and proposes Similarity-Regulated Contrastive Learning (SRCL), a weighted variant of InfoNCE in which negative samples are down/up-weighted according to estimated cross-modal similarity. The paper’s central claim is both theoretical and practical: first, that in the presence of non-negligible false negatives, InfoNCE should be viewed as maximizing a lower bound on MI between positives minus MI involving negatives; second, that this motivates regulating negative contributions rather than uniformly repelling all negatives. Empirically, the method is implemented on top of ALBEF and evaluated on retrieval, zero-shot retrieval, VQA, and NLVR, with consistent gains over the ALBEF baseline.
 
-Summary
+Overall, I find the paper interesting and reasonably well-motivated. The false-negative issue in vision-language contrastive learning is real and important because image-text data are inherently many-to-many, and the conceptual illustration on page 1 makes the problem intuitive. The empirical gains are consistent across several tasks, and the paper makes a commendable effort to connect the method to a mutual-information perspective rather than presenting a purely heuristic reweighting scheme. The qualitative examples on pages 8 and 16 and the contrastive-weight visualizations on pages 17–18 are also helpful in conveying what the method is trying to do.
 
-This paper studies false negatives in cross-modal contrastive learning for vision-language pretraining. The authors revisit InfoNCE from a mutual information perspective and argue that, when false negatives are non-negligible, the objective effectively maximizes a lower bound on MI(anchor, positive) minus expected MI(anchor, negative), rather than only maximizing MI for positives. Based on this view, they propose Similarity-Regulated Contrastive Learning (SRCL), which assigns each negative a weight inversely proportional to estimated cross-modal similarity, so that semantically similar negatives are pushed away less aggressively. The similarity estimate is progressively refined during training by interpolating between a frozen auxiliary model trained on human-annotated data and the current VLP model. The method is implemented on top of ALBEF and evaluated on image-text retrieval, zero-shot retrieval, VQA, and NLVR2, showing consistent gains over ALBEF.
+That said, I also have substantial reservations. The main concerns are about the novelty and rigor of the theoretical contribution, the dependence of the method on an auxiliary similarity model trained with human-annotated data, and the limited scope of empirical validation relative to the strength of the claims. In its current form, I view the paper as promising but not fully convincing as a top-tier conference submission without further clarification and stronger ablations.
 
-Overall assessment
+The strongest aspect of the paper is the problem formulation. The authors correctly identify that in-batch negatives in VLP are often semantically related to the anchor, including both full and partial false negatives. This is especially plausible in caption datasets where multiple images can match a caption at different granularities. The pilot result in Table 1 on page 2 is a useful motivating experiment: simply removing heuristically identified false negatives improves ALBEF on zero-shot retrieval and VQA, suggesting that existing soft-label/self-distillation approaches do not fully solve the issue. This is a good starting point for the paper.
 
-The paper addresses an important and real issue in vision-language contrastive learning: many-to-many image-text correspondences make in-batch negatives noisy, and treating all negatives equally is suboptimal. The paper’s main strengths are: (1) the problem is well motivated; (2) the proposed weighting mechanism is simple and practically usable; and (3) the empirical gains over a strong baseline are consistent across several tasks. The qualitative examples and the analysis of the tradeoff between false negatives and hard negatives are also useful.
+The method itself is straightforward and sensible. In equations (4) and (5) on pages 4–5, the authors replace the uniform contribution of negatives in InfoNCE with per-negative weights. The weights are inversely proportional to estimated cross-modal similarity and normalized to have mean 1 among negatives. Intuitively, highly similar negatives, which are more likely to be false or partial false negatives, are penalized less. Dissimilar negatives are emphasized more. This is a natural idea, and the progressive interpolation between an external similarity model and the current VLP model is also reasonable in spirit: early in training, the model’s own similarity estimates are unreliable, so the method relies more on a separately trained model.
 
-That said, I have significant reservations about the theoretical rigor and some aspects of the experimental validation. The MI derivations rely on several approximations and assumptions that are not fully justified, and some steps appear informal or potentially incorrect. The method also depends on an auxiliary model trained on human-annotated data, which weakens the simplicity of the approach and raises fairness questions in comparison to the baseline. In addition, the empirical section would benefit from stronger ablations, broader baselines, and clearer accounting of added supervision and compute.
+The empirical results are solid relative to the chosen baseline. In Table 2 on page 6, SRCL improves ALBEF on both COCO and Flickr30K retrieval, with gains that are not huge but are consistent across TR and IR. In Table 3, the method improves ALBEF on VQA and NLVR as well. Table 4 is perhaps the most compelling: zero-shot Flickr30K retrieval improves noticeably over ALBEF and even compares favorably to larger-scale models such as CLIP/ALIGN/FILIP, though of course those comparisons are not apples-to-apples because architectures, data, and training recipes differ. Figure 4 on page 7 is also useful: the gains appear to persist and even widen as pretraining data size increases, which supports the claim that the method improves data efficiency under noisy many-to-many supervision.
 
-I view the paper as promising and practically relevant, but not yet fully convincing in its current form.
+I also appreciated the discussion in Section 4.3 and Figure 3 on page 7 about false negatives versus hard negatives. This is an important nuance. The paper argues that some semantically close negatives are harmful if over-repelled, but that hard negatives are still useful for learning discriminative representations. The thresholding experiment, where performance first improves and then degrades as more low-weight negatives are removed, is a nice empirical illustration of this tradeoff. This supports the authors’ claim that reweighting is preferable to simply discarding all suspected false negatives.
 
-Strengths
+However, the theoretical contribution is weaker than the paper suggests. The derivation in Section 2 and Appendix A is interesting, but I am not convinced it is sufficiently rigorous or novel to support the strong claims made in the abstract and introduction. The key step is the reinterpretation of InfoNCE under non-independent negatives as optimizing a lower bound on MI-P minus expected MI-N. While this is intuitively plausible, the derivation relies on approximations and assumptions that are not carefully justified. In particular, the transition in Appendix A.2 from equation (18) to (19) depends on the claim in equation (21), namely that the positive density ratio dominates the average negative density ratio because false negatives are relatively rare. This is exactly the regime under dispute, and the paper does not quantify when this assumption holds. If false negatives are common or if the negative distribution is highly structured, the bound may be loose or misleading. More broadly, the “MI with negatives” interpretation seems closer to a reformulation of known density-ratio arguments than a fundamentally new theoretical result.
 
-1. Important problem formulation
-The paper identifies a genuine weakness of standard in-batch contrastive learning in VLP: false negatives and partial false negatives are common because multiple images can match a caption and vice versa. Figure 1 on page 1 communicates this clearly.
+I am even less convinced by Appendix A.3. The claim that assigning weights satisfying two conditions “guarantees” proper MI optimization for negatives feels overstated. The proof appears to show that under certain assumptions, the weighted objective corresponds to a target expected MI involving the log inverse weights. But this does not establish that the chosen weights based on estimated similarity are accurate proxies for the desired MI target, nor that the optimization dynamics will realize the intended behavior in practice. The notion of a “controllable positive value” for MI-N is also vague. In practice, the weights are determined by a heuristic similarity estimator and a normalization function, not by a principled estimate of mutual information. So while the theory provides intuition, I do not think it rises to the level of a formal guarantee.
 
-2. Simple and intuitive method
-The core idea is straightforward: downweight negatives that are likely semantically similar to the anchor. This is easy to understand and easy to integrate into existing contrastive frameworks.
+A major practical concern is the reliance on an auxiliary model H_beta trained on “high-quality human-annotated data” (MSCOCO, according to page 5). This raises several issues. First, the method is no longer purely self-supervised in the usual sense implied by the framing. It uses an additional supervised or at least curated in-domain resource to bootstrap similarity estimation. Second, this may introduce data leakage or unfair advantage depending on the downstream tasks and evaluation datasets, especially since MSCOCO is also used in retrieval evaluation and as part of pretraining data. Third, it complicates the method substantially: one must train and maintain a second model with the same architecture, then schedule interpolation between the auxiliary model and the main model. The paper does not adequately discuss the cost-benefit tradeoff here. How much of the gain comes from the weighting idea itself versus from injecting a better similarity prior from curated data? This is one of the most important missing ablations.
 
-3. Consistent empirical improvements
-Across Tables 2–4, SRCL improves ALBEF on retrieval, zero-shot retrieval, VQA, and NLVR2. The gains are not huge, but they are consistent:
-- MSCOCO retrieval: TR R@1 76.6 -> 77.3, IR R@1 58.4 -> 60.4
-- Flickr30K retrieval: TR R@1 94.6 -> 96.3, IR R@1 83.9 -> 85.8
-- VQA test-std: 76.32 -> 76.93
-- NLVR2 dev/test-P: 82.21/83.11 -> 83.43/83.95
-- Zero-shot Flickr30K: TR R@1 91.02 -> 92.42, IR R@1 77.44 -> 79.43
+Relatedly, the empirical section lacks several critical controls. The paper compares mainly against ALBEF, but since the method modifies only the contrastive loss, stronger evidence would come from a more systematic ablation suite. For example, what happens if one uses only the current model’s similarity without H_beta? What if one uses a frozen CLIP model directly as the similarity estimator instead of training H_beta? What if one uses simpler heuristics such as caption lexical overlap, nearest-neighbor filtering, or temperature-adjusted soft labels? What if the weights are binary masks rather than continuous values? What if the normalization condition is removed? The current experiments do not disentangle these factors.
 
-4. Useful analysis of false negatives vs hard negatives
-The discussion in Section 4.3 and Figure 3 is interesting. The observation that removing some likely false negatives helps, but removing too many hurts, is sensible and supports the motivation for soft regulation rather than hard filtering.
+The comparison to prior work is also somewhat narrow. The paper mentions ALBEF and progressive self-distillation approaches, but the broader literature on debiased contrastive learning, false-negative mitigation, soft contrastive targets, and multi-positive contrastive objectives is not deeply engaged. In particular, the proposed weighting scheme is conceptually close to soft-label or soft-negative approaches where semantically similar negatives are downweighted. The paper should more clearly articulate what is genuinely new beyond applying similarity-based weighting in VLP with an MI-flavored justification. As written, the novelty seems incremental: a reasonable reweighting mechanism plus a theoretical interpretation.
 
-5. Qualitative evidence
-The retrieval examples on pages 8 and 16 suggest that the proposed method learns somewhat richer semantic matching than the baseline.
+Another concern is that the method may be sensitive to the quality and calibration of similarity estimates. The paper assumes that cross-modal similarity positively correlates with mutual information, which is plausible but not guaranteed. In practice, similarity models can be biased toward superficial correlations, frequent concepts, or dataset artifacts. If the similarity estimator mistakes true negatives for false negatives, the method may under-train important discriminative boundaries. The paper’s qualitative examples are encouraging, but they are not enough to establish robustness. I would have liked to see quantitative analysis of weight quality, for example precision/recall of low-weight negatives on a manually annotated subset, or at least a study of how often low-weight negatives are indeed semantically matching.
 
-Weaknesses
+The experimental setup also leaves some ambiguity. The pretraining data are 5.1M image-text pairs from CC, SBU, COCO, and VG, but the paper later studies scaling to 12M examples in Figure 4; it is not clearly explained where the additional data come from. The notation is occasionally inconsistent as well: page 5 alternates between S_gamma, V_gamma, and F_gamma; equations (6) and (7) appear to swap indices or modalities in a confusing way; and there are several typographical issues throughout the paper. These are not fatal, but they make the method harder to verify and slightly undermine confidence in the theoretical sections.
 
-1. Theoretical claims are overstated
-The paper leans heavily on the MI derivation, but the derivation is not sufficiently rigorous for the strength of the claims being made.
+I also think the claims around outperforming larger-scale models should be toned down. Table 4 shows strong zero-shot retrieval results, but comparing a method built on ALBEF with CLIP/ALIGN/FILIP is difficult because of differences in architecture, data scale, and evaluation protocol. The fairest takeaway is that SRCL improves ALBEF substantially and yields competitive zero-shot retrieval, not that it broadly surpasses those methods.
 
-A few concerns:
-- The approximation from sums over negatives to expectations in Appendix A.1/A.2 is standard in spirit, but the conditions under which it is valid are not discussed.
-- Equation 21 in Appendix A.2 assumes the positive density ratio is larger than the expected negative density ratio because false negatives are relatively rare. This is plausible but not guaranteed, and it is central to the subsequent inequality.
-- The use of Jensen’s inequality in Equations 23–25 is not carefully explained.
-- In Appendix A.3, the argument that minimizing the loss implies the last term becomes exactly zero (Eq. 37) is too strong. Optimization of a lower bound does not generally imply such an equality at optimum.
-- The statement that MI-N is optimized to a “controllable positive value” seems stronger than what is actually established.
+In terms of significance, the paper addresses an important issue and offers a practical fix that seems to work. If the method generalizes beyond ALBEF and does not depend critically on the auxiliary curated-data model, it could be useful to the community. But the current evidence is not yet sufficient to establish broad impact. The limitation section on page 9 acknowledges that evaluation is mainly on ALBEF; I agree this is a real limitation, not a minor one. Since the paper’s core claim is about contrastive learning itself, I would expect validation on at least one additional framework, ideally a CLIP-style dual encoder and perhaps another fusion-based VLP model.
 
-Overall, the theory is better viewed as intuition than proof. I would strongly recommend toning down the claims.
+My overall assessment is therefore mixed-positive. The paper has a clear motivation, a sensible method, and consistent empirical gains. But the theoretical claims are stronger than the evidence supports, and the empirical validation does not yet isolate the true source of improvement or establish generality. I would encourage the authors to revise the presentation to be more modest and to add stronger ablations.
 
-2. Dependence on extra supervised data/model
-The method uses an auxiliary model H_beta trained on a “high-quality human-annotated dataset” (MSCOCO, per Section 3.2.1/page 5). This is a meaningful addition:
-- It introduces extra supervision beyond the base pretraining setup.
-- It adds training complexity and compute.
-- It may partly explain the gains, especially early in training.
+The most important improvements I would request are the following. First, add ablations isolating the role of H_beta: no auxiliary model, frozen CLIP as auxiliary model, and different interpolation schedules. Second, evaluate on at least one additional VLP backbone to support the claim that the approach is generally applicable. Third, provide a more careful discussion of whether using COCO-trained H_beta introduces in-domain bias or leakage for downstream evaluation. Fourth, strengthen the empirical analysis of the weights themselves, ideally with manual inspection or annotation of suspected false negatives. Fifth, tone down the theoretical language from “guarantees” and “proper MI optimization” to “provides intuition” unless a more rigorous proof can be given. Sixth, improve clarity and correctness of notation and derivations in Section 2 and Appendix A.
 
-This makes the comparison to ALBEF less clean. The paper should report:
-- how much data is used to train H_beta,
-- whether ALBEF also benefits if given the same auxiliary model or similarity prior,
-- whether SRCL still works well without H_beta, using only the online model or a simpler heuristic.
-
-3. Limited ablation study
-The paper lacks several important ablations:
-- SRCL without the auxiliary model H_beta
-- fixed similarity weights vs progressively refined weights
-- different normalization schemes for weights
-- different functional forms for weight vs similarity (inverse, linear, softmax, clipped, etc.)
-- effect of alpha schedule and delta scaling factor
-- effect of applying SRCL only in one direction (image-to-text or text-to-image)
-- comparison to simply masking likely false negatives rather than weighting them
-- comparison to soft-label/self-distillation methods under the same setup
-
-Given that the method’s novelty lies in the weighting design and progressive refinement, these ablations are essential.
-
-4. Narrow experimental scope relative to claims
-Although the paper evaluates on several downstream tasks, the method is only instantiated on ALBEF. The limitation section acknowledges this. Since the paper argues for a generally applicable contrastive learning principle, it would be much stronger to show results on at least one additional framework, e.g., CLIP-style dual encoder or BLIP/ALIGN-like setups.
-
-5. Baseline comparisons are not fully fair or informative
-The paper compares against many prior models in Tables 2–4, but these models differ substantially in architecture, pretraining data size, and supervision. The most meaningful comparison is ALBEF vs SRCL, which is good, but then the paper should focus more on controlled comparisons and less on broad SOTA positioning.
-
-Also, since SRCL uses an auxiliary model trained on annotated data, the “same architecture and experimental setting as ALBEF” statement in Table 2 is not fully accurate unless the auxiliary training is explicitly excluded from that claim.
-
-6. Some presentation and notation issues
-There are multiple notation inconsistencies and writing issues that make the paper harder to follow:
-- In Section 3.2, the notation alternates between I/V and t/v somewhat inconsistently.
-- On page 5, Equation 6/7 descriptions appear to swap indices or modalities in places.
-- There are several grammatical issues throughout.
-- The paper sometimes says “distance” when it means similarity.
-- The notation around f(v_i, t_j) and sim(v_i, t_j) could be cleaner.
-- The appendix references “equation 28” before it appears, and some equation numbering/wording is awkward.
-
-These are fixable, but they matter because the paper relies on technical derivations.
-
-Detailed comments
-
-On the method
-
-The weighting idea itself is reasonable. If a negative is semantically close to the anchor, pushing it away less should reduce damage from false negatives. The normalization constraint that average weight equals 1 is also sensible, since it preserves the overall scale of the denominator.
-
-However, the specific implementation raises questions:
-- Why is inverse similarity the right form? Why not 1 - sim, or a temperature-scaled softmax over negatives?
-- Since similarity estimates can be noisy, especially early in training, how robust is the method to calibration errors?
-- The auxiliary model H_beta is trained on MSCOCO, which may bias similarity estimation toward in-domain semantics. Does this help more on COCO-like tasks than elsewhere?
-- Could the same effect be achieved by using momentum teacher features, as in ALBEF’s own momentum distillation, without separate supervised training?
-
-On the experiments
-
-The pilot result in Table 1 is a nice motivation: simply removing heuristically identified false negatives improves ALBEF. But the heuristic itself is not clearly described in the main text. Since this table is used to motivate the whole paper, the heuristic should be fully specified.
-
-Figure 3 is one of the more interesting analyses. It suggests that a moderate amount of filtering helps, but aggressive filtering hurts. This supports the paper’s “balance” narrative. Still, the thresholding procedure depends on SRCL’s own weights, so it is not an independent analysis.
-
-Figure 4 claims improved data efficiency as pretraining data grows. The trend is plausible, but the figure only reports zero-shot retrieval. Since the text mentions VQA too, either include those curves or revise the wording.
-
-The qualitative examples on pages 8 and 16 are helpful, but they remain anecdotal. It would be stronger to quantify whether SRCL improves retrieval for captions with multiple valid matches or for examples with high semantic ambiguity.
-
-Questions for the authors
-
-1. How much additional supervision and compute is required to train H_beta? Please quantify this clearly.
-2. What happens if H_beta is removed entirely and similarity is estimated only from the online model?
-3. How sensitive is performance to the alpha schedule and delta in Equation 9?
-4. Can the method be applied to a pure dual-encoder setup like CLIP without the ALBEF fusion architecture?
-5. How does SRCL compare directly against soft-label/self-distillation approaches such as ALBEF’s momentum distillation or Progressive Self-Distillation under the same backbone and data?
-6. Is the gain mainly from downweighting false negatives, or partly from emphasizing easy negatives more strongly? A gradient analysis could help.
-7. Can the authors provide a more rigorous or more modest theoretical statement? Right now the theory seems stronger in wording than in proof.
-
-Suggestions for improvement
-
-1. Reframe the theory more cautiously
-Present the MI analysis as motivation or an approximate interpretation, not as a formal guarantee. Tighten the appendix and explicitly state assumptions.
-
-2. Add stronger ablations
-At minimum:
-- without H_beta
-- without progressive refinement
-- different weight functions
-- hard filtering vs soft weighting
-- comparison to ALBEF with the same auxiliary similarity model but no SRCL weighting
-
-3. Clarify fairness of comparisons
-Be explicit that SRCL uses an auxiliary supervised model and discuss whether this should count as extra supervision.
-
-4. Broaden validation
-Show at least one additional backbone/framework if possible.
-
-5. Improve writing and notation
-A careful proofreading pass would substantially improve readability.
-
-Recommendation
-
-Weak reject / borderline
-
-Rationale
-
-The paper tackles an important problem and proposes a practical solution with consistent gains on top of a strong baseline. I especially like the focus on partial false negatives and the attempt to balance their harmful and beneficial roles. However, the current version overstates its theoretical contribution, and the empirical validation does not yet isolate the true source of gains well enough, especially given the auxiliary supervised similarity model. With stronger ablations, clearer fairness accounting, and a more careful theoretical presentation, this could become a solid paper.
-
-Confidence: 0.79
+If I were reviewing this for a conference, I would likely place it around the borderline accept range depending on the venue’s standards and the strength of the rebuttal. The practical idea is useful and the results are credible, but the paper currently overstates its theoretical novelty and under-analyzes its dependence on auxiliary supervision. With stronger ablations and a more careful framing, this could become a solid contribution.

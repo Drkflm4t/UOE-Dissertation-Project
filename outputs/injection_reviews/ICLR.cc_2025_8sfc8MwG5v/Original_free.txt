@@ -1,137 +1,41 @@
-Summary:
-This paper studies test-time adaptation for concept bottleneck models (CBMs) built on top of foundation model features. The authors argue that although recent CBMs can match feature-based predictors on the source domain, they often degrade substantially under distribution shift. They identify three failure modes: non-robust concept bottlenecks under low-level shifts, non-robust classifiers under concept-level shifts, and incomplete concept sets. To address these, they propose CONDA, a three-stage source-free adaptation framework using only unlabeled target data: concept-score alignment (CSA), linear probing adaptation (LPA), and a residual concept bottleneck (RCB). Experiments on CIFAR10/100-C, Waterbirds, MetaShift, and Camelyon17 with several CBM constructions and FM backbones show substantial gains in many settings, sometimes bringing CBM performance close to or above non-interpretable baselines. The paper also includes interpretability analyses showing changes in concept weights and residual concepts after adaptation.
+This paper studies test-time adaptation for concept bottleneck models built on top of foundation-model representations. The central claim is that concept-based pipelines are not inherently robust under distribution shift, even when the underlying foundation model features remain useful, and that one can recover both accuracy and better-aligned concept explanations by adapting the concept bank and classifier using only unlabeled target data. The proposed method, CONDA, combines three stages: concept-score alignment (CSA), linear probing adaptation (LPA), and a residual concept bottleneck (RCB) that adds new concepts at test time. Empirically, the paper evaluates across several datasets with low-level, concept-level, and natural shifts, and reports substantial gains over unadapted CBMs, in some cases bringing concept-based performance close to or above feature-based baselines.
 
-Overall recommendation:
-Weak Accept
+Overall, I found the paper interesting and timely. The topic is important: concept bottlenecks are often motivated by interpretability and sometimes by presumed robustness, but the deployment-time behavior of CBMs under shift has been underexplored. The paper’s framing is compelling, especially the observation in Figure 1 on page 2 that concept-based predictions can degrade sharply under both corruption-style and semantic/contextual shifts. The attempt to connect different failure modes to different adaptation mechanisms is also a strength. At a high level, this is a meaningful contribution that could be of interest to both the interpretability and robustness/TTA communities.
 
-Confidence:
-3/5
+The strongest aspect of the paper is the problem formulation and motivation. The authors clearly articulate that there are at least three distinct ways a deployed CBM can fail: the concept mapping itself may be non-robust to low-level perturbations, the concept-to-label classifier may fail under concept-level shifts, and the concept set may simply be incomplete. This decomposition in Section 2.3 is intuitive and useful. It gives the method a principled modular structure rather than presenting adaptation as a monolithic heuristic. I also appreciated that the paper does not overclaim that concepts are automatically robust; instead it explicitly challenges that assumption.
 
-Strengths:
-1. Novel problem formulation. The paper addresses an interesting and timely problem: adapting interpretable concept-based predictors at test time under distribution shift. This is a meaningful gap in the literature, since most TTA work focuses on standard black-box classifiers.
+A second major strength is the breadth of empirical evaluation. Table 1 on page 11 covers multiple datasets, multiple shift types, multiple backbones, and three different CBM construction methods. That breadth matters because the proposed method is intended as a general adaptation framework rather than a tweak for one specific CBM instantiation. The results are mixed in places, but that actually increases credibility. In particular, the paper does not hide negative cases, and Appendix F explicitly discusses settings where adaptation can hurt when pseudo-labels are poor or when the unadapted CBM already exceeds the feature-based pseudo-labeling sources. This honesty is appreciated.
 
-2. Clear motivation. The empirical motivation is convincing. Figure 1 and Table 1 show that CBMs are not automatically robust under shift, even when they perform well in-domain. This is an important practical observation.
+The interpretability analysis is also a positive. The Sankey-style visualizations in Figures 4 and 8 (pages 12 and 31) are helpful for showing how concept-to-class weights shift after adaptation. On Waterbirds, the emergence of bird-related residual concepts such as “feathers,” “wings,” and “beak” is intuitively appealing, and the discussion in Section 4.4 gives a plausible story for how RCB can compensate for missing source concepts. The additional analysis in Appendix E, especially the confidence/consistency plots in Figure 6 on page 29 and the accuracy-interpretability tradeoff in Figure 7 on page 30, is thoughtful and goes beyond raw accuracy reporting.
 
-3. Modular method design. The decomposition into CSA, LPA, and RCB is intuitive and tied to the identified failure modes. I especially liked the attempt to connect different shift types to different adaptation components.
+That said, I have several substantive concerns, mostly around methodological assumptions, fairness of comparisons, and the strength of the evidence for the interpretability claims.
 
-4. Broad empirical coverage. The experiments span multiple datasets, multiple shift types, multiple CBM construction methods, and multiple backbones. This breadth strengthens the empirical case.
+My main concern is that the method relies heavily on pseudo-labels derived from non-interpretable feature-based predictors, specifically an ensemble of zero-shot and linear-probing predictions from the foundation model. This is described in Section 3 and on page 7. In practice, this means the adaptation signal comes from the very black-box pipeline that the paper is trying to replace with an interpretable one. That is not necessarily invalid, but it weakens the conceptual claim that the CBM is being adapted “solely” from unlabeled target data in a self-contained way. More importantly, it raises a fairness issue in the headline comparison that CONDA can “align CBM performance with non-interpretable classification.” If the adaptation target is itself derived from those non-interpretable classifiers, then matching them is less surprising. The paper should be much clearer that CONDA is effectively distilling target-domain behavior from feature-based predictors into a concept-based model at test time. Framed that way, the contribution is still interesting, but more precise.
 
-5. Interpretability analysis. The visualizations on Waterbirds and MetaShift (pages 12, 13, 30, 31) are useful and help support the claim that adaptation changes concept reliance in human-interpretable ways.
+Relatedly, the pseudo-labeling design creates a ceiling and a dependency that complicate interpretation of the results. In several datasets, the adapted CBM approaches LP or ZS performance, but this may simply reflect the quality of the pseudo-label oracle rather than the intrinsic effectiveness of concept adaptation. Appendix D partially acknowledges this and Table 5 on page 28 shows a large gap between current pseudo-labeling and perfect pseudo-labels, especially on CIFAR100-C. However, the main paper still presents the gains somewhat as evidence that the concept bottleneck itself has become robust. A more cautious interpretation is that the method can transfer robustness from the FM-based predictor into the CBM when pseudo-labels are reliable. That distinction matters.
 
-6. Honest discussion of limitations. The appendix explicitly discusses failure cases when pseudo-labels are poor and when adaptation can hurt, which improves credibility.
+A second concern is the theoretical framing of shift types and completeness. Section 2 introduces low-level shift as preserving the concept-score distribution and concept-level shift as changing concept scores while preserving prediction distributions. These definitions are neat, but they are also somewhat idealized and tightly coupled to the chosen concept mapping h. In practice, whether a shift is “low-level” or “concept-level” depends on the representation and concept bank, not just the data-generating process. For example, Gaussian noise may alter concept scores substantially for one CBM and not another; the paper indeed uses this as a failure mode. So the taxonomy is useful descriptively, but less convincing as a formal categorization of real-world shifts. Similarly, Definition 1 of concept completeness is quite strong and existential, but the paper does not operationalize it beyond motivating RCB. I would have liked either a more modest framing or stronger theoretical development connecting these definitions to the proposed objectives.
 
-Weaknesses:
-1. Theoretical framing is not fully convincing. Section 2 introduces a fairly formal measure-theoretic setup for shifts and concept distributions, but this formalism is not really used to derive the method or prove guarantees. As written, it feels heavier than necessary and somewhat disconnected from the algorithm.
+A third concern is the CSA objective. The method assumes access to class-conditional Gaussian statistics of source-domain concept scores, namely means and covariances for each class, even though the source data are unavailable at adaptation time. This is stated in Section 3.1 on page 8. In source-free adaptation this may be acceptable if such statistics are stored, but it is still a nontrivial assumption that should be emphasized more clearly in the problem statement and abstract. Moreover, the Gaussian assumption seems fairly ad hoc. There is no evidence that concept-score distributions are approximately Gaussian, nor that Mahalanobis alignment in concept space is the right inductive bias. Since CSA appears to matter mainly for low-level shifts (Figure 3 on page 12), it would strengthen the paper to include empirical validation of this assumption, e.g., calibration of Gaussian fit, comparison to simpler moment matching, or a nonparametric alternative.
 
-2. Strong reliance on pseudo-label quality. The method depends critically on pseudo-labels from zero-shot and linear-probing FM predictors. In many ways, the success of CONDA seems to inherit the robustness of these non-interpretable predictors. This raises the question of how much adaptation is due to the proposed CBM-specific machinery versus simply distilling stronger FM predictions into the CBM.
+A fourth concern is that the ablation evidence does not fully support the necessity of the full three-stage method. Figure 3 shows that under low-level shifts CSA alone can outperform the full method, and under concept-level shifts LPA alone can match or exceed the full method. This is interesting and consistent with the authors’ narrative, but it also suggests that the unified pipeline may be overengineered or at least not robustly beneficial. The paper should discuss whether one can detect the shift type online and selectively activate components. As written, the method seems to pay extra complexity for components that may be unnecessary or even mildly harmful in some regimes. This is especially relevant because the runtime analysis in Appendix B.1/B.2 and Table 3 on page 23 shows pseudo-labeling dominates cost, but the adaptation stages still add overhead.
 
-3. Limited comparison to TTA baselines adapted to the CBM setting. The paper compares mainly against unadapted CBMs and non-interpretable ZS/LP baselines. It would be stronger to compare against simpler adaptation baselines, e.g., entropy minimization on the CBM logits, pseudo-label fine-tuning of only the CBM linear head, or direct adaptation of the FM+linear probe followed by post-hoc concept projection.
+A fifth concern is about the interpretability claims for residual concepts. The paper argues that RCB discovers meaningful new concepts and improves interpretability. However, the residual concepts are learned directly to improve pseudo-label agreement, with regularizers for diversity and coherence. This does not guarantee semantic meaningfulness. The automatic annotation procedure in Appendix B.2 uses CLIP-DISSECT-style matching against a candidate vocabulary from ConceptNet and accepts labels above a cosine threshold. This is a reasonable exploratory tool, but it is not strong evidence that the learned residual vectors correspond to stable, human-understandable concepts. In fact, Figure 7 on page 30 explicitly shows an accuracy-interpretability tradeoff as more residual concepts are added. I think the paper should tone down claims that RCB enhances interpretability, or provide stronger human evaluation or intervention-based evidence. At present, the evidence supports “some residual vectors can sometimes be annotated plausibly,” which is weaker.
 
-4. Some claims are overstated. The abstract says the method “boosts post-deployment accuracy by up to 28%, aligning the CBM performance with that of non-interpretable classification.” This is true in some cases, but Table 1 also shows several cases where gains are modest or adaptation hurts, especially for Yeh et al. (2020) and some Waterbirds settings. The narrative should be more balanced.
+I also have concerns about the fairness and clarity of some empirical comparisons. First, the backbones differ across datasets, and for CIFAR the paper uses FARE2 robust CLIP rather than standard CLIP. This is reasonable for performance, but it makes it harder to isolate the contribution of CONDA versus the robustness of the backbone. The paper does acknowledge that stronger backbones help, but the main message sometimes blurs whether gains come from adaptation or from starting with a particularly robust FM. Second, the CBM baselines are heterogeneous in both concept construction and source-domain accuracy. For example, Yeh et al. (2020) often has much higher source accuracy than the other CBMs, but the paper also notes in Appendix F that its concepts may be less interpretable because they are optimized for accuracy. This complicates the narrative that CONDA improves “concept-based interpretability” across methods. It may improve accuracy across CBM variants, but interpretability quality is not comparably established across them.
 
-5. Interpretability claims need more rigor. The paper argues that adapted concepts are “better aligned with the test data,” but the evidence is mostly qualitative. The automatic annotation procedure in Appendix B.2 is heuristic, and the similarity thresholding may bias results. More quantitative evaluation of concept quality would help.
+Another issue is that the paper’s main table averages CIFAR-C over 15 corruptions at severity 2, but the choice of severity 2 is motivated partly by preserving pseudo-label quality (Appendix C.1, page 24). This is understandable, yet it also means the benchmark is selected to suit the pseudo-labeling mechanism. Appendix F and Table 8 on page 32 show that at higher corruption severity the method can fail badly because the FM pseudo-labels collapse. This limitation should be more prominent in the main paper, because it materially bounds the applicability of the approach. In deployment settings with severe shift, the method may not help.
 
-6. Method complexity and tuning burden. CONDA has multiple stages and several hyperparameters (Table 4, Figure 5), plus residual concept count selection. Although runtime is manageable, the method is fairly involved for a test-time adaptation pipeline.
+I found some aspects of the exposition slightly overstated. The paper claims to be the first TTA method for concept bottlenecks with a foundation model backbone “to our knowledge.” That may be true, but the novelty is somewhat incremental at the component level: CSA is inspired by class-aware feature alignment, LPA is pseudo-label fine-tuning with sparsity regularization, and RCB resembles adding residual capacity with coherence/diversity penalties. The novelty lies more in the decomposition and integration for CBMs than in fundamentally new adaptation machinery. I would encourage the authors to present the contribution in those terms.
 
-Detailed comments:
+There are also some technical details that deserve clarification. The notation in Section 2 is heavier than necessary and occasionally obscures the main ideas. The formalization via measurable transformations and push-forward measures is mathematically neat but not really used later in the analysis or proofs, since there are no formal guarantees. The paper might benefit from simplifying this section and reallocating space to empirical diagnostics. Also, the online adaptation protocol uses the same batch for adaptation and prediction, following common TTA practice, but this can sometimes inflate performance relative to stricter evaluation protocols. The paper should explicitly state whether labels are never used for model selection on target data and how hyperparameters were tuned. Table 4 lists dataset-specific hyperparameters, but it is not clear whether these were selected using target validation labels, source validation, or prior heuristics. This matters for assessing realism.
 
-1. Novelty and significance
-I believe the main contribution is meaningful: test-time adaptation for CBMs with FM backbones appears to be new, and the problem is important if CBMs are to be used in deployment. The paper’s central empirical point—that concept bottlenecks do not automatically confer robustness—is valuable on its own.
+Despite these concerns, I think the paper has real merit. The empirical phenomenon it highlights is important: CBMs can lose much more under shift than one might expect from their source-domain performance, and adapting the concept layer and concept-to-label mapping can recover a substantial fraction of that loss. The modular design is sensible, and the experiments are broad enough to make the work noteworthy. I especially appreciate that the paper includes negative results and limitations rather than presenting a uniformly rosy picture.
 
-That said, the algorithmic novelty is moderate rather than high. CSA is inspired by class-aware feature alignment using pseudo-labels and Mahalanobis distances; LPA is essentially pseudo-label fine-tuning with elastic-net regularization; RCB adds residual concepts with similarity/coherency regularization. The combination is sensible, but each ingredient is relatively incremental. The paper’s strength is more in problem formulation and system design than in a fundamentally new adaptation principle.
+To strengthen the paper, I would suggest the following concrete improvements. First, reframe the method more explicitly as source-free target-domain distillation from FM-based pseudo-labels into a concept-based predictor. This would sharpen the contribution and avoid overclaiming autonomous concept robustness. Second, add stronger baselines from the TTA literature applied directly to the equivalent linear model over FM features, and perhaps to the CBM logits, to show that the gains are not simply due to generic pseudo-label fine-tuning. Third, include an oracle study that disentangles the contributions of pseudo-label quality versus adaptation architecture more systematically, beyond Table 5. Fourth, provide more rigorous evidence for interpretability, ideally human evaluation, intervention utility, or stability of residual concepts across runs. Fifth, discuss or develop a mechanism to detect shift type and activate only CSA or LPA/RCB as needed, since the ablations suggest the full pipeline is not always optimal.
 
-2. Technical soundness
-The method is mostly reasonable, but there are several concerns.
+I would also encourage a more careful discussion of what counts as a “concept” in the residual branch. If the residual vectors are primarily latent directions that can sometimes be post hoc annotated, then calling the whole model a concept bottleneck may be somewhat aspirational. A distinction between source concepts with explicit semantics and residual latent concepts with approximate annotations would make the interpretability claims more honest and nuanced.
 
-First, the formal definitions of low-level shift and concept-level shift in Section 2 are idealized. For example, low-level shift is defined by equality of concept score distributions across domains, but in practice the whole point is that the deployed concept extractor may violate this. So the definition is more normative than descriptive. Similarly, concept-level shift is defined by changed concept distributions but unchanged prediction distributions, which assumes label semantics remain stable and that some classifier over concepts exists. This is fine as intuition, but the formalism should not be oversold.
+In summary, this is a good paper on an important and underexplored problem. Its main contribution is not a radically new adaptation algorithm, but a compelling formulation of deployment-time failures in FM-based CBMs and a practical framework that often recovers substantial accuracy under shift while preserving some degree of concept-level explanation. The empirical results are strong enough to make the work interesting, but the current presentation overstates interpretability and underemphasizes the dependence on black-box pseudo-labels and backbone robustness. With clearer framing and stronger validation of the interpretability and adaptation assumptions, this could become a solid contribution.
 
-Second, CSA assumes access to class-conditional Gaussian statistics of source concept scores. This is plausible in a source-free setting if such statistics are stored, but it should be discussed more explicitly as part of the deployment artifact. Also, the Gaussian assumption seems strong, especially for concept scores from heterogeneous concept banks. I did not see evidence validating this assumption.
-
-Third, the sequential optimization of CSA, then LPA, then RCB is intuitive, but it is not obvious why this ordering is best. Figure 3 suggests that different components matter under different shifts, and sometimes CSA alone or LPA alone is better than the full method. This is interesting, but it also suggests the full pipeline may be suboptimal or unnecessarily rigid. A shift-aware gating or automatic component selection mechanism might be needed.
-
-Fourth, the pseudo-labeling strategy is somewhat ad hoc: choose the prediction with higher confidence between zero-shot and linear probe. This is simple, but confidence calibration across these two predictors may not be comparable. Appendix D shows that stronger pseudo-labeling improves results substantially, which suggests the main bottleneck may be pseudo-label quality rather than the adaptation objective itself.
-
-3. Experimental evaluation
-The experiments are fairly extensive and generally well presented.
-
-Positives:
-- Table 1 is comprehensive and covers several CBM constructions.
-- The distinction between low-level, concept-level, and natural shifts is useful.
-- Figure 3 provides a helpful component-wise analysis.
-- Appendix D includes hyperparameter ablations and pseudo-labeling variants.
-- Appendix F includes negative results, which is appreciated.
-
-However, I have several concerns:
-
-a. Missing stronger baselines
-The most important omission is the lack of simple adaptation baselines on the CBM itself. For example:
-- pseudo-label fine-tuning of the CBM linear head only;
-- entropy minimization on CBM outputs;
-- Tent-style adaptation if applicable;
-- adaptation of the residual branch only;
-- direct self-labeling from the CBM rather than FM ensemble;
-- adapting a standard FM+linear probe and then comparing interpretability/performance tradeoffs.
-
-Without these, it is hard to isolate the value of CSA and RCB beyond generic pseudo-label adaptation.
-
-b. Fairness of comparison to non-interpretable baselines
-The paper often frames success as matching ZS/LP performance. But the pseudo-labels come from ZS/LP, so the method is partly transferring their predictions into the CBM. This is not necessarily a problem, but it should be acknowledged more directly. In some sense, CONDA is using the FM predictors as teachers at test time.
-
-c. Statistical reporting
-The paper reports mean ± standard error over 10 trials, which is good. But some results vary substantially across methods and datasets, and significance is not always obvious. For example, on Metashift and Camelyon17 some gains are small. It would help to mark statistically significant improvements over unadapted CBMs.
-
-d. Dataset choices
-The chosen datasets are standard and reasonable. Still, most are image classification benchmarks with relatively small label spaces except CIFAR100. It would strengthen the paper to include at least one larger-scale or more realistic deployment benchmark where concept incompleteness is more severe.
-
-e. Evaluation of interpretability
-The interpretability section is mostly qualitative. The Sankey-style diagrams on pages 12 and 31 are nice, but they do not establish that the adapted concepts are more faithful or more useful to humans. Possible stronger evaluations:
-- concept sparsity / stability before vs after adaptation;
-- human evaluation of concept labels;
-- intervention-based utility using adapted concepts;
-- completeness or faithfulness metrics.
-
-4. Clarity and presentation
-The paper is generally readable and well organized. The high-level story is easy to follow.
-
-That said, there are some presentation issues:
-- The formalism in Section 2 is heavier than needed and may distract from the main contribution.
-- Some notation is overloaded and occasionally awkward. For example, the distinction between source and adapted parameters could be cleaner.
-- There are a few grammatical issues and phrasing inconsistencies throughout.
-- The paper sometimes uses “linear probing” to refer both to a baseline predictor on FM features and to the CBM label layer adaptation step; this can be mildly confusing.
-- The appendix is useful, but some important details (e.g., exact pseudo-labeling procedure variants, concept bank sizes per dataset) could be surfaced more clearly in the main paper.
-
-5. Specific questions for the authors
-1. How much of the gain comes from pseudo-label distillation alone? Please compare against a baseline that only fine-tunes the CBM label predictor with the same pseudo-labels, without CSA or RCB, across all datasets.
-
-2. Can you quantify the contribution of the FM ensemble pseudo-labeler versus the CBM-specific adaptation objectives? For example, what happens if you train a fresh linear classifier on concept scores using pseudo-labels only?
-
-3. How sensitive is CSA to the Gaussian assumption? Did you try simpler class prototypes or nonparametric distances?
-
-4. Since Figure 3 suggests different components help under different shift types, can you detect shift type automatically and selectively activate components?
-
-5. For RCB, how stable are the learned residual concepts across random seeds? Do the same semantic concepts recur?
-
-6. What exactly is stored from the source domain at deployment time? Only the CBM and source concept-score statistics, or also the linear probe used for pseudo-labeling? This matters for the source-free claim.
-
-6. Suggestions for improvement
-- Add stronger adaptation baselines, especially simple pseudo-label fine-tuning and entropy minimization on the CBM.
-- Clarify the deployment assumptions, including what source-derived artifacts are retained.
-- Tone down the theoretical formalism unless it is used for guarantees; alternatively, add a proposition or analysis connecting the objectives to the failure modes more formally.
-- Strengthen interpretability evaluation with quantitative metrics or human studies.
-- Analyze whether CONDA preserves or harms concept faithfulness, not just accuracy.
-- Consider an adaptive version of the pipeline that chooses CSA/LPA/RCB based on observed shift characteristics.
-- Discuss calibration of the ZS vs LP confidence comparison used for pseudo-label selection.
-
-Minor comments:
-- Page 5, Definition 1: “complete” concept set is defined relative to existence of a classifier that equalizes prediction distributions across source and target. This is a somewhat unusual notion of completeness; perhaps rename or better motivate it.
-- Page 8, Eq. 10: the elastic-net penalty is motivated by interpretability, but the connection could be explained more carefully.
-- Page 9, Eq. 13: the coherency regularizer is interesting, but I would like more intuition for why maximizing top-k similarity improves interpretability in this setting.
-- Table 1: please indicate which improvements are statistically significant.
-- Figure 3 caption says it is for Yuksekgonul et al. (2023), while the main text says Yeh et al. (2020). Please check consistency.
-- Appendix B.1: the complexity derivation is detailed, but big-O notation could be simplified.
-- Appendix F is appreciated; some of this discussion should be moved into the main paper.
-
-Bottom line:
-I find this paper promising and likely worthy of acceptance, mainly because it opens up an important new problem—test-time adaptation for interpretable CBMs on top of foundation models—and provides a practical, empirically effective first solution. The empirical evidence is fairly broad, and the qualitative interpretability analyses are compelling enough to support the paper’s central message.
-
-My main reservations are that the method relies heavily on pseudo-labels from stronger non-interpretable predictors, the theoretical framing is somewhat loose relative to the formalism presented, and the experimental section lacks some crucial simple baselines. If accepted, I would encourage the authors to strengthen these aspects in the final version.
+My overall assessment is positive but not unreservedly so. I see this as a borderline-to-accept paper for a strong ML venue: novel enough in problem framing and sufficiently validated empirically, but with important caveats around assumptions, fairness, and interpretability that should be addressed in revision.

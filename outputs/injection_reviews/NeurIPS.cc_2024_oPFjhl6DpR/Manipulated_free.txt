@@ -1,163 +1,33 @@
-Summary:
-This paper proposes Efficient Safe Policy Optimization (ESPO), a primal-based safe RL method that adaptively changes sample size during training based on the conflict between reward and safety gradients. The method combines a three-mode update scheme inherited from PCRPO-style optimization: reward-only updates when safely feasible, cost-only updates under clear violations, and joint reward-cost updates in a soft-constraint region. The main novelty is to increase sample size when reward and safety gradients conflict and reduce it otherwise. The paper provides convergence and sample-efficiency claims in a tabular softmax setting, and evaluates ESPO on Safety-MuJoCo and Omnisafe benchmarks against primal and primal-dual baselines.
+This paper studies sample efficiency in safe reinforcement learning and proposes ESPO, a primal-style safe policy optimization method that adaptively manipulates sample size based on the degree of conflict between reward and safety gradients. The core idea is intuitive and appealing: when reward and safety objectives are aligned, fewer samples may suffice, whereas when they conflict, additional samples are allocated to better resolve the trade-off. The method is built on a three-mode optimization framework inherited from PCRPO-like logic: reward-only updates in clearly safe regions, cost-only updates under clear violations, and joint reward-cost updates in a soft-constraint region. The paper combines this optimization structure with adaptive sample sizing and provides both theoretical analysis and empirical evaluation on Safety-MuJoCo and Omnisafe tasks.
 
-Overall assessment:
-The paper addresses an important problem: sample inefficiency in safe RL. The idea of adapting sample size based on reward-cost gradient conflict is intuitive and potentially useful. The empirical results are promising and suggest that ESPO can reduce samples and wall-clock time while maintaining or improving reward and safety performance on the tested benchmarks. However, I have substantial concerns about the technical clarity, correctness of the algorithm description, and the strength of the theoretical and empirical evidence relative to the claims. In its current form, I find the paper interesting but not yet fully convincing.
+Overall, I found the paper interesting and potentially impactful. The problem is important: safe RL is often prohibitively sample-inefficient, and most prior work indeed fixes rollout budgets per iteration without considering whether the current optimization regime actually warrants that cost. The paper’s central contribution—using reward-cost gradient conflict as a signal for adaptive sampling—is novel in the safe RL context and conceptually well motivated. I also appreciate that the authors do not stop at an algorithmic heuristic, but attempt to connect the idea to convergence, oscillation reduction, and sample complexity. Empirically, the reported gains are substantial, with lower sample usage and training time while maintaining or improving reward and safety performance.
 
-Strengths:
-1. Important problem setting.
-Safe RL is indeed often sample-hungry, and improving efficiency without sacrificing constraint satisfaction is a meaningful contribution.
+The strongest aspect of the paper is the framing of adaptive sampling through the geometry of reward and cost gradients. This is a natural signal in constrained RL, and the paper explains the intuition clearly. The figure on page 2 and the oscillation discussion are helpful: the claim is that existing methods can bounce across the safe boundary, whereas ESPO spends more time in a productive region where reward can still be optimized without repeatedly incurring hard safety corrections. This is a meaningful perspective, especially for primal methods where switching between reward and cost objectives can otherwise be brittle. The update rules in Section 4.1 are also sensible extensions of gradient manipulation ideas from PCRPO and multi-objective optimization.
 
-2. Intuitive core idea.
-Using gradient conflict as a signal for when more samples are needed is a sensible and appealing idea. The motivation that conflicting reward/safety directions require more accurate estimates is plausible.
+The theoretical section is ambitious and is another strength of the submission. Theorem 4.1 gives a convergence guarantee in the tabular softmax setting with rate on the order of O~(sqrt(SA / ((1-gamma)^3 T))) for both reward suboptimality and constraint violation. Proposition 4.2 formalizes the reduced-oscillation intuition by arguing that once ESPO enters the relaxed safe region, it can remain there and continue at least partial reward optimization, unlike CRPO which may revert to pure cost updates more often. Proposition 4.3 then argues that the adaptive sample manipulation yields fewer samples than a non-adaptive counterpart for achieving target reward/cost gaps. Even though the theory is restricted to the tabular setting, it is still valuable because it gives a principled foundation for a design choice that is usually treated heuristically in deep RL papers.
 
-3. Practical framing.
-The three-mode optimization framework is easy to understand, and the adaptive sampling mechanism is simple enough that it could be implemented in existing on-policy safe RL pipelines.
+The empirical section is also fairly convincing at a high level. On Safety-MuJoCo, the plots on page 8 and the additional results on page 28 suggest that ESPO improves reward while keeping costs under control, and does so with fewer samples than CRPO and PCRPO. The sample counts in Table 1 are notable: 5.7M vs 8M on SafetyReacher-v4, 6.2M vs 8M on SafetyWalker-v4, and 5.1M vs 8M on SafetyHumanoidStandup-v4. On Omnisafe, the comparisons against PCPO, CUP, and PPOLag in Figure 3 and Table 2 are similarly encouraging, with ESPO using 7.3M/7.6M samples versus 10M for the baselines on the two reported tasks. The training-time reductions shown in the bar charts are also practically relevant. I also appreciated the ablation section and the update-style analysis in Table 3 on page 28, which supports the claim that ESPO spends many more updates in reward or reward-cost modes than CRPO.
 
-4. Broad empirical comparison.
-The paper compares against both primal methods (CRPO, PCRPO) and primal-dual methods (PCPO, CUP, PPOLag), and reports reward, cost, sample count, and training time. The plots on pages 8 and 9 and the tables on pages 7 and 9 suggest consistent gains on the selected tasks.
+That said, there are several issues that should be addressed to strengthen the paper.
 
-5. Attempt at theory.
-The paper does not stop at heuristics and tries to provide convergence and sample-efficiency analysis. Even if I have reservations about the current presentation, this is a positive aspect.
+My main concern is that the theoretical claims around sample efficiency are not yet as rigorous as the presentation suggests. Proposition 4.3 depends on Assumption A.7 in the appendix, which posits a particular relation between policy-evaluation error and sample size. This assumption is only qualitatively motivated and appears to be introduced specifically to make the adaptive-sampling argument go through. As written, the proposition is more of a conditional argument than a fully derived sample complexity theorem. Since sample efficiency is one of the headline contributions, the paper should be more explicit in the main text that this result relies on an additional assumption beyond the convergence theorem. Ideally, the authors would either derive the dependence from a standard concentration result in their setting or soften the wording around “provable sample efficiency.”
 
-Main weaknesses and concerns:
+A second concern is a mismatch between the theory and the practical algorithm. The theory is developed for tabular softmax policies with approximate NPG-style updates, whereas the experiments are on continuous-control deep RL benchmarks with neural networks and PPO/PCPO/CUP-style baselines. This gap is common in RL papers, but here it matters because the adaptive sampling mechanism is the main novelty, and its behavior may depend strongly on noisy gradient estimates in high-dimensional function approximation. The paper would benefit from a clearer explanation of how gradients are estimated in practice, how the angle theta_{r,c} is computed robustly, and whether the sample-size adaptation itself introduces instability in deep settings. The practical algorithm in Appendix B is somewhat underspecified in this regard.
 
-1. Algorithm description appears inconsistent / possibly incorrect.
-There is a serious issue in the mapping between conditions and update equations.
+Relatedly, there seems to be some inconsistency in the algorithm description around Equations (3) and (4). In Section 4.1, Equation (3) is described as the projected update used when theta_{r,c} > 90 degrees, and Equation (4) as the weighted sum used when theta_{r,c} <= 90 degrees. However, in Section 4.3 and Algorithm 1, the mapping between angle conditions and update equations appears reversed in places. For example, page 5 states that for soft constraint violations with gradient angle <= 90 degrees, the policy is updated according to Equation (3), and for angle > 90 degrees according to Equation (4), which contradicts the earlier description. This is likely a presentation bug rather than a conceptual flaw, but it is important because it affects reproducibility and interpretation.
 
-In Section 4.2 and 4.3, the text says:
-- when theta_{r,c} > 90 degrees (gradient conflict), increase sample size using Eq. (6),
-- when theta_{r,c} <= 90 degrees, reduce sample size using Eq. (7).
+There are also some ambiguities in the sample-size adaptation rule itself. Equations (6) and (7) define Xt+1 = X + X zeta_t^+ or X + X zeta_t^- depending on conflict, but it is not fully clear whether X is a fixed base batch size reset every iteration or whether Xt evolves recursively over time. The notation suggests recursion, but the formula uses X rather than Xt. Algorithm 1 also refers to iterative changes in zeta_t^+ and zeta_t^- without much justification for those schedules. Since the empirical gains depend heavily on these mechanics, the paper should explain them more carefully and perhaps provide pseudocode with exact rollout-budget updates.
 
-That part is fine.
+The experimental evaluation is promising but still somewhat limited in breadth and statistical depth. The paper reports results on a modest number of tasks, and although it mentions using at least three random seeds on page 29, the plots do not clearly indicate variance bars or confidence intervals in a way that supports strong statistical conclusions. Given the variability of safe RL, especially on MuJoCo-style tasks, it would be helpful to report mean ± standard deviation over more seeds and perhaps aggregate metrics such as normalized regret, cumulative constraint violation, or area under the reward-cost curve. In addition, because ESPO is compared across two different benchmark suites with somewhat different safety definitions, a more unified evaluation protocol would make the empirical story cleaner.
 
-But in Section 4.1:
-- Eq. (3) is described as the projected-gradient update for the conflict case theta_{r,c} > 90 degrees,
-- Eq. (4) is described as the weighted combination for the aligned case theta_{r,c} <= 90 degrees.
+Another issue is fairness of comparison and implementation detail. The paper compares against both primal and primal-dual methods, which is useful, but the training-time comparisons may be influenced by implementation differences, hardware, and framework overhead. The authors do acknowledge on page 9 that sample reduction does not necessarily translate directly to time reduction because of benchmark characteristics and parallel processing. Still, if training time is emphasized as a key result, the paper should more carefully normalize for implementation factors or focus more on environment interactions, which are the more standard measure in RL. Also, ESPO is implemented inside Omnisafe for some comparisons, but it is not entirely clear whether all baselines were re-tuned equally under the same compute budget and whether the chosen hyperparameters are optimal for each method in the tested tasks.
 
-Then in Section 4.3 and Algorithm 1, this mapping seems reversed:
-- page 5 says for soft violations with angle <= 90 degrees, update with Eq. (3),
-- for angle > 90 degrees, update with Eq. (4),
-and Algorithm 1 on page 26 repeats this same reversed assignment.
+I also think the paper could do a better job clarifying novelty relative to PCRPO. Conceptually, ESPO appears to combine PCRPO’s three-mode gradient handling with an adaptive sample-size rule based on gradient conflict. That is a meaningful extension, but the paper sometimes presents the contribution as broader than it is. In particular, the optimization logic itself is not new, and some of the theoretical analysis seems to inherit heavily from CRPO/PCRPO proof templates. This is not a problem, but the paper should more sharply distinguish what is genuinely new: the conflict-aware sampling criterion, the oscillation interpretation, and the adaptation of the analysis to this setting.
 
-This is not a minor typo because it changes the actual algorithm. If Eq. (3) and Eq. (4) are swapped in the implementation description, then the method is ambiguous. The authors must clarify which update is actually used in experiments and theory.
+There are also a number of writing and notation issues throughout the paper. Several typos and grammatical errors appear in the main text and appendix. Some notation is overloaded or inconsistent, especially around Br/Bc/Bsoft and the naming of “Safety Violation Response” versus “No Violation Response” on page 5. The appendix contains a few likely typographical mistakes in equations and references to equation numbers. These do not invalidate the work, but they make the theory harder to verify than necessary.
 
-2. Novelty is somewhat incremental relative to PCRPO.
-The optimization backbone is largely PCRPO-style three-mode optimization with gradient manipulation. The main added ingredient is adaptive sample size selection based on gradient conflict. That is a reasonable extension, but the paper sometimes overstates novelty, e.g., implying a broader new optimization framework rather than a sampling heuristic layered on top of an existing update structure.
+Despite these concerns, I think the paper has real merit. The central idea is simple, relevant, and plausibly useful beyond the specific algorithm studied here. The empirical results are strong enough to suggest that the method is not merely a theoretical curiosity, and the attempt to connect adaptive sampling with reward-safety gradient geometry is original. I especially like that the paper targets a practical bottleneck in safe RL—wasted interactions under fixed rollout budgets—rather than only proposing another constrained optimizer. If the authors can tighten the exposition, resolve the equation/algorithm inconsistencies, and better qualify the theoretical sample-efficiency claim, this would be a solid contribution.
 
-To strengthen the novelty claim, the paper should more clearly isolate what is inherited from PCRPO and what is genuinely new in ESPO.
+In summary, this is a good paper on an important problem. Its main strengths are a novel conflict-aware adaptive sampling idea for safe RL, a thoughtful integration with three-mode primal optimization, meaningful theoretical analysis in the tabular setting, and strong empirical improvements in reward, safety, sample usage, and training time on standard benchmarks. Its main weaknesses are the gap between theory and deep-RL practice, some ambiguity and inconsistency in the algorithm description, and limited rigor in the sample-efficiency theorem relative to how strongly it is advertised. I view these as addressable issues rather than fatal flaws. My overall assessment is positive, and I would lean toward acceptance if the authors can clarify the presentation and strengthen the empirical/theoretical alignment.
 
-3. Theoretical sample-efficiency claim is weakly formalized.
-Proposition 4.3 states that ESPO “needs fewer number of samples than that without the sample manipulation,” but this is not a standard complexity bound. It is qualitative and depends on Assumption A.7 in the appendix, which appears ad hoc:
-- delta_t is assumed to satisfy a linear relation with sample size around some basic size.
-- The proof then argues that reallocating samples across conflict/non-conflict iterations can reduce total samples while preserving an error budget.
-
-This is more of a stylized argument than a rigorous sample complexity theorem. It does not provide a concrete bound in terms of epsilon, delta, horizon, state/action size, or conflict frequency. Given the strong claims in the abstract (“improved sample complexity bounds”), the theory does not fully support the wording.
-
-4. Convergence theorem is limited and not clearly tied to adaptive sampling.
-Theorem 4.1 is in a tabular softmax setting with approximate policy evaluation and randomized output selection, similar in spirit to prior analyses of CRPO/NPG. But:
-- the theorem gives the same order as CRPO, as the paper itself notes on page 6;
-- it is not obvious that adaptive sample size is essential to the theorem;
-- the theorem does not quantify gains from sample manipulation;
-- the practical algorithm uses function approximation and continuous-control benchmarks, far from the tabular setting analyzed.
-
-So the theory mainly shows ESPO does not break convergence in a simplified setting, rather than establishing the claimed efficiency gains in realistic settings.
-
-5. Empirical evaluation lacks key ablations and statistical rigor.
-The experiments are encouraging, but several aspects are missing:
-
-a) No direct comparison to fixed-sample ablation of ESPO.
-This is the most important missing baseline. Since the claimed contribution is sample manipulation, the paper should compare:
-- ESPO with adaptive sampling
-vs
-- the same ESPO update rules with fixed sample size.
-Without this, it is hard to attribute gains specifically to adaptive sampling rather than to the three-mode update structure inherited from PCRPO.
-
-b) Limited seed reporting.
-The appendix says at least three random seeds were used (page 29), but the main paper does not clearly report means/stds, confidence intervals, or significance tests. The shaded regions in plots help, but exact variance reporting would improve confidence.
-
-c) Benchmark/task coverage is still modest.
-The main text highlights a handful of tasks: SafetyReacher, SafetyWalker, SafetyHumanoidStandup, SafetyHopperVelocity, SafetyAntVelocity. This is not tiny, but for a method claiming broad efficiency gains, more tasks would help.
-
-d) Training time comparisons may be confounded.
-The paper itself notes on page 9 that reduced samples do not necessarily translate proportionally to reduced training time. Since different algorithms may have different per-update computational overhead, wall-clock comparisons should be normalized carefully. In particular, PCRPO may incur extra gradient handling cost, and primal-dual baselines may differ in implementation efficiency within Omnisafe.
-
-e) No sensitivity analysis for conflict threshold.
-The method uses 90 degrees as the decision boundary. Why exactly 90? Is performance robust to thresholds like 75/105 degrees or to noisy angle estimates?
-
-6. Safety evaluation is not fully convincing.
-The paper emphasizes safety assurance, but the reported cost plots often show average episode cost relative to a limit, not stricter notions such as:
-- cumulative training-time violations,
-- worst-case violations,
-- fraction of unsafe episodes,
-- constraint satisfaction at convergence across seeds.
-
-For safe RL, average cost alone can hide transient unsafe behavior. Since the paper claims improved safety and reduced oscillation, more direct metrics would help.
-
-7. Some claims are stronger than the evidence.
-Examples:
-- “theoretically guarantees convergence, optimization stability, and improved sample complexity bounds” in the abstract feels overstated.
-- Proposition 4.2 on reduced oscillation is interesting, but it depends on adaptive choice of weights and soft-region assumptions; it is not a general stability guarantee in practical deep RL.
-- “significantly outperforms” is plausible empirically on shown tasks, but the evidence is not broad enough to support a very strong general claim.
-
-8. Writing and presentation need improvement.
-There are many grammatical issues, notation inconsistencies, and awkward passages. A few examples:
-- “udpate” typo on page 4.
-- “safet objectives” typo.
-- inconsistent naming of modes Br, Bsoft, Bc versus “Safety Violation Response / Soft Constraint Violation Response / No Violation Response”.
-- some equations and prose are hard to follow.
-- the appendix contains notation slips such as Q-bar subscripts and x/y weight references that seem inconsistent in places.
-
-These issues make the paper harder to verify and reduce confidence in the technical details.
-
-Detailed comments and questions:
-
-1. Clarify the exact algorithm used in experiments.
-Please resolve the Eq. (3)/(4) inconsistency between Section 4.1 and Section 4.3 / Algorithm 1. This is essential.
-
-2. What exactly is the sample size being adapted?
-In the main text, X seems to denote the number of samples per iteration / epoch, but the implementation details are somewhat vague. On page 31, for Omnisafe, “steps of each epoch” are determined by Algorithm 1 with base X=20000; on page 29, for Safety-MuJoCo, X=16000. Please define precisely:
-- whether Xt is rollout steps per epoch,
-- whether policy evaluation and policy improvement use the same data,
-- whether batch size for SGD updates also changes.
-
-3. How is gradient conflict estimated in practice?
-Are gr and gc estimated from the same batch? If so, the angle estimate itself is noisy and depends on sample size, creating a circular dependency. Some discussion is needed on robustness.
-
-4. Why should aligned gradients imply fewer samples are sufficient?
-This is intuitive, but can the authors provide either a stronger theoretical argument or empirical evidence showing that variance/error tolerance can indeed be relaxed safely in aligned regimes?
-
-5. Fairness of baseline tuning.
-Were all baselines re-tuned for the chosen tasks and hardware budgets, or were default Omnisafe/Safety-MuJoCo settings used? Since sample efficiency is central, baseline tuning matters a lot.
-
-6. Comparison to simpler adaptive heuristics.
-A useful baseline would be:
-- monotonic/geometric sample increase,
-- variance-based adaptive sampling,
-- cost-violation-based sample adaptation,
-to show that gradient conflict is the right signal, not just any adaptive schedule.
-
-7. The oscillation claim needs stronger empirical support.
-Figure 1 on page 2 is conceptual. Table 3 in the appendix reports update counts for one task, which is suggestive but limited. It would be better to quantify boundary crossings or violation oscillations across tasks.
-
-8. Theoretical assumptions should be discussed more candidly.
-The tabular softmax setting and approximate policy evaluation assumptions are standard, but far from the deep continuous-control experiments. The paper should better explain what practical insight the theory provides beyond consistency.
-
-Suggestions for improvement:
-1. Fix and clearly restate the algorithm, especially the conflict/alignment update rules.
-2. Add the crucial ablation: ESPO with fixed sample size vs ESPO with adaptive sample size.
-3. Add comparisons to simpler adaptive sampling baselines.
-4. Report mean ± std over more seeds and, if possible, significance tests.
-5. Include stronger safety metrics: violation rate, cumulative violations during training, and final constraint satisfaction statistics.
-6. Tone down theoretical claims unless a sharper sample complexity result is provided.
-7. Improve writing, notation consistency, and proofreading.
-8. Discuss computational overhead of conflict estimation and whether gains persist when accounting for all costs.
-
-Recommendation:
-Weak Reject
-
-Confidence:
-Medium
-
-Reason for recommendation:
-The paper has a good motivation, an intuitive idea, and promising empirical results. However, the current version has a major algorithmic inconsistency, limited rigor in the sample-efficiency theory, and missing ablations that are necessary to validate the central contribution. With clarification and stronger experimental isolation of the adaptive sampling effect, this could become a solid paper, but I do not think the present version is yet ready for acceptance.
+A few concrete suggestions for improvement are: explicitly fix the inconsistency between Equations (3)/(4) and Algorithm 1; clarify whether sample size is updated recursively and how zeta schedules are chosen; report more seeds and statistical summaries; include an ablation isolating the effect of adaptive sampling from the three-mode update logic; compare against a simpler adaptive-batch baseline based on variance or uncertainty rather than gradient conflict; and discuss computational overhead from estimating both reward and cost gradients and their angle each iteration. These additions would make the paper significantly stronger and easier to trust and reproduce.

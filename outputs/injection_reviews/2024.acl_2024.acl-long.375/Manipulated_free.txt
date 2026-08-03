@@ -1,194 +1,33 @@
-Summary
+This paper tackles natural-language-to-first-order-logic translation, an important and difficult problem at the intersection of semantic parsing, reasoning, and neuro-symbolic NLP. The paper proposes three main contributions: a 7B LLaMA-based model, LOGICLLAMA, for direct translation and correction of FOL outputs; a new 34K-example GPT-4-generated dataset, MALLS, for sentence-level NL-FOL supervision; and a training framework that combines supervised fine-tuning on synthetically perturbed FOLs with RLHF using a logical-equivalence-based reward. Overall, I found the paper interesting, ambitious, and practically motivated. The work is notable for trying to distill expensive proprietary model behavior into a smaller local model while also introducing explicit symbolic verification into both data creation and training. The empirical results are promising, especially on FOLIO, where the proposed correction pipeline narrows the gap between GPT-3.5 and GPT-4 at much lower cost.
 
-This paper studies natural-language-to-first-order-logic (NL-FOL) translation using large language models. It introduces three main components: (1) MALLS, a 34K GPT-4-generated “silver” dataset of sentence-level NL-FOL pairs; (2) LOGICLLAMA, a LLaMA-7B model fine-tuned with LoRA for direct translation and correction; and (3) a correction framework combining supervised fine-tuning on synthetically perturbed FOL rules with RLHF using a logical-equivalence-based reward. Experiments on FOLIO and LogicNLI show that direct translation with LOGICLLAMA outperforms GPT-3.5, and that the correction mode can improve GPT-3.5 outputs to near GPT-4-level performance on FOLIO.
+The paper’s strongest aspect is that it addresses a genuinely underexplored but important task with a fairly complete end-to-end story: data creation, model design, training methodology, evaluation, and practical deployment motivation. The motivation is clearly articulated in the introduction: current LLMs can often produce nearly-correct formalizations, but the remaining errors matter a lot in logic, and relying on GPT-4 directly is costly and may be unsuitable for privacy-sensitive settings. The proposed “small corrector over large model outputs” framing is compelling. In particular, the distinction between direct translation and iterative correction is well motivated and empirically supported. The examples in Figure 2 on page 5 and Figure 6 on page 9 make the setup concrete and help explain why chain-of-thought-style correction may be easier than one-shot generation.
 
-Overall assessment
+The MALLS dataset is a meaningful contribution in its own right. The paper does more than simply prompt GPT-4 and dump outputs: it describes a prompt pipeline with diversity control via n-gram frequency suppression, randomized FOL-form prompts, and a breakdown prompt to discourage overly fused predicates. The verifier-based filtering step is also important. Table 1 on page 3 gives useful comparative statistics against FOLIO and LogicNLI, showing that MALLS is substantially larger and appears more diverse in vocabulary and logical structure. The visualizations on page 3 and page 12, especially the frequent term-pair Sankey-style plots and the literal-frequency histogram, support the claim that the dataset is not narrowly templatic. I also appreciated the authors’ candor in explicitly calling MALLS a “silver” dataset and acknowledging that alignment between NL and FOL is only partially checked automatically. That honesty improves the credibility of the paper.
 
-This is an interesting and timely paper on a difficult and underexplored task. The paper is ambitious in scope: it contributes a dataset, a model, a training framework, and an evaluation procedure. The empirical results are promising, especially on FOLIO, and the paper is generally well organized. I found the correction framing particularly compelling: rather than only asking a smaller model to directly solve NL-FOL translation, the authors leverage a stronger model for initial translation and then train a local model to iteratively repair outputs. That is a practically useful idea.
+Methodologically, the SFT+RLHF pipeline is creative. The synthetic perturbation idea is sensible: if real correction traces are unavailable, generate controlled perturbations of gold FOL and reverse them into correction steps. Table 2 on page 6 clearly enumerates the perturbation operators, and the iterative correction formulation on page 7 is intuitive. The RLHF stage is also interesting because it replaces a learned reward model with a symbolic logical-equivalence solver plus BLEU mixture. This is a nice example of using task structure rather than generic preference modeling. The logical equivalence metric itself is one of the more novel technical pieces of the paper. The truth-table-based comparison with greedy literal alignment and dummy variables is not perfect, but it is a thoughtful attempt to evaluate semantic similarity beyond exact string match. Given how brittle text overlap is for logic forms, this is a valuable direction.
 
-At the same time, several aspects of the work need stronger validation. The biggest concern is that the training data are generated by GPT-4 and only lightly filtered for semantic alignment, while evaluation is limited to two benchmarks and relies heavily on a custom logical equivalence metric that appears approximate. Some claims are also stronger than what the evidence fully supports, especially around “GPT-4-level performance,” novelty, and the reliability of the silver dataset. Still, I think the paper has clear merit and could become a valuable contribution with stronger analysis and clearer positioning.
+The empirical results are encouraging. Table 3 on page 8 is the key result: direct translation with LOGICLLAMA outperforms GPT-3.5 on both LogicNLI and FOLIO, and RLHF CoT correction reaches 0.849 LE on FOLIO versus 0.855 for 5-shot GPT-4. That is a strong headline result, especially considering the model size and hardware budget. The comparison between direct translation, naive correction, SFT CoT correction, and RLHF CoT correction is also informative. It shows that the full pipeline matters, and that SFT alone on synthetic perturbations is insufficient without RLHF adaptation to real GPT-3.5 outputs. Table 4 and Figure 5 provide useful analysis of iterative correction depth and performance as a function of GPT-3.5 difficulty. These analyses strengthen the paper by going beyond a single benchmark table.
 
-Strengths
+That said, there are several limitations that should be addressed more carefully before publication.
 
-1. Important problem
-NL-FOL translation is a foundational task for logic-grounded NLP, semantic parsing, and theorem proving. It is also a good stress test for compositional reasoning in LLMs. The paper addresses a meaningful gap between general-purpose LLM prompting and specialized local models.
+The biggest concern is evaluation validity. The proposed logical equivalence score is clever, but it is only an approximation to true FOL equivalence. The paper’s method appears to reduce formulas to truth tables over extracted literals, with greedy literal matching based partly on edit distance and dummy padding when literal sets differ. This may work for many sentence-level formulas, but it is not a sound or complete equivalence test for first-order logic in general, especially in the presence of quantifiers, variable binding structure, arity differences, and renamed but semantically distinct predicates. The running example in Figure 4 on page 6 is simple and propositionalized. The paper should more explicitly discuss the scope and failure modes of this metric. For example, how often does LE disagree with human judgment or theorem-prover-based equivalence on a manually checked subset? Since LE is used both as an evaluation metric and as the RL reward, any mismatch here could materially affect the conclusions.
 
-2. Practical contribution: a local specialized model
-The paper shows that a 7B model fine-tuned with LoRA on a single GPU can become competitive on this task. This is practically relevant for privacy, deployment, and cost reasons.
+Relatedly, the use of BLEU as part of the reward is understandable but somewhat ad hoc. The paper argues that BLEU helps recover correct predicate/entity names, but this also risks rewarding superficial lexical similarity rather than semantic correctness. It would help to include an ablation over the reward mixing coefficient omega, or compare pure LE reward versus LE+BLEU. Right now, the choice of 0.7 seems under-justified.
 
-3. Interesting correction paradigm
-The correction setup is one of the strongest aspects of the paper. The idea of using GPT-3.5 for the “heavy lifting” and a smaller model for iterative repair is intuitive and useful. The chain-of-thought correction formulation on page 5 / Figure 2 is clear and helps motivate why naive one-shot correction may be insufficient.
+A second major concern is possible contamination or circularity stemming from GPT-4-generated training data and GPT-family baselines. The paper evaluates on FOLIO and LogicNLI, which are external benchmarks, so this is not direct train-test leakage. However, because MALLS is generated by GPT-4 and the baselines are GPT-3.5/GPT-4, there is a risk that the student model is inheriting stylistic or representational conventions specific to GPT-4 rather than learning a broadly grounded NL-FOL mapping. This is not fatal, but the paper should discuss it more explicitly. In particular, it would be useful to know whether the gains persist under alternative annotation styles or on a small manually curated out-of-distribution set. The claim that MALLS is “high-quality” is plausible, but stronger validation would help.
 
-4. Dataset contribution
-MALLS is potentially useful to the community. The paper provides a reasonably detailed description of the prompting pipeline, including n-gram suppression, prompt diversification, operator control, and CFG-based syntax verification (pages 3–4 and Appendix B). The statistics in Table 1 suggest MALLS is larger and structurally richer than prior sentence-level NL-FOL resources.
+A third concern is that the experimental setup somewhat favors the correction setting by using GPT-3.5 outputs as inputs and, according to page 16, first passing syntactically invalid GPT-3.5 outputs through naive correction before feeding them to the RLHF corrector. This is a reasonable engineering choice, but it means the reported RLHF CoT correction numbers are for a two-stage pipeline rather than a single model directly correcting arbitrary GPT-3.5 outputs. The paper should make this more prominent in the main text and perhaps report the exact fraction of examples requiring this preprocessing. More generally, the correction setting is practically useful, but it would be good to compare against stronger non-proposed correction baselines, such as self-refinement with GPT-3.5, majority voting, or theorem-prover-guided repair heuristics.
 
-5. Strong empirical results on FOLIO
-The main result in Table 3 is notable: RLHF CoT correction reaches 0.849 LE on FOLIO versus 0.855 for 5-shot GPT-4, while direct translation already beats GPT-3.5. This is a meaningful result if robust.
+The baseline section is also somewhat limited. The paper compares mainly against GPT-3.5 and GPT-4 in zero/few-shot settings, which is useful, but there are prior neural semantic parsing approaches and logic translation systems cited in related work that are not empirically included. Even if many are not directly comparable, some stronger fine-tuned encoder-decoder or seq2seq baselines on FOLIO/LogicNLI would help contextualize the gains. Since the paper’s central claim is not just “better than prompting GPT-3.5” but also “a strong specialized model for NL-FOL translation,” broader comparisons would strengthen that claim.
 
-6. Clear presentation of the training pipeline
-The paper does a good job explaining the progression from direct translation to naive correction to CoT correction with SFT and RLHF. Figure 3 on page 6 is especially helpful.
+Another issue is that LogicNLI seems close to saturation for most methods, as the authors themselves note. This makes FOLIO the more meaningful benchmark, but FOLIO is only around 2K examples. Given the importance of the task, I would have liked more evaluation slices by logical phenomenon: quantifiers, negation, disjunction, biconditionals, xor, number of literals, or predicate decomposition difficulty. Table 1 suggests MALLS contains richer operator usage than prior datasets, but the evaluation does not show where the model succeeds or fails across these dimensions. A fine-grained error analysis would be especially valuable because the paper’s main methodological novelty is about correction steps.
 
-Weaknesses and concerns
+I also found some aspects of the paper under-specified or potentially brittle. The prompt templates in Table 5 on page 14 include a few examples that appear noisy or inconsistent; for instance, one few-shot example’s NL and FOL do not obviously align. If these are transcription issues, they should be corrected. More broadly, because the dataset is generated through prompting, small prompt artifacts may shape the learned formalization style. The paper would benefit from a short manual audit of MALLS quality, perhaps reporting annotation accuracy on a random sample. The current “simplistic verifier” for NL-FOL alignment described on page 4 seems too weak to support strong claims about semantic correctness.
 
-1. Heavy reliance on GPT-4-generated silver data with weak semantic validation
-This is the central concern. The paper acknowledges that MALLS uses only a “simplistic verifier” for NL-FOL alignment based on term frequency overlap (page 4), and that no rigorous semantic alignment check is performed. This leaves open the possibility that many training pairs are semantically incorrect, underspecified, or stylistically biased toward GPT-4’s preferred formalization patterns.
+There are also some technical questions about the RLHF stage. The paper says PPO is used with the LE/BLEU reward, but details about stability, reward variance, KL control, and sample efficiency are sparse in the main text. Since the model generates multi-round corrections and receives rewards on intermediate corrected FOLs, it would be useful to know whether reward is assigned only to final outputs or to each round, and how sensitive results are to the maximum number of generations. Table 4 partially addresses the latter, but more training details or ablations would improve reproducibility.
 
-Because the model is trained almost entirely on GPT-4-generated data, it may be learning to imitate GPT-4’s idiosyncratic translation style rather than learning robust NL-FOL semantics. The fact that evaluation is on only two datasets, one of which is synthetic and templatic (LogicNLI), makes it hard to assess generalization.
+Despite these concerns, I think the paper has substantial merit. The problem is important, the proposed system is thoughtfully designed, and the results are strong enough to make the work noteworthy. I especially like the practical framing of using a small local model to repair or emulate stronger proprietary systems for formal reasoning tasks. The paper also contributes useful infrastructure: a dataset, a verifier, a correction framework, and a semantic evaluation attempt. Even where some components are imperfect, they are directionally valuable and likely to stimulate follow-up work.
 
-2. Evaluation metric for logical equivalence seems approximate and potentially problematic
-The proposed LE metric is clever, but it is not true first-order logical equivalence. It reduces formulas to truth tables over extracted literals and then greedily aligns literals, padding with dummy variables when needed (pages 7, 13–14). This raises several issues:
+For improvement, I would strongly encourage the authors to add a more rigorous validation of the LE metric, ideally against human judgments or theorem-prover-based equivalence on a sampled subset; include ablations for reward design, especially LE-only versus LE+BLEU and different omega values; provide a manual quality audit of MALLS with estimated NL-FOL alignment accuracy; clarify the exact inference pipeline for RLHF CoT correction, including the role of naive correction preprocessing; and expand error analysis on FOLIO by logical operator and formula complexity. If space is limited, some of this could go to the appendix, but at least the metric validation should be in the main paper.
 
-- Truth-table comparison over literals ignores the semantics of quantification beyond surface structure.
-- Greedy literal matching by edit distance may fail badly when semantically equivalent predicates have different names.
-- Best-case matching may overestimate equivalence.
-- Dummy padding may distort scores.
-- The metric may reward structurally similar but semantically wrong formulas.
-
-The paper should provide stronger validation that LE correlates with human judgments or theorem-prover-based equivalence on a manually annotated subset.
-
-3. “RLHF” terminology is somewhat misleading
-The method uses PPO with a programmatic reward from a logical equivalence solver, not human preference data. This is closer to reinforcement learning from automated feedback than RLHF in the usual sense. The paper should be more precise in naming this component.
-
-4. Limited baselines
-The comparisons are mostly against GPT-3.5 and GPT-4 prompting. That is useful, but insufficient. There is little comparison to prior neural semantic parsing / NL-FOL systems, even if older systems use different datasets. At minimum, the paper should discuss why direct comparison is impossible or include adapted baselines where feasible.
-
-Also, for the correction setting, a stronger baseline would be:
-- self-correction by GPT-3.5,
-- GPT-3.5 with iterative prompting,
-- GPT-4 correcting GPT-3.5 outputs,
-- a non-RL iterative correction model trained only with synthetic perturbations,
-- constrained decoding or grammar-aware decoding baselines.
-
-5. Potential contamination / circularity concerns
-The paper says few-shot examples initially come from FOLIO and later from GPT-4-generated pairs, and that the authors checked to ensure no FOLIO examples or close variations leaked into MALLS (page 3). But the procedure is not described in enough detail. Since GPT-4 is used both to generate training data and as a test-time baseline, there is a risk that the comparison partly reflects stylistic consistency rather than independent generalization.
-
-6. Claims of novelty are overstated
-The conclusion says “the first specialized LM for the NL-FOL translation task.” That seems too strong without a more careful survey and definition of “specialized LM.” There has been prior neural work on parsing natural language into logic, and the novelty here is more specifically the LLaMA fine-tuning plus correction/RL framework and the GPT-4-generated dataset.
-
-7. LogicNLI is not a very convincing benchmark here
-The paper itself notes that LogicNLI is synthetic and template-like, and nearly all methods perform extremely well there. This limits its value as evidence. The stronger story is on FOLIO, but then the evaluation should go deeper on FOLIO or include additional expert-written benchmarks.
-
-8. Some examples reveal lingering semantic issues
-The examples in Figure 6 on page 9 are illustrative, but they also show that even the corrected outputs may remain imperfect or stylistically inconsistent with the reference. For instance, predicate naming and argument structure vary, and some outputs appear only partially corrected. This reinforces the need for human evaluation or theorem-prover-based downstream validation.
-
-9. Cost claims are underdeveloped
-The paper emphasizes cost efficiency relative to GPT-4, but the comparison is incomplete. It would be useful to report:
-- training cost for MALLS generation,
-- fine-tuning cost,
-- inference latency and cost for direct translation and correction,
-- total cost per corrected sample including GPT-3.5 plus LOGICLLAMA,
-- comparison against simply using GPT-4 directly.
-
-Detailed comments
-
-1. Dataset quality
-Table 1 on page 3 is useful and suggests MALLS is more diverse than LogicNLI and larger than FOLIO. The vocabulary size and average number of literals are encouraging. However, diversity is not the same as correctness. The Sankey-style term-pair visualization on page 3 / Figure 1 and the larger version in Appendix Figure 7 show broad topical spread, but they do not establish semantic fidelity.
-
-I would strongly encourage the authors to manually audit a random sample of MALLS and report:
-- percentage of syntactically valid pairs,
-- percentage of semantically correct alignments,
-- common error categories,
-- inter-annotator agreement if multiple annotators are used.
-
-Without this, it is hard to know how much noise the model is trained on.
-
-2. Prompting pipeline
-The prompting pipeline is thoughtfully designed. The negative n-gram suppression and operator-targeting prompts are sensible. The break-down prompt to discourage overly fused predicates is also a nice practical insight. However, the paper should discuss whether these prompt choices bias the resulting dataset toward unnatural FOL styles or overuse of certain operators.
-
-3. Synthetic perturbation strategy
-The perturbation framework in Table 2 and page 6 is a reasonable way to create correction supervision. But it is not obvious that synthetic perturbations resemble real GPT-3.5 errors. The paper partly addresses this by adding RL on actual GPT-3.5 outputs, but I would still like to see an analysis comparing:
-- distribution of synthetic perturbation types,
-- distribution of actual GPT-3.5 error types,
-- overlap between the two.
-
-This would help justify the SFT stage.
-
-4. RL stage
-The RL setup is interesting, but under-specified in places. For example:
-- How stable is PPO training?
-- How many updates / episodes are used?
-- What is the KL penalty?
-- How sensitive are results to reward mixing weight omega?
-- How often does the model exploit weaknesses in the reward metric?
-
-Given the approximate LE reward, reward hacking seems plausible.
-
-5. Metrics
-BLEU is not very meaningful for logical forms except as a rough lexical overlap measure. The paper acknowledges this by mixing BLEU with LE in the reward, but then BLEU is still prominently reported in Table 3. I would prefer:
-- exact match,
-- syntax validity rate,
-- theorem-prover-based equivalence where possible,
-- human semantic correctness judgments,
-- downstream reasoning accuracy using translated formulas.
-
-6. Experimental setup
-The inclusion of 1K LogicNLI training pairs into the training set is understandable because of distribution mismatch, but it slightly muddies the claim that the model is trained on MALLS alone. The paper should make this more prominent and ideally report results with and without those 1K examples.
-
-7. Interpretation of results
-The main empirical takeaway is credible: correction helps, and CoT correction helps more than naive correction on FOLIO. Table 4 and Figure 5 support this. I especially liked the analysis by GPT-3.5 difficulty bins on page 8; it gives a more nuanced picture than aggregate scores alone.
-
-That said, the “similar performance as GPT-4” claim should be softened. On FOLIO, 0.849 vs 0.855 LE is close, but:
-- the metric is approximate,
-- the setup is not apples-to-apples because the correction system uses GPT-3.5 plus LOGICLLAMA,
-- no significance testing is reported,
-- GPT-4 is only evaluated via prompting, not optimized for correction.
-
-Questions for the authors
-
-1. What fraction of MALLS was manually inspected, and what was the estimated semantic correctness rate?
-2. How well does the LE metric correlate with human judgments of semantic equivalence?
-3. Can you compare LE against a theorem prover or model checker on a subset?
-4. How often does GPT-3.5 produce syntactically invalid versus semantically invalid outputs?
-5. Why call the method RLHF rather than RL with automated feedback?
-6. How sensitive are results to the reward mixing coefficient omega = 0.7?
-7. What is the performance if you remove the 1K LogicNLI training examples?
-8. How does GPT-3.5 self-correction compare to LOGICLLAMA correction?
-9. What is the end-to-end cost per sample for GPT-3.5 + LOGICLLAMA correction versus GPT-4 direct translation?
-10. Did you evaluate on any manually curated out-of-domain examples beyond FOLIO?
-
-Suggestions for improvement
-
-1. Add a manual quality evaluation of MALLS.
-This is the single most important addition.
-
-2. Validate the LE metric.
-Compare it against human judgments and/or theorem-prover-based equivalence on a subset.
-
-3. Strengthen baselines.
-Include iterative prompting/self-correction baselines for GPT-3.5 and GPT-4, and if possible prior semantic parsing systems.
-
-4. Clarify terminology.
-Rename RLHF to something like RL with logical feedback, or explicitly explain the deviation from standard RLHF usage.
-
-5. Report more ablations.
-Useful ablations would include:
-- no BLEU in reward,
-- no LE in reward,
-- no synthetic SFT before RL,
-- different perturbation budgets,
-- different max correction rounds,
-- with/without LogicNLI augmentation.
-
-6. Add human evaluation or downstream reasoning evaluation.
-For example, use translated formulas in an entailment or theorem-proving pipeline and measure end-task correctness.
-
-7. Soften claims.
-Especially around “GPT-4-level performance,” “first specialized LM,” and the reliability of silver-only training.
-
-Recommendation
-
-Weak Accept / Borderline Accept
-
-Rationale
-
-I think this paper has a real contribution and presents a promising direction. The combination of a GPT-4-generated silver dataset, a small local model, and iterative correction with logic-based rewards is novel enough and practically relevant. The FOLIO results are strong and the paper is generally clear.
-
-However, I also think the current version falls short on validation of dataset quality and evaluation methodology. The custom logical equivalence metric is central to both training and evaluation, yet its faithfulness is not convincingly established. The paper would be substantially stronger with manual audits, stronger baselines, and more careful claims.
-
-If accepted, I would view it as an exciting early step rather than a definitive solution. If rejected, the likely reason would be insufficient rigor around data quality and evaluation rather than lack of interesting ideas.
-
-Confidence
-
-3/5
-
-I am reasonably confident in the main strengths and weaknesses, though some concerns depend on additional details or experiments not included in the paper.
+In summary, this is a strong and timely paper on an important task. Its main contributions are meaningful, the empirical results are compelling, and the work is likely to be useful to both the semantic parsing and reasoning communities. My reservations are mostly about evaluation rigor and dataset validation rather than the core idea. With stronger evidence around the semantic correctness of both the data and the LE metric, this would be an even more convincing paper. As it stands, I view it as a solid submission with clear novelty and practical significance.

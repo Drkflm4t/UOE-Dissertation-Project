@@ -1,131 +1,43 @@
-Summary:
-This paper presents a systematic empirical study of task-specific knowledge distillation (KD) for natural language generation (NLG) under what the authors call a realistic setup: medium-resource labeled data, abundant unlabeled task-specific inputs, off-the-shelf pretrained models, and emphasis on inference-time efficiency. The study spans multiple design axes: architecture choice (encoder-decoder vs decoder-only), pruning strategy, KD objective, pseudo-target (PT) usage, unlabeled data, number of PTs, PT decoding strategy, and a proposed Joint-Teaching method that mixes teacher- and student-generated PTs under word-level KD. Experiments cover four English-to-English tasks: summarization, question generation, abductive reasoning, and Shakespeare-to-modern-English style transfer/simplification. The paper also includes a smaller-scale “extreme setup” distilling GPT-4 into T5-small without labeled training data.
+This paper presents a systematic empirical study of task-specific knowledge distillation for natural language generation under what the authors call a realistic setup: medium-resource labeled data, abundant unlabeled task-specific inputs, off-the-shelf pretrained models, and a strong emphasis on inference-time efficiency. The paper studies multiple design axes, including architecture choice, pruning strategy, KD objective, pseudo-target generation, use of unlabeled data, multiple pseudo-targets, decoding strategy for pseudo-targets, and a new “Joint-Teaching” method that mixes teacher- and student-generated pseudo-targets. Experiments span four English generation tasks—summarization, question generation, abductive reasoning, and Shakespeare-to-modern-English style transfer/simplification—with additional exploratory experiments distilling GPT-4 in a no-labeled-data setting.
 
-Overall assessment:
-This is a strong, practically motivated empirical paper. Its main value is not a single deep theoretical advance, but a careful and broad experimental study that surfaces actionable conclusions for practitioners. I found the paper generally well organized, the motivation compelling, and several findings useful: encoder-decoder models remain preferable for conditional NLG fine-tuning; decoder pruning is more favorable than encoder pruning when latency matters; and PT-based training is substantially more effective when extended beyond the standard single beam-search pseudo-target on labeled data. The proposed Joint-Teaching idea is also interesting and appears empirically beneficial.
+Overall, I found the paper strong, practically relevant, and unusually thorough in scope. Its main contribution is not a single radically new algorithmic idea, but rather a careful decomposition of the NLG distillation design space and a set of empirically grounded conclusions that are likely to be useful to practitioners. The paper is especially valuable because it moves beyond the common high-resource, labeled-only setting and demonstrates that pseudo-target training on unlabeled task-specific data can be a major lever for compression in NLG. The proposed Joint-Teaching method is also interesting and reasonably motivated by exposure bias considerations. The paper is generally well written, the experimental pipeline is clearly organized, and the appendix contains substantial implementation detail.
 
-That said, the paper has some limitations that somewhat temper the strength of its claims. The study is sequential rather than factorial, so interactions between choices are not fully explored. Some conclusions are based on averages over a relatively small set of tasks and model families. The “systematic” framing is somewhat stronger than what the experimental design fully supports. The GPT-4 extreme setup is intriguing but underdeveloped and inconclusive. There are also places where the causal interpretation around exposure bias feels more suggestive than rigorously established.
+The strongest aspect of the paper is the breadth and coherence of the empirical study. Figure 1 on page 4 clearly lays out the staged research design, and the progression from architecture decisions to pruning, then to KD objectives, and finally to increasingly sophisticated pseudo-target usage is easy to follow. This staged methodology is sensible given the combinatorial size of the design space. The paper also does a good job of grounding its choices in practical deployment concerns, including latency and throughput rather than only parameter count or FLOPs. Table 2 on page 7 and Table 8 in the appendix are particularly useful in this regard. I appreciated that the authors explicitly distinguish latency from throughput and discuss why these can behave differently depending on input/output lengths and hardware utilization.
 
-Recommendation:
-Accept / weak accept.
+The empirical findings themselves are meaningful. First, the comparison between encoder-decoder and decoder-only models for conditional NLG fine-tuning is useful and, in my view, one of the more practically important takeaways. The paper argues, with supporting evidence in Table 2 and Appendix B, that encoder-decoder models dominate decoder-only models in this task-specific conditional generation regime, even when the latter are competitive in parameter count. Second, the pruning result—that decoder pruning is preferable to encoder pruning when balancing quality and latency—is intuitive in hindsight but still valuable to document carefully. The analysis in Appendix B.2 and the plot on page 18 help explain why this happens. Third, the pseudo-target results are compelling: unlabeled data helps substantially, multiple pseudo-targets help beyond a single beam output, and sampling-based pseudo-target generation often outperforms beam search. These are concrete, actionable findings.
 
-Strengths:
+I also think the paper’s framing of pseudo-target training through the lens of exposure bias is a useful conceptual contribution. The discussion in Sections 3.4 and 3.5 is thoughtful, and Figure 2 on page 5 provides some empirical support for the claim that the teacher can better continue sequences partially generated by the student than the student itself can. This motivates Joint-Teaching in a reasonably convincing way. While the method itself is simple—alternating between teacher- and student-generated pseudo-targets and applying word-level KD—it is exactly the kind of simple intervention that can matter in practice.
 
-1. Strong practical motivation
-The paper addresses a highly relevant problem: compressing NLG systems for deployment. I appreciated the explicit focus on realistic constraints, especially the distinction between one-time training cost and recurring inference cost. The inclusion of latency and throughput, not just parameter count/FLOPs, is a real strength.
+That said, I do have several concerns, mostly around experimental methodology and the strength of some claims.
 
-2. Broad empirical scope
-The paper studies multiple tasks and multiple design decisions. Figure 1 on page 4 clearly lays out the staged research design, and the progression from architecture to pruning to KD/PT choices is easy to follow.
+My main concern is the sequential stage-wise model selection protocol. The paper makes one decision at each stage based on average development performance over four tasks, then carries only the selected option forward. This is understandable computationally, but it introduces path dependence and makes it difficult to disentangle interactions between choices. For example, the conclusion that Logits KD is the best base objective is made before the more extensive pseudo-target experiments, but it is plausible that another objective might interact better with multiple sampled pseudo-targets or with unlabeled data. Similarly, the choice of one architecture family and one pruning strategy may bias downstream conclusions. The authors acknowledge that exhaustive combinatorial exploration is too expensive, but the paper would be stronger if it more explicitly framed its conclusions as conditional on this greedy search procedure. As written, some conclusions sound broader than the evidence fully supports.
 
-3. Useful findings for practitioners
-Several conclusions are concrete and actionable:
-- Encoder-decoder models outperform decoder-only models for task-specific conditional NLG fine-tuning.
-- Decoder pruning is preferable to encoder pruning when balancing quality and latency.
-- PT training benefits from unlabeled data, multiple PTs, and sampling-based generation rather than only beam-search mode approximation.
-These are valuable takeaways.
+Relatedly, the aggregation methodology in Table 3 deserves more scrutiny. The paper reports “fraction of the student-teacher gap closed,” averaged over metrics and student-teacher pairs, plus win counts over 32 setups. This is a reasonable normalization, but it can also obscure absolute effect sizes and metric-specific behavior. In particular, averaging across BLEU, ROUGE, BERTScore, and perplexity may mix metrics with different sensitivities and meanings, especially across tasks as different as summarization and abductive reasoning. The paper partly mitigates this by providing full tables in the appendix, but the main text leans heavily on the aggregated summaries. I would have liked more discussion of variance across seeds or runs as well. The extreme setup section explicitly notes high variability across learning rates and initializations, but the main realistic setup does not report confidence intervals or standard deviations. Given that many improvements in Table 3 are incremental, uncertainty estimates would help assess robustness.
 
-4. Interesting extension of sequence-level KD
-The PT extensions are the most compelling part of the paper. Moving from one beam PT on labeled data to multiple sampled PTs on labeled and unlabeled data is a meaningful contribution, even if conceptually incremental. The gains reported in Table 3 are substantial.
+A second concern is that the novelty of the proposed methods is moderate. The paper’s strongest contribution is systematic evaluation rather than fundamentally new distillation machinery. Joint-Teaching is a nice idea, but it is also fairly close in spirit to using student roll-ins with teacher supervision, which has analogues in imitation learning and exposure-bias mitigation. The paper does not position this connection as deeply as it could. I do not view this as fatal—the empirical study itself is valuable—but it does affect how I assess the paper relative to a top-tier ML venue’s novelty bar.
 
-5. Joint-Teaching is novel and promising
-The idea of applying word-level KD on both teacher- and student-generated PTs is intuitive and potentially important. The motivation via exposure bias is plausible, and the empirical gains in Table 3E are encouraging.
+A third concern is the limited scope of tasks and languages. The paper studies four English-to-English tasks, all with relatively short outputs compared to many generation settings. The authors are transparent about this in the limitations section on page 10, but it still matters. Some of the strongest claims—especially about encoder-decoder superiority, pseudo-target sampling, and decoder pruning—may not transfer cleanly to machine translation, long-form generation, dialogue, code generation, multilingual tasks, or multimodal generation. Since the paper often uses broad phrasing like “for NLG,” I think the claims should be more carefully scoped to conditional English generation with short-to-medium outputs and medium-resource task-specific fine-tuning.
 
-6. Good transparency about limitations
-Section 7 is thoughtful and candid. The authors explicitly discuss the scope of their setup, training cost omissions, and the constraints of using GPT-4.
+I also have some concerns about the extreme GPT-4 setup. I appreciate the attempt to test transferability of the conclusions, but the section feels somewhat underdeveloped relative to the rest of the paper. The tokenizer alignment procedure described in Appendix C is clever, but also quite brittle. In particular, assigning probability one when a student token does not match any of the teacher’s top-5 tokens seems like a very rough approximation that may distort the KD signal substantially. The paper itself attributes mixed results to tokenizer alignment issues, which is plausible. Because of this, I would treat the GPT-4 experiments as exploratory rather than confirmatory. The paper mostly does so, but the abstract and introduction might lead some readers to expect stronger evidence here than is actually provided.
 
-Weaknesses and concerns:
+Another methodological issue is the lack of training-cost accounting. The paper explicitly prioritizes inference-time efficiency and argues that one-time training cost is negligible in many deployment settings. That is a fair perspective, but some of the proposed methods—especially generating many pseudo-targets for labeled and unlabeled data, and Joint-Teaching with on-the-fly student generation—can be expensive. Since one of the paper’s themes is practical guidance, it would be useful to quantify at least approximate wall-clock or GPU-hour costs for the main methods. Without this, it is hard to judge the tradeoff between the gains from, say, multiple sampled pseudo-targets and the additional offline cost. The limitations section acknowledges this, but some quantitative reporting would still improve the paper.
 
-1. “Systematic” is somewhat overstated
-The paper studies many axes, but only in a sequential pipeline where one choice is fixed before moving to the next. This is understandable computationally, but it means the conclusions may depend on earlier choices. For example, the best PT decoding strategy might differ under a different KD objective or student architecture. The authors acknowledge avoiding combinatorial exploration, but the title and framing still suggest a more exhaustive study than is actually performed.
+On evaluation, I think the paper is mostly solid, but there are a few weaknesses. Automatic metrics are standard, and the inclusion of BERTScore and perplexity is helpful. However, for tasks like abductive reasoning, the paper itself notes that automatic metrics may underestimate quality. The human evaluation in Appendix F is therefore welcome, but it is quite small: 50 examples, 2 annotators, and only for one dataset and one final comparison. Given that ART10 is the task where the automatic results look weakest, this helps, but a somewhat broader human evaluation would strengthen the paper’s claims about practical quality preservation. Also, the paper reports that in some cases the distilled student outperforms the teacher, especially on Shake7. That is interesting, but it would benefit from more analysis. Is this due to regularization, metric mismatch, or noise in teacher outputs? The paper mentions it but does not investigate.
 
-2. Limited model diversity in the core KD stages
-Although stage 1 compares several ED and DO models, the main KD study ultimately uses only two student-teacher pairs: T5-S/T5-L and BART-6:2/BART-L. This is reasonable, but it limits how broadly one can generalize the later conclusions. Some findings may be family-specific.
+I have a few more specific comments and questions.
 
-3. Exposure bias framing is interesting but not fully validated
-A central conceptual contribution is the exposure-bias perspective on KD and PT augmentation. However, the evidence is mostly indirect. Figure 2 on page 5 is suggestive, but it is a single setup analysis on SQuAD17 with BLEU. It does not fully establish that the observed gains from PT diversity or Joint-Teaching arise specifically because exposure bias is mitigated, rather than because of more generic data augmentation or regularization effects.
+The exposure-bias argument is plausible, but Figure 2 on page 5 is based on a single setup (T5-S/T5-L on SQuAD17). Since this figure plays an important motivational role for Joint-Teaching, it would be stronger if the paper showed that the pattern generalizes across at least one additional task or model pair.
 
-4. Sequential decision-making may bias later comparisons
-Because each stage inherits the “best” choice from the previous stage based on average dev performance, later conclusions are conditional on earlier ones. This is especially relevant because some methods appear close in performance. For example, Noisy KD and Logits KD are competitive in Table 3A, yet only one is carried forward. A different branch might have led to different downstream outcomes.
+The comparison between beam search and sampling for pseudo-target generation is one of the paper’s more interesting findings. However, the implementation choice in Appendix A/D—using one pseudo-target per epoch even when multiple pseudo-targets are available—means the comparison is partly about curriculum/exposure scheduling rather than purely about target set quality. That choice is reasonable for fairness, but it should be emphasized more clearly in the main text because it affects interpretation.
 
-5. Training cost is omitted from the main evaluation
-Given that PT generation for large unlabeled sets and long KD schedules can be expensive, the omission of training-time cost is notable. The authors justify this by prioritizing inference cost, which is fair for some deployment settings, but the paper’s practical recommendations would be stronger with at least rough wall-clock or GPU-hour comparisons across methods.
+The paper uses two student-teacher pairs in the KD stages: T5-S/T5-L and BART-6:2/BART-L. This is better than a single pair, but still somewhat narrow. Since one of the paper’s conclusions is that encoder-decoder students are preferable, it would be useful to know whether the pseudo-target findings are robust across more student scales or across cross-family distillation settings within the realistic setup.
 
-6. GPT-4 extreme setup is interesting but weakly integrated
-The extreme setup in Section 5.1 and Appendix C feels more like a preliminary add-on than a fully convincing extension. The results are mixed, the setup is small, and the tokenizer-alignment issue complicates interpretation. I do not think this hurts the paper much, but it should not be overemphasized.
+The paper’s claim that this is the first work to discuss exposure bias in KD for NLG may be directionally true, but it should be stated carefully. There is a broad literature on imitation learning, scheduled sampling, and sequence-level training that touches related ideas. The paper should make sure the novelty claim is specifically about this framing in task-specific NLG distillation.
 
-7. Evaluation remains mostly automatic
-The paper uses BLEU, ROUGE, BERTScore, and PPL. This is standard, but for open-ended generation tasks like abductive reasoning and style transfer, these metrics are imperfect. The human evaluation for ART10 in Appendix F is helpful, but limited to 50 examples and one dataset. More human evaluation would strengthen the claims, especially where automatic metrics may understate quality.
+The writing is generally clear, but there are a few places where the presentation could be tightened. Some terminology shifts between “PT training,” “sequence-level KD,” and “pseudo-target augmentation”; these are related but not always identical, and a slightly sharper distinction would help. Also, the main text occasionally overstates conclusions that are more nuanced in the appendix and limitations.
 
-Detailed comments:
+Despite these concerns, I think the paper makes a meaningful contribution. It addresses an important and underexplored practical regime, provides a substantial empirical study, and offers several useful lessons for compressing NLG systems. The results on unlabeled data and pseudo-target generation are especially valuable. The paper is not primarily a theory paper, and its algorithmic novelty is moderate, but as a rigorous systems-and-methods study for NLG distillation, it is strong.
 
-1. Architecture comparison
-The architecture analysis is useful. Table 2 on page 7 and the appendix discussion make a convincing case that encoder-decoder models are better suited than decoder-only models for these conditional NLG tasks under fine-tuning. I especially appreciated the inclusion of practical metrics like latency and throughput. The complexity discussion in Appendix B is also informative.
+If accepted, I would encourage the authors to revise the paper along the following lines. First, temper the broadest claims and make clearer that the conclusions are conditional on the staged greedy search and on the specific task regime studied. Second, add uncertainty estimates or at least multi-seed results for the main comparisons in Table 3. Third, discuss more explicitly the offline computational cost of the proposed recipe. Fourth, strengthen the positioning of Joint-Teaching relative to imitation-learning-style roll-in/roll-out ideas. Fifth, if space permits, include one more analysis showing whether the exposure-bias motivation and/or Joint-Teaching gains hold beyond the single setup in Figure 2.
 
-That said, the comparison is still somewhat constrained by the chosen model families and scales. Since pretraining objectives differ as well as architectures, the conclusion is empirically valid for these off-the-shelf families, but not purely architectural.
-
-2. Pruning analysis
-The pruning result is one of the clearest and most useful findings. The argument that decoder pruning matters more for latency in autoregressive generation is intuitive and well supported by both theory and measurements. Figure 3 in the appendix and Table 2 support this nicely.
-
-3. KD objective comparison
-The comparison among Logits KD, Noisy KD, and Attention-Relations KD is useful, though the conclusion that Logits KD should be preferred seems driven partly by simplicity and dev-average performance rather than a decisive win. That is acceptable, but the paper should be careful not to overstate superiority here.
-
-4. PT-based training
-This is the strongest part of the paper. The staged results in Table 3 show a coherent story:
-- sequence-level KD alone is weak,
-- combining PTs with Logits KD helps,
-- adding unlabeled data helps a lot,
-- multiple PTs help,
-- sampling beats beam search on average,
-- Joint-Teaching helps further.
-This is a meaningful empirical contribution.
-
-One question I had is whether the gains from multiple PTs are partly due to simply increasing the effective number of training instances. The paper partially controls this by cycling one PT per epoch, but I would still like a clearer normalization of total student update budget and total number of distinct target sequences seen.
-
-5. Joint-Teaching
-This is a nice idea. The motivation is sensible: student-generated prefixes expose the student to its own errors, while teacher logits provide corrective supervision. The 50/50 mixing choice seems arbitrary but reasonable as a first attempt. It would be useful to know how sensitive results are to alpha, or whether a schedule over training would work better.
-
-6. Extreme setup with GPT-4
-I appreciate the ambition here, but I view this section as exploratory. The tokenizer alignment procedure described around Figure 4 in Appendix C is clever, but also brittle. Since OpenAI only exposes top-5 token probabilities, the resulting Logits KD signal is approximate. The mixed results are therefore unsurprising. I would suggest presenting this section more modestly.
-
-Questions for the authors:
-
-1. How sensitive are the later-stage conclusions to the earlier-stage choices?
-For example, if Noisy KD were carried forward instead of Logits KD, would the conclusions about PT decoding and Joint-Teaching remain the same?
-
-2. Can you provide training-time cost estimates?
-Even rough GPU-hours for PT generation and KD training would help practitioners assess the tradeoff.
-
-3. How sensitive is Joint-Teaching to the teacher/student mixing ratio alpha?
-Did you try schedules or other values besides 0.5?
-
-4. For multiple PTs, did you compare against simply training longer on single PTs or duplicating labeled data to match the number of updates?
-This would help isolate whether diversity, rather than volume, drives the gains.
-
-5. Did you inspect PT quality/diversity directly?
-For example, distinct-n, self-BLEU, or semantic diversity measures could support the claim that sampling-based PTs cover more of the teacher distribution.
-
-6. In the architecture comparison, to what extent do you think the gains come from architecture versus pretraining objective or dataset formatting?
-
-Suggestions for improvement:
-
-1. Tone down the “systematic” claim slightly or more explicitly qualify it as a staged empirical study rather than a full interaction analysis.
-
-2. Add at least a small ablation on Joint-Teaching mixing ratio and perhaps a curriculum variant.
-
-3. Include training cost statistics, even if only in an appendix.
-
-4. Strengthen the exposure-bias argument with more direct evidence, or present it more clearly as a motivating hypothesis rather than a demonstrated mechanism.
-
-5. Expand human evaluation beyond ART10 if feasible, especially for the final distilled models on one additional task.
-
-6. Clarify whether the improvements from multiple PTs are controlled for total optimization steps and total number of target sequences seen.
-
-Minor comments:
-
-- Figure 2 on page 5 is interesting, but the caption and surrounding discussion could better explain why this supports the teacher’s modeling of P(yi | x, y^S_<i).
-- Table 3 is central and useful, but the “fraction of gap closed” metric may be less intuitive than raw scores for some readers. Including both in the main text, even for a subset, might help.
-- There are a few places where wording could be tightened, especially around causal claims.
-- The Shake7 dataset construction is potentially useful; if not already done, making it easily accessible and documented would add value.
-
-Final verdict:
-This is a solid empirical paper with clear practical relevance and several useful findings. Its main contribution is a well-executed study showing that pseudo-target training for NLG distillation can be made much more effective through unlabeled data, multiple sampled PTs, and Joint-Teaching. The paper is not perfect: some claims are broader than the evidence fully supports, and the study design does not capture interactions exhaustively. Still, the work is careful, informative, and likely to be useful to both researchers and practitioners working on efficient NLG.
+In summary, I view this as a strong empirical paper with high practical relevance, good experimental coverage, and several useful findings, offset by moderate novelty and some methodological limitations in the staged selection protocol and lack of uncertainty reporting. My overall assessment is positive.

@@ -1,195 +1,33 @@
-Summary
+This paper presents Agent S, an open framework for desktop GUI agents that aims to “use computers like a human.” The core proposal combines three ingredients: an experience-augmented hierarchical planner, a continual memory mechanism with narrative and episodic memories updated through self-evaluation, and an Agent-Computer Interface (ACI) that uses screenshots plus an augmented accessibility tree and exposes a bounded set of high-level actions. The paper evaluates the system primarily on OSWorld and additionally on WindowsAgentArena, reporting a substantial improvement over prior baselines and claiming a new state of the art on OSWorld.
 
-This paper presents Agent S, an open framework for autonomous GUI-based computer control. The core proposal combines three ideas: (1) experience-augmented hierarchical planning, where a manager decomposes tasks into subtasks using retrieved web knowledge and narrative memory, and workers execute subtasks using episodic memory; (2) continual memory construction and update via self-supervised exploration and self-evaluation; and (3) an Agent-Computer Interface (ACI) that uses screenshots plus an OCR-augmented accessibility tree for perception and grounding, together with a bounded action space of high-level GUI primitives. On OSWorld, the paper reports 20.58% success with GPT-4o versus an 11.21% baseline, and also shows gains on WindowsAgentArena without explicit adaptation.
+Overall, I found the paper timely, practically relevant, and reasonably well executed. The problem setting—general-purpose desktop control through GUI interaction—is important and increasingly central to agent research. The paper’s main strength is that it does not rely on a single trick, but instead proposes a coherent systems design that addresses several known bottlenecks in GUI agents: long-horizon planning, grounding, and adaptation to application-specific knowledge. The empirical gains on OSWorld are meaningful, and the ablations suggest that the proposed components each contribute. I also appreciate that the authors release code and evaluate on a second benchmark in a different operating system. At the same time, the paper is more of a strong systems integration paper than a fundamentally new algorithmic advance, and several methodological details and evaluation choices limit how strongly I can assess the claims. In particular, the continual learning setup, the fairness of comparisons, and the exact contribution of each component deserve more careful treatment.
 
-Overall assessment
+The technical framing is clear. The overview figure on page 4 is helpful: the Manager retrieves web knowledge and narrative memory to produce subtasks, Workers retrieve episodic memory to execute each subtask, and a self-evaluator summarizes trajectories back into memory. The distinction between narrative memory for high-level task summaries and episodic memory for subtask-level action guidance is intuitive and well motivated. Likewise, the ACI design is sensible. The discussion on pages 6–7 about why raw pixel-only grounding and unconstrained code actions are mismatched to current MLLM capabilities is convincing. The dual-input design—using screenshots for semantic understanding and an accessibility tree augmented with OCR for grounding—seems like a practical and effective compromise. The bounded action space in Table 5 on page 15 also appears well chosen for desktop control.
 
-This is a timely and interesting systems paper on multimodal GUI agents. The problem is important, the framing is clear, and the paper is well organized. The proposed architecture is sensible and practically motivated. I especially appreciate that the work is open-source, that it targets real desktop environments rather than toy settings, and that it includes ablations and error analysis rather than only headline numbers.
+The empirical results on OSWorld are promising. In Table 1 on page 8, Agent S with GPT-4o improves overall success from 11.21% to 20.58%, with especially large gains in Daily and Professional tasks. The bar chart on page 2 and the detailed table on page 8 both support the claim that improvements are broad rather than isolated to one category. The WindowsAgentArena result in Table 4 on page 10 is also encouraging as a cross-OS sanity check, though the gain there is smaller and somewhat uneven across domains. The qualitative examples in the appendix are useful: the successful trajectories on pages 18–20 show that the system can indeed carry out multi-step workflows across applications, while the failure cases on pages 22–23 help ground the error taxonomy.
 
-The strongest aspect of the paper is that it treats GUI control as a full agent systems problem rather than only a perception or action-generation problem. The combination of hierarchical planning, retrieval from multiple memory levels, and an explicit interface abstraction is coherent and well aligned with the challenges the authors identify in the introduction. The empirical gains on OSWorld are meaningful, and the cross-OS evaluation on WindowsAgentArena is a useful demonstration of portability.
+That said, I have several concerns about the strength of the experimental evidence. First, the main comparisons are against benchmark-reported baselines rather than against stronger reimplementations or matched ablations under identical prompting, inference budgets, and tool interfaces. This matters because Agent S changes multiple aspects at once: planning, memory, retrieval, action space, grounding representation, and likely prompting structure. The paper acknowledges that the WindowsAgentArena strongest model is inaccessible, but on OSWorld the comparison still mixes architectural and interface changes. In particular, the ACI itself appears to be a major intervention, and Figure 6 on page 9 suggests that ACI alone already improves over the baseline. This makes it difficult to isolate whether the gains primarily come from better agent architecture or from a more favorable interface abstraction. The paper does include ablations, but because they are run on a 65-example subset rather than the full benchmark, the conclusions are somewhat less definitive.
 
-That said, the paper also has important limitations. The absolute success rates remain low, making it difficult to judge practical readiness. Several methodological details are underspecified, especially around memory construction, retrieval, prompting, and evaluation protocol. Some comparisons are not fully controlled, and the contribution boundaries between “better prompting/interface design” and “learning from experience” are not always cleanly isolated. The self-supervised memory update mechanism is intriguing, but the evidence that it truly yields robust continual improvement rather than benchmark-specific accumulation is still limited.
+Second, the continual memory update setup raises evaluation questions. The paper states on pages 5–6 that Agent S continually updates memory “even during inference” as it encounters new tasks. If the benchmark evaluation proceeds sequentially and the agent is allowed to accumulate experience from earlier test tasks that can help later test tasks, then the reported numbers are not directly comparable to standard static-test evaluation unless the baseline is given an analogous opportunity. This is especially important because OSWorld contains repeated applications and recurring task motifs. The paper should be much more explicit about whether memory is updated across test episodes, whether task order is fixed, whether multiple runs with different orders were tested, and whether any benchmark leakage could occur through environment-aware exploration tasks or web retrieval. The current description leaves too much ambiguity for a top-tier evaluation claim.
 
-Recommendation
+Third, the initial memory construction procedure may blur the line between training and evaluation. On page 6, the authors describe self-supervised exploration using environment-independent tasks and “environment-aware tasks” generated from the initial environments of OSWorld and WindowsAgentArena tasks. This is potentially problematic. If the exploration phase uses benchmark initial states to generate related tasks, then the agent may effectively pre-adapt to the test distribution in a way that is stronger than zero-shot evaluation. Even if no ground-truth labels are used, this still constitutes benchmark-specific pre-exposure. The paper should clarify exactly how these exploration tasks are generated, whether they are derived from test instances, and whether a strict separation between memory-building environments and evaluation environments is maintained. Without this clarification, the “state-of-the-art” claim is harder to interpret.
 
-Weak Accept
+Fourth, the paper’s notion of self-evaluation is interesting but under-validated. The self-evaluator determines whether trajectories are successful enough to store and summarizes them into textual rewards. However, there is little analysis of evaluator accuracy, false positives, or memory contamination. Since the system learns from its own inferred successes and failures without external supervision, one key risk is reinforcing incorrect strategies. The ablation in Figure 7 on page 9 suggests that summarized experiences help, but this does not tell us whether the evaluator is reliable or merely useful on average. A stronger paper would include at least a small manual audit of stored memories, evaluator precision/recall on success detection, or examples where self-evaluation goes wrong.
 
-Reasons for this recommendation:
-- Clear practical contribution with a coherent architecture.
-- Strong improvement over the stated OSWorld baseline.
-- Good ablation coverage and useful qualitative/error analyses.
-- Open framework likely to be valuable to the community.
+Fifth, the paper would benefit from more rigorous reporting of statistical uncertainty and computational cost. The benchmark sizes are not huge, and some category-level differences may be noisy. Confidence intervals or bootstrap estimates would help. More importantly, the proposed system adds web search, multiple retrieval calls, hierarchical planning, reflection, and memory updates. This likely increases latency and token cost substantially. The authors themselves note in the conclusion that step count and wall-clock time are unaddressed. Given that practical desktop agents are highly sensitive to latency, this omission is significant. A method that doubles success rate at 10x cost may still be valuable, but readers need that tradeoff quantified.
 
-Main reservations:
-- Limited methodological precision in several key components.
-- Absolute performance is still modest.
-- Some evaluation choices and claims need tighter justification.
-- Novelty is more in integration and engineering than in fundamentally new learning algorithms.
+On the methodological side, I liked the conceptual decomposition into Manager and Worker, but some parts remain underspecified. For example, how exactly are subtasks represented? How often does replanning occur after FAIL? What prompts are used for the Experience Context Fusion and Trajectory Reflector modules? How are retrieval candidates ranked and truncated? How large are the narrative and episodic memories, and how does performance scale with memory size? The formulas on pages 5 and 16–17 are high-level and mostly schematic rather than operational. For reproducibility and scientific clarity, more concrete implementation detail is needed in the main paper or appendix.
 
-Strengths
+The error analysis is a positive aspect, but it could go further. Table 3 on page 10 shows execution errors dominate, followed by grounding errors, and the pie chart on page 21 attributes 46% of execution errors to planning or grounding. This is useful, but the taxonomy is somewhat overlapping: execution errors often seem to be downstream manifestations of planning or grounding failures. A more causal analysis would be stronger, for example separating first-failure causes from propagated failures, or measuring recovery ability after an initial mistake. The failure examples on pages 22–23 are informative and support the claim that grounding remains brittle, especially when accessibility-tree IDs or screen regions are misleading.
 
-1. Important problem and strong motivation
-The paper addresses autonomous desktop GUI control, which is both practically relevant and scientifically challenging. The introduction clearly identifies three central difficulties: domain knowledge, long-horizon planning, and dynamic interfaces.
+I also want to note a few presentation issues. The paper is generally readable, but there are several places where the writing could be tightened. Some claims are overstated relative to the evidence, especially phrases like “uses computers like a human,” which is rhetorically appealing but scientifically imprecise. There are also minor inconsistencies and typos: for example, some notation around episodic versus narrative experience is a bit confusing across pages 4–5 and 16–17, and the references include what appears to be a duplicated AutoGuide citation. The appendix tables are useful, but some detailed per-app results in Table 8 on page 16 are surprising—for instance, Agent S underperforming the baseline on Calc while doing much better overall—and deserve discussion in the main text.
 
-2. Coherent architecture
-The overall design in Figure 3 on page 4 is one of the paper’s strengths. The separation into Manager, Worker, Self-Evaluator, and ACI is intuitive. The distinction between narrative memory for high-level task summaries and episodic memory for subtask-level execution is also well motivated.
+In terms of novelty, I would characterize the contribution as a thoughtful integration of known ideas—hierarchical planning, retrieval augmentation, memory, reflection, accessibility-tree grounding, OCR augmentation, and constrained action spaces—into a strong desktop-agent framework. The novelty lies less in any single component and more in the particular combination and the empirical demonstration that this combination works better than prior baselines. That is a legitimate contribution for a systems-oriented ML paper, but the paper should be careful not to oversell individual modules as fundamentally new. For example, the “textual rewards” framing is evocative, but in practice this is closer to self-generated trajectory summarization for retrieval than to reinforcement learning in a formal sense.
 
-3. Useful ACI formulation
-The ACI is a meaningful contribution. The dual-input design—screenshot for visual reasoning plus OCR-augmented accessibility tree for grounding—is practical and likely broadly useful. The bounded action space in Table 5 on page 15 is also a good design choice for safety and temporal feedback.
+My main suggestions for improvement are as follows. First, clarify the evaluation protocol around memory construction and continual updates, especially whether benchmark test tasks or their initial states are used during exploration and whether memory persists across test episodes. Second, add stronger controlled comparisons on the full OSWorld benchmark, ideally including a baseline with the same ACI but without hierarchical memory/retrieval, and a version with retrieval but frozen memory. Third, report cost metrics: average steps, wall-clock time, token usage, and web-search overhead. Fourth, provide a more careful analysis of self-evaluator quality and memory noise. Fifth, include uncertainty estimates and, if possible, multiple evaluation orders for continual-update experiments. These additions would substantially strengthen the paper.
 
-4. Strong empirical improvement over baseline
-On OSWorld, the jump from 11.21% to 20.58% overall success with GPT-4o is substantial. The gains in Daily and Professional tasks are especially notable, as shown in Table 1 on page 8 and the bar chart on page 2. The WindowsAgentArena result in Table 4 on page 10 also supports some degree of generalization.
+Despite these concerns, I think the paper makes a meaningful contribution. The problem is important, the system design is sensible, the empirical gains are nontrivial, and the paper includes useful ablations and qualitative analysis. My overall assessment is positive but not unreservedly so: I believe this is a strong applied/agent-systems paper whose claims would be much more convincing with tighter evaluation protocol and clearer separation between training-like memory accumulation and test-time generalization.
 
-5. Ablations and analysis
-The paper includes several ablations: removing web knowledge, narrative memory, episodic memory, ACI, exploration, continual update, and self-evaluator. This is better than many agent papers. The error taxonomy and statistics in Table 3 on page 10 are also helpful.
+Recommendation: weak accept.
 
-6. Qualitative examples
-The examples in Figures 8–12 and failure cases in Figures 14–16 are useful. They make the system behavior concrete and reveal both strengths and brittleness.
-
-Weaknesses and concerns
-
-1. Novelty is somewhat incremental
-The paper’s main novelty lies in integrating known ingredients: hierarchical planning, retrieval augmentation, memory, reflection, accessibility-tree grounding, OCR augmentation, and bounded action spaces. The integration is valuable, but the paper sometimes presents these as more conceptually novel than they are. The strongest claim should be around system design and empirical validation rather than algorithmic novelty.
-
-2. Methodological details are insufficiently specified
-Several important implementation details are missing or too vague for a top-tier conference standard:
-- What exactly are the prompts for manager, worker, self-evaluator, and trajectory reflector?
-- How many retrieved items are used from web, narrative memory, and episodic memory?
-- How are memories stored, deduplicated, filtered, or truncated over time?
-- What embedding similarity threshold or top-k retrieval is used?
-- How is “similar task” defined in practice?
-- How often does replanning occur, and under what exact conditions besides FAIL?
-- What are the step limits per task and per subtask?
-- How is OCR text merged into the accessibility tree when overlaps are partial or noisy?
-
-Without these details, reproducibility is weaker than it should be, despite the code release.
-
-3. Evaluation protocol raises some questions
-The paper compares against OSWorld-reported baselines, but it is not always fully clear whether all settings are matched beyond input modality. For example:
-- Are the same step budgets used?
-- Are the same model versions and API dates used?
-- Are prompt budgets and context lengths comparable?
-- Is web search allowed for Agent S but not for the baseline? If so, this is a fair systems comparison only if clearly framed as such, but not a pure architecture comparison.
-
-Similarly, on WindowsAgentArena, the comparison is to a “similar configuration” rather than the strongest system. That is understandable, but the claim should be phrased carefully.
-
-4. Continual learning claims are stronger than the evidence
-The paper emphasizes continual memory update and learning during inference. However, the evidence is limited. Figure 7 on page 9 shows some benefit from continual memory update, but this is still within the benchmark setting. It remains unclear:
-- Whether performance improves monotonically over time.
-- Whether memory accumulation causes interference or retrieval drift.
-- Whether gains come from repeated exposure to similar benchmark templates.
-- How robust the system is to stale or misleading memories.
-
-A stronger continual-learning evaluation would track performance as a function of number of prior tasks, ideally on disjoint task families.
-
-5. Self-evaluation may be noisy and self-reinforcing
-The self-evaluator stores summaries of successful or failed trajectories without external supervision. This is interesting, but risky. If the evaluator misjudges a trajectory or summarizes a flawed strategy, the memory may reinforce errors. The paper acknowledges some execution and planning failures, but does not deeply analyze memory corruption or retrieval of bad experiences. Since both successful and failed trajectories are stored in narrative memory, more detail is needed on how failures are represented and prevented from harming future planning.
-
-6. Absolute performance remains low
-Although the relative improvement is large, 20.58% overall success on OSWorld is still low. This does not invalidate the contribution, but it should temper claims such as “uses computers like a human.” The title and framing are somewhat overstated relative to the actual capability level.
-
-7. Some category-level results are uneven
-The detailed app-level results in Table 8 on page 16 show regressions or weak performance in some domains, e.g., Calc is lower than baseline, and some WindowsAgentArena domains in Table 9 remain at 0%. This suggests the method may be particularly effective in some interface/task types but not others. The paper could do more to explain these patterns.
-
-8. Writing and presentation issues
-The paper is generally readable, but there are several issues:
-- Some notation is inconsistent or overloaded.
-- There are minor grammatical errors and awkward phrasing throughout.
-- The references contain a duplicate entry for AutoGuide (2024a/2024b appear identical).
-- The citation “OSWorld (OpenAI, 2023)” on page 2 appears incorrect.
-- Some claims about “state-of-the-art” should be carefully contextualized given rapidly moving baselines and differing settings.
-
-Detailed comments
-
-1. On the ACI contribution
-I found the ACI section compelling. The argument on pages 6–7 that MLLMs operate at slow, discrete intervals and therefore need temporally meaningful action primitives is well made. The OCR augmentation of the accessibility tree is also practical. However, I would like more quantitative evidence isolating which part matters most:
-- accessibility tree IDs,
-- OCR augmentation,
-- bounded primitive actions,
-- one-action-per-step feedback.
-
-The current ACI ablation in Figure 6 is useful but still bundles multiple design choices.
-
-2. On hierarchical planning
-The manager-worker decomposition is sensible, but the paper does not fully show that the generated subtasks are consistently high quality. Since planning errors remain common, it would help to report:
-- average number of subtasks per task,
-- subtask completion rate,
-- frequency of replanning,
-- success conditioned on plan length.
-
-The subtask failure rate in Table 3 is a good start, but more direct planning diagnostics would strengthen the claim.
-
-3. On memory design
-The distinction between narrative and episodic memory is intuitive. Still, the paper should clarify:
-- whether narrative memory stores both successes and failures, while episodic stores only successful/DONE subtasks;
-- whether failed narrative memories are retrieved equally often as successful ones;
-- how the fusion prompt uses failure summaries constructively;
-- whether memory size grows unboundedly.
-
-This is central to the method and currently underexplained.
-
-4. On self-supervised exploration
-The memory bootstrap process in Figure 4 on page 6 is interesting, but also potentially benchmark-sensitive. The paper says it generates top 50 common tasks from applications used in OSWorld and WindowsAgentArena, and also environment-aware tasks based on benchmark initial states. This may be reasonable, but it risks partial adaptation to the benchmark distribution. I do not think this invalidates the results, but the paper should discuss it more explicitly. In particular, how different are the exploration tasks from the evaluation tasks? Is there any leakage in style, app state, or task templates?
-
-5. On qualitative failures
-The failure examples are informative. Figure 14 shows a nice case where planning, grounding, and execution errors interact. Figure 16 is especially revealing: the agent repeatedly clicks “Activity” instead of the intended GIMP tool. This suggests that despite the ACI, grounding remains a major bottleneck. It would be useful to know whether this is due to accessibility-tree ambiguity, OCR noise, prompt confusion, or action primitive limitations.
-
-Questions for the authors
-
-1. What exact prompts are used for the Manager, Worker, Self-Evaluator, and Trajectory Reflector? If space is limited, please include them in the appendix or repository.
-
-2. How many items are retrieved from each source (web, narrative memory, episodic memory), and how are they ranked and truncated?
-
-3. How large are the initial narrative and episodic memories after self-supervised exploration? How much do they grow during evaluation?
-
-4. Are evaluation tasks processed sequentially such that later tasks can benefit from memories built on earlier test tasks? If so, please clarify the protocol carefully, since this affects interpretation.
-
-5. How do you prevent contamination between exploration tasks and benchmark test tasks, especially for environment-aware task generation?
-
-6. What is the computational cost of Agent S relative to the baseline, including number of model calls, wall-clock time, and web-search overhead?
-
-7. In Table 8, why does Agent S underperform the baseline on Calc while doing much better on Writer, Thunderbird, VS Code, and GIMP? What failure mode is specific to spreadsheet tasks?
-
-8. How often does the self-evaluator incorrectly label a trajectory as useful? Have you manually audited memory quality?
-
-9. Does the system degrade when memories become large or contain contradictory experiences?
-
-10. Can the method work without proprietary models such as GPT-4o/Claude-3.5, or is performance currently too low with open models?
-
-Suggestions for improvement
-
-1. Strengthen reproducibility
-Include full prompts, retrieval hyperparameters, memory sizes, step budgets, and replanning logic in the appendix.
-
-2. Add efficiency metrics
-As the conclusion notes, step count and wall-clock time matter. Even a simple table with average steps, average model calls, and average runtime per task would be valuable.
-
-3. Evaluate continual learning more rigorously
-Show performance over time on a stream of tasks, ideally with held-out task families and analysis of memory growth and forgetting.
-
-4. Isolate ACI components more cleanly
-A finer-grained ablation would help separate the effects of OCR augmentation, ID grounding, and bounded action primitives.
-
-5. Analyze memory quality
-Provide examples of retrieved narrative and episodic memories that help versus hurt. Quantify how often retrieved memories are relevant.
-
-6. Temper claims
-The title and some wording imply near-human computer use, but the current success rates do not support that level of capability. A more measured framing would improve credibility.
-
-7. Improve comparison clarity
-Be explicit about what resources Agent S uses that baselines do not, especially web search and memory accumulation during evaluation.
-
-Minor comments
-
-- Page 2: “OSWorld benchmark (OpenAI, 2023)” appears to cite the wrong source.
-- Page 3: The related work section is broad but could better distinguish this paper from concurrent cognitive-architecture GUI agents.
-- Page 5: The statement that the structured response “allows the agent to generate a templated chain-of-thought” should be phrased carefully; many venues discourage explicit reliance on hidden CoT details.
-- Page 8: “stratified sampled” should be “stratified-sampled” or “sampled using stratification.”
-- Page 11 onward: references contain duplicated AutoGuide entries.
-- Tables 8 and 9 on page 16 are useful and perhaps deserve discussion in the main text, not only appendix.
-
-Final verdict
-
-This is a solid and useful systems paper with meaningful empirical gains on a challenging benchmark. Its main contribution is the integration of hierarchical planning, retrieval-based experience, continual memory updates, and a practical GUI-oriented interface abstraction. The work is not radically novel algorithmically, and some methodological and evaluation details need tightening, but the overall package is strong enough to merit acceptance in a conference that values practical agent systems and benchmark progress.
-
-Confidence: 4/5
+The strongest reasons in favor are the practical importance of the problem, the coherent architecture, and the sizable gains on OSWorld. The strongest reasons against are ambiguity in the continual-learning evaluation setup, possible benchmark-specific pre-exposure through exploration, and limited isolation of which components truly drive the gains. If the authors address these issues in revision, the paper would be significantly stronger.

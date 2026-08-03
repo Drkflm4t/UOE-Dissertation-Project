@@ -1,131 +1,35 @@
-Paper: GraphMETRO: Mitigating Complex Graph Distribution Shifts via Mixture of Aligned Experts
+This paper proposes GraphMETRO, a graph out-of-distribution generalization method aimed at handling complex, heterogeneous, and instance-dependent distribution shifts. The central idea is to model unknown target shifts as mixtures of predefined stochastic graph transformations, and then learn a mixture-of-experts architecture in which a gating network predicts which shift components are active while expert networks produce “referentially invariant” representations aligned to a shared reference model. The method is evaluated on both real-world datasets from the GOOD benchmark and synthetic shift settings, with additional analyses on invariance and shift discovery.
 
-Summary
+Overall, I found the paper interesting, ambitious, and quite compelling. The problem setting is important: graph OOD work often assumes relatively simple or homogeneous shifts, whereas real graph data can exhibit multiple simultaneous and instance-specific changes. The paper’s main contribution is to explicitly embrace this complexity rather than forcing all shifts into a single invariant predictor. The proposed decomposition into shift components, together with a gating mechanism and aligned experts, is a thoughtful and original design. Empirically, the method appears strong, especially on the real-world GOOD datasets, where the gains on WebKB are particularly striking. In my view, this is a meaningful contribution to graph OOD generalization and a paper that should be taken seriously.
 
-This paper studies out-of-distribution generalization for graph neural networks under complex, natural, and heterogeneous graph distribution shifts. The core proposal, GraphMETRO, models target shifts as mixtures of predefined stochastic graph transformations (“shift components”), and uses a mixture-of-experts architecture to address them. A gating model predicts which shift components are active for a given instance, while each expert is trained to produce a “referentially invariant representation” relative to a reference expert. The final representation is an aggregation of expert outputs weighted by the gating model. The paper also introduces an alignment objective to keep expert representations in a common space.
+The strongest aspect of the paper is the framing. The authors identify a real limitation in prior graph OOD methods: many either rely on fixed augmentation families, assume a small number of environments, or seek a single invariant representation that may be too rigid under heterogeneous shifts. The motivating examples in the introduction and Figure 1 are effective, and the high-level decomposition shown in Figure 2 on page 2 makes the intuition clear. The idea that different target instances may be affected by different combinations of shift factors is both realistic and underexplored in graph learning. This gives the paper a strong conceptual foundation.
 
-Empirically, the method is evaluated on four real-world datasets from the GOOD benchmark (WebKB, Twitch, Twitter, SST2) and several synthetic graph datasets. The reported results show substantial gains on some real-world benchmarks, especially WebKB, and generally favorable performance on synthetic shifts. The paper also includes analyses of expert invariance and shift discovery via the gating model.
+Methodologically, the paper is also quite elegant. The use of a gating model to infer instance-specific shift mixtures and expert models to mitigate individual shift components is natural, but the key addition is the alignment mechanism through the reference model. Without such alignment, aggregating expert outputs would indeed be unstable or semantically incoherent. The notion of “referential invariant representation” is a useful way to formalize this. The training objective in Equation 3 is simple enough to implement yet captures the intended behavior: the gating model is supervised using synthetic mixtures of transformations, while the experts and classifier are trained to both predict labels and align transformed representations to the reference representation. This is a nice design, and the ablations later support that the alignment term is not cosmetic but essential.
 
-Overall recommendation
+The empirical results on real-world datasets are impressive. Table 1 on page 7 shows consistent improvements over a broad set of baselines, including ERM, domain generalization methods, and graph-specific OOD methods. The WebKB result is especially notable: 41.11 ± 7.47 versus the strongest baseline at 24.61 ± 4.86. Even allowing for the relatively high variance, this is a large margin. The gains on Twitch and the graph classification datasets are smaller but still favorable. I also appreciate that the method is evaluated on both node- and graph-level tasks, which supports the claim of generality better than many graph OOD papers that focus on only one setting.
 
-Weak Accept
+The synthetic experiments are also useful, not because they are the main evidence, but because they help unpack what the method is doing. Figure 3 on page 8 and the numerical tables in Appendix E show that GraphMETRO is often stronger than both ERM and ERM with augmentation under single and composed shifts. This is important because the method is not merely doing standard augmentation; it is learning to decompose and mitigate shifts. The invariance matrix in Figure 4(a) on page 9 is a particularly nice diagnostic: it gives evidence that experts specialize in the intended way. Likewise, the shift-mixture visualizations in Figure 4(b) are a valuable interpretability angle and make the paper more insightful than a purely predictive benchmark paper.
 
-Confidence
+I also want to credit the paper for being fairly complete experimentally. The appendices include architecture details, hyperparameters, transform libraries, and ablations on shared-vs-separate experts, alignment removal, and number of transform functions. The ablation in Table 5 on page 21 is especially convincing: removing alignment causes a substantial drop, which validates a central design choice. The discussion in Appendix F is also refreshingly honest about the dependence on transform design and gating quality.
 
-Medium
+That said, there are several issues that should be addressed or at least clarified.
 
-Strengths
+My main concern is the gap between the motivating claim—handling natural, unknown, complex real-world shifts—and the actual supervision used to train the gating model and experts. The method depends critically on a predefined library of stochastic transform functions, and the gating model is trained to recognize mixtures of these synthetic transforms. This means the success of the approach hinges on whether the chosen transforms span the relevant shift directions in the target domain. The paper acknowledges this limitation in Appendix F, but it remains central. In some sense, GraphMETRO is only as good as its shift basis. This does not invalidate the contribution, but the paper should be more explicit in the main text that the method is not shift-agnostic; it is shift-basis-dependent. The strong real-world results suggest the chosen transforms are useful, but it would help to better articulate why these particular transforms are expected to capture the GOOD benchmark shifts.
 
-1. Important problem setting.
-The paper addresses a genuinely important and underexplored problem: graph OOD generalization under complex, heterogeneous, and natural shifts rather than only simple synthetic perturbations or environment-partitioned settings. This is a meaningful direction for graph ML.
+Relatedly, the choice of transform functions seems somewhat heuristic. The paper uses common graph augmentations such as random subgraph sampling, edge dropping, node dropping, feature noise, and edge addition. These are reasonable, but the connection between each transform and each real-world dataset’s actual shift mechanism is not always tight. For example, for WebKB and Twitch, the interpretation in Figure 4(b) is interesting, but still somewhat speculative. The paper itself notes that quantitatively validating these discovered shifts remains challenging. I think this is acceptable for now, but the interpretability claims should be phrased carefully: the method discovers mixtures over the chosen transform basis, not necessarily the true causal shift factors.
 
-2. Interesting high-level idea.
-The decomposition of unknown shifts into mixtures of shift components, handled by a gating network plus aligned experts, is conceptually appealing. The use of instance-dependent mixtures is a reasonable way to model heterogeneity across target examples.
+A second concern is computational cost and scalability. The paper states on page 7 that the forward process requires O(K) encoder passes and training complexity scales as O(K^2 |Ds|) because of extrapolation. This is nontrivial, especially if one wants a richer transform library or larger graphs. The appendix includes a shared-encoder variant, but it performs worse. Since MoE is often motivated by efficiency, it is worth emphasizing that this is not a sparse conditional-computation MoE in the usual sense; it is closer to an ensemble of experts whose outputs are all aggregated. I would have liked to see wall-clock training time, GPU memory, or parameter count comparisons against baselines. This is especially important because some of the gains may partly come from increased model capacity due to multiple encoders. The synthetic experiments hint at this possibility when in-distribution performance sometimes improves. A stronger capacity-controlled comparison would make the empirical claims even more convincing.
 
-3. Broad applicability across node- and graph-level tasks.
-A practical strength is that the framework is presented as applicable to both node classification and graph classification. The experiments indeed cover both settings.
+A third issue is the theoretical appendix. I do not think the paper needs theory to be valuable, but the current theoretical section is not fully convincing. In particular, Theorem 1 appears to rely on idealized gating behavior and effectively assumes away contributions from non-selected experts. Equation (10) is a strong simplification that does not obviously follow from the soft weighting in Equation 2. Theorem 2 then builds on this approximation. The generalization bound in Theorem 3 is also quite informal and seems to make several leaps, including assumptions about the target distribution being representable by the training transform family and about the training objective covering a “wider range” of transformations. I would therefore not treat the theory as a rigorous guarantee. My suggestion would be either to substantially tighten the assumptions and proofs or to present this section more explicitly as intuition rather than formal theory. This is a fixable presentation issue, but it is worth noting.
 
-4. Strong empirical results on several real-world benchmarks.
-Table 1 reports clear gains over baselines on WebKB, Twitch, Twitter, and SST2, with especially large improvement on WebKB. Even allowing for benchmark variance, these are promising results.
+There are also some experimental questions. First, the comparison set is broad, but not always perfectly matched across tasks, and some baselines are unavailable on some datasets. That is understandable, but it makes the strongest claims somewhat dependent on the benchmark setup. Second, the number of runs for GraphMETRO is five, while some baseline numbers are inherited from GOOD; it would be useful to know whether all methods were rerun under identical conditions for the newly added Twitter dataset and whether variance across seeds is comparable. Third, the p-values in Table 1 are appreciated, but the paper does not fully specify the statistical test used. This is a minor reproducibility detail that should be easy to add.
 
-5. Useful interpretability angle.
-The gating model provides a potentially interpretable view of which shift components are active. The invariance matrix analysis on page 9 and the shift-mixture visualizations on pages 9–10 are helpful in understanding what the model is doing.
+I also think the paper could do a better job disentangling the contributions of decomposition, gating, and extra capacity. For example, a useful baseline would be a multi-expert model without gating but with uniform averaging, or a model with the same number of parameters trained on all augmentations jointly. The ablation “without L1” partially addresses the gating supervision, but not the broader question of whether the gains come from conditional specialization versus simply having multiple encoders. Similarly, a top-1 expert selection variant versus soft aggregation could be informative.
 
-6. Ablation studies are directionally useful.
-The appendices include ablations on removing the gating loss, sharing expert encoders, removing alignment, and varying the number of transform functions. These support some of the design choices.
+Despite these concerns, I view them as opportunities to strengthen an already strong paper rather than fundamental flaws. The core idea is novel and well motivated, the method is technically coherent, and the empirical results are genuinely impressive on challenging real-world graph OOD benchmarks. The paper also offers useful interpretability and diagnostic analyses beyond raw accuracy tables. In a space where many methods either assume too much structure or rely on narrow augmentation schemes, this work pushes toward a more realistic and flexible treatment of graph distribution shifts.
 
-Main weaknesses
+To improve the paper further, I would recommend the following. First, move some of the limitation discussion from Appendix F into the main paper, especially the dependence on transform design and gating quality. Second, either strengthen or soften the theoretical claims. Third, add explicit compute and parameter comparisons, and if possible include one or two capacity-matched ablations to isolate the benefit of the MoE decomposition from model size. Fourth, clarify the statistical testing protocol and, if space permits, include a brief discussion of how transform families were selected for each dataset. Finally, it would be helpful to discuss whether the method could be extended to learn or adapt the transform basis rather than fixing it manually.
 
-1. Theoretical section is not convincing and appears problematic.
-The appendix “Theoretical Analysis” is the weakest part of the paper and, in my view, should not be presented as a rigorous guarantee in its current form.
+In summary, this is a strong paper with a fresh perspective on graph OOD generalization. Its central idea—modeling unknown graph shifts as mixtures of aligned expert-handled components—is both intuitive and technically interesting, and the empirical evidence is strong enough to make the contribution credible. While some assumptions are important and the theory is less solid than the experiments, I believe the paper advances the field in a meaningful way and would be a positive addition to the conference.
 
-- Theorem 1 assumes away the hard part. The derivation from the full weighted sum in Eq. (9) to only the i-th term in Eq. (10) effectively requires one-hot perfect gating and zero contribution from all other experts, which is not how the model is defined in practice.
-- Eq. (11) also seems unjustified as written: referential invariance gives approximate alignment of expert outputs to the reference representation, but not the exact weighted identity used there.
-- Theorem 2 inherits these issues and uses induction over approximate equalities without a careful error accumulation argument.
-- Theorem 3 is especially concerning. The Jensen argument is not clearly applicable as stated, the convexity claim is imprecise, and the step from the training augmentation distribution to an arbitrary target distribution generated by shift compositions is too loose to count as a meaningful generalization bound.
-
-I would strongly recommend either removing the theory section or reframing it as intuition rather than formal guarantees.
-
-2. Dependence on manually chosen transform functions.
-The method relies critically on a predefined library of stochastic transformations. This is both a strength and a limitation. It gives structure, but also means success depends on whether the chosen transforms span the relevant target shifts. The paper acknowledges this in Appendix F, but this dependence is central and should be emphasized more strongly in the main paper.
-
-Relatedly, the method is not truly shift-agnostic: it is only as expressive as the transform basis and the gating model’s ability to identify mixtures over that basis.
-
-3. Comparison fairness and baseline coverage could be stronger.
-The baseline set is reasonable, but there are some concerns:
-
-- Some compared methods require domain information while GraphMETRO does not, which is favorable to the proposed method, but the comparison setup should be discussed more carefully.
-- For graph classification, several stronger recent graph OOD methods may be missing depending on task compatibility.
-- It is not fully clear whether all baselines were tuned comparably on the same splits and with equal effort, especially for Twitter where the paper notes benchmark results were not available.
-- Since the method is augmentation-based in spirit, stronger augmentation baselines would be useful, including mixtures/compositions of transforms and possibly test-time adaptation baselines where applicable.
-
-4. Computational cost is nontrivial.
-The paper states on page 7 that training complexity is O(K^2 |Ds|), due to K+1 experts and extrapolated datasets. This is a meaningful cost. While the paper mentions it, the empirical runtime/memory overhead is not quantified in a way that helps assess practicality. A method with multiple full GNN experts may be expensive on larger graphs or larger K.
-
-5. Some empirical claims need more nuance.
-The paper repeatedly emphasizes handling “complex real-world shifts,” but the training mechanism still depends on synthetic transform compositions. The real-world gains are encouraging, but they do not fully establish that the learned decomposition corresponds to actual causal shift factors in the target domains. The shift discovery case studies on page 10 are interesting, but still somewhat speculative.
-
-6. Clarity issues around the objective and notation.
-There are several places where notation and exposition could be improved:
-
-- The paper uses µ both as classifier and, in Figure 2, the gating model appears labeled differently; notation is somewhat overloaded.
-- The definition of referential invariant representation is unusual and could be made more precise.
-- The role of ξ0 as both reference and “in-distribution expert” is intuitive but not fully formalized.
-- The training objective in Eq. (3) could better explain exactly how τ^(k) is sampled and how compositions are balanced.
-
-Detailed comments
-
-1. Assumption 1 is very strong.
-On page 4, the paper assumes any target shift can be modeled by up to k out of K classes of stochastic transformations applied to source instances. This is a useful modeling assumption, but it is also the central inductive bias of the method. The paper should be more explicit that this is not merely informal motivation; it is the foundation of the approach.
-
-2. The gating objective may be easier than the real task.
-Because the gating model is trained on synthetic transformations with known labels Y(τ^(k)), it may learn to recognize artifacts of the transform library rather than meaningful latent shift factors. This is not necessarily bad, but it raises the question of whether performance gains come from robust augmentation plus conditional ensembling rather than true shift decomposition.
-
-3. Aggregation choice deserves more study.
-Eq. (2) uses a softmax-weighted sum over expert outputs. This is natural, but it would be useful to compare against top-1 routing, sparse routing, or even simple averaging. Since alignment is central, the aggregation mechanism likely matters.
-
-4. Real-world benchmark significance.
-The p-values in Table 1 are appreciated, but the paper should clarify exactly what hypothesis test is used and against which baseline distribution. Also, for SST2 the p-value is 0.081, so the gain there is not statistically strong by conventional thresholds.
-
-5. Invariance matrix analysis is nice but limited.
-The matrix on page 9 is a good diagnostic. However, it is shown only for Twitter. It would strengthen the paper to include similar analyses across more datasets, or at least summarize whether the diagonal-dominance pattern is consistent.
-
-6. Transform count sensitivity is concerning.
-The ablation on page 21 shows performance often degrades as more transform functions are added. This suggests the method may be fairly sensitive to transform library design and gating capacity. That is an important practical limitation.
-
-Questions for the authors
-
-1. Can you provide a cleaner and more rigorous justification for the theory, or would you consider removing the formal theorem statements and presenting them as intuition instead?
-
-2. How sensitive is performance to the exact transform hyperparameters, not just the transform types? For example, edge-drop probabilities, noise scales, subgraph sizes.
-
-3. How does GraphMETRO compare to a simpler conditional augmentation baseline, e.g., train on the same transformed data but without experts, or with a single encoder conditioned on transform labels?
-
-4. What is the actual runtime and memory overhead relative to ERM and the strongest baseline on the real-world datasets?
-
-5. How often does the gating model assign diffuse mixtures versus near-sparse weights at test time? This would help understand whether the model is truly using mixtures or mostly selecting one expert.
-
-6. Did you try learning the transform basis or pruning irrelevant transforms automatically?
-
-Suggestions for improvement
-
-1. Remove or substantially revise the theoretical appendix.
-As written, it weakens the paper more than it helps.
-
-2. Strengthen empirical comparisons.
-Include stronger augmentation and conditional-model baselines, and report runtime/memory.
-
-3. Add more analysis of transform sensitivity.
-This is central to the method’s practical usability.
-
-4. Clarify the distinction between synthetic transform supervision and real-world shift generalization.
-The paper should be more careful not to overclaim discovery of true underlying shift mechanisms.
-
-5. Improve notation and exposition in Section 3.
-This would make the method easier to follow.
-
-Final assessment
-
-I think this is a promising and practically relevant paper with a novel angle on graph OOD generalization. The mixture-of-aligned-experts idea is interesting, and the empirical results on real-world graph benchmarks are strong enough to make the work noteworthy. At the same time, the paper overreaches in its theoretical claims, and the dependence on manually specified transform components is a substantial limitation.
-
-On balance, I lean positive because the empirical contribution and modeling idea are valuable, but I would want the authors to tone down the theory and sharpen the discussion of assumptions and limitations.
+My recommendation is acceptance.

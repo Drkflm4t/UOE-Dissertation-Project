@@ -1,194 +1,29 @@
-Summary
+This paper is a survey/review of factors that influence zero-shot cross-lingual transfer in multilingual language models (MLLMs). It organizes prior work into five categories—linguistic similarity, lexical overlap, model architecture, pre-training settings, and pre-training data—and aims not only to summarize findings but also to reconcile apparent contradictions across studies. Overall, I found the paper timely, useful, and reasonably well structured. The topic is important: cross-lingual transfer remains one of the central empirical phenomena behind multilingual NLP, and a synthesis of what is known about its drivers is valuable for both practitioners and researchers. The paper’s main strength is that it goes beyond a superficial catalog of papers and attempts to articulate where the literature agrees, where it conflicts, and why those conflicts may arise.
 
-This paper is a review of factors that influence zero-shot cross-lingual transfer in multilingual language models (MLLMs). The authors organize prior work into five categories: linguistic similarity, lexical overlap, model architecture, pre-training settings, and pre-training data. They aim not only to summarize findings, but also to reconcile contradictions across studies and provide a common reference point for future work. The paper includes useful summary tables, especially Table 1 (page 3) on linguistic-similarity studies and Table 2 in the appendix (page 13) listing surveyed papers by task, model, language type, and factor.
+The paper is clearly motivated. The introduction frames the puzzle well: strong cross-lingual transfer emerges even in models such as mBERT and XLM-R that are not explicitly trained with parallel supervision. The authors then define a concrete scope—traditional zero-shot transfer without translation-based pipelines—which is a sensible boundary for a review of this kind. The five-factor taxonomy is intuitive and broad enough to cover much of the literature. I also appreciated the effort to provide consolidated tables. In particular, Table 1 on page 3 and Table 2 in Appendix A on page 13 are helpful reference artifacts: they summarize papers by task, model, language type, features/factors, and metrics, making the survey easier to navigate than many narrative-only reviews.
 
-Overall assessment
+A major positive aspect is the paper’s attempt to explain contradictions rather than merely listing them. For example, in the discussion of linguistic similarity, the authors note that studies using random permutation or reversal of word order may overstate the importance of syntax relative to more realistic structured modifications. This is a thoughtful point. Similarly, in the lexical overlap section, the paper proposes that conflicting findings can be partly explained by interactions with word order and resource level. The synthesis around Deshpande et al. (2022), K et al. (2020), and Conneau et al. (2020b) is one of the stronger parts of the paper: it gives the reader a plausible unifying interpretation instead of leaving the literature fragmented. The paper also repeatedly emphasizes interactions among factors and task-specific effects, which is exactly the right message for this area.
 
-The paper addresses an important and timely topic. Cross-lingual transfer remains central to multilingual NLP, and the literature is indeed fragmented across tasks, models, and experimental setups. The paper’s main strength is its attempt to synthesize disparate findings into a coherent taxonomy and to discuss why prior studies disagree. In particular, the discussion of interactions between factors—especially lexical overlap and word order—is thoughtful and more useful than a purely descriptive survey.
+That said, the paper also has several limitations that reduce its rigor as a top-tier survey. The most important issue is methodological transparency. The paper states that it surveys the literature and provides a list of papers in Appendix A, but it does not describe a systematic search and selection protocol. There is no explicit account of search terms, databases, inclusion/exclusion criteria, time window, screening process, or how the authors handled overlapping versions (e.g., arXiv vs. conference publications). As a result, the review reads more like a narrative survey than a systematic review. That is acceptable in principle, but then the claims about “consensus,” “conflicts,” and “resolution” should be framed more cautiously. Without a transparent methodology, it is difficult to assess completeness or selection bias. The authors do acknowledge selection bias in the limitations section on pages 9–10, which is good, but this remains a substantive weakness.
 
-That said, the paper is somewhat limited as a rigorous review. The methodology for selecting papers is underdeveloped, the coverage is selective rather than systematic, and some of the “conflict resolution” remains speculative. The paper is valuable as a narrative review and orientation piece, but it falls short of the standards of a fully systematic survey or meta-analysis. I would view it as a useful synthesis with moderate novelty, but with room for improvement in rigor, completeness, and precision.
+A second concern is that many of the paper’s “resolutions” of contradictory findings are plausible hypotheses rather than firmly established conclusions. For instance, the explanation that differences between tree-based models and Lasso regression may account for conflicting feature-importance results in lexical overlap is reasonable, but it is still speculative. Likewise, the claim that syntax may be overestimated because random permutations are unrealistic is sensible, but it is not directly validated within the survey. In several places, the paper moves from summarizing evidence to advancing its own interpretive hypotheses. That is not inherently problematic, but the distinction between evidence-backed synthesis and author conjecture should be made sharper. Phrases such as “we hypothesize” are used in some places, which helps, but the overall narrative occasionally sounds more definitive than the underlying evidence warrants.
 
-Strengths
+A third weakness is that the taxonomy, while useful, sometimes blurs causal boundaries between factors. Linguistic similarity and lexical overlap are treated separately, but in practice they are often entangled with script, tokenizer behavior, vocabulary construction, and pre-training corpus composition. The paper acknowledges interactions, yet the organization remains largely factor-by-factor. This makes the survey readable, but it also risks reinforcing a decomposition that the literature itself increasingly suggests is not cleanly separable. A stronger survey might include a dedicated synthesis section or conceptual diagram showing which factors are likely upstream, downstream, or mediating variables. For example, script similarity affects lexical overlap, which affects tokenizer quality, which affects token-level transfer; corpus size and domain affect representation quality and may moderate the role of overlap. The current discussion hints at this but does not fully formalize it.
 
-1. Clear and useful taxonomy
-The five-factor organization is intuitive and effective. It gives the review a strong structure and makes it easier for readers to navigate a broad literature. The categories are broad enough to cover most of the relevant space while still being concrete.
+Relatedly, the paper could do more to distinguish correlation from causation across the surveyed evidence. Some studies use controlled synthetic interventions, while others rely on observational correlations over natural languages and feature-importance analyses from predictive meta-models. These are very different evidentiary regimes. The paper mentions this distinction in the discussion on page 9, especially regarding synthetic versus natural languages and the limitations of feature importance, but it would benefit from a more systematic treatment throughout. For example, each factor section could explicitly separate evidence from controlled manipulation studies versus evidence from correlational studies. That would help readers calibrate confidence in the conclusions.
 
-2. Good synthesis of conflicting findings
-The paper does more than list papers. In several places it tries to explain why prior results differ. The discussion of lexical overlap is the strongest example: the authors argue that lexical overlap may matter more when word order differs or when source-language pretraining data is limited. This is a useful integrative perspective.
+The coverage is generally solid for the stated scope, but there are some omissions or underdeveloped areas. First, the survey is heavily centered on encoder-style models such as mBERT, XLM, and XLM-R, which is understandable given the literature up to 2023, but the paper itself notes in the discussion that generative models remain underexplored. Since the title is broad—“multilingual language models”—the paper could better signal in the title, abstract, or early framing that the review is primarily about encoder-based or BERT-like MLLMs and zero-shot transfer in discriminative tasks. Second, the survey focuses on zero-shot transfer performance but says relatively little about representation-level diagnostics beyond a few cited works. A more explicit subsection on probing/alignment evidence could strengthen the bridge between behavioral findings and mechanistic explanations. Third, the paper does not deeply engage with evaluation artifacts and benchmark limitations, despite the fact that cross-lingual transfer results are known to be sensitive to dataset translation quality, annotation projection, domain mismatch, and label semantics. Some of this is outside scope, but it matters for interpreting the surveyed findings.
 
-3. Attention to interactions and task dependence
-A recurring theme is that factors do not operate independently and that their importance varies by task. This is an important message for the field. The paper repeatedly notes that lower-level tasks and higher-level tasks may behave differently, and that conclusions drawn from one setup may not generalize.
+I also found the treatment of tasks somewhat uneven. The paper repeatedly distinguishes “higher-level” tasks such as NLI and QA from “lower-level” tasks such as POS, NER, and DP, and this distinction is often useful. However, the categorization is a bit coarse and occasionally under-argued. NER, for example, is labeled as token-level/low-level, but its transfer behavior is also strongly shaped by named entity distribution, orthography, and domain. QA is grouped as higher-level, but multilingual QA datasets vary substantially in whether they test retrieval, span extraction, or translation artifacts. The survey would be stronger if it were more explicit about what dimensions of task variation matter: token vs. sentence level, syntactic vs. semantic, extractive vs. generative, domain sensitivity, label-space invariance, and so on.
 
-4. Helpful summary tables
-Table 1 on page 3 and Table 2 on page 13 are useful reference resources. They summarize tasks, models, language types, features, and metrics in a compact way. For readers entering the area, these tables add practical value.
+On writing quality, the paper is mostly clear and readable. The structure is logical, and the section conclusions are helpful. The tables are useful, especially the summary table on page 13. However, there are a number of minor language and presentation issues. I noticed occasional grammatical awkwardness and typographical inconsistencies, such as duplicated punctuation (“effectiveness..” on page 2), inconsistent capitalization, and some slightly imprecise phrasing. These do not obstruct understanding, but they do give the manuscript a somewhat less polished feel than ideal for a survey paper. There are also places where claims could be more carefully hedged. For example, statements like “syntax has been suggested as potentially the most important linguistic contributor” are acceptable, but the confidence level should be tied more explicitly to the nature and breadth of the evidence.
 
-5. Balanced tone
-The paper generally avoids overclaiming. The limitations section acknowledges selection bias, methodological heterogeneity, and publication bias. This is appropriate for a review paper.
+One thing I appreciated is that the paper includes a limitations section and an ethics statement. For a review paper, this is good practice. The limitations section on pages 9–10 is honest about selection bias, methodological heterogeneity, and publication bias. Still, some of these limitations are severe enough that they should influence the framing of the contributions more strongly in the abstract and introduction. The abstract currently claims to “identify consensuses” and “resolve conflicts,” which may overstate what a narrative review without systematic methodology can do. A more accurate framing would be that the paper proposes explanations for conflicts and highlights emerging patterns.
 
-Weaknesses
+In terms of novelty, the paper’s contribution is primarily organizational and synthetic rather than empirical. That is appropriate for a review. Its value lies in consolidating a scattered literature and offering a common vocabulary. I think it succeeds reasonably well at that. The five-factor categorization is not radically new, but it is practical and likely useful to readers entering the area. The strongest novel aspect is the cross-paper synthesis of contradictory findings, especially around lexical overlap and syntax. The weakest aspect is that some of these syntheses are not yet backed by a sufficiently systematic or formal comparative methodology.
 
-1. Review methodology is not sufficiently rigorous
-The biggest weakness is the lack of a clear survey methodology. The paper says it surveys literature and provides a list in Appendix A, but it does not explain:
-- how papers were identified,
-- what inclusion/exclusion criteria were used,
-- what time period was covered,
-- whether the search was systematic,
-- how disagreements or borderline cases were handled.
+For improvement, I would strongly encourage the authors to add a dedicated methodology section for the review process. Even a lightweight but explicit protocol would substantially improve credibility: where papers were searched, what years were covered, what counted as in-scope, whether only peer-reviewed papers were included, how preprints were handled, and how the final set in Appendix A was assembled. I would also recommend a clearer evidentiary taxonomy throughout the survey: controlled intervention studies, correlational studies over natural languages, predictive meta-model studies, and representation/probing studies. This would help readers understand which conclusions are robust and which are tentative. A summary figure showing hypothesized interactions among the five factor groups would also be valuable. Finally, the paper would benefit from a more explicit “open problems” section that prioritizes unresolved questions, such as disentangling script from overlap, understanding scaling effects in multilingual generative models, and designing benchmarks that isolate transfer mechanisms rather than dataset artifacts.
 
-Without this, it is hard to assess completeness or reproducibility. For a review paper, this is a significant issue.
+My overall assessment is positive but not unreservedly so. This is a useful and thoughtful survey on an important topic, with clear structure and several insightful syntheses. Its main weaknesses are the lack of systematic review methodology, occasional overstatement of conclusions, and insufficient separation of causal versus correlational evidence. If judged as a narrative survey, it is solid and likely helpful to the community. If judged by the standards of a rigorous top-tier review article, it would benefit from stronger methodological grounding and sharper calibration of claims.
 
-2. “Resolving conflicts” is sometimes speculative
-The paper often proposes plausible explanations for contradictory findings, but these explanations are usually not directly validated. For example, the discussion of why lexical overlap findings differ across Pires et al., Tran and Bisazza, Wu and Dredze, K et al., and Conneau et al. is interesting, but still largely inferential. That is acceptable in a narrative review, but the paper sometimes presents these reconciliations with more confidence than the evidence warrants.
-
-3. Coverage is somewhat narrow and centered on encoder-style MLMs
-The review focuses mainly on mBERT, XLM, XLM-R, and related encoder models. That is understandable given the topic, but the title is broad (“multilingual language models”), and the paper itself notes only briefly in the discussion that generative models remain underexplored. Given the current landscape, the scope should either be narrowed more explicitly in the title/positioning or expanded to include multilingual seq2seq and decoder-based models where relevant.
-
-4. Limited depth on evaluation methodology
-The paper discusses factors affecting transfer, but less attention is given to how transfer is measured and how evaluation choices shape conclusions. For example:
-- zero-shot transfer can vary substantially by source language choice,
-- benchmark composition can bias conclusions,
-- task formulations differ across papers,
-- some studies use synthetic languages while others use natural languages,
-- some use feature-importance predictors rather than direct causal interventions.
-
-These differences are mentioned, especially in the discussion, but they deserve a more systematic treatment earlier in the paper.
-
-5. Some categories overlap conceptually
-The distinction between “linguistic similarity” and “lexical overlap” is useful, but in practice the literature often entangles them. Likewise, “pre-training settings” and “pre-training data” interact strongly. The paper acknowledges interactions, but the taxonomy can sometimes give a cleaner separation than the evidence supports.
-
-6. Writing quality is generally good but uneven in places
-There are a few awkward phrasings and minor grammatical issues. Examples include occasional punctuation problems, repeated wording, and some slightly imprecise claims. These do not prevent understanding, but they reduce polish. There is also at least one typo-like issue on page 2 (“effectiveness..”).
-
-Detailed comments by section
-
-Introduction
-The introduction motivates the problem well. The contrast between models with explicit cross-lingual objectives and those trained only on monolingual corpora is a good entry point. The five-factor framing is introduced clearly.
-
-One suggestion: the introduction could better define what counts as an “explanation” of cross-lingual transfer. Is the goal causal understanding, predictive understanding, or practical guidance? The paper mixes these aims somewhat.
-
-Background
-The background section is concise and adequate. The explanation of zero-shot transfer is clear. The decision to exclude translation-based transfer methods from the main focus is reasonable and well justified.
-
-However, the background could better distinguish:
-- transfer performance as an empirical outcome,
-- representational alignment as a hypothesized mechanism,
-- and source-language selection as a downstream practical problem.
-
-These are related but not identical.
-
-Section 3.1: Linguistic Similarity
-This is one of the stronger sections. The paper does a good job summarizing metrics such as WALS and lang2vec and distinguishing studies using natural versus synthetic languages. Table 1 on page 3 is especially helpful here.
-
-The discussion of word order is nuanced. I appreciated the point that random permutation or reversal may overestimate the importance of syntax because such perturbations are unnatural. That is a valuable caution.
-
-Still, the section could be improved by being more precise about what “syntax” means across studies. Word order is only one aspect of syntax, and some cited works may operationalize syntactic similarity differently. The review sometimes slides between “word order” and “syntax” too quickly.
-
-Section 3.2: Lexical Overlap
-This is probably the paper’s best section. The authors do a strong job of organizing apparently contradictory findings and proposing a coherent interpretation: lexical overlap is not a sufficient standalone explanation, but it matters more under certain conditions, especially when word order differs or when source-language resources are limited.
-
-The discussion of cross-script transfer is also useful. The paper correctly notes that successful transfer across scripts argues against simplistic lexical-overlap explanations.
-
-My main concern here is evidential strength. The synthesis is plausible and insightful, but it would benefit from a clearer distinction between:
-- directly established findings,
-- the authors’ interpretation,
-- and open hypotheses.
-
-Section 3.3: Model Architecture
-This section is informative but thinner than the previous two. The review highlights depth, parameter count, attention heads, parameter sharing, and embedding alignment. The summary that overparameterization may encourage language-specific subspaces is interesting.
-
-However, this section feels underdeveloped relative to the importance of the topic. For example, there is little discussion of:
-- encoder-only vs encoder-decoder architectures,
-- vocabulary sharing as an architectural/design choice versus a tokenizer choice,
-- layerwise specialization,
-- positional encoding choices,
-- or scaling effects beyond the specific cited studies.
-
-If the literature is sparse, that is fine, but then the paper should say more explicitly that this area remains underexplored.
-
-Section 3.4: Pre-Training Settings
-This section is useful, especially the discussion of NSP, subword vs word/character units, sequence length, and tokenizer quality. The distinction between tokenizer quality effects on token-level versus sentence-level tasks is sensible.
-
-Still, the section could better separate:
-- objective design,
-- tokenization/vocabulary design,
-- and optimization/training schedule choices.
-
-Currently these are grouped together under “pre-training settings,” which is understandable, but somewhat broad.
-
-Section 3.5: Pre-Training Data
-This section makes an important point: target-language pretraining corpus size and corpus comparability matter, and their effects vary by task. The discussion of domain/source mismatch is useful.
-
-A limitation is that the section focuses mostly on corpus size and source/domain, but less on other important data properties such as:
-- data quality/noise,
-- deduplication,
-- balance across languages,
-- genre diversity,
-- script normalization,
-- and token distribution skew.
-
-Again, perhaps the literature is limited, but the review could frame these as open dimensions more explicitly.
-
-Related Work and Discussion
-The related work section is brief but adequate. The discussion section is thoughtful and contains some of the paper’s most interesting forward-looking ideas, especially the suggestion that multilingual modeling might benefit from organizing around linguistic features rather than language identities. That is provocative and worth raising.
-
-At the same time, some of these proposals are quite speculative and would benefit from being framed more cautiously.
-
-Limitations and ethics
-It is good that the paper includes both sections. The limitations section is honest, though it also underscores the need for a more systematic review methodology. The ethics statement is well intentioned, though somewhat generic.
-
-Novelty and significance
-
-For a review paper, the novelty lies in synthesis rather than new experiments. The main contribution is the five-part taxonomy and the attempt to reconcile conflicting findings. I think this is moderately novel and useful. The paper is likely to help newcomers and could serve as a reference point for researchers designing multilingual transfer studies.
-
-Its significance is practical rather than foundational: it organizes the space and highlights interactions and caveats. That said, because the review is not systematic and some conclusions are interpretive, I would be cautious about treating it as definitive.
-
-Questions / suggestions for improvement
-
-1. Strengthen the review methodology
-Please add a dedicated section describing:
-- search sources,
-- keywords,
-- date range,
-- inclusion/exclusion criteria,
-- number of papers initially identified and finally included,
-- and how papers were categorized.
-
-Even a lightweight PRISMA-style description would substantially improve rigor.
-
-2. Clarify scope in title and framing
-If the review is mainly about encoder-style multilingual masked language models and zero-shot transfer, say so more explicitly. The current title is broad.
-
-3. Distinguish evidence from interpretation
-Throughout Sections 3.1 and 3.2 especially, mark more clearly which statements are:
-- consensus findings,
-- mixed findings,
-- or the authors’ hypotheses for reconciliation.
-
-4. Add a summary figure
-A visual summary would help. For example, a matrix with factors on one axis and tasks/models/settings on the other, indicating strength/consistency of evidence, would make the review more actionable.
-
-5. Discuss causality more explicitly
-Some cited studies use controlled interventions, while others use correlational predictors or feature importance. These support different strengths of inference. The review should explicitly distinguish causal evidence from correlational evidence.
-
-6. Expand discussion of underexplored areas
-The paper already mentions generative models. It would also be useful to highlight gaps such as:
-- multilingual instruction tuning,
-- decoder-only multilingual LMs,
-- code-switching,
-- morphology-rich low-resource languages,
-- and evaluation beyond standard benchmarks.
-
-7. Improve writing and polish
-A careful proofreading pass would help. There are minor grammatical and stylistic issues throughout.
-
-Recommendation
-
-Weak Accept / Borderline
-
-Rationale
-
-I find the paper useful and reasonably well written, and I think the taxonomy plus the synthesis of conflicting findings provide value. The tables, especially Table 1 on page 3 and Table 2 on page 13, make the paper a practical reference. However, the paper is better characterized as a narrative review than a rigorous systematic survey, and some of its conflict-resolution claims are more speculative than conclusive. If the venue values broad, integrative review papers, I would lean positive. If it expects stronger methodological rigor for surveys, I would be more hesitant.
-
-Confidence
-
-High. The paper’s goals, structure, and claims are clear, and the main strengths and weaknesses are straightforward to assess from the manuscript.
+In summary, I see this paper as a worthwhile contribution that can serve as a practical entry point and reference for researchers working on multilingual transfer. Its tables and factor-based organization are useful, and its discussion of contradictions is often insightful. To reach a higher standard, however, the paper should be more explicit about how the literature was selected, more careful in distinguishing evidence from hypothesis, and more systematic in organizing the strength and type of evidence behind each claimed factor.

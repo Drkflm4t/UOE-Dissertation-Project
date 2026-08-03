@@ -1,134 +1,37 @@
-Summary:
-This paper studies privacy-preserving activation steering for LLM alignment. It proposes PSA, a simple method that computes mean steering vectors from paired positive/negative demonstrations, clips and normalizes per-example difference vectors, and adds Gaussian noise to obtain differentially private steering vectors. These vectors are then reused at inference time with no further privacy cost by post-processing. The paper also introduces a membership inference attack tailored to activation steering using canary demonstrations and output-only access. Experiments across seven alignment behaviors and several open-source instruction-tuned LLMs suggest that PSA preserves much of the utility of non-private mean steering while providing formal DP guarantees and reducing empirical privacy leakage.
+This paper studies privacy-preserving activation steering for LLM alignment. The core idea is simple and appealing: compute standard mean steering vectors from paired positive/negative demonstrations, clip and normalize per-example activation differences, and add Gaussian noise so that the released steering vectors satisfy differential privacy. The resulting method, PSA, is then used at inference time exactly like ordinary activation editing, with the important benefit that once the private steering vectors are released, arbitrarily many downstream generations incur no additional privacy cost by post-processing. The paper also proposes what the authors describe as the first membership inference attack tailored to activation steering, based only on generated text rather than token probabilities, and evaluates both utility and empirical privacy across several alignment behaviors and multiple open-source LLM families.
 
-Overall assessment:
-I found the paper timely, well-motivated, and potentially impactful. The core idea is simple but meaningful: if organizations use private demonstrations to derive steering directions, those directions themselves may leak information, and DP is a natural way to protect them. The paper appears to be the first to formulate and study this problem for activation editing. The empirical scope is fairly broad in terms of behaviors and model families, and the privacy auditing component is a useful addition.
+Overall, I find the paper timely, well motivated, and potentially impactful. Activation steering is increasingly used as a lightweight alternative to fine-tuning, and the privacy implications of constructing steering vectors from sensitive demonstrations are indeed underexplored. The paper’s main conceptual contribution is straightforward but meaningful: privatize the steering vectors themselves rather than the model training process. This is a natural fit for differential privacy, and the offline nature of the mechanism is practically attractive. The empirical scope is also fairly broad: seven behavioral datasets, several model families, multiple utility metrics, and an empirical privacy audit. I think the paper makes a credible case that privacy for activation editing is an important problem and that a simple DP mechanism can work surprisingly well.
 
-That said, I have several concerns about the technical precision of the DP accounting, the strength and realism of the empirical privacy evaluation, and some aspects of the experimental methodology. The paper is promising, but I think it would benefit from tighter theory statements, stronger baselines, and more careful privacy/utility analysis before being accepted at a top venue.
+The strongest aspect of the paper is the clarity of the privacy framing. The setup in Sections 3 and 4 is easy to follow, and Figure 1 on page 2 and Figure 2 on page 5 communicate the two-phase workflow effectively: first generate private steering vectors from paired demonstrations, then use them for unlimited private generation. The post-processing argument is standard but important here, and the paper correctly emphasizes that the privacy budget is paid once when releasing the steering vectors, not per query. This is a genuine practical advantage over many inference-time privacy mechanisms. I also appreciated that the paper explicitly discusses why activation editing may still leak information even though it is not conventional fine-tuning.
 
-Strengths:
+The empirical evaluation on alignment benchmarks is encouraging. Figure 3 on page 7 shows that PSA generally tracks non-private mean steering closely and usually remains clearly above zero-shot performance for Llama-2, Mistral, and Qwen across the seven behaviors. The scaling result in Figure 4 on page 9 is also interesting: the privacy-utility gap appears to shrink with model size, at least on the Refusal dataset for the Qwen family. If robust, this is an important practical message, since many real deployments will use larger instruction-tuned models. The MMLU results in Table 5 on page 9 suggest only modest degradation in general capabilities, which helps support the claim that PSA does not catastrophically distort the model outside the target behavior.
 
-1. Novel problem formulation
-The paper identifies an important and underexplored privacy risk: activation steering vectors derived from private demonstrations may leak membership information. This is a natural and practically relevant setting, especially for enterprise/private-domain deployment.
+That said, I have several concerns, some of them substantial.
 
-2. Simple and elegant method
-PSA is straightforward: clip per-example activation differences and add Gaussian noise. This simplicity is a virtue. It is easy to implement and compatible with existing steering pipelines.
+My main concern is that the privacy accounting and mechanism specification are underdeveloped relative to the claims. The paper states in Algorithm 1 on page 5 that the private steering vector is computed as the average of clipped/scaled difference vectors plus Gaussian noise with standard deviation sigma = 2 sqrt(2 ln(1.25/delta)) / (n epsilon). This formula appears to assume sensitivity 2/n, presumably because neighboring datasets can differ in one paired demonstration and each clipped vector has norm at most 1. That is plausible, but the paper should derive this explicitly and carefully. As written, the notation is a bit sloppy: the Gaussian mechanism in Fact 2.1 on page 3 is written as adding N(0, sigma^2), which for a vector-valued output is ambiguous. Is the noise isotropic Gaussian N(0, sigma^2 I_d)? Since the steering vectors live in high-dimensional activation space, this matters. More importantly, the privacy guarantee is stated as (|S| epsilon, |S| delta)-DP by basic composition across layers, but the mechanism releases multiple high-dimensional vectors, one per selected layer. If the same example contributes to all selected layers, then composition is indeed needed, but the paper should be more explicit about whether the per-layer epsilon values in Table 2 are chosen independently or derived from a fixed total budget. Right now the presentation mixes “per-layer epsilon” and “total epsilon” in a way that is easy to misread.
 
-3. Formal privacy framing
-The paper gives a clean DP formulation and correctly leverages post-processing to argue that once the private steering vectors are released, arbitrarily many downstream generations incur no additional privacy cost.
+Relatedly, the experimental privacy setup fixes the noise standard deviation to 0.02 and then reports the resulting theoretical epsilon values in Table 2 on page 7. This is a somewhat unusual presentation for a DP paper. Typically one fixes a target privacy budget and calibrates noise accordingly. Here, because sigma is fixed across datasets and models, epsilon varies with n and perhaps implicitly with clipping. That is not wrong, but it weakens the privacy-utility story because the comparisons are not made at matched privacy budgets. In particular, some datasets have epsilon around 2 while others are as high as 6.6 total, which is a much weaker guarantee. The paper repeatedly says PSA achieves DP “with minimal loss in performance,” but the utility numbers are aggregated across quite different privacy regimes. A stronger evaluation would sweep epsilon directly and compare utility as a function of privacy budget, ideally against alternative DP baselines.
 
-4. Broad empirical coverage
-The experiments span seven alignment-relevant behaviors, multiple model families (Llama, Qwen, Mistral, Gemma), and some scaling analysis. This breadth is appreciated.
+A second major concern is that the empirical privacy attack, while novel and interesting, is narrow and somewhat stylized. The canary-based MIA in Section 6 inserts synthetic anchor-target pairs into demonstrations and then checks whether the steered model preferentially emits the target when prompted with the anchor. This is a reasonable first audit, but it is closer to a targeted canary extraction test than a general membership inference attack on natural demonstrations. The attack depends on specially constructed synthetic entities, repeated sampling at temperature 0.8, and threshold tuning that differs by model (tau = 40 for Llama-2 and 70 for Qwen, page 10). It demonstrates that non-private steering can encode and reveal synthetic associations, but it does not yet establish how vulnerable activation steering is to realistic MIAs on ordinary private data. The paper should be more careful in its claims here. Calling this “the first MIA for activation editing” is probably fair, but the broader implication that PSA protects against membership inference in realistic settings is less well supported.
 
-5. First attack tailored to this setting
-The canary-based MIA is a useful first step toward auditing privacy in activation steering, especially under output-only access.
+The empirical epsilon computation in Section 6 also deserves more scrutiny. The paper uses FPR and FNR from the attack to derive an empirical epsilon, following prior auditing work. This is fine as an audit heuristic, but it is not a direct estimate of the true privacy loss of the mechanism; it is only with respect to a particular adversary and test. The paper does mention that theoretical bounds are conservative, but some of the wording risks overinterpretation. For example, saying that empirical epsilon is lower than theoretical epsilon “suggesting stronger protection with PSA in real-world settings” is too broad given the narrow attack family. It would be better to say that under this specific canary-based audit, the observed leakage is lower than the worst-case DP bound.
 
-6. Utility appears reasonably preserved
-Across the plots in Figure 3 and the tables on pages 7–10, PSA often tracks non-private mean steering fairly closely and generally improves over zero-shot on the targeted behaviors.
+A third concern is the strength of the utility evaluation itself. The behavioral datasets are inherited from prior work and are useful for controlled steering experiments, but they are fairly artificial binary-choice tasks. The paper does include open-ended generation evaluation using GPT-4 as a judge, which is good, but Table 3 on page 8 raises questions. For some behaviors, the scores are extremely low across all methods, especially AI Coordination and Sycophancy, making it hard to interpret practical significance. Also, the paper does not report variance, confidence intervals, or significance tests anywhere in the main results. Since the differences between Mean Steering and PSA are often small, it is difficult to know whether they are meaningful or within run-to-run noise. This is especially important because the method itself is randomized. Were the reported PSA numbers averaged over multiple noise draws, or from a single sampled steering vector? The paper does not clearly say. If only one draw was used, the results may be unstable.
 
-Weaknesses / concerns:
+The choice of baselines is another weakness. The paper compares PSA mainly to zero-shot, mean steering, and PCA steering. That is a reasonable starting point, but for a privacy paper I would have liked at least one stronger privacy-aware baseline, even if adapted from adjacent settings. For example, a simple non-DP clipping-only baseline, or a mechanism that privatizes a lower-dimensional projection of the steering vectors, or a DP variant of PCA steering, would help isolate whether the proposed mean-based privatization is especially effective. The appendix does include clipping-only ablations on pages 20–21, but these are not integrated into the main comparison. More broadly, the paper’s claim of being the first DP activation editing method is plausible, but the empirical case would be stronger if it compared against more than two non-private steering methods.
 
-1. DP theorem statements are too loose and in places technically questionable
-The privacy guarantee is presented as (|S|ε, |S|δ)-DP by basic composition over layers. This is fine as a simple upper bound, but the paper’s actual mechanism and notation need more care.
+There are also some methodological ambiguities. The paper says on page 6 that “the noisy vectors are generated by adding Gaussian noise with 0.02 standard deviation,” but because the vectors are normalized by clipping threshold and live in different layer dimensions across models, it is not obvious that a fixed sigma is comparable across settings. The clipping threshold itself is treated as a hyperparameter estimated from public data, but the main text does not specify how it was chosen in the reported experiments. The appendix ablation on pages 20–21 suggests utility is sensitive to clipping threshold, so this choice matters. Similarly, the selected layers are said to be the five middle layers (11–15) for 7B models in Table 2, but it is unclear whether the same relative layer positions are used for smaller models and all model families, and whether this was tuned per behavior. Since steering performance is known to depend strongly on layer choice, more detail is needed for reproducibility and for assessing fairness of comparisons.
 
-- In Algorithm 1 on page 5, the Gaussian noise is written as N(0, σ^2), but the steering vector is d-dimensional. Presumably this means isotropic Gaussian N(0, σ^2 I_d). This should be stated explicitly.
-- The sensitivity argument is only implicit. Since neighboring datasets differ in one paired demonstration, replacing one clipped vector with another changes the average by at most 2/n in L2 norm if each clipped-normalized vector has norm at most 1. This seems to explain the factor 2 in σ, but the paper should state this derivation clearly.
-- The clipping/normalization description is somewhat confusing. The algorithm uses \bar d_i^l = d_i^l / max{C_l, ||d_i^l||_2}, which indeed ensures norm at most 1, but the text alternates between “project to an L2 ball of radius C_l and then scale by C_l” and “divide by threshold before noise addition.” These are equivalent only if carefully defined; the exposition should be tightened.
-- The paper repeatedly says the model can answer “infinitely many queries” with no extra privacy cost. Formally, this is true only if the private steering vectors are computed once and then all future outputs are pure post-processing of those fixed DP outputs. However, if any hyperparameter tuning, layer selection, threshold selection, or multiplier selection uses private data adaptively, that incurs privacy cost. The current presentation underplays this issue.
+I also found some of the qualitative examples a bit awkward. For instance, the hallucination example in Table 11 on page 19 appears to show both Mean Steering and PSA producing clearly false content, which is consistent with the benchmark’s framing but makes it hard to understand whether lower GPT-4 hallucination scores correspond to better factuality in a practical sense. More generally, because the behaviors include unusual axes like AI Coordination and Survival Instinct, the paper would benefit from a clearer discussion of which results should be interpreted as safety-relevant versus merely diagnostic. This matters because “alignment” is used broadly throughout, but some of these axes are more speculative than others.
 
-2. Hyperparameter selection and privacy accounting are under-specified
-A major practical concern is whether the reported privacy guarantees include model selection and tuning.
+Despite these concerns, I think the paper has real merit. The problem is novel, the proposed solution is elegant, and the empirical results are promising enough to justify publication if the claims are tightened and the presentation improved. In particular, the paper would be significantly stronger with the following revisions.
 
-- The paper says the clipping constant can be “optimised for or estimated using a small public dataset” (page 5), but it is unclear what was actually done in experiments.
-- The selected layers appear fixed to five middle layers for the main experiments (Table 2 on page 7), but the rationale seems borrowed from prior work rather than validated privately. If layer selection was informed by private validation, privacy accounting should include it.
-- The noise scale is fixed to 0.02 standard deviation (page 6), and then ε is derived from that. This is acceptable if chosen independently of private data, but the paper should explicitly state whether all hyperparameters were fixed a priori or tuned on public data only.
-- The steering strength λ is fixed to 1 for positive steering, but again it is not clear whether this was selected using private data.
+First, strengthen the DP exposition. Provide a formal theorem with a complete sensitivity derivation for the vector-valued mechanism, explicitly state the neighboring relation on paired demonstrations, and clarify the exact covariance of the added Gaussian noise. Also explain how the per-layer and total privacy budgets are allocated in experiments, and consider reporting results as utility versus target epsilon rather than fixing sigma.
 
-Without a precise statement of what is public, what is private, and what tuning touched private data, the end-to-end DP claim is incomplete.
+Second, improve the empirical rigor of the utility evaluation. Report averages over multiple PSA noise draws with standard deviations or confidence intervals. If possible, include significance testing for the gap between Mean Steering and PSA. Clarify how clipping thresholds and layer subsets were selected, and whether any public validation data was used.
 
-3. The empirical privacy evaluation is interesting but limited
-The MIA is novel, but its realism and interpretation are limited.
+Third, temper and broaden the privacy audit claims. The canary-based attack is a useful contribution, but it should be framed as a targeted extraction-style MIA rather than a comprehensive privacy evaluation. If feasible, add at least one more attack variant on naturalistic demonstrations or paraphrased canaries, and analyze sensitivity to temperature, threshold, and number of samples. It would also help to compare against a clipping-only non-DP baseline in the privacy audit.
 
-- The attack inserts synthetic canaries directly into the demonstration set (pages 9–10, 22). This is useful as a stress test, but it is not the same as inferring membership of naturally occurring private examples.
-- The attack is highly specialized to lexical canary recall. It may detect one kind of memorization-like leakage, but activation steering could leak semantic or attribute-level information in ways this attack would miss.
-- The threshold τ is chosen separately for Llama and Qwen (page 10). It is not clear how τ was selected and whether this uses held-out attack calibration data. This matters for fairness and reproducibility.
-- The empirical ε computation from FPR/FNR is borrowed from prior auditing work, but the paper should be more careful not to overinterpret it. Empirical ε from one attack family is only a lower bound on privacy leakage detectable by that attack, not a comprehensive privacy characterization.
-- The comparison to non-private methods is somewhat trivial because non-private mean steering has no finite DP guarantee. Reporting ε_theoretical = ∞ is correct but not especially informative.
+Fourth, expand the discussion of limitations. The appendix briefly notes that only mean steering and monolingual settings are considered. I would add that the current evaluation does not address adaptive adversaries with white-box access to steering vectors, nor does it study whether private steering vectors can leak aggregate sensitive attributes even when individual membership is protected.
 
-4. Evaluation methodology has several weaknesses
-- The main alignment evaluation uses binary multiple-choice datasets from Anthropic/Rimsky et al. This is standard for steering work, but these tasks are narrow and may not reflect realistic alignment behavior.
-- GPT-4 judging is used for open-ended evaluation (page 8, Table 3), but only for Llama-2-7B in the main table. It would be stronger to report this across more models.
-- The GPT-4 scores are difficult to interpret because for some behaviors lower is better (e.g., hallucination, sycophancy, AI coordination depending on framing), while for others higher is better (e.g., refusal, corrigibility). The paper should make this explicit in each table/caption.
-- There are no confidence intervals or significance tests in the main results. Given that some differences between Mean Steering and PSA are small, uncertainty estimates are important.
-- The MMLU evaluation is unusual: the paper reformats questions into A/B format and reports “average probability of selecting the correct answer” (page 8). This is not standard MMLU accuracy and may be hard to compare or interpret.
-- The scaling analysis in Figure 4 is only shown for one dataset (Refusal) and one model family (Qwen). The claim that larger LLMs exhibit a stronger privacy-utility tradeoff is plausible but under-supported.
-
-5. Baseline selection could be stronger
-The paper compares mainly against zero-shot, PCA steering, and mean steering.
-
-- Since the contribution is DP steering, stronger non-private steering baselines would help, especially more recent activation editing methods beyond mean/PCA if applicable.
-- More importantly, there should be a comparison to simpler privacy baselines, e.g., subsampling demonstrations, using fewer examples, or adding noise directly to activations at inference time, if meaningful.
-- It would also be useful to compare against a DP in-context learning baseline or DP fine-tuning baseline in at least one setting, even if expensive, to contextualize utility/privacy tradeoffs.
-
-6. Some claims are overstated
-- “Minimal loss in performance” is mostly true qualitatively, but not uniformly. In Figure 3 there are visible drops on some datasets/models.
-- “Improved guarantees compared to several existing non-private techniques” is a bit awkward: of course any DP method improves formal privacy guarantees over non-private methods. The more meaningful question is whether the utility cost is acceptable.
-- The paper occasionally suggests that PSA “protects against MIA.” The experiments show reduced success for one tailored attack, not broad protection against all MIAs.
-
-7. Presentation issues and possible inconsistencies
-- There are a few notation and wording issues. For example, Algorithm 1 has a typo in the difference vector line (“hl((p, c+))” instead of indexed notation).
-- Table 21 on page 23 appears to contain an obvious error: the zero-shot Corrigibility score is listed as 74.74, which is impossible on a 0–10 scale. This raises concerns about proofreading.
-- Some qualitative examples are not very convincing. For instance, the hallucination example in Table 11 still contains the false premise rather than correcting it robustly.
-- The paper would benefit from a clearer distinction between “alignment toward desirable behavior” and “behavioral steering according to benchmark labels,” since some axes are normatively loaded.
-
-Questions for the authors:
-
-1. What exact neighboring relation is assumed for DP: add/remove one paired demonstration, or replace one paired demonstration? Please state this explicitly and derive the sensitivity formally.
-
-2. Were clipping thresholds, selected layers, noise scales, and steering multipliers chosen entirely without access to private data? If not, how is that privacy cost accounted for?
-
-3. Is the Gaussian noise in Algorithm 1 isotropic in R^d, i.e., N(0, σ^2 I_d)? Please clarify.
-
-4. Why is the noise scale fixed to 0.02 across datasets/models? Was this chosen for utility, privacy, or both?
-
-5. Can the authors provide confidence intervals over the main results in Figure 3 and Table 3?
-
-6. How sensitive is the MIA to the choice of threshold τ, number of generations N, and temperature? Was τ calibrated on separate attack data?
-
-7. Can the authors evaluate privacy leakage on more natural membership signals, not only synthetic canaries?
-
-8. Did the authors try advanced composition or zCDP/RDP accounting? Even if |S| is small, a more standard accountant might improve clarity.
-
-Suggestions for improvement:
-
-1. Strengthen the theory section
-Provide a formal theorem with explicit sensitivity proof, dimensionality of the Gaussian mechanism, and a precise neighboring-dataset definition. Clarify all assumptions needed for the “infinite queries at no extra cost” statement.
-
-2. Clarify end-to-end privacy accounting
-Add a subsection specifying which components are public, which are private, and how hyperparameter tuning is handled. If tuning used public data only, say so clearly.
-
-3. Improve empirical rigor
-Add standard deviations/confidence intervals, multiple random seeds for noise draws, and significance testing where appropriate.
-
-4. Expand privacy auditing
-Complement the canary MIA with at least one more attack style, ideally targeting natural examples or semantic attributes rather than lexical canaries alone.
-
-5. Broaden utility evaluation
-Report open-ended GPT-4 evaluations for more than one model, and consider a stronger factuality or safety benchmark beyond binary MCQ tasks.
-
-6. Add stronger baselines
-Include at least one simple privacy baseline and, if feasible, one alternative alignment method with privacy protection for context.
-
-7. Fix presentation issues
-Correct typos and table inconsistencies, especially the apparent error in Table 21.
-
-Recommendation:
-Weak Accept to Borderline Weak Reject
-
-Rationale:
-I like the problem, the method is clean, and the paper likely opens a useful new direction. The empirical results are encouraging, and the privacy framing is important. However, for a top conference paper, I would want tighter DP accounting, clearer handling of hyperparameter selection, stronger and more realistic privacy evaluation, and somewhat more rigorous experimental reporting. If the authors can address these concerns convincingly, I would be supportive. As it stands, I see this as promising but not fully polished.
-
-Confidence:
-3/5
-
-I am reasonably confident in the high-level assessment, especially regarding novelty and the main methodological concerns, but less confident about whether the current empirical evidence is sufficient relative to venue standards in this area.
+In summary, I view this as a good and original paper with a simple but meaningful technical contribution, solid motivation, and encouraging experiments, but also with some important gaps in privacy accounting clarity, empirical rigor, and attack realism. If accepted, it would likely stimulate useful follow-up work on privacy for inference-time alignment methods. My overall assessment is positive but not unreserved: the paper is above the bar on novelty and relevance, and probably on empirical usefulness, but it would benefit from a more careful and precise treatment of both the DP guarantees and the empirical privacy claims.
