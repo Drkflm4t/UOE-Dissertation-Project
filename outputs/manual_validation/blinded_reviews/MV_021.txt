@@ -1,0 +1,36 @@
+Review ID: MV_021
+Validation Track: RQ2
+============================================================
+
+{
+  "summary": "The paper studies reward overoptimization in offline RLHF and attributes it to distribution shift plus uncertainty in learned preference rewards. It proposes a theoretical maximin objective that selects a policy against an adversarial reward model minimizing MLE loss plus a reward penalty. The authors then derive an equivalent minimax formulation and, via the standard reward-policy reparameterization used in DPO-style methods, obtain a practical objective called RPO: DPO loss plus an SFT/imitation loss on a baseline distribution (typically chosen responses). The paper provides finite-sample guarantees under a partial coverage assumption and reports modest empirical gains over DPO on Zephyr-style 7B models, in-distribution GPT-4 judged comparisons, MT-Bench, and AlpacaEval 2.0.",
+  "strengths": [
+    "Addresses an important and practically relevant problem in RLHF: reward overoptimization / reward hacking under imperfect preference models.",
+    "The main practical takeaway is simple and useful: adding an SFT-style imitation term to DPO is easy to implement and appears to improve stability/performance.",
+    "The paper attempts to connect theory and practice rather than presenting only a heuristic; the maximin-to-minimax derivation is conceptually interesting.",
+    "Theoretical analysis is framed under general function approximation rather than only linear models, which is ambitious.",
+    "Empirical evaluation spans two model families/datasets (beta and gemma series) and multiple benchmarks, suggesting some robustness of the observed gains."
+  ],
+  "weaknesses": [
+    "The theoretical assumptions required for the equivalence and guarantees are strong, abstract, and only weakly connected to the neural-network/LLM setting used in experiments; thus the claimed 'provable' practical mitigation is overstated.",
+    "There are notable inconsistencies and likely errors in notation and derivations, especially around the choice of baseline policy versus reference policy, and around the exact form of the objective used in theory versus proofs.",
+    "The empirical gains over DPO on standard benchmarks are relatively small, while the in-distribution evaluation uses only 150 filtered examples judged by GPT-4, limiting statistical strength.",
+    "The paper does not compare sufficiently against closely related methods that also add supervised or chosen-response regularization to preference optimization (e.g., ORPO / DPO-positive-like baselines), weakening novelty on the practical side.",
+    "Hyperparameter selection for RPO appears limited and potentially favorable; there is little ablation on the regularization weight, baseline distribution choice, or sensitivity to beta/eta.",
+    "Claims about overoptimization are supported mainly by chosen-response log-probability trends, which are suggestive but not a definitive measure of true reward hacking or misalignment."
+  ],
+  "methodological_flaws": [
+    "There is a substantive mismatch between the stated objective and the proof notation. Equation (3.1)/(3.3) uses a baseline policy pi^base in the reward difference, but later Section 5.2 defines phi(pi,r) with a^0 sampled from pi^ref instead of pi^base. This is not a cosmetic typo because the equivalence theorem and subsequent proofs depend on the exact objective. The theoretical chain from Algorithm 1 to RPO is therefore not fully reliable as written.",
+    "The proof of Theorem 5.3 appears internally inconsistent in its parameter choice. The theorem statement sets eta = (1/(1+exp(R))^2) * sqrt(24 log(...)/N), whereas Appendix A later derives eta = 2 sqrt(6) * sqrt(log(...)/N) together with kappa = 1/(1+exp(R))^2. These are not the same expression, suggesting either a derivation or transcription error in the main theorem.",
+    "The decomposition at the start of Appendix A is mathematically dubious/inconsistently written: terms switch between pi^base and pi^ref, and the first equality for the gap inserts KL-regularized reward differences in a way that is not transparently justified. This undermines confidence in the finite-sample bound.",
+    "The claimed equivalence between maximin and minimax relies on Assumption 5.5 ('convex-like' reward class, compact topological space) and uniqueness of the maximizer induced by KL regularization. These conditions are far from verified for the practical parameterized policy class and neural reward/policy representations used in experiments, so Corollary 5.7 does not genuinely justify Algorithm 2 in the LLM setting.",
+    "Equation (4.10) defines \\hat r_theta as beta * log(pi_theta(a|x))/log(pi_ref(a|x)), which is dimensionally and conceptually incorrect; DPO-style reparameterization should involve a log-ratio, not a ratio of logs. This is likely a mathematical error in the gradient exposition.",
+    "The discussion that DPO's beta 'only changes the scale of the gradient instead of the direction' is not generally correct because the sigmoid weighting depends on model scores and can change relative weighting across examples, thereby affecting the aggregate gradient direction. This weakens the scientific logic used to motivate RPO.",
+    "The empirical evaluation lacks rigorous uncertainty quantification. Reported benchmark improvements are small, but no confidence intervals, bootstrap estimates, or repeated-seed variance are provided. With single-seed training and judge-model evaluation noise, it is hard to assess significance.",
+    "The in-distribution evaluation filters GPT-4 outputs to remove 'undesired annotations' and reduces to 150 examples, which may introduce selection bias. The paper does not quantify how many examples were removed per comparison or whether filtering changes conclusions.",
+    "The PCA-based argument for prompt-distribution coverage is not a valid verification of the density-ratio assumption in Corollary 5.8. Two-dimensional visualization of embeddings is at best anecdotal and does not substantiate the theoretical generalization condition.",
+    "The practical novelty is limited because the implemented method is essentially DPO plus an SFT/chosen-response loss, a design already explored in related work. The paper's main differentiator is theory, but the above inconsistencies weaken that contribution."
+  ],
+  "rating_1_10": 5,
+  "confidence_1_5": 4
+}

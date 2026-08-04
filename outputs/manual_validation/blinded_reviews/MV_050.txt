@@ -1,0 +1,39 @@
+Review ID: MV_050
+Validation Track: RQ2
+============================================================
+
+{
+  "summary": "The paper studies privacy-preserving activation steering for LLM alignment. It proposes PSA, which computes per-layer steering vectors from paired positive/negative demonstrations, clips the per-example activation differences, and adds Gaussian noise to obtain differentially private steering vectors. These vectors are then reused at inference time to steer arbitrary numbers of queries via post-processing, yielding a claimed overall privacy guarantee across selected layers. The paper evaluates PSA on seven alignment-related multiple-choice benchmarks across several open-source LLM families and sizes, compares against zero-shot and non-private steering baselines, reports limited degradation on MMLU and GPT-4 judged open-ended generation, and introduces a canary-based membership inference attack tailored to activation steering.",
+  "strengths": [
+    "Addresses an underexplored and practically relevant problem: privacy risks in inference-time activation steering rather than training/fine-tuning.",
+    "Method is simple, easy to implement, and conceptually well aligned with standard DP mechanisms (clip per-example contributions and add Gaussian noise).",
+    "Clear high-level privacy intuition: privatize the released steering vectors once, then answer unlimited downstream queries via post-processing without further privacy cost.",
+    "Broad empirical coverage across multiple model families, model sizes, and seven alignment-related behaviors.",
+    "Includes both utility evaluation (behavioral accuracy, GPT-4 judged generation quality, MMLU) and empirical privacy auditing via a custom canary-based MIA.",
+    "The scaling analysis suggesting larger models tolerate privatized steering better is interesting and potentially useful for practice."
+  ],
+  "weaknesses": [
+    "The DP accounting and mechanism specification are not fully rigorous as presented, with ambiguities that materially affect the claimed guarantees.",
+    "Algorithm 1 appears to contain a clipping/scaling error: the formula divides by max{C_l, ||d_i^l||_2} rather than the standard max{1, ||d_i^l||_2/C_l}, which bounds norms by 1/C_l when ||d||<C_l and does not match the surrounding text claiming projection to an L2 ball of radius C_l followed by scaling by C_l.",
+    "The Gaussian noise notation is dimensionally ambiguous: adding N(0, sigma^2) to a vector should specify isotropic multivariate noise N(0, sigma^2 I_d).",
+    "The sensitivity argument leading to sigma = 2*sqrt(2 ln(1.25/delta)) / (n epsilon) implicitly assumes add/remove or replace-one adjacency after clipping to unit norm, but this is not formally derived and ignores the role of C_l in the stated clipping rule.",
+    "Privacy accounting across layers is simplistic and potentially suboptimal/inconsistent with the implementation; if the same example contributes to all selected layers, composition is valid, but the paper does not clearly define whether epsilon in Table 2 is per-layer or total during tuning and reporting.",
+    "Empirical evaluation lacks statistical significance reporting or confidence intervals, making it hard to assess whether PSA is truly comparable to non-private steering across datasets/models.",
+    "The GPT-4 evaluation is weakly validated: only one model table is shown in the main text, prompt sensitivity is not analyzed, and no human evaluation or inter-rater reliability is provided.",
+    "The MMLU table appears incomplete/corrupted in the zero-shot row, which undermines confidence in result presentation.",
+    "The empirical privacy attack is narrow and may overstate practical privacy conclusions because it relies on synthetic canaries inserted into demonstrations rather than realistic sensitive attributes or naturally occurring memorization.",
+    "Comparison baselines are limited to non-private steering methods; there is no comparison to alternative DP inference-time alignment approaches or to simple noisy prompt/ICL baselines."
+  ],
+  "methodological_flaws": [
+    "The clipping equation in Algorithm 1 is mathematically inconsistent with the text and standard DP clipping. As written, \\bar{d}_i^l = d_i^l / max{C_l, ||d_i^l||_2} does not implement projection to an L2 ball of radius C_l followed by scaling by C_l. This directly affects the sensitivity bound and therefore the correctness of the privacy guarantee.",
+    "The proof sketch for privacy is incomplete. The paper states each layer output is (epsilon, delta)-DP by Gaussian mechanism, but does not formally derive the exact sensitivity under the chosen neighboring relation (replace-one vs add/remove), nor reconcile this with the factor 2 in sigma. A mistaken sensitivity bound would invalidate the claimed epsilon values.",
+    "The statement that basic composition is tighter than advanced composition for fewer than 5 layers is not generally justified as written; whether it is tighter depends on the target parameters and accountant, and no formal comparison is provided.",
+    "The empirical privacy metric \\epsilon_empirical is used as if it were an estimate of DP epsilon from one attack's FPR/FNR, but this only gives an attack-dependent lower bound style audit and cannot validate the full DP guarantee. The text occasionally overinterprets lower empirical epsilon as 'stronger protection' in a general sense.",
+    "The claim of 'minimal loss in performance' is not strongly supported because the paper provides limited uncertainty quantification, no repeated-run variance for noisy steering, and no hypothesis testing. Since PSA injects randomness, reporting single-point results is insufficient.",
+    "The MIA threshold selection (e.g., tau=40 for Llama-2 and tau=70 for Qwen-2.5) appears hand-tuned, but the procedure for choosing thresholds and avoiding test-set leakage is not described. This weakens the empirical privacy comparison.",
+    "Using GPT-4 as sole judge for open-ended quality without calibration or human verification introduces evaluator bias, especially for subtle alignment behaviors such as corrigibility or coordination.",
+    "The paper claims extensive experiments on models from 0.5B to 7B and multiple families, but several main-text tables only show Llama-2-7B or selected cases, limiting transparency of the full empirical evidence in the core paper."
+  ],
+  "rating_1_10": 6,
+  "confidence_1_5": 4
+}

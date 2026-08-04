@@ -1,0 +1,39 @@
+Review ID: MV_015
+Validation Track: RQ2
+============================================================
+
+{
+  "summary": "The paper studies privacy-preserving activation steering for LLM alignment. It proposes PSA, which computes per-layer steering vectors from paired positive/negative demonstrations, clips and normalizes per-example activation differences, and adds Gaussian noise to obtain differentially private steering vectors. These vectors are then reused at inference time to steer arbitrary numbers of user queries, with the claim that privacy cost is paid once offline and subsequent generations are post-processing. Empirically, the paper evaluates PSA on seven alignment-related behavioral benchmarks across several open-source LLMs and compares against zero-shot, mean steering, and PCA steering. It also introduces a canary-based membership inference attack tailored to activation steering and reports reduced empirical leakage under PSA.",
+  "strengths": [
+    "Addresses an underexplored and practically relevant problem: privacy risks in activation steering / inference-time alignment rather than training-time fine-tuning.",
+    "The core idea is simple and potentially useful in practice: privatize the released steering vectors once, then reuse them for unlimited downstream queries via post-processing.",
+    "Provides a clear DP framing and connects sensitivity control to clipping of per-example activation differences.",
+    "Evaluates across multiple model families, sizes, and seven alignment-related behaviors, which gives breadth to the empirical study.",
+    "Introduces a steering-specific black-box membership inference attack based only on generated text, which is a useful empirical auditing direction.",
+    "Shows a generally favorable utility/privacy tradeoff relative to non-private mean steering on the chosen benchmarks, especially for larger models."
+  ],
+  "weaknesses": [
+    "The DP mechanism and its presentation are mathematically imprecise in important ways. The Gaussian mechanism is written as adding scalar noise N(0,σ^2) to a vector output, without specifying dimension-wise isotropic noise; this matters for correctness and reproducibility.",
+    "Algorithm 1's clipping/scaling formula appears incorrect or at least inconsistently defined. Using d/max{C,||d||} does not correspond to standard clipping to radius C followed by normalization by C unless carefully justified; the text later gives a different two-step formula. This inconsistency undermines the stated sensitivity bound.",
+    "The sensitivity/noise calibration is insufficiently justified. The claimed sensitivity 2/n seems to rely on add/remove or replace-one adjacency plus unit-norm bounded vectors, but the paper never clearly specifies the neighboring relation or proves the bound under the exact clipping rule used.",
+    "Privacy accounting across layers is simplistic and potentially misleading. The paper allocates per-layer ε and composes over selected layers, but does not discuss tighter accounting, dependence across layers, or whether the same example contributes jointly to all released vectors in a way that should be formalized more carefully.",
+    "Empirical evaluation lacks statistical rigor: no confidence intervals, variance across random seeds/noise draws, or significance testing are reported for the main benchmark results.",
+    "The GPT-4-as-judge evaluation is weakly validated and some reported scores are difficult to interpret; several scores are extremely close to zero-shot, making the practical significance unclear.",
+    "The MMLU table appears incomplete/corrupted (missing zero-shot entries and at least one hallucination value), which raises concerns about result presentation quality.",
+    "The proposed MIA is highly specialized to synthetic canaries inserted into demonstrations and may not reflect realistic membership leakage for natural private examples. It demonstrates one leakage channel but not a comprehensive privacy audit.",
+    "Thresholds for the MIA are hand-chosen per model, and the attack evaluation may be sensitive to these choices; robustness analyses are missing.",
+    "Several qualitative examples appear inconsistent with the intended behavior labels (e.g., hallucination steering examples), making it harder to assess whether the steering direction semantics are stable."
+  ],
+  "methodological_flaws": [
+    "The clipping definition is scientifically inconsistent. Algorithm 1 uses \\bar d_i^l = d_i^l / max{C_l, ||d_i^l||_2}, while the text claims to first project to an L2 ball of radius C_l and then divide by C_l. These are equivalent only if explicitly derived, but the paper does not do so, and elsewhere it informally describes 'clip and scale' in ways that obscure the actual estimator. A formal proof of sensitivity under the exact implemented rule is missing.",
+    "The Gaussian mechanism is not stated correctly for vector-valued outputs. For a d-dimensional steering vector, one should specify additive isotropic Gaussian noise N(0,σ^2 I_d) (or equivalent). Writing N(0,σ^2) is mathematically ambiguous and potentially wrong.",
+    "The privacy proof is incomplete. The paper asserts each layer output is (ε,δ)-DP with σ = 2*sqrt(2 ln(1.25/δ)) / (n ε), but does not explicitly prove the L2 sensitivity of the released vector under the chosen adjacency notion and clipping rule. Since the entire contribution hinges on formal DP guarantees, this omission is significant.",
+    "The empirical privacy claim based on 'empirical ε' is overstated. Estimating ε from one specific attack's FPR/FNR only gives a lower bound on distinguishability for that attack class, not evidence that the true privacy loss is close to or below the theoretical DP guarantee in any comprehensive sense. The text risks conflating attack-specific audit results with actual privacy parameters.",
+    "The utility comparisons may be confounded by hyperparameter tuning fairness. PSA uses fixed noise std 0.02 and clipping thresholds C_l, but it is unclear whether mean steering, PCA steering, and PSA all receive equally tuned layer selections and steering strengths per model/dataset.",
+    "The claim that larger clipping thresholds increase effective noise because vectors are divided by the threshold is only partially correct and conflates estimator scaling with privacy noise calibration; the discussion of clipping/noise tradeoffs is not fully rigorous.",
+    "The MIA setup inserts synthetic canaries directly into demonstrations and then queries with the anchor canary. This is closer to a targeted extraction probe than a generic membership inference benchmark, so conclusions about broad privacy leakage from activation steering should be tempered.",
+    "Some tables contain apparent errors or anomalies (e.g., incomplete MMLU zero-shot row, implausible GPT-4 score 74.74 in Table 21), which weakens confidence in empirical validity and paper polish."
+  ],
+  "rating_1_10": 6,
+  "confidence_1_5": 4
+}

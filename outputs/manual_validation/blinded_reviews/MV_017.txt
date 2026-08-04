@@ -1,0 +1,37 @@
+Review ID: MV_017
+Validation Track: RQ2
+============================================================
+
+{
+  "summary": "The paper proposes an automated method to characterize NLI datasets into easy/ambiguous/hard subsets using training-dynamics features from models trained on the target split with premise+hypothesis and hypothesis-only inputs. Eight features (confidence, variability, correctness, AUM in both settings) are clustered with a 3-component GMM, and clusters are ranked by average confidence. The authors apply this to SNLI, MultiNLI, and FEVER, arguing that the hard split reduces spurious correlations and yields more realistic evaluation. They also apply the same characterization to training data and report that training on selected subsets can match or exceed full-data performance on Naik et al.'s stress tests while using less data.",
+  "strengths": [
+    "Addresses an important and well-motivated problem: standard NLI benchmarks contain annotation artifacts and shortcut correlations that inflate performance.",
+    "The core idea of combining premise+hypothesis and hypothesis-only training dynamics is intuitive and relevant for NLI-specific artifact detection.",
+    "Uses existing benchmark examples rather than constructing synthetic adversarial examples, which could preserve more natural language phenomena.",
+    "Empirical results show clear monotonic degradation in accuracy from easy to hard splits across multiple datasets, suggesting the clustering captures some notion of difficulty.",
+    "Includes cross-model comparison with RoBERTa and DeBERTa, providing some evidence that the induced splits are not entirely model-specific.",
+    "The training-set filtering experiments are potentially useful and suggest practical value beyond evaluation-only characterization."
+  ],
+  "weaknesses": [
+    "The central methodology trains models directly on the test set to derive training dynamics, which is highly unconventional for benchmark evaluation and risks circularity in defining hardness by memorization behavior rather than generalization difficulty.",
+    "The paper conflates several concepts—difficulty, spurious correlation, annotation artifacts, and mislabeled examples—without cleanly disentangling them; hard examples may simply be low-confidence or noisy examples rather than artifact-free ones.",
+    "Evidence that the hard split is truly less spuriously correlated is limited to a small set of shallow heuristics; absence of significance on these heuristics does not establish absence of shortcuts.",
+    "The claim of model-agnosticism is overstated: the method depends on model outputs, calibration, optimization dynamics, and architecture, and the cross-model results still show substantial differences.",
+    "The choice of exactly 3 GMM clusters appears imposed rather than justified by model selection criteria or downstream validation.",
+    "The training-set characterization comparisons to Data Maps and AUM are not fully fair because the proposed method uses richer NLI-specific features including hypothesis-only dynamics, while baselines are used in simpler thresholded forms.",
+    "Some reported gains over full-data training are modest and limited to stress-test metrics; standard in-domain accuracy trade-offs are not fully analyzed.",
+    "The paper lacks stronger validation against external challenge sets such as ANLI, HANS, or other independently collected benchmarks that would better support claims of improved realism and robustness."
+  ],
+  "methodological_flaws": [
+    "Equation (2) for variability appears mathematically incorrect: the standard deviation should involve squared deviations, i.e., sqrt(sum((p-mean)^2)/E), but the paper omits the square. If this is not a typo in the manuscript and was used in code, the feature is invalid.",
+    "The method trains on the test set to characterize the test set. Even if labels are not used for final evaluation, this uses test labels and optimization behavior on the evaluation data itself, violating standard evaluation protocol and making the resulting benchmark dependent on supervised access to the test set.",
+    "Hardness is defined using the same model family later evaluated on the resulting splits, so the benchmark may preferentially reflect weaknesses of those encoders rather than intrinsic dataset difficulty. The cross-model experiment is insufficient to rule this out.",
+    "The inference that reduced hypothesis-only accuracy implies reduced spurious correlations is too strong; lower hypothesis-only performance may also arise from label imbalance, semantic ambiguity, or harder lexical distributions unrelated to artifacts.",
+    "The statistical analysis with Mann-Whitney tests over heuristic distributions does not establish causal reduction of spurious correlations, and the paper does not report effect sizes or sufficiently control for multiple comparisons beyond a brief mention of Bonferroni correction.",
+    "The FEVER setup is not fully convincing as an NLI benchmark because premise/hypothesis roles and sequence lengths differ substantially from SNLI/MultiNLI, making comparisons of heuristics and difficulty less interpretable.",
+    "The training-set filtering evaluation uses Naik et al.'s stress tests as the main target, but these stress tests are themselves synthetic and narrow; claiming improved data quality from better performance there is only partial empirical validation.",
+    "There is no ablation isolating the contribution of each feature group (P+H dynamics, H-only dynamics, AUM, correctness, etc.), so it is unclear which components are necessary or whether simpler alternatives would suffice."
+  ],
+  "rating_1_10": 5,
+  "confidence_1_5": 4
+}

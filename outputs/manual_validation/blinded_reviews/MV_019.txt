@@ -1,0 +1,39 @@
+Review ID: MV_019
+Validation Track: RQ2
+============================================================
+
+{
+  "summary": "The paper studies reward overoptimization in offline RLHF and proposes a theoretically motivated objective that selects a policy against an adversarially chosen reward model minimizing MLE loss plus a reward penalty. The authors derive a practical reformulation, Regularized Preference Optimization (RPO), which amounts to adding an SFT-style imitation loss to the DPO objective. The paper provides finite-sample guarantees for the theoretical maximin objective under a partial coverage assumption, argues equivalence to a minimax formulation under regularity assumptions, and presents LLM experiments on Zephyr-style 7B models showing modest improvements over DPO on in-distribution GPT-4 judged comparisons and benchmark scores.",
+  "strengths": [
+    "Addresses an important and timely problem in RLHF: reward overoptimization under distribution shift and reward uncertainty.",
+    "Provides a clear conceptual bridge between pessimistic/adversarial reward modeling and a simple practical objective combining DPO with SFT.",
+    "The practical algorithm is easy to implement and computationally lightweight relative to explicit reward-model-based pessimistic methods.",
+    "Theoretical analysis targets general function approximation rather than only linear models, and gives finite-sample suboptimality bounds under a partial coverage condition.",
+    "Empirical results are reasonably consistent across two model/data setups (beta and gemma series), suggesting the method is not tied to a single reference model or dataset.",
+    "The paper offers an intuitively appealing explanation for why an SFT term can alter gradient direction rather than merely rescale DPO updates."
+  ],
+  "weaknesses": [
+    "Novelty on the practical side is limited: adding an SFT/imitation term to preference optimization is already explored in prior work (e.g., ORPO/DPO-positive-like directions), so the main claimed novelty rests heavily on the theory.",
+    "The connection between the theoretical algorithm and the implemented RPO is not fully convincing because the theory assumes optimization over reward classes and exact minimax equivalence, while practice directly optimizes a parameterized policy without showing approximation/optimization error control.",
+    "Several statements are overstated or imprecise, especially claims that benchmark gains 'justify' the theory or that PCA plots imply coverage assumptions approximately hold.",
+    "Empirical evaluation is relatively weak for a paper making strong practical claims: small in-distribution evaluation size, reliance on GPT-4 judgments, no statistical significance tests, and modest gains over DPO.",
+    "Hyperparameter tuning appears limited and potentially unfairly favorable to RPO since only eta is introduced/tuned for RPO while DPO may also benefit from retuning beta or training length.",
+    "The paper contains multiple notation inconsistencies and exposition issues that make the theoretical development harder to trust.",
+    "The practical baseline choice for the SFT term (chosen responses) is only one of several possibilities suggested by the theory, but there is little ablation on baseline policy choice or regularization strength.",
+    "The claim that DPO's beta only changes gradient scale and not direction is too simplistic because changing beta changes the sigmoid weighting across examples and thus the aggregate update direction over a batch/dataset."
+  ],
+  "methodological_flaws": [
+    "There is a notable inconsistency between Eq. (3.1), which uses a baseline policy pi^base, and Eq. (5.4), which replaces it with pi^ref in the definition of phi. This is not a cosmetic issue: the minimax equivalence theorem is then proved for a different objective than the one used to define the algorithm, weakening the claimed equivalence between theory and practice.",
+    "The gradient discussion around Eq. (4.10) appears mathematically incorrect or at least misstated: the paper defines \\hat r_theta(x,a)=beta*log(pi_theta(a|x))/log(pi_ref(a|x)), whereas DPO uses a log-ratio difference beta*(log pi_theta - log pi_ref). The printed formula with division by log(pi_ref) is dimensionally and conceptually wrong.",
+    "The statement that DPO's beta 'only changes the scale of the gradient instead of the direction' is scientifically inaccurate. Because beta appears inside the sigmoid weighting on each example, changing beta changes relative weights across samples and therefore can change the overall gradient direction after averaging.",
+    "The empirical claim that higher log-probability on chosen responses demonstrates mitigation of overoptimization is not sufficient evidence. This metric is directly encouraged by the added SFT term, so improvement on it is partly tautological rather than an independent validation of reduced reward hacking.",
+    "The use of GPT-4 as sole evaluator for both in-distribution pairwise comparisons and benchmark judgments raises validity concerns, especially given known evaluator bias. The paper does not provide human evaluation, inter-annotator agreement, or robustness checks with alternative judges.",
+    "The in-distribution evaluation filters GPT-4 outputs and reduces to 150 examples, but the filtering procedure may introduce bias and no confidence intervals or hypothesis tests are reported; the observed gains (e.g., 54-56% win rates vs DPO) may be within noise.",
+    "The PCA-based argument for prompt-distribution coverage is not methodologically sound. Two-dimensional PCA overlap of embeddings does not establish bounded density ratio or the formal coverage condition used in Corollary 5.8.",
+    "The theoretical guarantees depend on exact optimization of the maximin/minimax objectives and regularity/compactness assumptions on the reward class, but the paper does not show that realistic neural parameterizations used in LLM fine-tuning satisfy these assumptions or approximate the required saddle-point solution.",
+    "The theorem statements rely on a known prompt distribution d0 and expectations over it, but the practical algorithm uses empirical training data without clarifying how d0 is estimated or how mismatch between d0 and dataset prompts affects the objective.",
+    "The practical comparison may be under-controlled: keeping DPO hyperparameters fixed while adding an extra regularizer to RPO does not establish that the gain comes from the proposed principle rather than from generic regularization or better tuning budget."
+  ],
+  "rating_1_10": 6,
+  "confidence_1_5": 4
+}

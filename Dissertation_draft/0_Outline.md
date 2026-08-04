@@ -399,7 +399,7 @@
 
 > [已完成] 已采用 paper-level aggregation，对每篇论文的平均 Logic Δ 与平均 Format Δ 进行配对比较，结果保存在 `outputs/stats/rq2_discriminability_test.csv`。四项比较均不显著：Free MF p = .632；Structured MF p = .162；Free rating p = .979；Structured rating p = .771。这直接支持 neither setup demonstrated reliable logic-specific discriminability。
 >
-> [待补充] 正文需报告配对统计结果、效应方向和置信区间，并说明 paper-level aggregation 如何处理同一论文下多个 perturbations。如采用 multiple-comparison correction，也需在最终方法中预先说明。
+> [已完成] 扩展统计结果已写入 `outputs/stats/rq2_discriminability_test.csv`，包括 Logic–Format mean difference、95% CI、paired Cohen's d_z、raw p-value 和 Holm-adjusted p-value。正文仍需解释 paper-level aggregation 的计算方式，但不再缺少统计量。
 
 ### RQ3
 
@@ -687,37 +687,43 @@
 
 # Prioritised revision and analysis list
 
+## Chapter 4 writing readiness
+
+- **当前无阻塞项，可以开始撰写 `4_Results & Analysis.md`。** RQ1/RQ2 的核心推断统计、RQ3 描述性指标和 RQ4 工程指标均已具备。
+- Chapter 4 初稿中保留两个明确占位项：`[COMMON-JUDGE SENSITIVITY PENDING]` 与 `[MANUAL VALIDATION PENDING]`。
+- 两个占位项都不阻塞 RQ1、RQ2 和 RQ4 主体写作；RQ3 的跨 setup 解释在补齐验证前保持 provisional。
+
 ## P0 — Results 定稿前必须完成（不阻塞当前初稿）
 
 1. **[已完成] 重做 RQ2 的核心统计检验。** 已使用 paper-level aggregated paired analysis 直接比较 Logic 与 Format；结果保存于 `outputs/stats/rq2_discriminability_test.csv`，四项比较均不显著。
-2. **补齐 RQ1/RQ2 的统计报告。** 在现有 mean delta、paired t 和 p-value 基础上补充 Logic–Format / Free–Structured mean difference、95% CI、paired effect size，并明确 RQ2 四项检验是否采用 Holm 或 Benjamini–Hochberg correction。这不阻塞 Chapter 4 初稿，但必须在结果定稿前完成。
-3. **修正 4.2 的结论。** 删除“Free 有惩罚能力、Structured 完全失效”，改为“两者都没有 logic-specific discriminability”。
-4. **明确 reviewing setup 是复合干预。** 全文不能把观察结果唯一归因于 JSON。
+2. **[已完成] 补齐 RQ1/RQ2 的统计报告。** 两个 stats CSV 均已加入 mean contrast、95% CI、paired Cohen's d_z、raw p-value 和 Holm-adjusted p-value。
+3. **[已完成] 修正 4.2 的结论。** Outline 已改为“两者都没有 logic-specific discriminability”；Chapter 4 写作时沿用该结论。
+4. **[已完成] 明确 reviewing setup 是复合干预。** Outline 已明确不能把观察结果唯一归因于 JSON；正文需保持该表述。
 5. **[已完成] 补做 RQ1 的 setup × injection effect comparison。** 已直接比较 Free 与 Structured 的 per-paper attack deltas；结果保存于 `outputs/stats/rq1_attenuation_test.csv`。Rating 与 MF attack effects 均显著减弱。
-6. **补齐 Structured reviews 的 Judge 数据，但暂不替换主要分析。** 先保留当前 Free-Judge versus Structured-self-report 结果；生成 common-Judge 数据后，将其作为待定 sensitivity analysis，待与导师确认后再决定是否升级为 primary analysis。
-7. **统一所有结果术语。** 使用 rating dispersion、aspect coverage、document-layer injection、schema-constrained setup。
+6. **[部分完成·不阻塞初稿] 补齐 Structured reviews 的 Judge 数据，但暂不替换主要分析。** Injection track 的 60 条 Structured Judge 数据已存在于 `outputs/step2_pdf_track_structured_judge_full.csv`；Counterfactual track 的 240 条尚未补齐。先保留当前主分析，待导师确认后决定 common-Judge 是否升级为 primary analysis。
+7. **[已完成] 统一结果术语。** Outline 已统一使用 rating dispersion、aspect coverage、document-layer/PDF text-layer injection 和 schema-constrained setup。
 
 ## P1 — Introduction 与 Related Work 成立所必需
 
-1. **重写 research gap。** 承认 Dycke and Gurevych 已比较 ZERO-GENERIC 与 ZERO-GUIDE；突出本文的统一双轨设计和 strict schema focus。
-2. **新增 Structured generation / review forms 文献小节。** 这是核心自变量的理论基础。
-3. **新增 ARG 与 review-quality evaluation 背景。** 解释研究领域、使用动机和现有评估困难。
-4. **把 contributions 从实验描述改成知识贡献。** 明确 unified framework、controlled comparison、multi-dimensional evaluation 和 empirical finding。
-5. **精确描述两篇关键文献。** 不夸大 implicit manipulation，也不把 surface sensitivity 简化成单一格式现象。
+1. **[大纲已完成·正文待写] 重写 research gap。** Outline 已承认 Dycke and Gurevych 比较过 ZERO-GENERIC 与 ZERO-GUIDE，并突出统一双轨设计和 strict schema focus。
+2. **[大纲已完成·正文待写] 新增 Structured generation / review forms 文献小节。** 相关概念结构已加入 Section 2.4，仍需检索和写入正式文献。
+3. **[大纲已完成·正文待写] 新增 ARG 与 review-quality evaluation 背景。** Section 2.1 的写作范围已经确定。
+4. **[大纲已完成·正文待写] 把 contributions 从实验描述改成知识贡献。** 四项 contributions 已在 outline 中明确。
+5. **[大纲已完成·正文待写] 精确描述两篇关键文献。** 论证边界已修正，正式正文仍需加入引用和细节。
 
 ## P2 — 结果解释与可信度
 
-1. **将 RQ3 改为 aspect coverage。** 在没有人工质量验证前，不宣称 comprehensiveness。
-2. **中性解释 rating variance。** 不使用 cognitive cost / cognitive variance；说明较低 dispersion 的含义不确定。
-3. **加入完整 limitations section。** 特别是 N=30、单模型、单 Judge、单次生成、measurement asymmetry 和 repeated measures。
-4. **检查 token、word 和 latency 的百分比。** Token -52.7%，words 约 -57.9%，latency 约 -53.0%，避免混用。
-5. **将 Vision API 从结论性防御改为待验证假设。** 同时补充文本层检测、跨模态验证和异常行为检测。
+1. **[已完成] 将 RQ3 改为 aspect coverage。** Outline 已停止把 item count 直接解释为 comprehensiveness。
+2. **[已完成] 中性解释 rating variance。** 已统一为 rating dispersion，并明确不能判断较低方差是 consistency 还是 reduced sensitivity。
+3. **[大纲已完成·正文待写] 加入完整 limitations section。** N=30、单模型、单 Judge、单次生成、measurement asymmetry 和 repeated measures 均已列入 Section 5.7。
+4. **[已完成] 检查 token、word 和 latency 百分比。** Token -52.7%，words -57.9%，latency -53.0%，三者已分开报告。
+5. **[已完成] 将 Vision API 改为待验证假设。** Outline 已补充文本层检测、跨模态验证和异常行为检测，未将 Vision 作为既定防御。
 
 ## P3 — 有时间时增强论文质量
 
-1. **执行 5 篇论文的 condition-masked single-annotator validation。** 只验证自动指标提取，不重新审阅论文；预计约 50 份 Free/Structured reviews，并复用同一批人工编码验证当前指标与未来 common-Judge 指标。详细流程见 `Dissertation_draft/Manual_Validation_Protocol.md`。
-2. 报告论文 venue / year / paper type 的样本构成。
-3. 增加 pipeline diagram、experimental matrix 和 RQ summary table。
-4. 对 latency 报告 median、spread，并说明外部服务噪声。
-5. 在 Future Work 中提出 guidance × output format 的 2 × 2 factorial design。
-6. 设计 repeated-generation study，以真正测量 review consistency。
+1. **[评测待完成] 执行 5 篇论文的 condition-masked single-annotator validation。** 50 份匿名 reviews、annotation sheet 和 protocol 已生成并通过 audit；人工编码尚未完成。
+2. **[待写·不阻塞 Chapter 4] 报告论文 venue / year / paper type 的样本构成。** 主要属于 Methodology/sample description。
+3. **[部分完成] 增加 pipeline diagram、experimental matrix 和 RQ summary table。** RQ summary table 已在 outline 中设计；pipeline diagram 和最终表格仍待制作。
+4. **[分析已完成·正文待写] 报告 latency median、spread，并说明外部服务噪声。** 现有数据足够，无需新增实验。
+5. **[大纲已完成·正文待写] 在 Future Work 中提出 guidance × output format 的 2 × 2 factorial design。** 已写入 Section 5.8。
+6. **[大纲已完成·无需当前执行] 设计 repeated-generation study。** 已定位为 future work，用于未来直接测量 review consistency。
