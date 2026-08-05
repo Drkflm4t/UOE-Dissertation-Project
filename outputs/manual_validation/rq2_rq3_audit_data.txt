@@ -1,0 +1,58 @@
+======================================================================
+RQ2: COUNTERFACTUAL EDIT TEXTS (5 Logic cases)
+======================================================================
+
+────────────────────────────────────────────────────────────
+### Case 1: 2024.acl-long.375
+Condition: blueprint_result
+Reviews: MV_001(Struct) vs MV_044(Free)
+OPERATION: Break the logical chain by changing a result to disalign with a conclusion underlying an important finding
+ORIGINAL RESULT: The LogicLLaMA model achieves a logical equivalence (LE) score of 0.849 when correcting GPT-3.5 outputs, compared to GPT-4's score of 0.855. This indicates that LogicLLaMA can significantly improve the performance of GPT-3.5 outputs.
+NEGATED FACT: Changed the logical equivalence (LE) score of LogicLLaMA from 0.849 to 0.789, which undermines the claim that it outperforms GPT-3.5 (which scored 0.767).
+EDITED: The LogicLLaMA model achieves a logical equivalence (LE) score of 0.789 when correcting GPT-3.5 outputs, compared to GPT-4's score of 0.855. This indicates that LogicLLaMA shows improvement over GPT-3.5 but is not significantly superior.
+DETAILS: In Paragraph 4, change the statement 'GPT-3.5+LogicLLaMA achieves 0.849 LE' to 'GPT-3.5+LogicLLaMA achieves 0.789 LE.' This requires updating any related discussion about the comparative performance metrics and the implications of these scores on the overall conclusions drawn in the paper.
+
+────────────────────────────────────────────────────────────
+### Case 2: 2024.emnlp-main.758
+Condition: blueprint_conclusion
+Reviews: MV_007(Struct) vs MV_046(Free)
+OPERATION: Break the logical chain by changing a conclusion to disalign with the underlying result. Cascade to findings.
+ORIGINAL CONCLUSION: The coarse-to-fine pruning technique of CoT-Influx effectively identifies and removes redundant CoT examples and tokens, enhancing math reasoning performance.
+EDITED: The coarse-to-fine pruning technique of CoT-Influx effectively identifies and removes redundant CoT examples and tokens, enhancing math reasoning performance. Additionally, targeted pruning of low-importance tokens, as indicated by attention weights,
+
+────────────────────────────────────────────────────────────
+### Case 3: 2024.emnlp-main.1123
+Condition: blueprint_result
+Reviews: MV_013(Struct) vs MV_039(Free)
+OPERATION: Break the logical chain by changing a result to disalign with a conclusion underlying an important finding
+ORIGINAL RESULT: Models trained on X data consistently outperform generic XLMR models, with specific increases in macro-F1 scores of 11.7 and 8.3 points for bernice and xlmt_base, respectively, across all settings and languages.
+NEGATED FACT: The key fact changed is the macro-F1 score increase; originally, an increase of 11.7 and 8.3 points was reported for bernice and xlmt_base respectively, indicating a strong performance advantage of models trained on X data over generic XLMR models. T
+EDITED: Models trained on X data consistently underperform generic XLMR models, with specific decreases in macro-F1 scores of 2.5 and 1.8 points for bernice and xlmt_base, respectively, across all settings and languages.
+DETAILS: 1. Change the numerical values in the sentence regarding macro-F1 scores from 11.7 and 8.3 to -2.5 and -1.8. 2. Adjust the wording from 'outperform' to 'underperform' to reflect the negative change in scores. 3. Ensure that any tables or figures reflecting these scores are updated accordingly, such 
+
+────────────────────────────────────────────────────────────
+### Case 4: 2cQ3lPhkeO
+Condition: blueprint_conclusion
+Reviews: MV_033(Struct) vs MV_018(Free)
+OPERATION: Break the logical chain by changing a conclusion to disalign with the underlying result. Cascade to findings.
+ORIGINAL CONCLUSION: Incorporating SFT loss in the RPO objective modifies the gradient direction, which helps to mitigate overoptimization.
+EDITED: Incorporating SFT loss in the RPO objective modifies the gradient direction, which helps to mitigate overoptimization; however, RPO's effectiveness may be sensitive to the nature of human feedback, indicating variability in performance across differe
+
+────────────────────────────────────────────────────────────
+### Case 5: 2024.acl-long.741
+Condition: blueprint_result
+Reviews: MV_038(Struct) vs MV_040(Free)
+OPERATION: Break the logical chain by changing a result to disalign with a conclusion underlying an important finding
+ORIGINAL RESULT: The best model for self-disclosure abstraction scored 3.2 out of 5 for privacy reduction, 4 out of 5 for utility preservation, and 4.6 out of 5 for diversity in generated abstractions.
+NEGATED FACT: The original result indicated a privacy reduction score of 3.2 out of 5, which was a crucial metric supporting the conclusion that the model moderately reduces privacy risks. This was changed to 2.0 out of 5, undermining the claim of effective privac
+EDITED: The best model for self-disclosure abstraction scored 2.0 out of 5 for privacy reduction, 4 out of 5 for utility preservation, and 4.6 out of 5 for diversity in generated abstractions.
+DETAILS: In paragraph 6, replace the score for privacy reduction from '3.2 out of 5' to '2.0 out of 5', while keeping the rest of the sentence intact. In the sentence that describes the model performance in paragraph 45, adjust the privacy reduction score to '2.0 for privacy reduction' as well.
+
+======================================================================
+RQ3: BEST ORIGINAL PAIR — 2024.emnlp-main.758 (gap +9)
+======================================================================
+Auto: Free 14w + 11mf = 25 total
+Auto: Struct 6w + 10mf = 16 total
+
+Human Struct (MV_002): 3w + 11mf = 14 total
+Human Free   (MV_034): 3w + 14mf = 17 total

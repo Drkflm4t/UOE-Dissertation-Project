@@ -306,9 +306,27 @@ outputs/manual_validation/
 
 1. 锁定 annotation sheet 并保留原始只读副本。
 2. 与 manifest 合并。
-3. 添加 Free Judge、Structured self-report 和未来 Structured Judge 指标。
+3. 添加 Free Judge 与 Structured native self-report 指标。
 4. 运行预先确定的 descriptive agreement analysis。
 5. 检查最大 disagreement cases，但不回改人工编码。
+
+### Phase 7 — Separate hypothesis-led qualitative audit
+
+该 phase 只在 Phase 6 完成后进行，不属于 blinded metric-validation coding，也不向 annotation sheet 添加字段。
+
+1. 保持已锁定的人工编码不变。
+2. RQ1：比较一个 Original/Manipulated × Free/Structured matched case，核验 praise 增加、criticism 弱化以及 mandatory fields 是否保留 substantive criticism。
+3. RQ2：对少量 Logic cases 查看 counterfactual 的实际 target edit，再核验 reviews 是否明确识别该 edit、是否解释其 scientific consequence、是否产生 rating consequence。
+4. RQ3：在 manual count agreement 已知后，检查一个 Free–Structured count gap 较大的 Original pair，判断差异更像新增 substantive themes，还是 item fragmentation/repetition。
+5. RQ4：不另做独立 case series；如需说明较低 score sensitivity，复用 RQ2 case，并保留“不能识别 compression 成因”的边界。
+6. 将核验结果写成简短 analytic memo；正文每个相关 RQ 最多使用一例，不把 case inspection 转换成 prevalence claim。
+
+执行结果记录于 `outputs/manual_validation/qualitative_case_audit.md`：
+
+- RQ2：5 个 Logic cases 显示 target omission 与 critique–rating decoupling 并存；rating consequence 按 matched Original 的 primary rating 定义，不用 inferred tone 替代。
+- RQ3：Pair A 显示 segmentation/category allocation sensitivity；由于 Judge 仅输出 counts，不声称识别了具体 item-level double-counting。
+
+该 phase 可以帮助解释 aggregate patterns，但不能升级为 blind human evaluation，也不验证 review 对整篇论文的总体 scientific correctness。
 
 ---
 
@@ -344,7 +362,7 @@ review_id,paper_id,track,condition,setup,human_explicit_rating,human_inferred_ra
 ```
 
 - `auto_native_*`：Structured Pydantic self-report；Free 留空。
-- `auto_judge_*`：Free Judge，以及未来补齐的 Structured Judge。
+- `auto_judge_*`：当前仅填写 Free Judge；Structured rows 留空。
 - 不适用字段留空，不填 0。
 
 ### 8.4 Summary table
@@ -375,10 +393,7 @@ Human_vs_StructJudge,rating,...
 - within-one-point agreement；
 - Spearman correlation（仅在 variation 足够时）。
 
-Structured 分别比较：
-
-- Pydantic rating versus `human_explicit_rating`；
-- future common-Judge rating versus `human_inferred_rating_1_10`。
+Structured 主要比较 Pydantic rating versus `human_explicit_rating`。`human_inferred_rating_1_10` 作为人工对 review 整体语气的独立记录，不在当前流程中与 Structured Judge 比较。
 
 ### 9.2 Count agreement
 
@@ -401,16 +416,10 @@ Structured 分别比较：
 
 ### 9.4 Required comparisons
 
-当前至少报告：
+当前报告：
 
 1. Human versus Free Judge。
 2. Human versus Structured native self-report。
-
-补齐 common-Judge 后增加：
-
-3. Human versus Structured Judge。
-4. Structured Judge versus Structured native self-report。
-5. Judge agreement 是否在 Free 与 Structured 下存在明显差异。
 
 不要设定武断的单一“通过阈值”。综合考察 MAE、agreement、误差方向以及 condition/setup pattern。
 
@@ -445,8 +454,14 @@ Structured 分别比较：
 - 每个 comparison × metric 的 n、MAE 和 agreement；
 - rating within-one agreement；
 - count signed errors；
-- common-Judge 结果（如使用）；
 - 2–4 个代表性 disagreement patterns，不复制长篇 review 原文。
+
+### Optional qualitative interpretation after unblinding
+
+- RQ1、RQ2、RQ3 各最多一个 hypothesis-led case；
+- 说明 case-selection rule 与被核验的具体假设；
+- 区分“与假设一致”与“证明机制”；
+- RQ4 不增加独立结果表或多例展示。
 
 ### Limitations
 
@@ -477,17 +492,17 @@ Structured 分别比较：
 - [ ] Codebook 已完成 pilot 并锁定。
 - [ ] 5 篇论文由固定 seed 抽取。
 - [ ] Logic/Format conditions 已由固定 seed 抽取。
-- [ ] 50 条 sample manifest 已生成。
-- [ ] Anonymous IDs 与 coding order 已生成。
-- [ ] Blinded review package 已生成。
-- [ ] Annotation sheet 只暴露 RQ1/RQ2 task，不含具体 condition、setup 或 automatic metrics。
-- [ ] 50 份 reviews 已完成编码。
-- [ ] 必填字段和取值范围已检查。
+- [x] 50 条 sample manifest 已生成。
+- [x] Anonymous IDs 与 coding order 已生成。
+- [x] Blinded review package 已生成。
+- [x] Annotation sheet 只暴露 RQ1/RQ2 task，不含具体 condition、setup 或 automatic metrics。
+- [x] 50 份 reviews 已完成编码。
+- [x] 必填字段和取值范围已检查。
 - [ ] Annotation sheet 已锁定并保留原始副本。
 - [ ] Manifest 已合并生成 unblinded results。
-- [ ] Human–Free Judge agreement 已计算。
-- [ ] Human–Structured native agreement 已计算。
-- [ ] Human–Structured Judge agreement 已计算（如数据已补齐）。
-- [ ] 最大 disagreement cases 已检查，但未回改人工编码。
+- [x] Auxiliary coding–Free Judge agreement 已计算。
+- [x] Auxiliary coding–Structured native agreement 已计算。
+- [x] 最大 disagreement cases 已检查，但未为提高 agreement 回改主观编码。
+- [x] Phase 7 hypothesis-led qualitative memo 已在解盲后完成，且未修改 annotation sheet。
 - [ ] Methods、Results 和 Limitations 摘要已生成。
-- [ ] Protocol deviations 已记录。
+- [x] Protocol deviations 已记录。

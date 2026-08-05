@@ -1,3 +1,5 @@
 # Protocol Deviations
 
-- No deviations recorded yet.
+- **2026-08-05 — Annotation package regenerated.** The 50-review package was regenerated with `sample_seed = 840242155`, `condition_seed = 424633756`, and `shuffle_seed = 1030149014` after the earlier package had been inspected. The regenerated manifest and blinded files replace the earlier package for analysis; results from different package versions must not be combined.
+- **2026-08-05 — LLM-assisted initial coding.** Initial coding was produced with LLM assistance and subsequently reviewed and adjusted by the dissertation author. Unless every row is independently adjudicated by the author, the output must be described as `blinded LLM-assisted coding with author review`, not as independent human-only annotation or a human gold standard.
+- **2026-08-05 — Deterministic explicit-rating completion.** Four missing `human_explicit_rating` cells (MV_013, MV_021, MV_030 and MV_045) were completed as 6 after verification against the visible `rating_1_10` field in their blinded review files. No inferred ratings, aspect counts or compliance scores were changed for agreement purposes.

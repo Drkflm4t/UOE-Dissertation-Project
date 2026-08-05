@@ -460,6 +460,8 @@
 > [已完成] setup 间 attack-delta 的直接配对比较显示，Structured 显著减弱了 rating inflation（paired t = 5.887，p = 2.17 × 10⁻⁶）及 methodological-flaw reduction（paired t = -3.013，p = .0053）。因此可以正式使用 “significantly attenuated these measured attack effects”，但必须同时强调两种 setup 中攻击效应仍然存在。
 >
 > [修改] 避免“完全失明”。更准确的是 “substantial reduction in reported methodological flaws under injection”。
+>
+> [定性核验·一例] 在解盲后用一个 matched Original/Manipulated × Free/Structured case 检查：Structured attenuation 是否表现为 mandatory weakness/MF fields 保留了 substantive criticism，而非完全拒绝 payload。当前非盲审候选与该有限解释一致，但正文只把它作为 illustrative evidence，不作 prevalence 或单一因果机制判断。
 
 ## 4.2 RQ2 — Discriminability of logic defects
 
@@ -491,6 +493,8 @@
 > [修改] 方法论缺陷数量增加不等于“惩罚”，尤其当 overall score 没有下降时。应分别描述 critique coverage 与 evaluative consequence。
 >
 > [已完成] paper-level paired aggregation 的 Logic-versus-Format 检验均不显著：Free MF p = .632；Structured MF p = .162；Free rating p = .979；Structured rating p = .771。该结果确认当前描述性结论，而不是仅依赖原图中的 one-sample significance stars。
+>
+> [已完成·定性核验] 5 个 matched Logic cases 中，Structured 识别 2/5，Free 识别 3/5；没有可靠 setup difference。10 份 setup-specific reviews 中约一半遗漏 target，而 5 份 detected reviews 中仅 1 份降低 primary rating。Aggregate null 因而反映 target omission 与 critique–rating decoupling 并存。正文使用 Case 3：两种 reviews 均识别 claim–result contradiction，但 primary ratings 均未改变。
 
 ## 4.3 RQ3 — Review-aspect coverage
 
@@ -516,6 +520,10 @@
 > [限制] Free 和 Structured 的 counts 来自不同测量机制，跨组绝对数量差异不能完全归因于 reviewing setup。
 >
 > [计划·辅助验证] 从 5 篇论文中抽取 Free 与 Structured reviews，进行 condition-masked single-annotator coding。人工评估只验证自动提取的 rating、strength、weakness、methodological-flaw 和 injection-compliance 指标，不重新审阅论文，也不作为 RQ1/RQ2 的主要评价标准。
+>
+> [已完成·辅助验证] Original-only common coding 得到 Free total = 18.4、Structured total = 19.2，而 automatic totals 为 29.2 与 24.0。Automatic Free > Structured ordering 未被复现；weakness agreement 尤其差（Free MAE = 6.28，Structured MAE = 3.40）。因此 RQ3 应表述为 measurement-sensitive aspect profiles，而不是稳定的 Free total-coverage advantage。
+>
+> [已完成·定性核验] Pair A 的 Free automatic counts 为 10 strengths / 14 weaknesses / 11 MF（total 35），common coding 为 7 / 3 / 14（total 24）。差异与 segmentation 及 weakness/MF category-boundary sensitivity 一致，但 Judge 没有保存 item-level outputs，因此不能确认具体 double-counting mechanism。该 case 只解释 measurement instability，不用于声称 Structured 更 comprehensive。
 
 ## 4.4 RQ4 — Efficiency and rating dispersion
 
@@ -546,6 +554,10 @@
 > [限制] API latency 也受服务负载、网络和模型后端影响；本研究记录的是 observed end-to-end latency，不是纯模型计算时间。
 >
 > [限制] 成本表必须标记为基于假设价格的估算，除非使用的是调用时该模型的真实账单价格。
+>
+> [已完成·内部 diagnostic] 当前 ratings 已不再近乎全部为 7；简单 lexical overlap 与少量 text inspection 也不支持“Structured reviews 近乎相同而导致 compression”的简单假设。两个 diagnostic CSV 仅用于 audit，不作为正文附加主表。RQ4 保留“remaining cause unidentified”，必要时复用 RQ2 的一个 case，不另展示多例。
+>
+> [已完成·辅助核验] 在 25 + 25 reviews 的共同 inferred-rating coding 下，Free SD = 1.12，Structured SD = 0.53，方向上支持 Structured rating distribution 较窄；仍不据此判断较低 dispersion 的 normative meaning。
 
 ## 4.5 Results summary
 
@@ -553,9 +565,9 @@
 
 | RQ | Main finding | Evidential boundary |
 |---|---|---|
-| RQ1 | Both setups were vulnerable; Structured significantly attenuated the measured rating and MF effects but did not prevent compliance. | The two setups currently use different metric-extraction procedures; common-Judge analysis is planned as a sensitivity check. |
-| RQ2 | Neither setup showed reliable logic-specific discriminability in the paper-level paired analysis. | The conclusion concerns review-output sensitivity, not whether the model internally noticed the defects. |
-| RQ3 | The setups produced different aspect-coverage profiles; Free had higher extracted total counts. | Measurement procedures differ across setups. |
+| RQ1 | Both setups were vulnerable; Structured significantly attenuated the measured rating and MF effects but did not prevent compliance. | Free uses Judge-extracted metrics and Structured uses native schema metrics; the planned manual validation evaluates the plausibility of both extraction procedures. |
+| RQ2 | Neither setup showed reliable logic-specific discriminability; the case audit found both target omission and critique–rating decoupling. | Five qualitative cases explain possible mechanisms but do not estimate population prevalence. |
+| RQ3 | Automatic measures gave Free a higher total count, but common coding showed similar totals and different aspect profiles. | The total-count ordering was measurement-sensitive, especially for weaknesses. |
 | RQ4 | Structured was shorter, faster and less token-intensive, with narrower rating dispersion. | Lower dispersion is not inherently better or worse. |
 
 > [新增] 这张表可以防止 Discussion 和 Conclusion 再次把描述性结果扩大成因果或认知结论。
@@ -630,10 +642,11 @@
 
 - 从 5 篇论文中抽取 Free 与 Structured reviews，预计覆盖 RQ1 的 Original/Injected 配对，以及 RQ2 的 Original、一个 Logic 和一个 Format condition。
 - 每篇预计编码 10 份 reviews，共约 50 份；最终抽样条件和 random seed 应在执行前固定。
-- 采用 condition-masked single-annotator coding：隐藏 paper identity、attack/perturbation condition 和所有自动指标，但由于输出形式可能暴露 setup，不声称完全 blind to Free/Structured。
+- 采用 condition-masked coding：隐藏 paper identity、attack/perturbation condition 和所有自动指标，但由于输出形式可能暴露 setup，不声称完全 blind to Free/Structured。
 - 人工独立记录 inferred rating、n_strengths、n_weaknesses、n_methodological_flaws 和 injection-compliance score。
 - 人工编码只用于验证自动指标提取，不重新阅读原论文或判断评论是否真正发现了植入缺陷。
-- 当前 measurement pipeline 下分别比较 Human–Free Judge 与 Human–Structured self-report；若补齐 Structured Judge 数据，则使用同一批人工编码进一步比较 Human–Structured Judge。
+- 按当前 measurement pipeline，分别比较 Human–Free Judge 与 Human–Structured native self-report。
+- 初始编码使用 LLM assistance，并由 dissertation author review/adjust；除非全部 rows 均经 author 独立 adjudication，报告时称为 `blinded LLM-assisted coding with author review`。
 - 该分析定位为 limited measurement validation，不作为 RQ1/RQ2 的主要评判标准，也不称为 human gold standard。
 
 > [限制] 全部人工编码由 dissertation author 一人完成，因此不能报告 inter-rater reliability。若时间允许，可在间隔一段时间后重复编码 10%–20% 的样本，作为 intra-rater consistency check。
@@ -687,20 +700,21 @@
 
 # Prioritised revision and analysis list
 
-## Chapter 4 writing readiness
+## Chapter 4 detailed-outline readiness
 
-- **当前无阻塞项，可以开始撰写 `4_Results & Analysis.md`。** RQ1/RQ2 的核心推断统计、RQ3 描述性指标和 RQ4 工程指标均已具备。
-- Chapter 4 初稿中保留两个明确占位项：`[COMMON-JUDGE SENSITIVITY PENDING]` 与 `[MANUAL VALIDATION PENDING]`。
-- 两个占位项都不阻塞 RQ1、RQ2 和 RQ4 主体写作；RQ3 的跨 setup 解释在补齐验证前保持 provisional。
+- **当前无阻塞项，可以开始完成 `4_Results & Analysis.md` 的章节细纲。** RQ1/RQ2 的核心推断统计、RQ3 描述性指标和 RQ4 工程指标均已具备。
+- 当前细纲和未来正文均严格按照现有 measurement pipeline：Free metrics 由 Judge 提取，Structured metrics 采用 native Pydantic self-report。
+- 细纲中只保留 `[MANUAL VALIDATION PENDING]`，用于之后补入 5-paper measurement-validation 结果；它不阻塞 RQ1、RQ2 和 RQ4，RQ3 的跨 setup 解释暂时保持谨慎。
+- Common-Judge 是否需要补做、以及是否改变 primary analysis，等待导师确认；当前 master outline、chapter outline 和未来正文不依赖该分析。
 
 ## P0 — Results 定稿前必须完成（不阻塞当前初稿）
 
 1. **[已完成] 重做 RQ2 的核心统计检验。** 已使用 paper-level aggregated paired analysis 直接比较 Logic 与 Format；结果保存于 `outputs/stats/rq2_discriminability_test.csv`，四项比较均不显著。
 2. **[已完成] 补齐 RQ1/RQ2 的统计报告。** 两个 stats CSV 均已加入 mean contrast、95% CI、paired Cohen's d_z、raw p-value 和 Holm-adjusted p-value。
-3. **[已完成] 修正 4.2 的结论。** Outline 已改为“两者都没有 logic-specific discriminability”；Chapter 4 写作时沿用该结论。
+3. **[已完成] 修正 4.2 的结论。** Master outline 已改为“两者都没有 logic-specific discriminability”；Chapter 4 细纲与未来正文沿用该结论。
 4. **[已完成] 明确 reviewing setup 是复合干预。** Outline 已明确不能把观察结果唯一归因于 JSON；正文需保持该表述。
 5. **[已完成] 补做 RQ1 的 setup × injection effect comparison。** 已直接比较 Free 与 Structured 的 per-paper attack deltas；结果保存于 `outputs/stats/rq1_attenuation_test.csv`。Rating 与 MF attack effects 均显著减弱。
-6. **[部分完成·不阻塞初稿] 补齐 Structured reviews 的 Judge 数据，但暂不替换主要分析。** Injection track 的 60 条 Structured Judge 数据已存在于 `outputs/step2_pdf_track_structured_judge_full.csv`；Counterfactual track 的 240 条尚未补齐。先保留当前主分析，待导师确认后决定 common-Judge 是否升级为 primary analysis。
+6. **[暂缓·等待导师确认] 是否补齐 Structured reviews 的 Judge 数据。** Injection track 已有 60 条 Structured Judge 数据，Counterfactual track 尚未补齐；当前所有大纲、细纲和未来正文均不使用它替换 native Structured metrics。导师确认前不把 common-Judge 纳入当前实验流程或主要分析。
 7. **[已完成] 统一结果术语。** Outline 已统一使用 rating dispersion、aspect coverage、document-layer/PDF text-layer injection 和 schema-constrained setup。
 
 ## P1 — Introduction 与 Related Work 成立所必需
@@ -718,10 +732,12 @@
 3. **[大纲已完成·正文待写] 加入完整 limitations section。** N=30、单模型、单 Judge、单次生成、measurement asymmetry 和 repeated measures 均已列入 Section 5.7。
 4. **[已完成] 检查 token、word 和 latency 百分比。** Token -52.7%，words -57.9%，latency -53.0%，三者已分开报告。
 5. **[已完成] 将 Vision API 改为待验证假设。** Outline 已补充文本层检测、跨模态验证和异常行为检测，未将 Vision 作为既定防御。
+6. **[已完成] Hypothesis-led qualitative audit。** RQ1 auxiliary trends、RQ2 target-defect detection 与 RQ3 count-granularity inspection 均已完成；完整 memo 位于 `outputs/manual_validation/qualitative_case_audit.md`。每个相关 RQ 正文最多一例，不把个案当作 prevalence evidence。
+7. **[已完成·正文待压缩报告] RQ4 distribution diagnostic。** 旧 all-seven anomaly 已消失，简单 content-homogeneity hypothesis 未获支持；正文只报告该证伪方向和成因仍不可识别，不加入两个内部 CSV 的完整表格。
 
 ## P3 — 有时间时增强论文质量
 
-1. **[评测待完成] 执行 5 篇论文的 condition-masked single-annotator validation。** 50 份匿名 reviews、annotation sheet 和 protocol 已生成并通过 audit；人工编码尚未完成。
+1. **[已完成·需透明披露流程] 执行 5 篇论文的 condition-masked auxiliary validation。** 50 份匿名 reviews 已编码并核验；当前比较 Free-Judge 与 Structured-native 两条测量流程。初始 coding 使用 LLM assistance，author review 程度与 package regeneration 已记录于 protocol deviations，不能称为 human gold standard。
 2. **[待写·不阻塞 Chapter 4] 报告论文 venue / year / paper type 的样本构成。** 主要属于 Methodology/sample description。
 3. **[部分完成] 增加 pipeline diagram、experimental matrix 和 RQ summary table。** RQ summary table 已在 outline 中设计；pipeline diagram 和最终表格仍待制作。
 4. **[分析已完成·正文待写] 报告 latency median、spread，并说明外部服务噪声。** 现有数据足够，无需新增实验。

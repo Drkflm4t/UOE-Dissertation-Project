@@ -237,21 +237,12 @@ plt.tight_layout();plt.savefig(fd/"rq1_bubble_compliance.png",dpi=300,bbox_inche
 print("Saved: rq1_bubble_compliance.png")
 
 # ===============================================================================
-# RQ2: Box Plots with Logic vs Format Direct Statistical Text
+# RQ2: Box Plots with Logic vs Format Direct Statistical Text (One-sample stars removed)
 # ===============================================================================
 free_flaw_L=np.concatenate(fflaw_data[:3]); free_flaw_F=np.concatenate(fflaw_data[3:])
 free_score_L=np.concatenate(fscore_data[:3]); free_score_F=np.concatenate(fscore_data[3:])
 struct_flaw_L=np.concatenate(sflaw_data[:3]); struct_flaw_F=np.concatenate(sflaw_data[3:])
 struct_score_L=np.concatenate(sscore_data[:3]); struct_score_F=np.concatenate(sscore_data[3:])
-
-def get_sig_star(data):
-    data=data[~np.isnan(data)]
-    if len(data)<2: return "ns"
-    _,p=stats.ttest_1samp(data,0)
-    if p<0.001: return "***"
-    elif p<0.01: return "**"
-    elif p<0.05: return "*"
-    else: return "ns"
 
 fig,(ax1,ax2)=plt.subplots(1,2,figsize=(14,6.5))
 pos=[1,2,4,5]
@@ -263,8 +254,6 @@ for ax,sd,scd,yl,title,keys in [
     data=sd if sd is not None else scd
     clean_data=[d[~np.isnan(d)] for d in data]
     global_max=np.max([np.max(d) if len(d)>0 else 0 for d in clean_data])
-    offset=1.0 if "Flaws" in yl else 0.4
-    ceiling=global_max+offset
 
     bp=ax.boxplot(data,positions=pos,patch_artist=True,widths=0.6,
                   medianprops=dict(color='black',lw=2),flierprops=dict(marker='none'))
@@ -275,10 +264,8 @@ for ax,sd,scd,yl,title,keys in [
         p_box.set_facecolor(fc_color); p_box.set_edgecolor(ec_color); p_box.set_linewidth(1.5)
         j=np.random.RandomState(i+42).uniform(-0.2,0.2,len(d))
         ax.scatter(np.full(len(d),pos[i])+j,d,alpha=0.4,s=18,c=ec_color,edgecolors='none',zorder=10)
-        star=get_sig_star(d)
-        ax.text(pos[i],ceiling,star,ha='center',va='bottom',fontsize=12,fontweight='bold',color=ec_color)
 
-    # P0: Logic vs Format direct comparison text box
+    # P0: Logic vs Format direct comparison text box (primary statistical evidence)
     p_free = rq2_p_values_for_plot[keys[0]]
     p_struct = rq2_p_values_for_plot[keys[1]]
     stat_text = (f"Discriminability Test (Logic vs Format):\n"
@@ -288,7 +275,7 @@ for ax,sd,scd,yl,title,keys in [
             bbox=dict(facecolor='white', alpha=0.9, edgecolor='gray', boxstyle='round,pad=0.5'))
 
     y_min,y_max=ax.get_ylim()
-    ax.set_ylim(y_min,max(y_max,ceiling+(0.5 if "Flaws" in yl else 0.2)))
+    ax.set_ylim(y_min,max(y_max,global_max+(0.5 if "Flaws" in yl else 0.2)))
     ax.axhline(0,color='gray',lw=1,linestyle='--')
     ax.set_xticks([1.5,4.5])
     ax.set_xticklabels(['Logic-Perturbed\n(Defect)','Format-Perturbed\n(Surface)'],fontsize=12,fontweight='bold')
@@ -333,9 +320,9 @@ ax2.set_xlabel("30 Sampled Papers",fontsize=12,fontweight='bold')
 ax2.set_title('Prompt_Structured',fontsize=14,fontweight='bold',color=STRUCT_C)
 ax2.legend(fontsize=10,loc='upper right')
 
-plt.suptitle('RQ3: Review Comprehensiveness across Dimensions',y=1.03,fontsize=16,fontweight='bold')
-plt.tight_layout();plt.savefig(fd/"rq3_comprehensiveness_stacked.png",dpi=300,bbox_inches='tight')
-print(f"Saved: rq3_comprehensiveness_stacked.png (Struct={stot:.1f}, Free={ftot:.1f})")
+plt.suptitle('RQ3: Review Aspect Coverage across Dimensions',y=1.03,fontsize=16,fontweight='bold')
+plt.tight_layout();plt.savefig(fd/"rq3_aspect_coverage_stacked.png",dpi=300,bbox_inches='tight')
+print(f"Saved: rq3_aspect_coverage_stacked.png (Struct={stot:.1f}, Free={ftot:.1f})")
 
 # ===============================================================================
 # RQ4: Trade-offs
@@ -376,14 +363,14 @@ for i,d in enumerate([fd2,sd2]):
     ax.scatter(np.full(len(d),i+1)+j,d,alpha=0.3,s=15,c=[FREE_C,STRUCT_C][i],edgecolors='none',zorder=10)
 ax.set_xticks([1,2]);ax.set_xticklabels(['Prompt_Free','Prompt_Structured'],fontsize=12,fontweight='bold')
 ax.set_ylabel("Rating (1-10)",fontsize=12,fontweight='bold')
-ax.set_title("Cognitive Cost: Score Variance Compression",fontsize=14,fontweight='bold')
+ax.set_title("Rating Dispersion",fontsize=14,fontweight='bold')
 std_f,std_s=fd2.std(),sd2.std()
 _,p_var=stats.levene(fd2,sd2)
 ax.text(0.5,0.82,f"Free σ = {std_f:.2f}\nStruct σ = {std_s:.2f}\nLevene {fmt_p(p_var)}",
         transform=ax.transAxes,ha='center',fontsize=11,fontweight='bold',
         bbox=dict(boxstyle='round,pad=0.4',fc='white',ec='gray',alpha=0.9))
 sns.despine()
-plt.suptitle("RQ4: Trade-offs between Efficiency and Cognitive Variance",y=1.03,fontsize=16,fontweight='bold')
+plt.suptitle("RQ4: Trade-offs between Efficiency and Rating Dispersion",y=1.03,fontsize=16,fontweight='bold')
 plt.tight_layout();plt.savefig(fd/"rq4_tradeoffs.png",dpi=300,bbox_inches='tight')
 print(f"Saved: rq4_tradeoffs.png (Free σ={std_f:.2f}, Struct σ={std_s:.2f}, Levene {fmt_p(p_var)})")
 if 'free_words' in main.columns:

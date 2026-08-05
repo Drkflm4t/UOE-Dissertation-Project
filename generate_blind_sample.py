@@ -93,9 +93,9 @@ for i, task in enumerate(tasks, start=1):
         "shuffle_seed": SHUFFLE_SEED,
     })
 
-    review_text = f"Review ID: {review_id}\n"
-    review_text += f"Validation Track: {vtrack}\n"
-    review_text += "=" * 60 + "\n\n"
+    review_text = f"# Review ID: {review_id}\n\n"
+    review_text += f"**Validation Track:** `{vtrack}`\n\n"
+    review_text += "---\n\n"
     found = False
     source_path = None
 
@@ -106,9 +106,11 @@ for i, task in enumerate(tasks, start=1):
             data = json.loads(json_path.read_text(encoding="utf-8"))
             if setup == "Free":
                 content = data.get("prompt_free_text", "")
+                review_text += content
             else:
-                content = json.dumps(data.get("prompt_structured_json", {}), indent=2, ensure_ascii=False)
-            review_text += content
+                review_text += "```json\n"
+                review_text += json.dumps(data.get("prompt_structured_json", {}), indent=2, ensure_ascii=False)
+                review_text += "\n```\n"
             found = True
     else:
         cond_short = cond.replace("_PDF", "")
@@ -116,16 +118,21 @@ for i, task in enumerate(tasks, start=1):
         txt_path = INJ_RAW_DIR / spid / f"{cond_short}_{suffix}.txt"
         if txt_path.exists():
             source_path = txt_path
-            review_text += txt_path.read_text(encoding="utf-8")
+            content = txt_path.read_text(encoding="utf-8")
+            # For structured Injection reviews, wrap in code block if they look like JSON/field-based
+            if setup == "Struct" and ("Summary:" in content[:200] or "Strengths:" in content[:200]):
+                review_text += "```\n" + content + "\n```\n"
+            else:
+                review_text += content
             found = True
 
     if not found:
-        review_text += f"[WARNING: Source file not found for {spid}/{cond} ({setup})]"
+        review_text += f"> **⚠️ WARNING:** Source file not found for `{spid}/{cond}` ({setup})"
         missing_count += 1
 
     manifest_records[-1]["source_review_path"] = str(source_path) if source_path else ""
 
-    (BLIND_DIR / f"{review_id}.txt").write_text(review_text, encoding="utf-8")
+    (BLIND_DIR / f"{review_id}.md").write_text(review_text, encoding="utf-8")
 
 print(f"  {len(tasks) - missing_count}/{len(tasks)} reviews extracted, {missing_count} missing")
 
