@@ -1,0 +1,50 @@
+Summary:
+The paper introduces an approach to iteratively process temporal scene context for the purposes of agent motion prediction. This differs from traditional approaches that ingest the whole context directly.
+
+The scene is processed in temporal chunks, where in each chunk contains agent-centric context consisting of other agents and map within 150m. Information is aggregated across chunks (i.e. over time) using two novel components:
+
+"Scene context stream", where agent/map features from the past frame are transformed using Motion-aware Layer Normalization [40] and cross-attended by current frame features.
+"Agent context stream", where agent predictions from the current frame are modified by attending predictions from past frames (stored in a memory bank and properly aligned).
+This 'streaming-type' method obtains very strong results on the Argoverse 1 and 2 datasets, and is shown to improve two different baseline model architectures based on [5] and [51] that consume the whole historical context in a single step. Some helpful ablations and latency studies of the proposed components is provided.
+
+Soundness: 3: good
+Presentation: 2: fair
+Contribution: 4: excellent
+Strengths:
+Strong idea to stream scene context into the model, shown to be effective even with short 2-3 'chunks' of context over 2-3 seconds.
+Intuitive and well designed scene and agent context stream components that aggregate information across frames (or 'chunks'). The components are designed to model local information in agent-centric coordinates and aggregate it in a geometry-aware manner.
+Strong overall results on Argoverse 1 and 2, and when comparing the baseline models the new technique is extending.
+Mostly comprehensive related work section.
+Weaknesses:
+In the abstract/intro, I find some of the framing to be a bit misleading. Examples:
+
+"7:This significantly simplifies the forecasting task, making the solutions unrealistic to use in practice". I do not find this claim to be well supported. The current methods still ingest a significant amount of relevant context. To me the contribution of the paper is to follow a streaming paradigm and design more domain-appropriate fusion mechanisms across time than the vanilla MLP or transformer ops that are used traditionally.
+"31 - 36: existing methods all tackle an artificially narrowed and unrealistic motion forecasting task".... The methods still ingest 2-3 seconds of context, but perhaps not as effectively as the proposed work. That does not confirm this overly strong claim however. Also the paper only demonstrates good performance with up to 3s of context, that does not prove yet that much longer context is helpful or practical.
+To a similar point, Fig 1 is also a bit misleading: current methods would directly ingest the available scene history in the current datasets, and fuse the information, even if the information fusion is not done with the same geometric and streaming intuitions.
+In the method description, some details are unclear or could be explained better:
+
+83: "generate trajectory segments of identical length" Length can be misconstrued to be the length of the trajectories in meters, not that they are the same across chunks. This whole paragraph could be rewritten for clarity and a more helpful diagram could be shown -- illustrating what exactly is done for Argoverse 2 (one now needs to read all the way to Sec 4 to understand how this works).
+"114: Additionally, we forecast a singular trajectory for auxiliary training purposes, focusing on the movement patterns of other agents. " Unclear what this means exactly. Do you produce only a single trajectory prediction in past steps?
+"“Equal length into past and future” → confusing, assume fixed time interval in both directions.
+The L_refine loss in Eq 5 is not explained, unclear what is being refined. My guess is that this is predictions in earlier chunks
+What is exactly RealMotion without the context stream components? This is present both in the Ablation and in Appendix B.3. How do you fuse information across time then?
+In the experimental results, some SOTA methods from the leaderboard seem to omit SEPT (ICLR 2023), which has higher numbers than RealMotion, even though it is cited. Why did you you omit it?
+
+A couple more ablations or experiments would be helpful.
+
+It seems that the method is similar to a filter, where the current chunk only attends to previous chunk (but not to the ones before). Is my reading of the paper correct? If so, an experiment where the method can attend longer context memory with multiple frames would be interesting.
+It would also be interesting to try pretraining this method on more data examples (those can be produced by predicting shorter futures, then you can use more of the segments). And then fine-tune on 6s futures.
+Questions:
+Main question is, do you agree with my reading that "the contribution of the paper is to follow a streaming paradigm and design more domain-appropriate fusion mechanisms across time than the vanilla MLP or transformer ops that are used traditionally. " As opposed to the strong claims in the current abstract / intro.
+
+Why did you omit SEPT from the leaderboard results (Table 1)?
+
+Please see my clarification or ablation/more experiment comments in the Weaknesses. I am particularly interested to understand why you did not try to attend to longer temporal context in the last chunk (if I read the paper correctly).
+
+Limitations:
+The same RealMotion methods tried here could be tried on the Waymo Open Dataset which also has 9 second segments, but one could take the first 3 seconds as history and predict 6 seconds, as opposed to the standard 1s / 8s split that is mentioned in the limitations.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

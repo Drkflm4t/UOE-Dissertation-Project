@@ -4,13 +4,13 @@
 
 ### Recommended
 
-**Structure Is Not a Safeguard: Efficiency, Rating Dispersion, and Robustness in LLM-Based Peer Review**
+**Structured LLM Peer Review: Manipulation Robustness, Reasoning Sensitivity, and Operational Trade-offs**
 
 ### Alternatives
 
-- **Schema-Constrained but Still Vulnerable: Evaluating Structured LLM-Based Peer Review**
-- **The Price of Structure: Efficiency and Robustness Trade-offs in LLM-Based Peer Review**
-- **Structured but Not Secure: Testing Manipulation Robustness and Defect Discriminability in Automatic Peer Review**
+- **Structured Reviewing as a Control Layer for LLM-Based Peer Review**
+- **Evaluating Structured LLM Reviewers under Manipulation and Faulty Research Logic**
+- **From Free-Form to Structured Review: Robustness, Coverage, and Efficiency in Automatic Peer Review**
 
 > [修改] 删除标题中的 “LLM-as-a-Judge”。本项目的主要研究对象是作为 reviewer / automatic review generator (ARG) 的 LLM；Judge 只是对自由文本评审进行特征提取的测量工具。
 >
@@ -25,7 +25,6 @@
 - **[待分析]**：需要补做统计检验、稳健性分析或人工核验后才能定论。
 - **[待补充]**：核心分析已经完成，但正文报告或辅助统计仍需补齐。
 - **[计划]**：已经确定设计、尚未执行的辅助工作。
-- **[已完成]**：分析已经执行，并存在可追溯的结果文件。
 - **[限制]**：必须在正文中主动承认的证据边界。
 - **[可保留]**：现有方向与证据基本一致，可据此展开正文。
 
@@ -37,15 +36,25 @@
 
 本研究在同一批论文、同一生成模型和严格的被试内设计下，对比 free-form 与 schema-constrained 两种审稿设置。结果应围绕以下中心论点组织：
 
-> **Strict output structure substantially improves operational efficiency and changes the distribution of review content, but it does not constitute a reliable safeguard against prompt injection and does not improve the specific discrimination of logic defects over surface perturbations.**
+> **Schema-constrained reviewing provides measurable attenuation of selected manipulation effects and substantial gains in operational concision, while targeted audits show that reliable logic-defect detection requires complementary verification beyond output structure alone.**
 
-必须避免把结果写成“结构化一定更差”或“JSON 严重损害推理能力”。当前实验更可靠地支持：
+全文围绕以下已建立的认识组织：
 
 1. 两种审稿设置都容易受到白字 prompt injection；
 2. Structured 条件下部分攻击效应较小，但攻击没有被阻止；
 3. 两种设置都没有可靠地区分逻辑扰动和表面扰动；
 4. Structured 输出显著更短、更快、token 消耗更低；
-5. Structured 的评分分布更窄，但这究竟代表更高一致性还是更低敏感性，不能仅凭方差判断。
+5. Common-measure coding 显示两种 setups 的 total recorded coverage 相当，Human benchmark 进一步表明 Structured 的篇幅明显更接近实际 human reviewing；
+6. Structured 的评分分布更窄，作为独立的 distributional property 报告，而不让其承担 efficiency/concision contribution 的证明责任；
+7. Target-defect audit 将 RQ2 的 aggregate null 分解为 target omission 与 critique–rating decoupling，为未来 reasoning-verification design 提供具体方向。
+
+## Evidence-framing framework（后续各章统一遵循）
+
+1. **先讲发现和贡献。** 每个 RQ 先用 primary analysis 回答研究问题，明确 effect direction、magnitude 与实际意义；不用 limitations 开场，也不让技术性边界遮住核心结果。
+2. **再用多源证据加强论证。** 自动指标、common auxiliary coding、qualitative cases 与 human-reference benchmark 承担不同作用；它们用于互相校准、解释机制并检验结论稳健性。
+3. **把 measurement asymmetry 写成已被主动处理的设计问题。** Primary analysis 遵循实验中已实施的 Free-Judge 与 Structured-native measurement procedures；5-paper common manual coding 为两种 outputs 提供共同 rubric，**partially bridges and calibrates the measurement gap**。因此应同时报告 primary pipeline 与已完成的 measurement triangulation，而不只列出 asymmetry。
+4. **根据证据强度分层下结论。** Primary statistics 与 auxiliary evidence 方向一致时，可清晰使用 `supported` 或 `convergent evidence`；仅有 exploratory evidence 时使用 `consistent with`；真正无法区分的解释才保留为 future work。
+5. **Limitations 与贡献保持比例。** 不回避重要限制，但也不将已通过验证、triangulation 或谨慎措辞处理的小缺陷写成整个项目失效。剩余的外部效度与扩展性问题放入 Limitations/Future Work。
 
 ---
 
@@ -152,21 +161,23 @@
 
 ## 1.6 Contributions
 
-建议明确列出四项贡献：
+建议明确列出六项贡献：
 
 1. **Unified evaluation design:** 在同一被试内框架中联合评估 prompt injection 与 counterfactual logic defects。
 2. **Controlled setup comparison:** 在同一 Generator 和同一批论文上比较 free-form 与 schema-constrained reviewing setups。
 3. **Multi-dimensional evaluation:** 同时测量 rating、review aspects、methodological flaws、attack compliance 和系统效率。
-4. **Empirical finding:** 证明结构化约束能够改善效率并改变输出分布，但不能单独作为安全或逻辑推理保障。
+4. **Measurement triangulation:** 在保留两条 operational pipelines 的同时，使用 condition-masked common coding 校准 Free-Judge 与 Structured-native measures，区分可复现的行为结果与 measurement-sensitive aspect counts。
+5. **Mechanism-level diagnosis:** 使用 target-defect audit 与 count-granularity inspection，将 aggregate patterns 分解为 omission、critique–rating decoupling 和 measurement-sensitive segmentation。
+6. **Empirical insight:** 证明 Structured setup 能够减弱部分 injection effects，并以更接近 human-review practice 的篇幅实现 comparable common-coded coverage；同时识别需要 input-integrity 与 reasoning-verification modules 补充的风险。
 
 > [修改] 原 contribution 只描述了 N=30 的实验设计，没有明确说明知识贡献。
 
 ## 1.7 Dissertation roadmap
 
 - Chapter 2 回顾 ARG、操纵风险、逻辑缺陷评估及 structured generation。
-- Chapter 3 描述两条实验轨道、两个 reviewing setups、指标提取与统计方法。
-- Chapter 4 按 RQ1–RQ4 报告结果。
-- Chapter 5 讨论安全性、诊断能力、效率权衡、限制与未来工作。
+- Chapter 3 描述两条实验轨道、两个 reviewing setups、指标定义与收集、evidence triangulation 和统计方法。
+- Chapter 4 按 RQ1–RQ4 完成 quantitative result、manual/human validation、case mechanism analysis 与 RQ conclusions。
+- Chapter 5 将这些结论与 manipulation/faulty-reasoning prior work 对话，提出 layered-system implications，并集中界定 scope 与 future work。
 - Chapter 6 总结研究发现。
 
 > [新增] Introduction 末尾加入简短章节导航。
@@ -248,6 +259,8 @@
 
 # 3. Methodology
 
+**章节职责：** 说明 inputs、generation、measurement、aggregation 和 validation procedures，使 Chapter 4 的每项结论均可复现。Methodology 不提前报告结果，也不按代码 Step 1–5 写成实验日志。
+
 ## 3.1 Experimental overview
 
 - 设计：strict within-subjects design，N=30 papers。
@@ -258,7 +271,7 @@
   2. Injection track：30 × 2 = 60 PDFs，每个 PDF 分别生成 Free 与 Structured review。
 - 总调用量：600 Generator calls + 360 Judge calls = 960 calls。
 
-> [新增] 建议加入一张完整 pipeline diagram 或 design table，使读者能够立即理解两条轨道和两个 reviewing setups 的交叉关系。
+加入一张完整 pipeline diagram，使读者立即理解两条 tracks、两个 reviewing setups、operational metrics 与 auxiliary evidence 的关系。
 
 ## 3.2 Data selection and sampling
 
@@ -267,7 +280,7 @@
 - 从 123 篇 eligible papers 中以 seed = 10190 随机抽取 30 篇。
 - 报告论文 venue、year 或 paper type 的基本分布。
 
-> [新增] 需要解释为什么选择 N=30，以及这对统计功效和外部效度的影响。若没有正式 power analysis，应明确这是由完整交集、API 成本和实验可行性共同决定的样本。
+说明 N = 30 来自完整 counterfactual/PDF intersection 后的固定随机样本；外部推广范围集中放在 Chapter 5。
 
 ## 3.3 Counterfactual track
 
@@ -342,7 +355,7 @@
 
 ### 3.5.3 Interpretation boundary
 
-> [新增·关键限制] 两个条件不是只在序列化格式上不同。Structured 同时提供了额外维度指导。因此后文只能讨论 setup-level association，不能把效应唯一归因于 JSON。
+将 Free/Structured 明确定义为两个完整 reviewing setups：Structured 同时改变 dimension guidance、output organisation 和 machine-readability。本文关注的就是采用该完整 setup 的实际效果；若要分离 JSON 与 guidance，作为 Chapter 5 的 factorial future work。
 
 ## 3.6 Automated feature extraction
 
@@ -358,14 +371,11 @@
 
 ### 3.6.3 Measurement comparability
 
-> [修改] 不要声称这种设计“消除了测量误差”。它减少了对 Structured 输出进行二次解析的需要，但引入了 measurement-procedure asymmetry：Free 指标由 Judge 推断，Structured 指标由 Generator 直接报告。
+该设计首先保留了两种 output formats 的实际消费方式：Free prose 需要 Judge 进行二次提取，Structured output 则直接提供 machine-readable fields。两组 rating 均使用 1–10 integer scale，从而对齐了数值尺度。
 
-必须说明：
+研究进一步用 5-paper condition-masked common coding 对 Free 和 Structured texts 应用同一 rubric，为两种 operational measures 提供共同参照。这一步**主动校准并部分弥合了 measurement gap**：它验证了部分核心方向，同时识别出 weakness count 对 segmentation/procedure 更敏感。因此 RQ3 不是只依赖不同测量源的绝对 count，而是结合 primary operational comparison 与 common-measure triangulation 下结论。
 
-- 两组评分都为 1–10 integer scale，因此数值尺度一致；
-- 但指标生成机制不同；
-- RQ3 的跨组 aspect-count comparison 尤其容易受到这种差异影响；
-- 结果应被解释为 operational measures，而不是无误差的真实 review quality。
+正文仍应透明说明 Free 与 Structured 的指标生成机制不同，但该信息应作为读者理解 operational pipeline 和 triangulation design 的一部分，而不是否定所有跨 setup 分析。
 
 ## 3.7 Outcome measures
 
@@ -376,30 +386,33 @@
 - Latency：API call elapsed time。
 - Output tokens：统一 tokenizer 估算。
 - Rating dispersion：不同 review outputs 的 rating SD / distribution。
+- Human benchmark：matched Original papers 的 paper-level mean word count，以及 author-coded aspect profile。
 
-> [新增] 明确 primary outcomes 与 secondary outcomes。建议 rating 与 methodological flaws 为主要行为指标，其他指标为辅助解释。
+在本节同时定义每个 metric 的概念意义、scale、measurement source、distinct-item rule 和 analysis use。Primary outcomes 为 RQ1 rating/MF/compliance 与 RQ2 rating/MF contrasts；RQ3/RQ4 metrics 用于 coverage 与 operational analysis。
+
+## 3.7A Evidence triangulation
+
+- 5-paper / 50-review condition-masked single-annotator common coding：对 Free 与 Structured texts 使用同一 rubric。
+- Post-unblinding 5-case target-defect audit：记录 target mention、correct interpretation 和 rating consequence。
+- Count-granularity inspection：检查 segmentation/category allocation 对 count gap 的贡献。
+- Human benchmark：11 篇 matched papers、45 份 eligible public primary reviews；同一 paper 内先聚合为 paper-level mean。
+- Methodology 描述选择和编码规则；Chapter 4 报告实际 trends、案例和结论。
 
 ## 3.8 Statistical analysis
 
 ### RQ1
 
 - 在每种 setup 内，对 Manipulated_PDF 与 Original_PDF 做 paired comparison。
-- 报告 mean paired difference、95% CI、p-value 和 paired effect size。
+- 报告 mean paired difference；对直接支撑 attenuation 的 rating 与 MF 报告 Free–Structured contrast、95% CI 和 Holm-adjusted p-value。
 - 进一步比较 Free 与 Structured 的 per-paper attack deltas，即 setup × injection interaction。
-
-> [已完成] 已对 Free 与 Structured 的 per-paper attack deltas 进行直接配对比较，结果保存在 `outputs/stats/rq1_attenuation_test.csv`。Structured 显著减弱了注入导致的评分提升（Free Δ = +1.90；Structured Δ = +0.97；paired t = 5.887，p = 2.17 × 10⁻⁶），也显著减弱了 methodological-flaw reports 的下降幅度（Free Δ = -3.20；Structured Δ = -1.83；paired t = -3.013，p = .0053）。因此可以使用 “significantly attenuated some attack effects”，但仍不能称为成功防御。
+- Methodology 不报告实际结果数值；这些内容统一放入 Chapter 4 Table 4.1。
 
 ### RQ2
 
 - 不应只对 pooled deltas 做 one-sample t-test。
-- 首选分析：mixed-effects model，以 paper 为随机效应，perturbation class、setup 及其交互为固定效应。
-- 可接受的简化方案：先在每篇 paper 内分别计算平均 Logic Δ 和平均 Format Δ，再进行 paired comparison。
+- 最终分析：先在每篇 paper 内分别计算平均 Logic Δ 和平均 Format Δ，再进行 paired comparison。
 - 分别对 methodological flaws 和 rating 建模。
-- 如进行多个检验，说明 multiple-comparison correction。
-
-> [已完成] 已采用 paper-level aggregation，对每篇论文的平均 Logic Δ 与平均 Format Δ 进行配对比较，结果保存在 `outputs/stats/rq2_discriminability_test.csv`。四项比较均不显著：Free MF p = .632；Structured MF p = .162；Free rating p = .979；Structured rating p = .771。这直接支持 neither setup demonstrated reliable logic-specific discriminability。
->
-> [已完成] 扩展统计结果已写入 `outputs/stats/rq2_discriminability_test.csv`，包括 Logic–Format mean difference、95% CI、paired Cohen's d_z、raw p-value 和 Holm-adjusted p-value。正文仍需解释 paper-level aggregation 的计算方式，但不再缺少统计量。
+- 四个 Logic–Format tests 使用 Holm correction；主文报告 Logic Δ、Format Δ、raw-scale contrast、95% CI 和 Holm p，不重复 `t`、raw p 或 `d_z`。
 
 ### RQ3
 
@@ -407,15 +420,14 @@
 - 报告各维度均值、分布和总 count。
 - 将分析称为 coverage profile comparison。
 
-> [待分析] 如要使用 “comprehensiveness” 一词，需要人工评价、经过验证的 coverage rubric，或至少补充 Judge/human validation。
+- Operational profiles 与 5-paper common coding、11-paper Human external profile 联合解释；统一使用 `review-aspect coverage`，不把 count 自动等同于 quality。
 
 ### RQ4
 
-- 报告 word count、latency、token count 的均值、中位数、差值和相对减少比例。
+- 全部240 rows报告 word count、latency、token count 的核心描述统计和相对减少比例。
 - 报告两组 rating distribution 和 SD。
 - Levene test 只能证明方差不同，不能证明较低方差是认知损害。
-
-> [限制] 240 行包括同一 30 篇论文的重复条件，简单把 240 个值当完全独立观测会忽略 repeated-measures structure。
+- Human benchmark 只使用11篇 matched Original papers，以 paper-level mean 为单位报告 N、mean、median 和 range。
 
 ## 3.9 Reproducibility
 
@@ -429,14 +441,15 @@
 
 # 4. Results and Analysis
 
+**章节职责：** 本章是全文的主要 empirical argument。每个 RQ 按 `quantitative pattern → triangulation → qualitative/case mechanism → RQ answer` 完成论证；数据直接支持的 target omission、critique–rating decoupling、segmentation sensitivity 和 criticism retention 均在本章分析。
+
 ## 4.1 RQ1 — Susceptibility to white-text prompt injection
 
 ### Evidence to report
 
 - Figure: paired slope graph for ratings。
 - Figure: Δ rating versus Δ weaknesses，bubble size = Δ strengths。
-- Figure: Δ rating versus Δ methodological flaws。
-- Table：两种 setup 的 baseline、injected mean、ATE、95% CI、p-value 和 effect size。
+- Table：各 metric 的 Free/Structured Δ；rating 与 MF 额外报告 setup contrast、95% CI 和 Holm p。
 
 ### Current descriptive results
 
@@ -451,24 +464,20 @@
 ### Correct conclusion direction
 
 - 两种 setup 都没有抵御攻击：评分上升、weaknesses 和 methodological flaws 减少、compliance 上升。
-- Structured 的部分攻击效应较小，尤其是 rating、weaknesses、methodological flaws 和 compliance；但 strengths 的增加更大。
+- Structured 的部分攻击效应较小，尤其是 rating、methodological flaws 和 compliance；automatic weakness reduction 也较小，但该维度未在 common coding 中可靠复现。Strengths 的增加则在 Structured 中更大。
 - 因此 Structured 最多可描述为 attenuating some attack effects，而不是提供可靠防御。
-- “MF blindness” 有较强描述性支持：Free 中 28/30 篇、Structured 中 25/30 篇在注入后 methodological-flaw count 下降。
+- MF reporting 的 Free reduction 更大，由 Table 4.1 和方向性数量表达；不再使用单独 scatter/trend line 或 “MF blindness” 标签。
 
-> [修改] 原结论“均易受操纵”可保留，但必须加入 Structured 攻击效应较弱这一重要结果。
->
-> [已完成] setup 间 attack-delta 的直接配对比较显示，Structured 显著减弱了 rating inflation（paired t = 5.887，p = 2.17 × 10⁻⁶）及 methodological-flaw reduction（paired t = -3.013，p = .0053）。因此可以正式使用 “significantly attenuated these measured attack effects”，但必须同时强调两种 setup 中攻击效应仍然存在。
->
-> [修改] 避免“完全失明”。更准确的是 “substantial reduction in reported methodological flaws under injection”。
->
-> [定性核验·一例] 在解盲后用一个 matched Original/Manipulated × Free/Structured case 检查：Structured attenuation 是否表现为 mandatory weakness/MF fields 保留了 substantive criticism，而非完全拒绝 payload。当前非盲审候选与该有限解释一致，但正文只把它作为 illustrative evidence，不作 prevalence 或单一因果机制判断。
+Setup 间 attack-delta 的直接配对比较显示，Structured 显著减弱了 rating inflation 及 methodological-flaw reduction；common coding 与 matched case 进一步显示其在受到攻击时保留更多 substantive criticism。RQ1 的主结论为 **measurable partial attenuation**，并由 Chapter 5 将 complete defence 定位为 input-integrity layer 的任务。
+
+正文用一个 matched Original/Manipulated × Free/Structured case 说明 Structured mandatory fields 仍保留 substantive criticism。该例只是 illustrative evidence，不作 prevalence 或单一因果机制判断。
 
 ## 4.2 RQ2 — Discriminability of logic defects
 
 ### Evidence to report
 
 - Figure: Logic versus Format distributions for Δ methodological flaws and Δ rating。
-- Table：每种 setup × perturbation class 的 mean Δ、CI 和 model coefficient。
+- Table：每种 setup × perturbation class 的 mean Δ、Logic–Format contrast、95% CI 和 Holm p。
 - 主要统计检验必须直接比较 Logic 与 Format。
 
 ### Current descriptive results
@@ -491,10 +500,10 @@
 > [修改·关键] 删除“Prompt_Free 展现一定惩罚能力，而 Prompt_Structured 完全丧失判别敏感度”。这与当前 CSV 和图不一致。
 >
 > [修改] 方法论缺陷数量增加不等于“惩罚”，尤其当 overall score 没有下降时。应分别描述 critique coverage 与 evaluative consequence。
->
-> [已完成] paper-level paired aggregation 的 Logic-versus-Format 检验均不显著：Free MF p = .632；Structured MF p = .162；Free rating p = .979；Structured rating p = .771。该结果确认当前描述性结论，而不是仅依赖原图中的 one-sample significance stars。
->
-> [已完成·定性核验] 5 个 matched Logic cases 中，Structured 识别 2/5，Free 识别 3/5；没有可靠 setup difference。10 份 setup-specific reviews 中约一半遗漏 target，而 5 份 detected reviews 中仅 1 份降低 primary rating。Aggregate null 因而反映 target omission 与 critique–rating decoupling 并存。正文使用 Case 3：两种 reviews 均识别 claim–result contradiction，但 primary ratings 均未改变。
+
+Paper-level paired aggregation 的四项 Logic-versus-Format contrasts 均不显著，且 raw-scale contrasts 接近 0、confidence intervals 跨 0。图和主表统一报告 direct comparisons 与 Holm-adjusted p-values。
+
+5 个 matched Logic cases 中，Structured 识别 2/5，Free 识别 3/5；没有可靠 setup difference。10 份 setup-specific reviews 中约一半遗漏 target，因此 **unreliable target-defect detection 是首要失败**。在 5 份 detected reviews 中仅 1 份降低 primary rating，critique–rating decoupling 作为次级机制解释已识别但未扣分的 cases。正文使用 Case 3：两种 reviews 均识别 claim–result contradiction，但 primary ratings 均未改变。
 
 ## 4.3 RQ3 — Review-aspect coverage
 
@@ -518,19 +527,16 @@
 > [修改] 原结论只说“存在结构性差异”，过于空泛；需要说明差异的方向和主要来源。
 >
 > [限制] Free 和 Structured 的 counts 来自不同测量机制，跨组绝对数量差异不能完全归因于 reviewing setup。
->
-> [计划·辅助验证] 从 5 篇论文中抽取 Free 与 Structured reviews，进行 condition-masked single-annotator coding。人工评估只验证自动提取的 rating、strength、weakness、methodological-flaw 和 injection-compliance 指标，不重新审阅论文，也不作为 RQ1/RQ2 的主要评价标准。
->
-> [已完成·辅助验证] Original-only common coding 得到 Free total = 18.4、Structured total = 19.2，而 automatic totals 为 29.2 与 24.0。Automatic Free > Structured ordering 未被复现；weakness agreement 尤其差（Free MAE = 6.28，Structured MAE = 3.40）。因此 RQ3 应表述为 measurement-sensitive aspect profiles，而不是稳定的 Free total-coverage advantage。
->
-> [已完成·定性核验] Pair A 的 Free automatic counts 为 10 strengths / 14 weaknesses / 11 MF（total 35），common coding 为 7 / 3 / 14（total 24）。差异与 segmentation 及 weakness/MF category-boundary sensitivity 一致，但 Judge 没有保存 item-level outputs，因此不能确认具体 double-counting mechanism。该 case 只解释 measurement instability，不用于声称 Structured 更 comprehensive。
+
+Original-only common coding 得到 Free total = 18.4、Structured total = 19.2，而 automatic totals 为 29.2 与 24.0。Automatic Free > Structured ordering 未被复现；weakness agreement 尤其差（Free MAE = 6.28，Structured MAE = 3.40）。Pair A 同时显示 segmentation 与 weakness/MF category-boundary sensitivity，但无 item-level Judge outputs，不能确认具体 double-counting mechanism。因此当前 RQ3 结论是 **measurement-sensitive aspect profiles**，而不是稳定的 Free total-coverage advantage。
+
+Human external profile 基于11篇 matched papers、45份 author-coded reviews：Human 平均约7.73 aspects，而 matched Structured/Free operational profiles 分别约22.82/25.45。它不替代 common coding，但进一步说明高 item counts 不等同于 normal human-review coverage。与 common-coded comparable totals 和 Pair A 联合后，Free 的额外 counts 更符合 greater segmentation/granularity，而不是稳定的 substantive-coverage advantage。
 
 ## 4.4 RQ4 — Efficiency and rating dispersion
 
 ### Evidence to report
 
-- Figure: word count versus latency scatter。
-- Figure: rating distributions / violin plot。
+- Figure: matched Human/Structured/Free length grouped-bar panel + rating-distribution panel。
 - Table：words、latency、tokens、estimated cost 的均值和 reduction percentages。
 
 ### Current descriptive results
@@ -554,133 +560,62 @@
 > [限制] API latency 也受服务负载、网络和模型后端影响；本研究记录的是 observed end-to-end latency，不是纯模型计算时间。
 >
 > [限制] 成本表必须标记为基于假设价格的估算，除非使用的是调用时该模型的真实账单价格。
->
-> [已完成·内部 diagnostic] 当前 ratings 已不再近乎全部为 7；简单 lexical overlap 与少量 text inspection 也不支持“Structured reviews 近乎相同而导致 compression”的简单假设。两个 diagnostic CSV 仅用于 audit，不作为正文附加主表。RQ4 保留“remaining cause unidentified”，必要时复用 RQ2 的一个 case，不另展示多例。
->
-> [已完成·辅助核验] 在 25 + 25 reviews 的共同 inferred-rating coding 下，Free SD = 1.12，Structured SD = 0.53，方向上支持 Structured rating distribution 较窄；仍不据此判断较低 dispersion 的 normative meaning。
+
+当前 ratings 已不再近乎全部为 7；简单 lexical overlap 与少量 text inspection 也不支持“Structured reviews 近乎相同而导致 compression”的简单假设。在 25 + 25 reviews 的共同 inferred-rating coding 下，Free SD = 1.12，Structured SD = 0.53，方向上支持 Structured rating distribution 较窄，但 remaining cause 仍然 unidentified。
+
+Matched 11-paper benchmark 得到 Human = 387.5、Structured = 851.4、Free = 1874.4 mean words；Structured 约为 Human 的2.2倍，Free约为4.8倍。结合 RQ3 common coding，可将 Structured 的优势表述为 **relative concision without a clear recorded-coverage loss in the audited sample**。
 
 ## 4.5 Results summary
 
-建议在 Chapter 4 末尾加入一张 RQ summary table：
-
-| RQ | Main finding | Evidential boundary |
-|---|---|---|
-| RQ1 | Both setups were vulnerable; Structured significantly attenuated the measured rating and MF effects but did not prevent compliance. | Free uses Judge-extracted metrics and Structured uses native schema metrics; the planned manual validation evaluates the plausibility of both extraction procedures. |
-| RQ2 | Neither setup showed reliable logic-specific discriminability; the case audit found both target omission and critique–rating decoupling. | Five qualitative cases explain possible mechanisms but do not estimate population prevalence. |
-| RQ3 | Automatic measures gave Free a higher total count, but common coding showed similar totals and different aspect profiles. | The total-count ordering was measurement-sensitive, especially for weaknesses. |
-| RQ4 | Structured was shorter, faster and less token-intensive, with narrower rating dispersion. | Lower dispersion is not inherently better or worse. |
-
-> [新增] 这张表可以防止 Discussion 和 Conclusion 再次把描述性结果扩大成因果或认知结论。
+不再制作 cross-RQ summary table。四个 RQ 的 exact evidence 已由5张 figures与4张主表承载；本节末尾用一个 synthesis paragraph 强化记忆点：Structured 提供 targeted attenuation、relative concision 和 operational control，而 reliable logic verification 需要 complementary safeguards。
 
 ---
 
 # 5. Discussion and Future Work
 
-## 5.1 Structure is an efficiency mechanism, not a security mechanism
+**章节职责：** 不重复 Chapter 4 的分析和数字。本章说明研究结论相对于 prior work 的新增认识，将 structure 定位为 targeted mitigation/operational control layer，提出 layered-system implications，并以紧凑 scope boundaries 导出 future work。
 
-- Structured output 适合机器解析、汇总和规模化部署。
-- 但攻击 payload 位于输入内容中，输出 schema 本身并不验证输入是否可信。
-- 因此 schema constraint 与 prompt-injection defense 解决的是不同层次的问题。
-- Structured 对部分攻击效应的减弱值得讨论，但不能被描述为安全保证。
+## 5.1 Structured reviewing as targeted mitigation and operational control
 
-> [修改] 将讨论主线从“结构化严重削弱认知”改为“结构化改善工程可控性，但没有解决输入完整性和科学推理问题”。
+- 先概括 Structured setup 的成立价值：selected injection attenuation、machine-readability、relative concision 与 comparable common-coded coverage。
+- Human benchmark 将 efficiency finding 与实际 reviewing practice 连接起来。
+- Rating dispersion 作为独立伴随属性，不让其承担 Structured 价值的主要证明责任。
 
-## 5.2 Why did neither setup discriminate logic defects?
+## 5.2 Relationship to manipulation-risk research
 
-可讨论但不能直接断言的解释：
+- 与 Ye et al. 的 white-text manipulation finding 对话：本研究确认 vulnerability，并把问题推进到 Free-versus-Structured mitigation comparison。
+- 强调本文新增的 multi-outcome attenuation profile、common-coding corroboration 和 criticism-retention case evidence。
+- 结论定位：structure 是 layered defence 中可量化的 behavioural constraint，而非孤立的 complete defence claim。
 
-- 长论文中的关键信息检索失败；
-- 模型依赖表面 review heuristics；
-- 逻辑缺陷需要跨段落验证 result–conclusion–finding relations；
-- free-form generation 产生更多批评，但这些批评不具有缺陷特异性；
-- explicit fields 可能增加 coverage，却不保证字段内容建立在正确推理上。
+## 5.3 Relationship to faulty-reasoning evaluation
 
-> [限制] 实验观察的是输出行为，无法区分模型没有找到相关信息、没有识别逻辑矛盾，还是识别后没有在 review 中表达。
+- 与 Dycke and Gurevych 的 counterfactual null finding 对话：本研究在 Free/Structured 两种 setups 中复现无 reliable logic-specific response。
+- 本文的新增贡献是 target-level mechanism decomposition：target omission 为首要 observable failure，critique–rating decoupling 为 detected cases 的次级机制。
+- 推出 evaluation implication：coverage fields 与 defect verification 是不同能力，未来应使用 target-aware criteria。
 
-## 5.3 Interpreting narrower rating dispersion
+## 5.4 Implications for LLM-assisted peer-review design
 
-- 讨论可能的积极解释：更稳定、较少极端评分、便于决策系统处理。
-- 讨论可能的消极解释：scale compression、对论文差异或缺陷不敏感。
-- 结合 RQ2 强调：本研究无法判定较低 dispersion 等于更高 consistency。
-- 如果要研究一致性，应在相同 paper-condition 下进行多次重复生成并计算 test–retest reliability / ICC。
+- 提出三层 architecture：input-integrity checks、structured review layer、reasoning-verification layer。
+- 讨论 Human-in-the-loop role：用 structured fields 组织 evidence，由 human reviewer 处理高风险 scientific claims 与 final judgement。
+- 评价 ARG 时联合考虑 manipulation、targeted logic、coverage calibration 与 operational cost。
 
-> [新增] 项目 principal goal 提到 “more consistent reviews”，但当前 temperature = 0、每条件单次生成并不能直接测量重复生成一致性。必须在 limitations 中明确这一点。
+## 5.5 Scope and limitations
 
-## 5.4 Measurement asymmetry and LLM-as-a-Judge
+- 四组紧凑 scope boundaries：model/sample、compound setup、measurement/annotation、perturbation/deployment。
+- Measurement triangulation 作为已实施的 design strength 先说明，再界定 single-annotator 与跨模型推广范围。
+- 每个 limitation 只说明它限制哪类推广，不重新否定 within-paper findings。
 
-- Free 的 rating/counts 是 Judge inference；Structured 是 Generator self-report。
-- 这种设计保持了各 setup 的自然输出方式，但降低了跨组指标的完全可比性。
-- Judge 可能受到 review length、tone 和 verbosity 影响。
-- Structured list length 也不代表每个 item 的质量、独立性或正确性。
+## 5.6 Future work
 
-> [新增·关键限制] 这是 RQ3 和 rating-variance comparison 必须主动讨论的 measurement validity 问题。
+- Guidance × format 的 2 × 2 factorial design，分离 Structured setup 的 active components。
+- Target-aware reasoning verification，分别测量 detection、interpretation 和 rating consequence。
+- Text-layer sanitisation、rendered-image comparison 与 multimodal defence evaluation。
+- Multi-model/multi-annotator replication、repeated generations 和 human-in-the-loop usefulness study。
 
-## 5.5 Defensive system design
+## 5.7 Discussion synthesis
 
-### Cross-modal document validation
-
-- 比较 PDF extracted text 与 rendered pixels，检测只存在于文本层、不可见于图像的内容。
-- 检查异常小字号、白色文字、off-page text、重复隐藏指令和不一致 OCR。
-
-### Vision-based review
-
-- 将 PDF 渲染为图像可能消除本实验这种纯文本层白字 payload。
-- 但 Vision API 是否构成有效防御需要单独实验验证；OCR、accessibility text 或 multimodal preprocessing 仍可能重新暴露 payload。
-
-> [修改] 不要称 Vision API 为 “natural defense” 或既定解决方案。应称为 promising defensive hypothesis。
-
-### Instruction isolation
-
-- 将论文内容明确标记为 untrusted data；
-- 使用 input sanitisation 和 prompt-injection detection；
-- 将 review generation 与 security screening 分离；
-- 对异常高分变化或批评骤减设置 flag。
-
-> [新增] 防御建议不能只有 Vision；应提出文本层检测、跨模态验证和行为异常检测的组合。
-
-## 5.6 Limited manual validation of automated feature extraction
-
-- 从 5 篇论文中抽取 Free 与 Structured reviews，预计覆盖 RQ1 的 Original/Injected 配对，以及 RQ2 的 Original、一个 Logic 和一个 Format condition。
-- 每篇预计编码 10 份 reviews，共约 50 份；最终抽样条件和 random seed 应在执行前固定。
-- 采用 condition-masked coding：隐藏 paper identity、attack/perturbation condition 和所有自动指标，但由于输出形式可能暴露 setup，不声称完全 blind to Free/Structured。
-- 人工独立记录 inferred rating、n_strengths、n_weaknesses、n_methodological_flaws 和 injection-compliance score。
-- 人工编码只用于验证自动指标提取，不重新阅读原论文或判断评论是否真正发现了植入缺陷。
-- 按当前 measurement pipeline，分别比较 Human–Free Judge 与 Human–Structured native self-report。
-- 初始编码使用 LLM assistance，并由 dissertation author review/adjust；除非全部 rows 均经 author 独立 adjudication，报告时称为 `blinded LLM-assisted coding with author review`。
-- 该分析定位为 limited measurement validation，不作为 RQ1/RQ2 的主要评判标准，也不称为 human gold standard。
-
-> [限制] 全部人工编码由 dissertation author 一人完成，因此不能报告 inter-rater reliability。若时间允许，可在间隔一段时间后重复编码 10%–20% 的样本，作为 intra-rater consistency check。
-
-## 5.7 Limitations
-
-必须至少覆盖：
-
-1. N=30，且只来自满足完整 counterfactual intersection 的论文；
-2. 单一 Generator，结论不能直接推广到所有 LLM；
-3. 单一 Judge；计划进行 5 篇论文的单人抽样验证，但无法评估 inter-rater reliability；
-4. 每个 condition 单次生成，无法直接测量 test–retest consistency；
-5. Free 与 Structured 使用不同指标提取机制；
-6. Reviewing setup 是复合干预，不能分离 prompt guidance 与 JSON schema 的独立效应；
-7. Counterfactual errors 是自动生成的近似缺陷，不等于现实论文错误分布；
-8. PDF injection 只测试一种 payload 和一种隐藏方式；
-9. API latency 受到外部系统因素影响；
-10. paired / repeated-measures structure 必须在统计模型中正确处理。
-
-> [新增] 当前 outline 几乎没有完整 limitations section，这是 dissertation 可信度的重要组成部分。
-
-## 5.8 Future work
-
-- 多模型 replication，包括不同厂商、开放权重模型和 multimodal systems。
-- 将 prompt guidance 与 JSON formatting 拆成 2 × 2 factorial design：
-  - no guidance + text；
-  - guidance + text；
-  - no guidance + JSON；
-  - guidance + JSON。
-- 每个 paper-condition 多次重复，直接测量 consistency。
-- 使用人工验证或多 Judge ensemble。
-- 测试多种 injection payload、位置、字体和攻击策略。
-- 实现 extracted-text versus rendered-image validation。
-- 测量真正的 defect detection accuracy，而不仅是 review-level count changes。
+- 结尾强化一个记忆点：Structured reviewing 是 practical control layer；它已经带来 measurable attenuation 与 concision gains，而 input integrity 和 logic verification 是其自然的 complementary modules。
+- 过渡到 Chapter 6，不在最后重新展开 limitations。
 
 ---
 
@@ -688,58 +623,19 @@
 
 建议的结论方向：
 
-> 本研究在统一的被试内设计中，对比了 free-form 与 schema-constrained LLM peer-reviewing setups 在白字 prompt injection、反事实逻辑缺陷、review-aspect coverage 和系统效率方面的表现。结果显示，严格结构化输出显著减少了 review length、latency 和 token consumption，并产生了更窄的评分分布。然而，结构化约束并未形成可靠的 prompt-injection 防御：尽管部分攻击效应有所减弱，两种设置仍表现出明显的行为顺从。同时，两种设置都没有表现出对逻辑缺陷相对于表面变化的可靠特异性判别。因此，结构化输出应被理解为一种工程效率和输出组织机制，而不是安全性或科学推理能力的充分保障。未来系统需要结合输入完整性检查、跨模态验证和人类专家监督，才能在规模化效率与同行评审严谨性之间建立更可靠的平衡。
-
-> [修改] 删除“Structured 会严重损害模型检测科学逻辑缺陷的能力”。当前数据支持的是 Structured 未能改善判别，而 Free 本身也没有可靠的 Logic-over-Format specificity。
->
-> [修改] 将“无法有效缓解操纵”细化为“没有阻止攻击，但对部分攻击效应可能存在 attenuation”。
->
-> [修改] 不将更窄的评分分布直接解释成优点或认知损害。
+> 本研究在统一的 within-paper design 中，对比了 free-form 与 schema-constrained LLM reviewing setups 在 document-layer prompt injection、counterfactual logic defects、review-aspect coverage 和 operational efficiency 方面的表现。Structured setup 显著减弱了 rating inflation、injection compliance 与 methodological-criticism reduction，并大幅减少 review length、latency 和 token use；common coding 与 human benchmark进一步显示，这种 concision 在 audited sample 中没有伴随 clear recorded-coverage loss。与此同时，target-defect audit 说明 reliable logic verification 仍需要专门支持。由此，本文将 structured reviewing 定位为值得采用的 practical control layer，并提出以 input-integrity checks、reasoning verification 和 human oversight 构成 layered review system 的后续方向。
 
 ---
 
-# Prioritised revision and analysis list
+# Prioritised remaining work
 
-## Chapter 4 detailed-outline readiness
+## P0 — Chapter 4 正文
 
-- **当前无阻塞项，可以开始完成 `4_Results & Analysis.md` 的章节细纲。** RQ1/RQ2 的核心推断统计、RQ3 描述性指标和 RQ4 工程指标均已具备。
-- 当前细纲和未来正文均严格按照现有 measurement pipeline：Free metrics 由 Judge 提取，Structured metrics 采用 native Pydantic self-report。
-- 细纲中只保留 `[MANUAL VALIDATION PENDING]`，用于之后补入 5-paper measurement-validation 结果；它不阻塞 RQ1、RQ2 和 RQ4，RQ3 的跨 setup 解释暂时保持谨慎。
-- Common-Judge 是否需要补做、以及是否改变 primary analysis，等待导师确认；当前 master outline、chapter outline 和未来正文不依赖该分析。
+1. **Chapter 4 prose。** 按 RQ1 attenuation → RQ2 defect omission/decoupling → RQ3 measurement-sensitive coverage/granularity → RQ4 human-relative concision 的逻辑链起草正文。
+2. **Chapter 4 synthesis。** 用一个 paragraph 收束，不重复四个 tables 的数字。
 
-## P0 — Results 定稿前必须完成（不阻塞当前初稿）
+## P1 — 其他章节正文
 
-1. **[已完成] 重做 RQ2 的核心统计检验。** 已使用 paper-level aggregated paired analysis 直接比较 Logic 与 Format；结果保存于 `outputs/stats/rq2_discriminability_test.csv`，四项比较均不显著。
-2. **[已完成] 补齐 RQ1/RQ2 的统计报告。** 两个 stats CSV 均已加入 mean contrast、95% CI、paired Cohen's d_z、raw p-value 和 Holm-adjusted p-value。
-3. **[已完成] 修正 4.2 的结论。** Master outline 已改为“两者都没有 logic-specific discriminability”；Chapter 4 细纲与未来正文沿用该结论。
-4. **[已完成] 明确 reviewing setup 是复合干预。** Outline 已明确不能把观察结果唯一归因于 JSON；正文需保持该表述。
-5. **[已完成] 补做 RQ1 的 setup × injection effect comparison。** 已直接比较 Free 与 Structured 的 per-paper attack deltas；结果保存于 `outputs/stats/rq1_attenuation_test.csv`。Rating 与 MF attack effects 均显著减弱。
-6. **[暂缓·等待导师确认] 是否补齐 Structured reviews 的 Judge 数据。** Injection track 已有 60 条 Structured Judge 数据，Counterfactual track 尚未补齐；当前所有大纲、细纲和未来正文均不使用它替换 native Structured metrics。导师确认前不把 common-Judge 纳入当前实验流程或主要分析。
-7. **[已完成] 统一结果术语。** Outline 已统一使用 rating dispersion、aspect coverage、document-layer/PDF text-layer injection 和 schema-constrained setup。
-
-## P1 — Introduction 与 Related Work 成立所必需
-
-1. **[大纲已完成·正文待写] 重写 research gap。** Outline 已承认 Dycke and Gurevych 比较过 ZERO-GENERIC 与 ZERO-GUIDE，并突出统一双轨设计和 strict schema focus。
-2. **[大纲已完成·正文待写] 新增 Structured generation / review forms 文献小节。** 相关概念结构已加入 Section 2.4，仍需检索和写入正式文献。
-3. **[大纲已完成·正文待写] 新增 ARG 与 review-quality evaluation 背景。** Section 2.1 的写作范围已经确定。
-4. **[大纲已完成·正文待写] 把 contributions 从实验描述改成知识贡献。** 四项 contributions 已在 outline 中明确。
-5. **[大纲已完成·正文待写] 精确描述两篇关键文献。** 论证边界已修正，正式正文仍需加入引用和细节。
-
-## P2 — 结果解释与可信度
-
-1. **[已完成] 将 RQ3 改为 aspect coverage。** Outline 已停止把 item count 直接解释为 comprehensiveness。
-2. **[已完成] 中性解释 rating variance。** 已统一为 rating dispersion，并明确不能判断较低方差是 consistency 还是 reduced sensitivity。
-3. **[大纲已完成·正文待写] 加入完整 limitations section。** N=30、单模型、单 Judge、单次生成、measurement asymmetry 和 repeated measures 均已列入 Section 5.7。
-4. **[已完成] 检查 token、word 和 latency 百分比。** Token -52.7%，words -57.9%，latency -53.0%，三者已分开报告。
-5. **[已完成] 将 Vision API 改为待验证假设。** Outline 已补充文本层检测、跨模态验证和异常行为检测，未将 Vision 作为既定防御。
-6. **[已完成] Hypothesis-led qualitative audit。** RQ1 auxiliary trends、RQ2 target-defect detection 与 RQ3 count-granularity inspection 均已完成；完整 memo 位于 `outputs/manual_validation/qualitative_case_audit.md`。每个相关 RQ 正文最多一例，不把个案当作 prevalence evidence。
-7. **[已完成·正文待压缩报告] RQ4 distribution diagnostic。** 旧 all-seven anomaly 已消失，简单 content-homogeneity hypothesis 未获支持；正文只报告该证伪方向和成因仍不可识别，不加入两个内部 CSV 的完整表格。
-
-## P3 — 有时间时增强论文质量
-
-1. **[已完成·需透明披露流程] 执行 5 篇论文的 condition-masked auxiliary validation。** 50 份匿名 reviews 已编码并核验；当前比较 Free-Judge 与 Structured-native 两条测量流程。初始 coding 使用 LLM assistance，author review 程度与 package regeneration 已记录于 protocol deviations，不能称为 human gold standard。
-2. **[待写·不阻塞 Chapter 4] 报告论文 venue / year / paper type 的样本构成。** 主要属于 Methodology/sample description。
-3. **[部分完成] 增加 pipeline diagram、experimental matrix 和 RQ summary table。** RQ summary table 已在 outline 中设计；pipeline diagram 和最终表格仍待制作。
-4. **[分析已完成·正文待写] 报告 latency median、spread，并说明外部服务噪声。** 现有数据足够，无需新增实验。
-5. **[大纲已完成·正文待写] 在 Future Work 中提出 guidance × output format 的 2 × 2 factorial design。** 已写入 Section 5.8。
-6. **[大纲已完成·无需当前执行] 设计 repeated-generation study。** 已定位为 future work，用于未来直接测量 review consistency。
+1. 完成 Introduction 与 Related Work：research gap、Structured generation/review forms、ARG evaluation、contributions 和两篇关键文献。
+2. 完成 Methodology 正文：sample description、pipeline diagram、metric definitions、triangulation 与 statistical procedures。
+3. 按新细纲完成 Discussion：prior-work dialogue、layered-system implications、四组 scope boundaries 和四条 future-work routes。

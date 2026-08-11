@@ -1,0 +1,43 @@
+Summary:
+This paper investigates the potential of transforming complex and non-interpretable Foundation Models (FMs) into interpretable models using Concept Bottleneck Models (CBMs). Specifically, it focuses on building robust models that maintain strong performance under distribution shifts through test-time adaptation. The authors categorize three types of failure modes where CBMs may struggle under distribution shifts—low-level shift, concept-level shift, and incomplete concept set—and propose a framework called CONDA to address each. CONDA comprises three modules: Concept-Score Alignment, Linear Probing Adaptation, and Residual Concept Bottleneck. Experimental results demonstrate that these modules effectively mitigate failure modes, thereby enhancing model robustness and interpretability in various challenging scenarios.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+• This paper addresses a significant gap by focusing on test-time adaptation for Concept Bottleneck Models (CBMs), a rarely explored area. By tackling the robustness of interpretable models under distribution shifts, the paper contributes valuable insights into making foundational model-based pipelines more practical and trustworthy in real-world scenarios.
+
+• The proposed CONDA framework is well-structured with three distinct modules—Concept-Score Alignment, Linear Probing Adaptation, and Residual Concept Bottleneck. Each module addresses a specific type of distribution shift failure mode, allowing for a comprehensive approach to adapting CBMs dynamically without compromising interpretability.
+
+• The authors conduct experiments across a diverse range of datasets, including CIFAR, Waterbirds, and Camelyon17, to validate CONDA’s effectiveness under various distribution shifts. This diversity strengthens the claim that CONDA generalizes well across different domains and types of shifts, reinforcing its potential applicability to real-world challenges.
+
+• The paper demonstrates up to a 28% improvement in test-time accuracy over standard CBM approaches, which is a substantial gain. This improvement, particularly in challenging distribution-shifted settings, highlights the framework’s robustness and establishes its effectiveness in bridging the performance gap between interpretable and non-interpretable models.
+
+Weaknesses:
+• Lack of Depth in the Related Work Section: The related work section could be expanded to enhance readability and provide a more comprehensive overview of relevant literature. It would be beneficial to include a discussion of label-free CBMs and related methods. The authors should consider incorporating additional references to enrich the context, particularly those exploring label-free CBMs.
+
+(1) Oikarinen, T., Das, S., Nguyen, L. M., & Weng, T. W. Label-free Concept Bottleneck Models. In The Eleventh International Conference on Learning Representations.
+
+(2) Wang, B., Li, L., Nakashima, Y., & Nagahara, H. (2023). Learning bottleneck concepts in image classification. In Proceedings of the ieee/cvf conference on computer vision and pattern recognition (pp. 10962-10971).
+
+(3) Shang, C., Zhou, S., Zhang, H., Ni, X., Yang, Y., & Wang, Y. (2024). Incremental residual concept bottleneck models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 11030-11040).
+
+• Unclear Articulation of Contributions in the Introduction: The introduction section lacks clarity regarding the specific contributions of the paper. The authors should refine this section to explicitly outline their contributions to improve the reader’s understanding of the paper’s unique impact.
+
+• Need for More Comparative Experiments with Baseline CBMs: The experimental results could be strengthened by adding comparisons to traditional CBM models. Including analyses of concept and task accuracy would also provide valuable insights into the framework's improvements over standard CBMs.
+
+• Limited Dataset Diversity in Experiments: The study would benefit from additional experiments on commonly used CBM datasets such as AwA2, CelebA, CUB (Caltech-UCSD Birds) and TravelingBirds. Expanding to these datasets, along with comparisons to other state-of-the-art CBM models, could further validate the generalizability and competitiveness of the proposed method.
+
+• Reference Error on Line 875: There is a referencing error on line 875, which should be corrected to improve the document's accuracy and professionalism.
+
+• Reliance on Foundation Model Robustness Assumptions: The pseudo labeing effectiveness assumes that the feature extraction from foundation models remains robust under distribution shifts, which might not hold in all real-world scenarios. Evaluating the performance with varied foundation models or explicitly testing robustness assumptions could help clarify these dependencies.
+
+• Limited Analysis of Interpretability-Complexity Trade-off for Residual Concepts: While the residual concept bottleneck improves adaptability, it potentially introduces complexity that may affect interpretability. An analysis of the trade-off between model complexity and interpretability, particularly as new residual concepts are added, would be valuable for practitioners seeking interpretable yet robust models.
+
+Questions:
+see weaknesses
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 5: marginally below the acceptance threshold
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

@@ -1,0 +1,28 @@
+Summary:
+The paper presents studies Hybrid Reinforcement Learning for linear MDPs, where Hybrid RL addresses the limitations of purely offline and online methods by combining offline data and online exploration. The paper introduces two specific algorithms: Reward-Agnostic Pessimistic PAC Exploration-initialized Learning (RAPPEL) and Hybrid Regression for Upper-Confidence Reinforcement Learning (HYRULE). RAPPEL is a online-to-offline approach where one first perform reward agnostic exploration to increase the coverage of the existing data and then perform offline RL method, and HYRULE performs offline-to-online method by starting LSVI_UCB++ with the offline data. Both methods shows improvement over preivous methods, and no worse than offline minimax and online minimax rate, respectively.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+The paper is well-organized, and the literature review is thorough.
+
+The proposed method clearly improves on the previous hybrid RL method for linear MDPs, and the online part of the rate indeed of Alg.2 matches the online minimax rate of linear mdps. Overall the improvement of the result is solid.
+
+The improvement of the result leverages existing algorithms that are (relatively) well-known as subroutines with intuitive modifications (plus sharper analysis at certain part), which are easy to relate to the literature and intuitive.
+
+Weaknesses:
+There is no clear new techniques introduced in the paper.
+
+The offline rates match the minimax rate only up to the coverage term - the minimax coveage is the single policy coverage, while the proposed algorithm and analysis depends on the all policy coverage.
+
+Questions:
+see above
+
+Limitations:
+n/a
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 7: Accept: Technically solid paper, with high impact on at least one sub-area, or moderate-to-high impact on more than one areas, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

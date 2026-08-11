@@ -1,0 +1,28 @@
+Summary:
+The paper introduces the concept of RPO, which combines DPO loss with SFT loss. This approach aims to align the policy with human preferences while simultaneously imitating a baseline distribution, effectively mitigating overoptimization. Empirical results from experiments with LLMs demonstrate that RPO outperforms traditional DPO methods, showcasing the practical applicability of the proposed algorithm.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+The paper provides a robust theoretical framework for addressing overoptimization in RLHF. By identifying the source of misalignment as distributional shift and uncertainty, it offers a principled approach to the problem
+
+The algorithm includes a reward penalty term to prevent the policy from exploiting spurious high proxy rewards, resulting in provable sample efficiency under partial coverage conditions
+
+The paper provides empirical evidence demonstrating that RPO improves performance compared to DPO baselines in aligning LLMs. This practical validation strengthens the theoretical claims made in the study
+
+Weaknesses:
+The theoretical guarantees provided by the algorithm rely on specific conditions, such as partial coverage. These conditions might not always hold in practical scenarios, potentially limiting the generalizability of the results​.
+
+The SFT loss + DPO seems very intuitive.
+
+Questions:
+It is noticed believed that math problems are not very suitable with vanilla DPO. Some practitioners found similar algorithms should help the performance. Have you checked the reasoning benchmarks and the proposed algorithm?
+
+Limitations:
+Yes.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully.
+Code Of Conduct: Yes

@@ -1,0 +1,32 @@
+Summary:
+This paper proposed GraphMETRO, a novel Graph Neural Network (GNN) architecture that try to models complex and natural distribution shifts in real-world graph data. The key innovation is a mixture-of-experts (MoE) approach, where the model decomposes the distribution shift into multiple shift components, each handled by a dedicated expert model. The proposed GraphMETRO is expected to identify the shift type for a given input graph, and generate representations that are invariant to the assigned shift components. The experiments show that GraphMETRO can capture heterogeneous shifts across instances and outperform baseline methods on diverse real-world datasets exhibiting different distribution shifts.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+• This paper proposes a novel method to addresses distribution shifts in real-world graph data from a MOE perspective.
+
+• This paper is well-written and it provides a detailed experimental analysis.
+
+• This empirical validation demonstrates the effectiveness and applicability of the proposed method.
+
+Weaknesses:
+• The paper proposes five types of graph distribution shifts (adding edges, deleting edges, feature noise, subgraphs, deleting nodes), but real-world graph distribution shifts may be more varied, such as systematic changes in link preferences and the addition of malicious nodes.
+
+• The comparison methods in the experiment lack the latest OOD methods such as OOD-GNN, OOD-GAT-ATT, and OOD-GMixup and suggested to supplement the experimental results on more datasets.
+
+• The alignment design of different expert models lacks experimental support, and it is recommended to supplement with corresponding ablation experiments.
+
+Questions:
+• Why distributional difference can be decomposed into the proposed five shifts? How to deal with complex distribution shifts in the real world that are out of the scope of these five shifts?
+
+• Should the expert model and Gating be trained separately or together, and why was it designed this way?
+
+Limitations:
+please refer to the weakness
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 5: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

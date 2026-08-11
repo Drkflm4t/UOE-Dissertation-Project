@@ -1,0 +1,546 @@
+OpenReview
+.net
+Search articles, authors and reviews...
+Notifications6
+Activity
+Tasks
+Jixiao He 
+back arrowGo to NeurIPS 2024 Conference homepage
+MG-Net: Learn to Customize QAOA with Circuit Depth Awareness
+Download PDF
+Yang Qian, Xinbiao Wang, Yuxuan Du, Yong Luo, Dacheng Tao
+Published: 25 Sept 2024, Last Modified: 06 Nov 2024
+NeurIPS 2024 poster
+Everyone
+Revisions
+BibTeX
+CC BY-NC-SA 4.0
+Keywords: Quantum approximation optimization algorithm, quantum machine learning
+TL;DR: Our work analyzes the convergence behavior of QAOA and introduces the Mixer Generator Network (MG-Net) to dynamically formulate optimal mixer Hamiltonians tailored to distinct tasks and circuit depths.
+Abstract:
+Quantum Approximate Optimization Algorithm (QAOA) and its variants exhibit immense potential in tackling combinatorial optimization challenges. However, their practical realization confronts a dilemma: the requisite circuit depth for satisfactory performance is problem-specific and often exceeds the maximum capability of current quantum devices. To address this dilemma, here we first analyze the convergence behavior of QAOA, uncovering the origins of this dilemma and elucidating the intricate relationship between the employed mixer Hamiltonian, the specific problem at hand, and the permissible maximum circuit depth. Harnessing this understanding, we introduce the Mixer Generator Network (MG-Net), a unified deep learning framework adept at dynamically formulating optimal mixer Hamiltonians tailored to distinct tasks and circuit depths. Systematic simulations, encompassing Ising models and weighted Max-Cut instances with up to 64 qubits, substantiate our theoretical findings, highlighting MG-Net's superior performance in terms of both approximation ratio and efficiency.
+
+Supplementary Material:  zip
+Primary Area: Machine learning for physical sciences (for example: climate, physics)
+Submission Number: 1393
+Filter by reply type...
+Filter by author...
+Search keywords...
+
+Sort: Newest First
+23 / 23 replies shown
+Add:
+Paper Decision
+Decisionby Program Chairs25 Sept 2024, 16:24 (modified: 06 Nov 2024, 09:30)EveryoneRevisions
+Decision: Accept (poster)
+Comment:
+This paper proposed Mixer Generator Network (MG-Net), a unified deep learning framework for dynamically formulating optimal mixer Hamiltonians tailored to distinct tasks and circuit depths. Theoretical results proved bounds on the effective dimension of ansatzes and connected those to convergence guarantee from theoretical results by You et al. (2022). Experimental results compared the proposed mixer with previous QAOA methods and achieved better performance throughout.
+
+There were adequate discussions during the rebuttal. Three of the reviewers (aG1x, 6Eat, DGPC) found the paper favorable because the results are solid (having both theory and experimental results), and the performance evaluation is also comprehensive. The presentation is also clear and the codes are publicly available. On the other hand, one reviewer (xXN5) was concerned about the design of the mixer Hamiltonian (too simple chosen only from Pauli X and Y) as well as the experimental results. The authors responded in detail with clarification of experimental details, and also added experiments with Pauli X, Y, XX, YY ansatz design.
+
+Given the very distinct scores from the reviewers, the area chair carefully checked the paper as well as all discussions between the authors and reviewers. The decision is to accept the paper. Regarding the main concern raised by xXN5 that choosing between Pauli X and Pauli Y make the task of designing the mixer Hamiltonian relatively naive, the mixer Hamiltonian in the original QAOA algorithm is simply sum of Pauli X’s. As QAOA is quite motivated from quantum adiabatic algorithms, it needs to transit from a simple Hamiltonian with an easy-to-prepare ground state to the target Hamiltonian. Being simple in the mixer Hamiltonian is not an issue, but the paper shows how to enlarge the search space of the mixer Hamiltonian with better performance.
+
+Nevertheless, towards the final version of the paper, the authors should also improve on various perspectives to clarify the details:
+
+Clarify the mixer choices. Table 1 of “Supplementary Material for Tables and Figures” added during rebuttal is very helpful; the author should add the table to the main body, with an extra line covering what are the mixer Hamiltonians considered in this paper (by adding a line beginning with “this work”).
+
+Merge the experimental results, especially those with ansatz design from {X, Y, XX, YY} (i,e., including two-qubit Pauli XX and YY), into the main body.
+
+The choice of the initial state |psi_0>. This was not a point raised by reviewers and hence was not discussed during the discussion period, but the area chair got confused and feel that this is a point that is worth clarification in detail. After all, QAOA-type algorithms are motivated from quantum adiabatic theorems, and the initial state should probably the ground state of the mixer Hamiltonian that is also easy to be prepared. Is this also the case for the mixers studied by the paper? I guess if the mixer is composed of only single-gate Pauli X and Y’s this shouldn’t be a problem (but this is still worth clarifying); but as the discussion period suggested and the author had done, ansatz design now covers XX and YY, I feel that the preparation of the initial state should be carefully discussed.
+
+Add:
+Author Rebuttal by Authors
+Author Rebuttalby Authors07 Aug 2024, 11:32 (modified: 06 Nov 2024, 10:21)EveryoneRevisions
+Rebuttal:
+Dear Reviewers,
+
+We thank all reviewers for their efforts, insightful comments and constructive suggestions. We appreciate the opportunity to clarify the main motivation, contributions and impact of our work.
+
+Motivation. A promising approach to tackle combinatorial optimization problems (COPs) is QAOA, which can potentially outperform classical methods when unlimited circuit depth is assumed. However, this requirement is impractical. Considering the practical utility of QAOA, where quantum resources are constrained by limited circuit depth, noise, and qubit connectivity, many variants of QAOA have been proposed to enhance its performance within these hardware constraints [Chandarana et al., 2022; Zhu et al., 2022; Yu et al., 2022; Herrman et al., 2022; Bartschi et al., 2020; Sauvage et al., 2022]. However, these alternatives often require deep domain expertise and lack generalizability across different tasks and circuit depths.
+
+Our work considers the allowable circuit depth as the primary hardware constraint, a common issue for both early fault-tolerant and NISQ devices. We release all freedom on the mixer Hamiltonian, including operator type and parameter grouping. Our goal is to dynamically adjust the mixer Hamiltonian according to the given problem and the allowable circuit depth of a quantum device, thereby enhancing the performance of QAOA while ensuring compatibility with the available quantum resources.
+
+Contributions. To fully exploit the potential of a QAOA circuit with arbitrarily limited circuit depth, we first theoretically analyze the convergence of QAOA:
+
+Theoretical contributions. Existing literature studied the convergence of VQAs from two aspects, namely the quantum neural tangent kernel [Liu et al., 2022; Liu et al., 2023] and gradient flow [You et al., 2022; You et al., 2023]. In particular, when analyzing the convergence rate of QNNs with symmetric ansatz, both of these two techniques involve utilizing the tools of effective dimension for quantifying the effect of symmetry degree of ansatz design on the convergence rate. While existing literature has explored the convergence theory of VQAs with symmetric ansatz well, how concrete strategies for ansatz design affect the symmetry degree remains an open question. In this study, we initiate the first attempt to qualitatively analyze the effects of various parameter grouping strategies on the convergence of QAOA.
+Technical contributions. We rigorously show that fully or partially grouping the parameters according to the spatial symmetry of problem Hamiltonians could reduce the effective dimension (Refer to Lemma B.6 in Appendix B), where the concrete reduction amount depends on the symmetric degree of problem Hamiltonians. Moreover, combined with the existing results on the effective dimension-based convergence analysis [You et al., 2022], we reach our main theoretical results (Theorem 3.1) regarding the convergence rate of QAOA with various symmetric structures in the overparameterization regime.
+Implications. Qualitatively, when 
+ is large enough to reach the overparameterization regime, a suitable parameters grouping strategy should be adopted to reduce the effective dimension for better convergence. Conversely, for a small 
+, the parameters should not be grouped to obtain as large a representation space as possible for better convergence. However, it is difficult to quantitatively determine the effective dimension, the critical point for the overparameterization regime for general problem Hamiltonians, as they are determined by the specific graph structure of the problem Hamiltonian which is case-by-case and hard to analyze. This inspires us to utilize the power of deep learning to automatically tailor the circuit depth-aware ansatz design with the optimal parameter grouping strategy for better convergence.
+Guided by the established theoretical results, we propose MG-Net for automatical circuit design：
+
+The QAOA circuit generated by the proposed MG-Net achieves higher approximation ratios at various circuit depths compared to other quantum and traditional methods, advancing the practical utility of QAOAs.
+MG-Net greatly reduces the cost of collecting labeled training data, making it possible to handle larger-scale problems and more complicated mixer Hamiltonians.
+MG-Net provides a flexible circuit-generation framework where the data encoder can introduce more hardware constraints, and the model components can be conveniently replaced by advanced techniques. Although our theoretical analysis is based on noiseless settings, our implementation does not impose limitations on device configuration. MG-Net can be flexibly extended to other hardware constraints, such as qubit connectivity and hardware noise.
+Impact. While our work enhances the ability to employ quantum algorithms to tackle combinatorial optimization problems, the methodologies and insights derived from this work have a broader impact on the field of machine learning for physical sciences. The principles of dynamically optimizing quantum circuits using deep learning can be applied to other quantum algorithms and hybrid quantum-classical approaches.
+
+Concretely, MG-Net can be flexibly adapted to handle other VQA problems. The feature encoding used in MG-Net, which includes problem-specific and hardware-specific information, can be modified to accommodate the requirements of different VQA problems. This modularity ensures that the model can process diverse types of input data relevant to other quantum algorithms, such as unitary synthesis, state preparation and quantum machine learning.
+
+We hope these explanations can provide a more comprehensive understanding of our work and partially address your concerns. Below, we provide a point-by-point response to the reviewers’ comments and concerns.
+
+Best regards,
+
+Authors
+
+PDF:  pdf
+Add:
+Global Response and Uploaded File from Authors
+Official Commentby Area Chair YDfN07 Aug 2024, 16:54 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+Dear Reviewers (cc Authors),
+
+This is the message sent by the authors for global response with an uploaded PDF file. The readers contain "reviewers submitted", so you should be able to see the response message and the PDF file. Please let me know if you cannot see them.
+
+Best wishes, AC
+
+Add:
+Official Review of Submission1393 by Reviewer aG1x
+Official Reviewby Reviewer aG1x11 Jul 2024, 19:37 (modified: 06 Nov 2024, 07:38)EveryoneRevisions
+Summary:
+This paper studies the convergence behavior of QAOA, a variational quantum algorithm for combinatorial optimization. The authors prove a convergence result showing how the use of parameter grouping affects the expressibility (i.e. effective dimension) and training time. Furthermore, they design a deep learning model known as MG-Net to generate an appropriate mixer Hamiltonian for a given input problem. Experiments are conducted to evaluate the performance of their model on prototypical problems (Max-Cut and TFIM). The numerical results suggest that their method achieves a higher approximation ratio than all other tested methods, including a simple greedy algorithm, Goemans-Williamson, and standard QAOA.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+This paper tries to resolve an important question relevant to the performance of QAOA, which has implications for the practicality of quantum optimization algorithms.
+The use of parameter grouping, while not a very novel idea, appears to be the "right" choice to take advantage of problem symmetries and improve the performance of QAOA.
+The presentation of this paper is clear and everything is fairly straightforward to understand.
+The code availability is nice to have.
+Weaknesses:
+In Section 3, there are several references mentioned that also study the convergence of VQAs, but the theoretical contributions of this work are somewhat unclear. This paper would benefit from a clear statement of how this work relates to the results of those existing papers.
+Questions:
+Throughout this paper, 
+ is referred to as the circuit depth. Shouldn't it be the number of layers, which is not quite the same as the usually defined circuit depth (although they are proportional)?
+For a given 
+, is the ansatz with partial grouping unique? I suppose not since there may be different generators of 
+. If this is correct and the ansatz is not unique, then does Theorem 3.1 hold regardless of the choice of generators?
+It is stated that this approach is designed for early fault-tolerant algorithms, while many existing works on variational quantum algorithms suggest they may be suitable for NISQ devices. Aside from the high monetary cost of training parameterized circuits, are the quantum resources (i.e. circuit depths) required for this approach low enough to be practical without fault-tolerance? If not, what are the main limitations of QAOA that need to be overcome?
+Limitations:
+There are no major societal impacts of this work. However, as mentioned in the paper, this work is limited to QAOA and it is of interest whether this approach may be applied to more general variational quantum algorithms.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes
+Add:
+Rebuttal by Authors
+Rebuttalby Authors07 Aug 2024, 11:34 (modified: 06 Nov 2024, 08:09)EveryoneRevisions
+Rebuttal:
+We thank the reviewer for recognizing the potential of the proposed method to enhance QAOA with practical utility. Your feedback is invaluable, and we address each of your concerns as follows:
+
+Q1: In Section 3, there are several references mentioned that also study the convergence of VQAs, but the theoretical contributions of this work are somewhat unclear. This paper would benefit from a clear statement of how this work relates to the results of those existing papers.
+
+A1: We have followed the reviewer's suggestions to state the theoretical contributions of our study in the main text and highlight the relation with existing papers in Appendix C. In the following, we will separately address these two concerns raised by the reviewer.
+
+The relation with existing literature. As stated in the theoretical contribution of our Global Response, while the convergence of VQAs with symmetric ansatz has been established from various aspects, they did not consider how concrete strategies for ansatz design, specifically the parameter grouping, affect the symmetry degree or equivalently the effective dimension, and hence fail to apply to the problem setting in our manuscript.
+
+Theoretical contributions. We qualitatively analyze the relation between the effective dimension and convergence rate of QNNs equipped with various parameters grouping strategies in the context of QAOA. The techniques used in our theoretical results are mainly the effective dimension and the tools of representation theory [Ragone et al., 2023], which have been widely used in existing literature to perform theoretical analysis for QNNs with symmetric ansatz. Please refer to the contributions discussed in Global Response for details.
+
+Q2: Throughout this paper, 
+ is referred to as the circuit depth. Shouldn't it be the number of layers, which is not quite the same as the usually defined circuit depth (although they are proportional)?
+
+A2: We agree that the terms "circuit depth" and "number of layers" are often used interchangeably but can have distinct meanings in different contexts. Circuit depth typically measures how many "layers" of quantum gates are executed in parallel, whereas the number of layers can either share this meaning or refer to the number of blocks with the same structure. In QAOA, 
+ specifically denotes the number of blocks, each consisting of a cost Hamiltonian and a mixer Hamiltonian, as defined in Eqn.~(1) of the manuscript. Following the reviewer's advice, we have revised the manuscript to ensure consistent and precise terminology.
+
+Q3: For a given 
+, is the ansatz with partial grouping unique? I suppose not since there may be different generators of Per
+. If this is correct and the ansatz is not unique, then does Theorem 3.1 hold regardless of the choice of generators?
+
+A3: For the reviewer's supposition, the answer is right. Namely, the ansatz with partial grouping for given 
+ is not unique. For the second concern, Theorem 3.1 indeed holds regardless of the choice of generators. In particular, Theorem 3.1 is established to perform the qualitative analysis about the effects of parameter grouping strategies on convergence. Multiple partial grouping strategies could exist to achieve the same effective dimension, which depends on the specific problem Hamiltonian. However, it is difficult to quantitatively determine the effective dimension and explicitly adopt the correct parameter grouping strategy for better convergence, as achieving this requires analyzing the complicated graph structure of the problem Hamiltonian case-by-case. In this regard, we delve into exploiting the power of deep learning and propose the MG-Net for automatically generating the ansatz design with optimal parameter grouping strategy.
+
+Q4: It is stated that ... If not, what are the main limitations of QAOA that need to be overcome?
+
+A4: As explained in the Section "Motivation" of our Global Response, we consider **the allowable circuit depth as the primary hardware constraint, a common issue for both early fault-tolerant and NISQ devices. To further address your concerns, we provide a detailed explanation of the rationale behind researching noiseless cases and discuss the suitability of our approach for noisy devices. Finally, we clarify the resource requirements of our approach.
+
+Importance of Fault-Tolerant Quantum Research: Conducting research within a fault-tolerant framework is crucial for unlocking the full potential of quantum computing and achieving quantum advantages over classical methods, such as works on quantum learning theory and optimization acceleration [Larocca et al., 2023; Liu et al., 2024]. Our theoretical analysis of QAOA is situated in the same fault-tolerant context to provide practical insights for improving QAOA's performance to achieve quantum advantage within limited circuit depths in idealized settings.
+
+Suitability for Noisy Devices: Although our theoretical analysis is based on noiseless settings, our algorithm implementation, MG-Net, does not impose limitations on device noise. Refer to the discussion on impact in our Global Response for details.
+
+Resource Efficiency: By dynamically generating mixer Hamiltonians tailored to specific problems and allowable circuit depths in practical hardware, MG-Net can improve the achievable approximation ratio of QAOA with small number of layers, making it more feasible for NISQ devices. As shown in Table 1 of our manuscript, our method achieves an approximation ratio of 0.96 for 64-qubit Max-Cut problems, which is much higher than other QAOAs with the same number of circuit layers.
+
+We hope that this clarification will address the reviewer's concerns. We are prepared to offer more comprehensive responses if there are any further questions.
+
+Add:
+ Replying to Rebuttal by Authors
+Official Comment by Reviewer aG1x
+Official Commentby Reviewer aG1x09 Aug 2024, 06:15 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+I thank the authors for the detailed response.
+
+Add:
+ Replying to Official Comment by Reviewer aG1x
+Official Comment by Authors
+Official Commentby Authors09 Aug 2024, 09:06 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+Dear Reviewer aG1x,
+
+Thank you for your kind words and your thorough review of our paper. We appreciate your acknowledgment of our detailed responses and are glad that our efforts help address your concerns and questions.
+
+Best regards,
+
+Authors
+
+Add:
+Official Review of Submission1393 by Reviewer xXN5
+Official Reviewby Reviewer xXN511 Jul 2024, 08:49 (modified: 06 Nov 2024, 07:38)EveryoneRevisions
+Summary:
+In this paper, the authors propose a model named MG-Net to automatically generate QAOA ansatz. It is able to generate the mixer layer in QAOA and decide which gates to share parameters. By sharing parameters, the ansatz generated by the proposed model can potentially achieve better trainability as well as expressivity. Experimental results on Max-cut and TFIM for up to 64 qubits are provided showing the proposed method can improve the accuracy under the proposed setting.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+Well-structured paper with numerous experiments verifying the theoretical claims.
+
+Weaknesses:
+It is too simple to design the mixer Hamiltonian since it only involves choosing one of the three Pauli operators to fill in the blanks. I don't see evidence that the proposed model (especially the training step) can still work if it encounters a more complex candidate gate set.
+The theoretical findings are not surprising to me since they mainly come from the quantum optimal control theory and overparameterization.
+The experimental results are shaky. 1) The comparison against ma-QAOA actually shows that these two methods have extremely close performance, which makes sense since the proposed grouping method is similar to ma-QAOA; 2) Missing the number of parameters (especially the number of different parameters) for each method in all the experiments, which is crucial since the expressivity of the ansatz is closely related to the number of tunable parameters; 3) The fatal problem is that the authors seem not fully understand the QAOA. The RZZ gates provide two-qubit phase transitions, and the original mixer, which is made of Pauli-X gates, finds the minimum eigenvector. Therefore, the ansatz should not consist of any single-qubit Pauli-z gate to introduce an illegal phase to the final state. This can also be verified in Tab.4 in the appendix. A Pauli-Y gate can be decomposed by Pauli-Z and Pauli-X gates, and since it's illegal to have a single-qubit phase in the final state, involving Pauli-Y gates will not benefit the results. It is clear that there is no single-qubit phase in the Hamiltonian of either Max-Cut or TFIM; I'm confused about how the authors got the results. So with all the efforts in training and selecting from {X, Y, Z, I}, it is actually deciding X or Y, which have identical effects on the final state (Y might be even weaker). I suspect that randomly choosing from X and Y can produce identical results with precisely the same number of tunable parameters.
+The whole paper is wrapped in an exquisite box with the essence of only choosing Pauli-X or Pauli-Y for the QAOA mixer.
+Questions:
+No questions.
+
+Limitations:
+Shaky experiments with naive essence disguised in the fancy presentation.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 2: Strong Reject: For instance, a paper with major technical flaws, and/or poor evaluation, limited impact, poor reproducibility and mostly unaddressed ethical considerations.
+Confidence: 5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully.
+Code Of Conduct: Yes
+Add:
+Rebuttal by Authors
+Rebuttalby Authors07 Aug 2024, 12:59 (modified: 06 Nov 2024, 08:09)EveryoneRevisions
+Rebuttal:
+Thank you for taking the time to review our manuscript. We value your insights and address your concerns as follows:
+
+Q1: It is too simple ... candidate gate set.
+
+A1: We respectfully disagree with the reviewer's perspective that designing the mixer Hamiltonian is too simple. As mentioned in the Section "Motivation" of our Global Response, We release all freedom of the mixer Hamiltonian, including operator type and parameter grouping. Directly designing the mixer Hamiltonian based on Pauli operators remains computationally challenging and our proposed method tries to overcome this challenge efficiently.
+
+Structure of Mixer Hamiltonian: As described in Lines 176-189 and Eqn. (5) of our manuscript, designing a mixer Hamiltonian involves not only choosing appropriate operator types but also determining the parameter groups. This dual requirement adds complexity to the design process beyond simply selecting Pauli operators.
+
+Challenges in Mixer Hamiltonian Design: As discussed in Lines 194-197 of our manuscript, the search space for both parameter correlation and operator types grows exponentially with the system size 
+ (i.e., scaling at 
+ and 
+, respectively). This exponential growth makes designing an effective learning method difficult, as directly training a model in a supervised learning paradigm may require an infeasible amount of training data to achieve high accuracy. MG-Net addresses these challenges by bypassing the need to directly seek the optimal parameter correlation strategy and operator type.
+
+Additional Experiments on Extended Candidate Operator Type Set: To further support our claims, we have conducted additional experiments with an extended set of candidate operator types 
+, achieving an approximation ratio 
+. As demonstrated in Figure 1 of the uploaded pdf, MG-Net maintains its efficiency and high performance even when the complexity of the mixer Hamiltonian design is increased.
+
+Q2: The ... overparameterization.
+
+A2: We would like to emphasize that our primary contribution lies in the development of novel algorithms designed to tailor optimal ansatz. While our study includes theoretical results, they are not the central focus but rather provide the theoretical foundation for MG-Net. Please refer to the Global Response for details. Notably, the theoretical results presented are non-trivial in terms of both contributions and techniques.
+
+Theoretical Contribution. Existing work on QNN convergence with symmetric ansatz does not address how specific ansatz design strategies affect symmetry or effective dimension. Our study qualitatively analyzes the relationship between the effective dimension and QNN convergence with various parameter grouping strategies in the context of QAOA.
+
+Technical Aspect. Our theoretical techniques involve the novel concept of effective dimension and tools from representation theory, widely used in analyzing QNNs with symmetric ansatz in quantum optimal control and over-parameterization. While the notion of effective dimension is inspired by these fields, our techniques for analyzing its relationship with ansatz design are unique. We use representation theory to compare the effective dimension of QNNs with different parameter grouping strategies by examining their algebraic structures.
+
+Q3: The experimental results are shaky ... parameters.
+
+A3: We respectfully disagree with the reviewer's perspective that the experimental results are shaky. We address the reviewer's concerns one by one as follows:
+
+Comparison with ma-QAOA: As demonstrated in Section 5 of our manuscript, our proposed MG-Net performs significantly better than ma-QAOA regarding convergence and approximation ratio. As the system scale grows from 6 to 64, the approximation ratio gap between our method and ma-QAOA increases from 1% to 96%. Besides, the mechanism for designing the parameter grouping strategy for MG-Net and ma-QAOA differs. MG-Net dynamically generates the optimal parameter grouping based on the given problem instance and allowable circuit depth, while ma-QAOA adopts a static non-grouping strategy to maximize the number of trainable parameters.
+
+Number of Parameters: We kindly remind the reviewer to refer to Lines 295-303 and Figure 5(a) of our manuscript for a detailed discussion about the number of parameters of different methods.
+
+Mixer Hamiltonian Design: We agree that the mixer Hamiltonian usually cannot be purely Pauli-Z due to the requirement of noncommutativity with the cost Hamiltonian. Therefore, we do not include Pauli-Z in the pool of operator types. However, the Pauli-Y operator is acceptable and can drive the quantum state toward the solution along a different and possibly more efficient path than the Pauli-X operator, as indicated in Figure 1(a) of our manuscript. This choice aligns with principles of counterdiabatic (CD) driving or shortcuts to adiabaticity (STA). Numerous works [Chandarana et al., 2022; Zhu et al., 2022] have verified the effectiveness of using Pauli-Y as a mixer Hamiltonian, as listed in Table 1 of the uploaded pdf. Additional experiments investigating the impact of randomly choosing mixer operator types from Pauli-X and Pauli-Y while maintaining the same number of tunable parameters indicate that mixer Hamiltonians with different operators and the same number of parameters behave differently, shown in Figure 2 of the uploaded pdf.
+
+Q4: The whole ... mixer
+
+A4: Our disagreement stems from the motivation and design of the mixer Hamiltonian in QAOA. Based on the elaboration in our Global Response and our response A1-3, we believe the review provides a clear understanding of our work. We are prepared to provide further explanations if necessary.
+
+Add:
+ Replying to Rebuttal by Authors
+Official Comment by Reviewer xXN5
+Official Commentby Reviewer xXN507 Aug 2024, 14:56 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+It seems that the reviewers currently do not have access to the general response or the uploaded files.
+
+Add:
+ Replying to Official Comment by Reviewer xXN5
+Official Comment by Authors
+Official Commentby Authors07 Aug 2024, 15:50 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+We apologize for the issue with accessing our global response and the uploaded files. We are seeking assistance to resolve this issue and make the materials visible to the reviewers. For your convenience, we have pasted some explanations for your concerns from the global response below.
+
+Motivation. A promising approach to combinatorial optimization problems (COPs) is QAOA, which can potentially outperform classical methods when unlimited circuit depth is assumed. However, this requirement is impractical. Considering the practical utility of QAOA, where quantum resources are constrained by limited circuit depth, noise, and qubit connectivity, many variants of QAOA have been proposed to enhance its performance within these hardware constraints [Chandarana et al., 2022; Zhu et al., 2022; Yu et al., 2022; Herrman et al., 2022; Bartschi et al., 2020; Sauvage et al., 2022]. However, these alternatives often require deep domain expertise and lack generalizability across different tasks and circuit depths.
+
+In our work, we consider the allowable circuit depth as the primary hardware constraint, a common issue for both early fault-tolerant and NISQ devices. We release all freedom on the mixer Hamiltonian, including operator type and parameter grouping. Our goal is to dynamically adjust the mixer Hamiltonian according to the given problem and the allowable circuit depth of a quantum device, thereby enhancing the performance of QAOA while ensuring compatibility with the available quantum resources.
+
+Contributions. To fully exploit the potential of a QAOA circuit with arbitrarily limited circuit depth, we first theoretically analyze the convergence of QAOA:
+
+Theoretical contributions. Existing literature studied the convergence of VQAs from two aspects, namely the quantum neural tangent kernel [Liu et al., 2022; Liu et al., 2023] and gradient flow [You et al., 2022; You et al., 2023]. In particular, when analyzing the convergence rate of QNNs with symmetric ansatz, both of these two techniques involve utilizing the tools of effective dimension for quantifying the effect of symmetry degree of ansatz design on the convergence rate. While existing literature has explored the convergence theory of VQAs with symmetric ansatz well, how concrete strategies for ansatz design affect the symmetry degree remains an open question. In this study, we initiate the first attempt to qualitatively analyze the effects of various parameter grouping strategies on the convergence of QAOA.
+Technical contributions. We rigorously show that fully or partially grouping the parameters according to the spatial symmetry of problem Hamiltonians could reduce the effective dimension (Refer to Lemma B.6 in Appendix B), where the concrete reduction amount depends on the symmetric degree of problem Hamiltonians. Moreover, combined with the existing results on the effective dimension-based convergence analysis [You et al., 2022], we reach our main theoretical results (Theorem 3.1) regarding the convergence rate of QAOA with various symmetric structures in the overparameterization regime.
+Implications. Qualitatively, when 
+ is large enough to reach the overparameterization regime, a suitable parameters grouping strategy should be adopted to reduce the effective dimension for better convergence. Conversely, for a small 
+, the parameters should not be grouped to obtain as large a representation space as possible for better convergence. However, it is difficult to quantitatively determine the effective dimension, the critical point for the overparameterization regime for general problem Hamiltonians, as they are determined by the specific graph structure of the problem Hamiltonian which is case-by-case and hard to analyze. This inspires us to utilize the power of deep learning to automatically tailor the circuit depth-aware ansatz design with the optimal parameter grouping strategy for better convergence.
+Guided by the established theoretical results, we propose MG-Net for automatical circuit design：
+
+The QAOA circuit generated by the proposed MG-Net achieves higher approximation ratios at various circuit depths compared to other quantum and traditional methods, advancing the practical utility of QAOAs.
+MG-Net greatly reduces the cost of collecting labeled training data, making it possible to handle larger-scale problems and more complicated mixer Hamiltonians.
+MG-Net provides a flexible circuit-generation framework where the data encoder can introduce more hardware constraints, and the model components can be conveniently replaced by advanced techniques. Although our theoretical analysis is based on noiseless settings, our implementation does not impose limitations on device configuration. MG-Net can be flexibly extended to other hardware constraints, such as qubit connectivity and hardware noise.
+Add:
+ Replying to Official Comment by Reviewer xXN5
+Official Comment by Authors
+Official Commentby Authors07 Aug 2024, 16:24 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+We describe the tables and figures in the uploaded file below:
+
+Figure 1: This figure describes the behavior of the cost estimator with extended mixer operator pool 
+ by drawing the correlation between the actual achieved approximation ratio and the result predicted by the cost estimator. A strong correlation (Spearman correlation coefficient of 0.85) between the estimated value and the label is observed, indicating that the cost estimator trained on the extended mixer operator pool can act as a reliable performance indicator for QAOA.
+Table 1: This table lists previous works that have introduced the Pauli-Y operator as a candidate mixer Hamiltonian:
+Works	Mixer Hamiltonian
+DC-QAOA [Chandarana et al, 2022]	
+ADAPT-QAOA [Zhu et al., 2022]	
+Figure 2: This figure describes the distribution of achieved approximation ratios related to different mixer operators with the same number of tunable parameters. The results indicate that mixer Hamiltonians with different operators randomly sampled from PauliX and PauliY and the same number of parameters behave differently. For example, the minimum, maximum, and standard deviation of achieved cost for a set of mixer Hamiltonians with 2 parameters are -1.45, -0.14, and 0.27, respectively.
+Add:
+ Replying to Official Comment by Reviewer xXN5
+General response and the uploaded file posted above
+Official Commentby Area Chair YDfN07 Aug 2024, 16:56 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+Dear Reviewer xXN5,
+
+It looks from me that the authors have posted the general response and the uploaded file with readers including all reviewers who have submitted reviews. I have sent a reminder message in that thread. Please let me know in case you still cannot see them.
+
+Best wishes, AC
+
+Add:
+ Replying to General response and the uploaded file posted above
+Official Comment by Reviewer xXN5
+Official Commentby Reviewer xXN508 Aug 2024, 04:48 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+I have gone through all the responses and newly uploaded materials, and I've no further questions.
+
+Add:
+ Replying to Official Comment by Reviewer xXN5
+Official Comment by Authors
+Official Commentby Authors08 Aug 2024, 10:43 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+Dear Reviewer xXN5,
+
+We appreciate your efforts in reviewing our materials. Could you please clarify if your reply was intended for the Area Chair (AC) or in response to our rebuttal? We want to ensure that all your concerns are adequately addressed.
+
+Best regards, Authors
+
+Add:
+Official Review of Submission1393 by Reviewer 6Eat
+Official Reviewby Reviewer 6Eat09 Jul 2024, 19:52 (modified: 06 Nov 2024, 07:38)EveryoneRevisions
+Summary:
+This paper provides a theoretical analysis on parameter grouping strategy in QAOA circuits. And the authors proposed MG-Net to design the mixer Hamiltonian, leading to the advantage over conventional methods and other QAOA classes.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+MG-Net reduces the cost of labelling and training by utilizing two-stage training strategy.
+Extensive numerical results strongly support the advantage of MG-Net, advancing the practicality of QAOAs.
+The method of this paper is certainly effective and the results are well presented.
+Weaknesses:
+The parameter grouping strategy does not guarantee a significant reduction in the effective dimension, which undermines the theoretical analysis's assurance of better convergence when employing MG-Net in subsequent sections.
+The details regarding the training of the mixer generator with hardware information are not clearly presented, raising concerns about the authors' claims of a "problem-hardware-tailored mixer" and "Customize QAOA with Quantum Hardware Constraints."
+The numerical results comparison should include the Grover-Mixer method, as it also involves a unique design of the mixer Hamiltonian.
+Questions:
+Have the author considered and compared with other mixer Hamiltonian design, e.g. Grover-Mixer?
+Can MG-Net be adapted to other VQA problems?
+Limitations:
+There does not seem to be negative social impact of this theoretical research.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes
+Add:
+Rebuttal by Authors
+Rebuttalby Authors07 Aug 2024, 12:00 (modified: 06 Nov 2024, 08:09)EveryoneRevisions
+Rebuttal:
+We sincerely appreciate your thorough evaluation and thoughtful feedback on our manuscript. We are pleased that you recognized the strengths of MG-Net, including its cost-effective two-stage training strategy and the extensive numerical results that highlight its advantages, enhancing the practicality of QAOAs. In the following, we separately address your concerns:
+
+Q1: The parameter grouping ... sections.
+
+A1: To address the reviewer's concern, we would like to emphasize that the theoretical results are not established to completely guarantee the performance of MG-Net. Instead, the proposed MG-Net in our work is theory-inspired to improve the convergence by tailoring ansatz design with optimal parameter grouping strategy. To explain this point, we elaborate on the relationship between the theoretical results and proposed MG-Net algorithms.
+
+We first recall our theoretical contributions stated in Global Response that the Theorem 3.1 only establishes the qualitative analysis for the effect of parameter grouping strategy on the convergence in the overparameterization regime, showing that parameter grouping strategy could potentially reduce the effective dimension with the reduction amount determined by the specific Hamiltonian. Moreover, it is difficult to quantitatively analyze the reduction of effective dimension enabled by the parameter grouping strategy for various problem Hamiltonians, as this reduction depends on the detailed graph structure of problem Hamiltonians which is hard to analyze and is case-by-case. In this regard, there is no explicit optimal grouping strategy for significant reduction of the effective dimension for general problem Hamiltonians. To address this problem, we propose MG-Net to exploite the power of deep learning to automatically tailor the ansatz design with optimal parameter grouping strategy to achieve better convergence.
+
+Q2: The details regarding ... Constraints."
+
+A2: We acknowledge that further clarification is needed regarding the integration of hardware constraints in the training of MG-Net in our manuscript. As explained in the Section "Motivation" of our Global Response, we consider the allowable circuit depth as the primary hardware constraint, a common issue for both early fault-tolerant and NISQ devices. In the following, we address your concerns by providing a detailed explanation of the hardware constraints referred to in our manuscript and the implementation of the training of the mixer generator with hardware information.
+
+Quantum hardware constraints. There are many properties of a quantum device that affect its capacity, such as qubit connectivity, noise level, and maximum coherence time. In our manuscript, the term "hardware constraint" refers to the allowable circuit depth of a quantum device, which is closely related to the metric of maximum coherence time.
+
+Hardware-information-aware training. When constructing the labeled training dataset, we collect the achieved approximation ratio of a mixer Hamiltonian with varying circuit depths. After the first-stage training, the cost estimator can precisely capture the intrinsic correlation between the circuit depth and the achievable cost, as verified in Lines 282-288 of our manuscript. In the second-stage training, this circuit depth information is incorporated by encoding it into the input features of the mixer generator. Guided by the circuit-depth-oriented cost estimator, the mixer generator can be trained to predict the optimal mixer generator according to the given hardware constraints, i.e., circuit depth.
+
+Extension to other hardware constraints. Although we only consider the allowable circuit depth as the hardware constraint in applying MG-Net to QAOA in our manuscript, our proposed method is a general framework to learn a hardware-oriented circuit generator. It can be flexibly extended to other hardware constraints. Refer to the discussion on impact in our global response for details.
+
+To clarify, we have followed the reviewer's advice to clarify the hardware-constraint-aware training in the revised manuscript.
+
+Q3: The numerical results comparison should include the Grover-Mixer method, as it also involves a unique design of the mixer Hamiltonian.
+
+A3: The Grover-Mixer (GM) method uses Grover-like selective phase shift mixing operators based on the prepared equal superposition of all feasible states. GM is designed to perform particularly well for constraint optimization problems. However, in our manuscript, we utilize QAOA to solve Max-Cut and TFIM problems, which are both unconstrained optimization problems. When applying GM to these tasks, it is equivalent to the original QAOA. Therefore, we did not consider GM in our original manuscript.
+
+To effectively compare our method with GM, we shifted our focus to a new constrained optimization problem. Due to the limited rebuttal period, we will update the results as soon as they become available.
+
+Q4: Have the author considered and compared with other mixer Hamiltonian design, e.g. Grover-Mixer?
+
+A4: Please refer to A3 for details.
+
+Q5: Can MG-Net be adapted to other VQA problems?
+
+A5: Yes, MG-Net can be flexibly adapted to handle other VQA problems. While the primary focus of our manuscript is on improving the QAOA, the proposed method provides a general framework for automatically learning a hardware-oriented circuit generator that can balance performance and hardware resources, based on the interdisciplinary collaboration of quantum science and artificial intelligence (AI). Many works that utilize deep learning techniques to assist the research of quantum algorithms have been successfully applied to tackle multiple VQA problems [Zhang et al, 2022; Wu et al, 2023; Fürrutter et al, 2024]. We kindly refer the reviewer to the discussion about extending our work to other problems in our Global Response.
+
+Add:
+ Replying to Rebuttal by Authors
+Official Comment by Reviewer 6Eat
+Official Commentby Reviewer 6Eat12 Aug 2024, 14:12 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+Thank you for your detailed response. A good portion of my concerns have been addressed.
+
+Add:
+Official Review of Submission1393 by Reviewer DGPC
+Official Reviewby Reviewer DGPC05 Jul 2024, 21:33 (modified: 06 Nov 2024, 07:38)EveryoneRevisions
+Summary:
+The paper proposes a deep learning approach called Mixer Generator Network (MG-Net) to enhance the performance of Quantum Approximate Optimization Algorithm (QAOA) by dynamically designing optimal mixer Hamiltonians for a given class of problem and a circuit depth constraint. This is done by parameter grouping that is analyzed theoretically by the authors. The authors demonstrate the effectiveness of MG-Net enhances QAOA performance in terms of approximation ratio for QAOA problem instances like Ising models and weighted Max-Cut instances up to 64 qubits.
+
+Soundness: 4: excellent
+Presentation: 4: excellent
+Contribution: 3: good
+Strengths:
+The main contribution of the paper (MG-Net) as a dynamic solution to customize mixer Hamiltonians is novel, innovative, and sound, backed by theoretical analysis of the convergence theory of QAOA. The performance evaluation of the method is also comprehensive, covering a range of QAOA problem instances and validating the proposed framework's effectiveness. The presentation of the paper is clear and well-structured. The paper detailed the explanations of methodologies supported by diagrams that aid comprehension.
+
+Weaknesses:
+The “Quantum Hardware Constraints” in the title seems not appropriate. When talking about quantum hardware constraints, practically one would talk about the qubit connectivity, available gate set, noise model, etc. However, in this paper, it seems that it only talks about the circuit depth.
+The paper is reasonably sound and well-presented. However, I am not sure if the broader NeurIPS community will be interested in this work since it is a specific improvement for the QAOA algorithm. This will attract the quantum machine learning community. However, some of the quantum computing communities might also be skeptical because, as mentioned in the conclusion, this does not take into account the noise in the device.
+The paper does not address the efficiency issue. This can be done by adding the training and inference time for each method in Table 1.
+Minor comments:
+
+“Intial” in Figure 1.
+Add 
+ after “effective dimension” to make it clearer in Figure 1.
+Questions:
+It is not clear why position embedding is needed to represent the depth, why not give the number or use simple one-hot encoding?
+Why 
+ is chosen to be only positive between 
+ and not include also negative value or even 0? To avoid frustration?
+Can this approach be extended to other problems in quantum computing that use PQC such as unitary synthesis or state preparation?
+Limitations:
+Limitations are addressed in the paper.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 7: Accept: Technically solid paper, with high impact on at least one sub-area, or moderate-to-high impact on more than one areas, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes
+Add:
+Rebuttal by Authors
+Rebuttalby Authors07 Aug 2024, 12:24 (modified: 06 Nov 2024, 08:09)EveryoneRevisions
+Rebuttal:
+We sincerely appreciate your detailed evaluation and thoughtful feedback on our manuscript. We are pleased to hear that you found MG-Net to be a novel, innovative, and sound contribution, with strong theoretical backing and comprehensive performance evaluation. In the following, we separately address your concerns:
+
+Q1: The “Quantum ... about the circuit depth.
+
+A1: As explained in the Section "Motivation" of our Global Response, we consider the allowable circuit depth as the primary hardware constraint, a common issue for both early fault-tolerant and NISQ devices. The allowable circuit depth of a quantum device is closely related to the metric of maximum coherence time. To make our title clearer, we have followed your suggestion and rewritten the title as "MG-Net: Learn to Customize QAOA with Circuit Depth Awareness" and clarified the hardware constraints in the main text of the revised manuscript.
+
+Additionally, MG-Net can be flexibly extended to other hardware constraints. Refer to the Section "Impact" of our global response for further details.
+
+Q2: The paper ... the noise in the device.
+
+A2: We appreciate your recognition of the soundness and presentation of our work. We address your concerns regarding the broader interest to the NeurIPS community and the consideration of device noise as follows:
+
+Broader Interest to the NeurIPS Community. While the primary focus of our manuscript is on improving the QAOA to tackle complicated combinatorial optimization problems, the proposed method provides a general framework for automatically learning a hardware-oriented circuit generator that can balance performance and hardware resources. The methodologies and insights derived from this work have broader implications for the field of machine learning for physical sciences, which aligns with NeurIPS's emphasis on interdisciplinary collaboration. The principles of dynamically optimizing quantum circuits using deep learning can be applied to other quantum algorithms and hybrid quantum-classical approaches, making this work relevant to a wide audience interested in quantum technologies and their integration with machine learning. There is a growing number of papers related to quantum computing have been published at top AI conferences like NeurIPS, ICML and ICLR [Gao et al., 2023; Sidford et al., 2023; Wu et al., 2023; Tang et al., 2024; Patel et al., 2024; Lei et al., 2024]. Among these, QAOA is particularly appealing for solving combinatorial optimization problems.
+
+Noise Settings. We acknowledge that our current manuscript does not explicitly consider noise constraints in quantum devices, as discussed in the conclusion of our manuscript. We address your concerns from two dimensions: the importance of fault-tolerant quantum research and the extension to noisy devices.
+
+Importance of fault-tolerant quantum research. Conducting research within a fault-tolerant, noiseless framework is crucial for unlocking the full potential of quantum computing and achieving quantum advantages over classical methods, such as works on quantum learning theory and optimization acceleration [Larocca et al., 2023; Liu et al., 2024]. Our theoretical analysis on QAOA is situated at the same fault-tolerant context to provide practical insights for improving QAOA's performance to achieve quantum advantage within limited circuit depths in idealized settings.
+
+Suitability for noisy devices. Our algorithm implementation MG-Net can adapt to device noise. Refer to the Section "Impact" of our Global Response for further details. The success of our approach within this framework sets the stage for future exploration of our model's applicability to noisy systems and real-device experimentation.
+
+Q3: The paper does not ... in Table 1.
+
+A3: Since only MG-Net includes a training phase, we have followed your advice to add inference time for each method shown in Table 2 of the newly uploaded pdf.
+
+Q4: “Intial” in Figure 1.
+
+A4: We have corrected this typo in the revised manuscript.
+
+Q5: Add 
+ after "effective dimension" to make it clearer in Figure 1.
+
+A5: We have followed your advice to add 
+ after "effective dimension" in the caption of Figure 1 of the revised manuscript.
+
+Q6: It is not clear ... one-hot encoding?
+
+A6: Thank you for your insightful question. It is indeed an interesting idea to replace position embedding with integer encoding or one-hot encoding. As mentioned in the "Contribution" section of our Global Response, MG-Net acts as an initial protocol and provides a flexible circuit-generation framework where model components can be conveniently replaced by advanced techniques. To address your concerns, we are conducting additional experiments to replace position embedding with one-hot encoding or integer encoding. Due to the limited rebuttal period, we will update the results as soon as they become available.
+
+Q7: Why 
+ is ... frustration?
+
+A7: The choice of 
+ values in our study is influenced by several considerations related to TFIM. The TFIM undergoes a quantum phase transition at the critical point 
+. To more comprehensively study the behavior of the system in different phases, we set 
+ and 
+. This range ensures that the value of 
+ can be smaller than, equal to and greater than 1, covering the critical point and both phases of the transition. We do not consider the case where 
+ is negative because we mainly focus on ferromagnetic interactions to avoid frustration.
+
+Q8: Can this approach be extended ... preparation?
+
+A8: Yes, our approach can be flexibly extended to other problems in quantum computing that use parameterized quantum circuits. Please refer to the Section "Impact" of our global response for further details.
+
+Add:
+ Replying to Rebuttal by Authors
+Official Comment by Reviewer DGPC
+Official Commentby Reviewer DGPC08 Aug 2024, 23:40 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+I want to thank the authors for their detailed responses to my comments and questions and for considering them in their revised paper.
+
+Add:
+ Replying to Official Comment by Reviewer DGPC
+Official Comment by Authors
+Official Commentby Authors09 Aug 2024, 09:01 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+Dear Reviewer DGPC,
+
+Thank you for your kind words and for taking the time to review our responses. We are glad that our revisions and clarifications addressed your concerns, and we are grateful for your constructive feedback throughout this process.
+
+Best regards,
+
+Authors
+
+Add:
+ Replying to Rebuttal by Authors
+A6: Update the results of onehot encoding and integer encoding
+Official Commentby Authors12 Aug 2024, 04:37 (modified: 06 Nov 2024, 11:06)EveryoneRevisions
+Comment:
+There are two key differences between the implementation of position encoding and one-hot or integer encoding:
+
+Vector length. The length of the one-hot-encoded vector 
+ depends on the predefined maximum value of 
+, while the length of the integer-encoded vector 
+ is 1. In contrast, we adjust the length of position-encoded vector 
+ according to the dimension of 
+ and 
+;
+Integration strategy. When using one-hot or integer encoding, we employ concatenation as the integration strategy for the three features 
+, 
+ and 
+ rather than summation.
+The achieved approximation ratios for 6-qubit MaxCut problems using different depth encoding methods are shown below:
+
+Depth encoding method	Approximation ratio
+Integer	
+One-hot	
+Position	
+Add:
+About OpenReview
+Contact
+FAQ
+Hosting a Venue
+Sponsors
+Terms of Use / Privacy Policy
+All Venues
+Donate
+News
+OpenReview is a long-term project to advance science through improved peer review with legal nonprofit status. We gratefully acknowledge the support of the OpenReview Sponsors. © 2026 OpenReview
+

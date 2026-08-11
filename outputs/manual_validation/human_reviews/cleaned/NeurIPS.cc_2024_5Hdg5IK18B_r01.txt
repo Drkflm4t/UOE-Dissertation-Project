@@ -1,0 +1,27 @@
+Summary:
+This paper studies the convergence behavior of QAOA, a variational quantum algorithm for combinatorial optimization. The authors prove a convergence result showing how the use of parameter grouping affects the expressibility (i.e. effective dimension) and training time. Furthermore, they design a deep learning model known as MG-Net to generate an appropriate mixer Hamiltonian for a given input problem. Experiments are conducted to evaluate the performance of their model on prototypical problems (Max-Cut and TFIM). The numerical results suggest that their method achieves a higher approximation ratio than all other tested methods, including a simple greedy algorithm, Goemans-Williamson, and standard QAOA.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+This paper tries to resolve an important question relevant to the performance of QAOA, which has implications for the practicality of quantum optimization algorithms.
+The use of parameter grouping, while not a very novel idea, appears to be the "right" choice to take advantage of problem symmetries and improve the performance of QAOA.
+The presentation of this paper is clear and everything is fairly straightforward to understand.
+The code availability is nice to have.
+Weaknesses:
+In Section 3, there are several references mentioned that also study the convergence of VQAs, but the theoretical contributions of this work are somewhat unclear. This paper would benefit from a clear statement of how this work relates to the results of those existing papers.
+Questions:
+Throughout this paper, 
+ is referred to as the circuit depth. Shouldn't it be the number of layers, which is not quite the same as the usually defined circuit depth (although they are proportional)?
+For a given 
+, is the ansatz with partial grouping unique? I suppose not since there may be different generators of 
+. If this is correct and the ansatz is not unique, then does Theorem 3.1 hold regardless of the choice of generators?
+It is stated that this approach is designed for early fault-tolerant algorithms, while many existing works on variational quantum algorithms suggest they may be suitable for NISQ devices. Aside from the high monetary cost of training parameterized circuits, are the quantum resources (i.e. circuit depths) required for this approach low enough to be practical without fault-tolerance? If not, what are the main limitations of QAOA that need to be overcome?
+Limitations:
+There are no major societal impacts of this work. However, as mentioned in the paper, this work is limited to QAOA and it is of interest whether this approach may be applied to more general variational quantum algorithms.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

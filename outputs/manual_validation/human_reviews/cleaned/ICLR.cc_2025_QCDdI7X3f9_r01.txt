@@ -1,0 +1,29 @@
+Summary:
+The paper proposes Model Equality Testing to understand the differences between models served by APIs. The proposed method is a two-sample test that uses various prompts along with multiple generations of a given prompt and tries to infer if two instances of generations come from the same distributions using the Maximum Mean Discrepancy kernel. The proposed method is studied empirically to understand its power in identifying the differences for models served by many APIs.
+
+Soundness: 2: fair
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+The paper is overall well written, organized and easy to follow. The application of two sample testing using the Maximum Mean Discrepancy kernel is novel for studying distributions coming from different models.
+
+Weaknesses:
+I’m not convinced of the significance of this problem. Can this problem be solved through policy if the users ask from providers to disclose such changes? The API provides can be even motivated to charge users differently based on the optimizations done to models.
+Evaluations can be stronger:
+The authors claim that the proposed method works using an average of 10 samples per prompt across 20-25 prompts. Since the paper relies on empirical analysis, I would love to see more analysis backing this claim/more guidelines around these requirements. For instance, do I still need to provide 10 samples per prompt if I generate the samples using 0 temperature? What about if my prompts are all from a niche topic versus if I’m testing across various different unrelated topics? Does one still obtain high power using 20-25 prompts?
+The evaluations are done using samples from English, German, Spanish, French, and Russian Wikipedia. I’d love to see more diversity in the evaluation tasks. For instance, consider showing the results for coding tasks, which can help with the broader applicability of the proposed method.
+Questions:
+Regarding the kernel:
+For the choice of the kernel, you are basically trading off bias and variance. I think this might be good to call out in the manuscript. My understanding is that as L goes to infinity, the hamming kernel approaches the universal one-hot kernel. Similarly as L goes to 0, one biases towards the first tokens. I’d love to understand the implications of this bias-variance tradeoff on tasks that require more creativity like writing.
+Also L is set to 50 and the sensitivity to L is studied until L=50. I think 50 tokens for generations is typically on the lower end when it comes to LLM-based applications. I’d recommend studying it at least until 10 folds.
+I’d think L is affected by the vocabulary size of the tokenizer. Did the authors study the effect of L under different tokenizers?
+The kernel checks for token equivalence but an important piece to capture might be around semantic equivalence. Have the authors considered other kernels that can capture semantic equivalence?
+Evaluations:
+Figure 3 lower left. The power of detecting Llama3.1 8B from Llama3.1 8B (int8) and (watermark) are 0.07 and 0.32, respectively, which are very low. I’d love to hear the author's thoughts on this as one of the premises of the method is to be able to detect such changes in the model.
+Consider adding an analysis that shows that the method does not detect any changes if the two samples come from the same model. It would be great to show the detection power using samples obtained at different temperatures.
+Can you extend the analysis in Figure 3 lower left to other models? One thing I’m interested to understand is that the method is able to detect different model sizes and looking at Figure 3 on the right hand side, the models from the same family look very close in terms of distance.
+Nit: Mention that L is the number of tokens in the manuscript.
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: marginally above the acceptance threshold
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

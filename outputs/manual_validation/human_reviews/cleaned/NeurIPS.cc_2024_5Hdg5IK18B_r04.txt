@@ -1,0 +1,31 @@
+Summary:
+The paper proposes a deep learning approach called Mixer Generator Network (MG-Net) to enhance the performance of Quantum Approximate Optimization Algorithm (QAOA) by dynamically designing optimal mixer Hamiltonians for a given class of problem and a circuit depth constraint. This is done by parameter grouping that is analyzed theoretically by the authors. The authors demonstrate the effectiveness of MG-Net enhances QAOA performance in terms of approximation ratio for QAOA problem instances like Ising models and weighted Max-Cut instances up to 64 qubits.
+
+Soundness: 4: excellent
+Presentation: 4: excellent
+Contribution: 3: good
+Strengths:
+The main contribution of the paper (MG-Net) as a dynamic solution to customize mixer Hamiltonians is novel, innovative, and sound, backed by theoretical analysis of the convergence theory of QAOA. The performance evaluation of the method is also comprehensive, covering a range of QAOA problem instances and validating the proposed framework's effectiveness. The presentation of the paper is clear and well-structured. The paper detailed the explanations of methodologies supported by diagrams that aid comprehension.
+
+Weaknesses:
+The “Quantum Hardware Constraints” in the title seems not appropriate. When talking about quantum hardware constraints, practically one would talk about the qubit connectivity, available gate set, noise model, etc. However, in this paper, it seems that it only talks about the circuit depth.
+The paper is reasonably sound and well-presented. However, I am not sure if the broader NeurIPS community will be interested in this work since it is a specific improvement for the QAOA algorithm. This will attract the quantum machine learning community. However, some of the quantum computing communities might also be skeptical because, as mentioned in the conclusion, this does not take into account the noise in the device.
+The paper does not address the efficiency issue. This can be done by adding the training and inference time for each method in Table 1.
+Minor comments:
+
+“Intial” in Figure 1.
+Add 
+ after “effective dimension” to make it clearer in Figure 1.
+Questions:
+It is not clear why position embedding is needed to represent the depth, why not give the number or use simple one-hot encoding?
+Why 
+ is chosen to be only positive between 
+ and not include also negative value or even 0? To avoid frustration?
+Can this approach be extended to other problems in quantum computing that use PQC such as unitary synthesis or state preparation?
+Limitations:
+Limitations are addressed in the paper.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 7: Accept: Technically solid paper, with high impact on at least one sub-area, or moderate-to-high impact on more than one areas, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

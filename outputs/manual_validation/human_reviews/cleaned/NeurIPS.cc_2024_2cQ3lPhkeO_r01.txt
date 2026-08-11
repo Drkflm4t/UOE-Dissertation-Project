@@ -1,0 +1,41 @@
+Summary:
+The paper "Provably Mitigating Overoptimization in RLHF" addresses the issue of overoptimization in aligning large language models (LLMs) with human preferences using reinforcement learning from human feedback (RLHF).
+
+The main contributions include:
+
+Identification of Overoptimization Source: The paper identifies the source of reward overoptimization as a distributional shift and uncertainty in learning human preferences.
+
+Theoretical Algorithm Proposal: It proposes a theoretical algorithm that minimizes the maximum likelihood estimation of the loss and a reward penalty term to mitigate overoptimization, ensuring provable sample efficiency.
+
+Practical Implementation: The algorithm is reformed into an easy-to-implement objective combining preference optimization and supervised learning loss, named Regularized Preference Optimization (RPO), demonstrating improved performance in aligning LLMs compared to existing methods​
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+This paper not only provides rigorous analysis but also has solid experiments to solve the overoptimization problem for DPO.
+
+Weaknesses:
+The partial coverage condition lacks discussions since now it's a pair over (\pi,\pi^{base}), which is different from the traditional coverage condition. For example, for the linear case, 
+ would approximately become
+where 
+ means the distribution of the chosen samples. We know that 
+ is composed of pairs of chosen and unpreferred samples, but the 
+ is there pair of optimal policy and the policy represents the chosen samples. Hence, if we want to compete with a policy 
+ better than 
+, how can the direction of 
+ be covered by 
+?
+
+Questions:
+I just wonder about the extension to online RLHF. For online RL, based on the optimism principle, it seems that then the objective should be subtracted from the SFT loss, which obliviates the wish to avoid overoptimization. So how to balance the exploration and avoiding overoptimization for the online setting?
+
+What is the additional computational complexity brought by the gradient of SFT loss? Besides, the author doesn't mention how to approximate the gradient of SFT loss since there are expectations.
+
+Limitations:
+See weaknesses.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

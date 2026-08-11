@@ -1,0 +1,22 @@
+Summary:
+The authors propose a method for determining whether a model black-box (i.e. an LM served through an API) differs from a reference model; usually a canonical model version or simply an earlier version of the API. The proposed method relies on sampling texts from different models / APIs or the same one at different times and estimating their relation against a distance metric under some kernel. The authors propose a Hamming distance kernel as an empirically reliable approach for this estimation. They provide analysis of different foundation models and APIs over time gleaning insight into how inference service providers may affect inference reliability.
+
+Typos
+Line 081: extra article 'a' inserted before 'an API'
+Soundness: 2: fair
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+The overall idea of providing more analytic tools for black-box models / APIs seems important and interesting. I think many people reliant on these black-box APIs are left at their mercy and have little means of understanding how different service providers could affect their system performance.
+The public release of generated samples offers valuable data for community use and future API change tracking.
+Providing a framework for analyzing APIs on non-classification based (i.e. difficult to evaluate) tasks seems fairly novel and is a good contribution.
+Weaknesses:
+One immediate problem I see is that acquiring the reference distribution on a user-defined task requires setting up the reference LM anyways, which was something that is acknowledged to be inconvenient or infeasible in many cases. That would make this method impossible in certain scenarios.
+The hamming kernel's effectiveness across different tasks raises concerns, particularly for open-ended tasks like creative generation where diverse outputs may be desirable. The significance tests may struggle with high-variance outputs, potentially missing quality differences. Further analysis is needed on how task semantics and natural distribution affect the method's applicability. Additionally, using Wikipedia-based language modeling as the primary test task may underestimate output diversity due to the highly factual nature of the content and potential data contamination. This is partially addressed by the inclusion of HumanEval, but additional comparisons and/or analysis could strengthen the results.
+I didn't see any mention of two model customizations that I suspect may be popular: system prompt customization and generation-time safety interventions. It's not clear to me how the proposed method would behave under these customizations.
+Questions:
+In Figure 4, you compare absolute task accuracy difference with MMD, but this is slightly less informative than showing non-absolute task difference. You imply on lines 415-418 that task accuracy difference are usually lower for the non-reference models, but this isn't necessarily obvious that a provider's interventions are always harmful to accuracy / quality. Could you provide some information about MMD and absolute accuracy?
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: marginally above the acceptance threshold
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

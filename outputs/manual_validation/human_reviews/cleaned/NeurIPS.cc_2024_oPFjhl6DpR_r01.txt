@@ -1,0 +1,35 @@
+Summary:
+This paper presents a novel algorithm for safe reinforcement learning, ESPO, which independently collects gradient information for reward optimization and constraint satisfaction. It then makes a dynamic choice about how to combine these two gradients in order to find an optimal safe policy. In addition, the proposed algorithm dynamically adjusts the number of samples used for each gradient computation resulting in a more sample-efficient learning process than existing techniques. Theoretical results show that ESPO achieves near-optimal reward and constraint satisfaction with high probability. Additional results show that ESPO spends more time in safe regions during training than prior work. In experiments, ESPO is able to achieve comparable or better reward and safety behavior to prior approaches while requiring less training time.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+Safe RL is quite an important area, and advancements in efficient safe RL make it more applicable to real-world scenarios.
+The proposed algorithm is quite intuitive and handles a tricky issue (oscillation) appearing in other safe RL algorithms
+The algorithm is well-grounded in theory with Theorem 4.1. I also appreciate 4.2, showing the improved constraint satisfaction at training time compared to existing work.
+The experimental results are promising. ESPO achieves comparable or better results in terms of both reward performance and constraint satisfaction to existing work, but uses fewer samples.
+Weaknesses:
+There is minimal discussion of the coefficients 
+ and 
+ even though these seem like they should be critical to the algorithm's performance.
+It seems that the hyperparameters of ESPO require careful tuning which likely inhibits the deployment of this algorithm in practice. (I'm looking at Tables 5 and 6 for this claim which show that the hyperparameters are quite different for different benchmarks.)
+In some cases the either 
+ or 
+ is infinite, meaning the algorithm never performs a pure constraint satisfaction step or a pure reward optimization step.
+Questions:
+How are the coefficients 
+ and 
+ computed? What impact do they have on performance?
+How are the other hyperparameters (
+, 
+, 
+, 
+) chosen? Does it require careful tuning for each environment?
+Limitations:
+The authors adequately discuss limitations.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

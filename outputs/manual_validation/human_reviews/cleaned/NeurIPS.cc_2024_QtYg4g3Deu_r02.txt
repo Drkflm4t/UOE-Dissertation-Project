@@ -1,0 +1,35 @@
+Summary:
+This paper proposes a novel model, GraphMETRO, that applies mixture of experts (MoE) to facilitate generalizable graph neural network (GNN). It uses different expert networks to mitigate different types of distribution shifts, such as adding edges, dropping nodes, noisy features, etc. When facing a distribution shift, the paper assumes that the distribution shift can be decomposed as a combination of different types of distribution shifts. Each expert network can generate invariant embeddings under a specific type of distribution shift. A gating network is in charge of deciding the types of distribution shifts. Therefore, GraphMETRO can automatically identify the types of distribution shifts and generate invariant embeddings.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+(1) The studied problem is interesting and worth studying, and the motivation is meaningful. MoE has been used in domain transfer and domain generalization in vision and NLP tasks, but using it in GNN to facilitate distribution shift is novel and worth studying.
+
+(2) The model design is novel and reasonable. It also has good interpretability.
+
+(3) Extensive experiments verify the effectiveness of GraphMETRO.
+
+Weaknesses:
+(1) The actual distribution shift can be very complex, but the paper only considers a few basic types of distribution shifts. They might not be able to represent some distribution shifts in the real world.
+
+(2) Some writing notations are not strict enough and can be improved. For example, in Definition 1 (referential invariant representation), in line 196, it says 
+, maybe it should be 
+ rather than 
+. Also, in line 218, it might be better to use 
+ instead of 
+.
+
+Questions:
+(1) I am wondering how you obtain the ground truth labels of the types of distribution shift on the test set. I understand that for the training set, you can do data augmentation by adding different types of distribution shifts, so you have the ground truth, but for the test set, I am wondering about it.
+
+(2) How did you train the baseline generalization/robustness models? How did you ensure a fair comparison between GraphMETRO and the baseline methods?
+
+Limitations:
+The authors have discussed the limitations in the appendix.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 7: Accept: Technically solid paper, with high impact on at least one sub-area, or moderate-to-high impact on more than one areas, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

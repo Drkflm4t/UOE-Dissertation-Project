@@ -1,0 +1,22 @@
+Summary:
+The paper proposes Agent S, a computer agent framework which can directly interact with computers through GUI interface. The proposed framework mainly consists of three components, a manager to manage external and internal memory for subtasks planning, a worker to complete subtasks with an episodic memory trajectory reflector, and a self-evaluator to summarize task experiences. The authors also propose an agent-computer interface as an abstraction layer. The proposed framework is evaluated on OSWorld and seen an increase of 9.37% success rate.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 1: poor
+Strengths:
+The performance of the proposed framework on OSWorld benchmark is quite good.
+The proposed framework is well-engineered and the evaluation is systematic.
+The presentation and visualization of the paper is good.
+Weaknesses:
+It would be unfair to compare the framework only to the baseline from OSWorld, which is a benchmark paper, not a methodology paper.
+The self-supervised exploration process is not realistic in actual deployments and I believe it will lead to overfitting.
+The ACI proposed in this paper can only act on selected elements in the accessibility tree, which somewhat sacrifices flexibility for performance because you cannot click on every coordinate of the screen.
+While the framework is well designed, it doesn’t introduce much new. For example, it’s quite obvious that doing some early exploration, using external resources, and OCR would help. In addition, these processes, as well as subtask planning and self-evaluation would significantly slow down the task, which is already quite slow, and would cost more OpenAI tokens.
+Questions:
+What is the average time cost to complete a task using OpenAI API-based models and self-hosted models?
+Does the continued memory growth consume more LLM input context tokens? What is the average context length?
+Flag For Ethics Review: No ethics review needed.
+Rating: 5: marginally below the acceptance threshold
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

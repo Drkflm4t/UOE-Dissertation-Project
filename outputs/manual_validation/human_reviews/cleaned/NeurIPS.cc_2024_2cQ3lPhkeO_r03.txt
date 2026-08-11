@@ -1,0 +1,34 @@
+Summary:
+This paper aims to address the issue of over-optimization in RLHF. The authors introduce a method named RPO which concurrently minimizes the maximum likelihood estimation of the loss alongside a reward penalty term. Not only do the authors demonstrate that the proposed method is sample-efficient, but they also outline a straightforward yet effective implementation strategy. Experimental results underscore the efficiency of the method.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+The research introduces a novel RLHF method specifically designed to tackle the issue of over-optimization.
+
+Despite its simplicity in implementation, the method proves to be highly effective.
+
+The authors support their proposed method with thorough theoretical analysis, convincingly demonstrating that it benefits from finite-sample convergence guarantees.
+
+Weaknesses:
+Additional experiments across a broader range of scenarios are required to more comprehensively demonstrate the method's efficiency.
+
+The current experiments are limited to evaluations using GPT and log probability, which do not offer intuitive insights into the over-optimization problem. In other words, it remains unclear whether the observed improvements in performance truly indicate a mitigation of the over-optimization issue. A more detailed analysis, perhaps focusing on rewards, could provide the necessary clarity.
+
+Questions:
+The SFT loss appears similar to the commonly used PTX loss in [1]. Could you please elucidate their relationships and distinctions?
+
+How is the true reward (human reward) depicted in Figure 1 on the left derived?
+
+How does the proposed method address scenarios involving multiple reward models?
+
+[1] Stanford alpaca: An instruction-following llama model.
+
+Limitations:
+Yes
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 7: Accept: Technically solid paper, with high impact on at least one sub-area, or moderate-to-high impact on more than one areas, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

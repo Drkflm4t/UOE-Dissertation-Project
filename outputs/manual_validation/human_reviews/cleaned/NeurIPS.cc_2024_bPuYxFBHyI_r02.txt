@@ -1,0 +1,36 @@
+Summary:
+In this work, the authors develop sample and computationally efficient hybrid RL algorithms that are provably better than online-only and offline-only algorithms for linear MDPs. Without relying on the single-policy concentrability assumption, the authors take both online-to-offline and offline-to-online approaches to achieve no worse than optimal sample complexity, regardless of the quality of the behavior policy.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+This work demonstrates a thorough discussion of all relevant literature, while the results are extensively compared with existing methods.
+
+This work provides no worse than optimal sample complexity for two types of hybrid RL methods, which is non-trivial.
+
+The presentation is generally clear, and the appendix is well-organized. The proof appears sound from a quick skim.
+
+Weaknesses:
+The assumption regarding Full Rank Projected Covariates seems to implicitly impose some constraints.
+
+No experimentation or code is included with the work, making it difficult to examine whether the proposed algorithms are efficient in practice.
+
+Questions:
+Q: I am not familiar with Assumption 2: Full Rank Projected Covariates. Is it a common assumption? How practical is it in downstream applications?
+
+Q: HYRULE seems to be a straightforward generalization of existing algorithms. Could you please list the challenges in proving its regret guarantee?
+
+Q: It would be helpful if there is an experimental plan to verify the algorithms. A simple toy experiment plan should suffice.
+
+Minor suggestion:
+
+As mentioned in line 241, OPTCOV requires tolerance parameter. Should this parameter also listed in the input of RAPPEL (Algorithm 1)?
+
+Limitations:
+Same as weakness. This work focuses on the setting of linear MDPs, where the techniques may not be generalizable to other types of function approximations.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

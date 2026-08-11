@@ -1,0 +1,35 @@
+Summary:
+The authors formulate the problem of testing whether two versions of a language models (either fully accessible, or accessible via API) are the same given two sets of samples from one model and another. They propose a simple but effective statistical test to distinguish between two sets of samples based on the Maximum Mean Discrepancy (MMD) string kernel method with the Hamming distance. They compare the chosen Hamming distance to other simple string distances and find that Hamming distance is well-suitable kernel to compare the samples from prompted language models. To evaluate the proposed MMD test, they verify that it shows high power for distinguishing different version of the same model or different models with a reasonably small number of samples, and degrades less w.r.t. the sequence length. Finally, they use the test to audit the API endpoints and find that a large portion of LLaMa 3 API providers give access to a different version of the model.
+
+Soundness: 4: excellent
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+This paper touches upon a very timely problem of verifying the integrity of the black-box APIs and model versioning in the cases when full detailed for a particular API are not open. Namely, the important question this paper formulates and proposes a test for is whether two different versions of the same model are the same. This is an important test given that sometimes models are changed, compressed for efficiency or safety reasons, and it is important for practitioners to understand what to expect from a given API.
+
+Overall, the paper is easy to follow, and methodology is sound. Experimental setup is sound enough to support the claims. Proposed method is simple and intuitive and builds upon the older works on string kernel based tests. I expect this paper will have a high impact within the language modelling community.
+
+Weaknesses:
+There are no critical weaknesses, in my opinion, only minor ones.
+
+The choice of baselines is limited to different choices of string kernels. I was a bit surprised to see Hamming distance to perform the best, and in general felt that discussion and intuition why it works well is not present.
+
+Questions:
+Q1. My intuition is that Hamming distance would be too sensitive to positions of tokens in the sentence by its construction, e.g. they don't capture the similarity between two shifted chunks of text. I would have started with Levenshtein distance, have you maybe tried it in your experiments?
+
+Q2. How do you compute the kernels if a language model generates a shorter sentence compared to the maximal length?
+
+Other questions:
+
+eq.4, should there z and z' be different?
+162: what does accurate completion means?
+210: is the only difference in the weights of the models, can generation algorithms also be different?
+Figure 2: a not well-readable sentence: "Curves first median power ..."
+312: you write 1.1M unicode characters, but as far as I can check in Unicode 16.0 there are 155,063 unique characters, how it was computed?
+326: "significantly different training data": do you use word significantly in statistical meaning here?
+337: semantic caching, quantization: is it possible to put citations here?
+Figure 4 (right): what are the colours here?
+Flag For Ethics Review: No ethics review needed.
+Rating: 8: accept, good paper
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

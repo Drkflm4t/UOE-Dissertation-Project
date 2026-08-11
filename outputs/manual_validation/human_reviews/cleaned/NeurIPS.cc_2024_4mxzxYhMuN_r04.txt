@@ -1,0 +1,34 @@
+Summary:
+This paper proposes a model for motion forecasting that models the continuous stream of world state over sequential timesteps. This is in contrast to most/all other works which do an indepedent prediction of the future for each timestep based on a fixed window of history, without context of previous model belief states or outputs from previous time steps. One stream of data is scene context, represented as embeddings, where context is fused with current accounting for transformation of the scene due to ego motion. The second stream is agent trajectories, where a history of n previous predicted trajectories for each agent is maintained explicitly in a memory bank, and fused into the current time steps prediction as additional signal.
+
+They do thorough ablations on Argoverse benchmark dataset, showing compelling evidence that the streaming architecture is beneficial. Furthermore, they exceed SOTA on most metrics in the benchmark. When I checked today (mid July), they are ranked 7th overall in the leaderboard - https://eval.ai/web/challenges/challenge-page/1719/leaderboard/4098
+
+Soundness: 4: excellent
+Presentation: 2: fair
+Contribution: 4: excellent
+Strengths:
+This paper addresses an important problem often ignored in these sanitized datasets: that these models in real world application in an AV system run in a sequential streaming fashion, and (to my knowledge) all other works operate on each time frame independently (given a fixed window of historical state).
+
+The proposed solution itself is a good one, transforming old belief state into current reference frames in both embedding space and with spatial transformations where appropriate. At the same time, the complexity of the architecture is kept reasonably low, with each contribution justified.
+
+Results are very strong and well justified with thorough ablations.
+
+Weaknesses:
+Minor, but I had some difficulty understanding some of the explanations:
+
+Data reorganization / Figure 2: "we select several split points Ti along historical frame steps" --> how are they selected? what are "historical frame steps"? Can you more simply say this as, for example, "We split sequences evenly into sub-sequences"?
+
+Around L158: you started using the term "modes" for the first time, where I think you should just say trajectories, or be more careful defining the tensors F_{mo} and Y_{mo} making clear their dimensionality.
+
+You never clearly state the output representation of your model (which I assumed to be a weighted trajectory set). Without being more clear here, Section 3.3. Model training is sort of meaningless - for example, what is the classification loss classifying? (I'm 99% sure it's a softmax distribution over trajectory modes, but this is not said anywhere.)
+
+Questions:
+See weaknesses
+
+Limitations:
+None
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 7: Accept: Technically solid paper, with high impact on at least one sub-area, or moderate-to-high impact on more than one areas, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

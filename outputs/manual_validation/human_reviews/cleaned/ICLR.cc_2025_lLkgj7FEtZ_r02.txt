@@ -1,0 +1,31 @@
+Summary:
+This paper investigates the topic of differentially private (DP) inference-time alignment for large language models (LLMs). The proposed approach builds on existing "linear steering vector" methods, which use labeled data to compute a directional vector by contrasting mean representations of positive and negative samples, then add the directional vector to the test-time representation to steer outputs toward the desired alignment objective. The paper establishes a DP guarantee for this alignment process through DP mean computation. Experimental results demonstrate that this DP alignment method achieves reasonably good alignment performance (sometimes comparable to its non-private counterpart) with relatively low privacy costs on standard LLMs and benchmark datasets.
+
+Soundness: 3: good
+Presentation: 4: excellent
+Contribution: 2: fair
+Strengths:
+The paper is clearly presented and easy to follow.
+The proposed approach is intuitive and straightforward to implement.
+Experimental results demonstrate promising outcomes, suggesting that this DP alignment method could be readily applied in practice.
+Weaknesses:
+The approach is a straightforward application of DP mean computation for the alignment vector, which limits the technical contribution of this work.
+Although the topic is novel and could be a promising area for further investigation, the current motivation lacks clarity, particularly around why alignment should be considered a privacy concern. This is especially relevant given that steering could largely be achieved with public (non-sensitive) data, and (non-DP) mean computation is generally regarded as a low-risk operation (as also evidenced in the experimental results).
+The experiments, while indicating potential, currently feel more like proof-of-concept tests rather than a comprehensive study that would meet the standards of a top-tier conference.
+Questions:
+While rigorous privacy guarantees are generally valuable, the authors could better motivate the topic or provide more natural application scenarios for DP alignment. As noted, (1) alignment could largely be achieved with public data, (2) non-DP linear alignment generally poses low privacy risk, as the "mean" operation aggregates population-level information, reducing individual influence, and (3) the threat model could be clarified further, with comparisons of attack performance under various scenarios to highlight potential privacy threats.
+
+The description in Section 6 could be more detailed. Adding a formal presentation, diagram, or pseudocode for the attack would improve clarity and self-containment. Additionally, more guidance on selecting canaries and evaluating sensitivity with different choices would be beneficial.
+
+To enhance the study’s completeness, the experiments could include sensitivity analysis to different clipping bounds (a key factor in practical DP applications), performance across varying epsilon/noise scales, results on diverse datasets across different modalities or semantics, and comparisons of alignment performance on public vs. private datasets (considering potential distribution shifts). Including results with language models of varying structures would also provide a broader perspective.
+
+Could the authors clarify how PCA steering is conducted (e.g., using labels in a supervised manner)? The notably low performance of PCA steering compared to other methods is somewhat surprising and warrants further explanation.
+
+In Figure 3, the "zero-shot" reference line appears to be missing for "AI Coordination" on "Llama-2 7B."
+
+The placement of qualitative examples for Sections C.6 and C.7 in the Appendix could be adjusted to improve readability.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: marginally above the acceptance threshold
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

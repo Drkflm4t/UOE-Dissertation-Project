@@ -1,0 +1,23 @@
+Summary:
+The paper introduces a novel algorithm called Private Steering for LLM Alignment (PSA) to edit LLM activations with differential privacy (DP) for aligning LLMs. The paper provides background on a technique for "steering" LLM inference by editing the activations of a subset of layers. Usually the activations are edited using a learned vector per layer which are added to the activations of the corresponding layer. Usually this vector is learned from a dataset containing paired examples of the form (prompt, positive completion, negative completion). One method to learn this vector called Mean Steering is to take the mean of the difference of the activations on each layer for all the pairs in the dataset. The authors propose PSA which clips the contribution from each paired example and adds calibrated gaussian noise to obtained a private version of the learned vector using the Gaussian mechanism. This private vector per layer can then be used during inference as needed while protecting the privacy of the examples in the alignment dataset. The privacy of the inference can be somewhat controlled by choosing how many layers should the activation editing be applied to.
+
+The authors also conduct experiments to show the effectiveness of this algorithm compared to Mean Steering and another algorithm called PCA Steering. They align the model using a variety of datasets released as part of Anthropic's "Advanced AI Risk" evaluation. They measure alignment using previously defined benchmarks such multiple choice questions to choose correct behavior and using GPT-4 to rate open-ended text generation. The authors also measure general purpose text generation performance using GPT-4 for open ended text generation and MMLU. The study find that PSA performs similar to Mean Steering and better than PCA Steering for both alignment and general quality and it even outperforms the non-private versions on some benchmarks.
+
+Finally, the study also evaluates empirical privacy of this technique. To test this, the authors propose a novel algorithm which adds a canary containing a prompt token and one of two completion token to the alignment dataset. During inference, the authors add the prompt token in the query and check whether the first completion token is present in the response. They measure the performance of this classifier to obtain an empirical epsilon for the algorithm and find that the algorithm is much more private empirically than the theoretical privacy guarantee.
+
+Soundness: 4: excellent
+Presentation: 4: excellent
+Contribution: 3: good
+Strengths:
+The paper introduces a novel algorithm for protecting the privacy of the alignment examples while using it for activation editing. Alignment in LLMs is a very important problem and alignment datasets are usually small and could easily leak any private information that is contained in them.
+The paper is easy to follow and the algorithm and experiments are well explained.
+Weaknesses:
+The algorithm is a very simple application of the Gaussian mechanism
+It's not clear how significant the experiments are as there are no error bars. For some of the evaluations, it is not clear how many examples were used.
+Questions:
+Is it expected that alignment can improve the performance on MMLU? Many of the alignment numbers seem to be better than Zero-shot.
+For some of the datasets, it seems like the delta would actually be fairly large?
+Flag For Ethics Review: No ethics review needed.
+Rating: 8: accept, good paper
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

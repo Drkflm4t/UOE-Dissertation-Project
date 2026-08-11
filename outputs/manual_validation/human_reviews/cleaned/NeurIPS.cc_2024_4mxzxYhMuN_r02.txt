@@ -1,0 +1,31 @@
+Summary:
+This paper proposes a framework named "RealMotion" highlighting the importance of continuous motion forecasting in autonomous driving. From the formulation perspective, RealMotion investigates predicting trajectories in a continuous sequence of timestamps instead of previous independent predictions. From the methodology perspective, RealMotion proposes the "relaying" modules that propagate historical scene and agent contexts into the current frame to enhance prediction. Finally, RealMotion achieves top performance on Argoverse benchmarks and proves the importance of continuous contexts.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+This paper investigates a foundational challenge in autonomous driving that is overlooked by previous people -- how to model the continuous contexts in motion forecasting. This problem is reasonable and is also something I would love to follow and work on.
+
+The methods proposed by RealMotion are intuitive and reasonable. Relaying the historical context to current frames to enhance motion forecasting is indeed a novel contribution to autonomous driving.
+
+The experiments prove the effectiveness of continuous contexts. In addition to the state-of-the-art performance, the comparison between RealMotion-I and RealMotion in Table 1 makes it a strong argument.
+
+Weaknesses:
+The authors have missed some closely related works, such as streaming motion forecasting (e.g., Pang et al.) and other end-to-end autonomous driving (e.g., Gu et al.), where motion forecasting is continuous. For instance, Pang et al. also discover the setbacks of predicting trajectories on independent timestamps, formulate the "streaming" forecasting task, and propose a differentiable filter to refine the predicted trajectories. I acknowledge the newly designed modules by RealMotion, but I would expect the authors to have a better discussion of these relevant efforts.
+Pang et al. Streaming Motion Forecasting for Autonomous Driving. IROS 2023. Gu et al. ViP3D: End-to-end Visual Trajectory Prediction via 3D Agent Queries. CVPR 2023.
+
+RealMotion is also closely related to QCNet and based on its code. QCNet already has the interface of continuous motion forecasting and leverages a GRU to deal with the temporal contexts in queries. First of all, I would like the authors to clarify or discuss in the paper about the difference/improvement to QCNet more explicitly. In addition, I am also curious if it is possible to support that the "relaying" modules in RealMotion is better than QCNet's end-to-end mechanism. For instance, is it possible to plug the relaying module to QCNet and make a comparison?
+
+I would like the authors to develop some metrics to analyze the improvement in the trajectories. More specifically, we wish to analyze "where does RealMotion improve the trajectory quality?" Since the main argument of this paper is "continuity," I am curious if the author can use a "fluctuation" measure like Pang et al. to prove that the trajectory smoothness is indeed improved. It is also encouraged to show some visual comparisons if space is allowed.
+
+Questions:
+See weakness above.
+
+Limitations:
+The authors have discussed limitations. No additional limitations from my side.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

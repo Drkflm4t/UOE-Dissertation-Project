@@ -1,0 +1,41 @@
+Summary:
+This submission tackles the task of trajectory forecasting in autonomous driving. In particular, it proposes improvements in two aspects:
+
+1/ Data reorganization: Current datasets are artificially split into non-overlapping segments. The authors propose to reorganize the data to have overlapping windows.
+
+2/ Relaying context and predictions: since the sub-scenes now overlap, they can use context and predictions from the previous timesteps (corresponding to a different sub-scene) to improve predictions at the current timestep. Relaying context serves to provide more information about the surroundings (an agent could have been missed in the current frame for instance), and relaying the predictions would smooth out the predictions across time.
+
+They demonstrate the validity of their approach on Argoverse benchmarks, achieving state-of-the-art performances.
+
+Soundness: 2: fair
+Presentation: 2: fair
+Contribution: 2: fair
+Strengths:
+The proposed improvements are interesting, sound, and motivated.
+The data reorganization, I believe, is a simple idea that would that should be pushed in the motion forecasting community to build a new standard that better leverage the data. It can also immediately be applied to other models and hopefully improve performances.
+The relaying through time helps achieve strong results either with their architecture or on top of QCNet.
+Weaknesses:
+The results are not very conclusive:
+Compared to QCNet, except for 
+/
+ (which are not the main metrics usually considered for motion forecasting) the improvements are small. It would be useful to give more insight into why only these metrics improve. We also don't have the 
+/
+ values of QCNet + RealMotion so we don't know if these findings are consistent across models.
+The comparisons are not fair in terms of available information. Because of the propagation, RealMotion has access to more past information both in the past trajectories and agents, and the past map. A naïve way to integrate more past trajectories would be to just use longer past history. This should be a minimal baseline or ablation in the paper. If we also wanted to add agents seen in the past but not at the current timestep, it could be done with some masking or extrapolation scheme for missing frames. Remains the past map information, for which it's indeed more complicated to have a naïve baseline for a fair comparison, as simple aggregation could drastically raise the computation footprint so I can understand why the authors wouldn't want to test this baseline.
+The loss functions, and in particular 
+ are not detailed enough. I can guess where they apply but it would be good if that was stated explicitly.
+Figure 2 is unclear to me. Perhaps it could need more captions or a rework.
+I think it would be easier to interpret the results if the architecture of RealMotion would be more clearly delivered, perhaps in a Figure (in Appendix?) that represent the full architecture detailing in particular how the different elements interact in the encoder and the decoder that are not given in Figure 3.
+Questions:
+Why do we see drastic improvement on ADE/FDE_1 but the other improvements are very tame? Does that imply most of the improvements are to the scoring function so that RealMotion gets a better top 1? If that's the case, what could be the mechanisms that explain this behavior?
+Otherwise, I think this paper rightfully questions some practices of motion forecasting in autonomous driving. Generalizing something along the lines of the proposed data reorganization would be very helpful for the community. However, I think the experiments on relaying might not be fair enough and need to be compared to simple baselines with more/better past history. We would also need a few more numbers to see if most of the findings and recommendations have a good chance at being consistent accross models.
+
+Limitations:
+Limitations are discussed in the Appendix.
+
+Broader societal impacts do not seem explicitly addressed despite what has been reported in the checklist. I'm not sure there are obvious uncontroversially negative societal impacts to be discussed though.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

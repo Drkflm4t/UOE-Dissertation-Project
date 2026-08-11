@@ -1,0 +1,34 @@
+Summary:
+The study investigates how to use mixture-of-experts (MoE) to model complex distribution shifts. It explores leveraging various expert modules, each tailored to different distribution shifts, to generate embeddings that enhance OOD generalization on graphs.
+
+Soundness: 2: fair
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+This work proposes an novel idea to make use of representations from various distribution shifts for OOD generalization, which is different from previous invariant learning and distribution robustness optimization (DRO) literatures.
+
+The proposed framework can be applied for both node and graph-level classification.
+
+GraphMetro can achieve significant performance improvement in some datasets with complex distribution shifts, such as WebKB.
+
+Weaknesses:
+The terminology "invariant" in this work appears to be inconsistent with its usage in the invariant learning literature. In invariant learning, "invariant" refers to the features that perform stably across different environments. However, in this work, some claims regarding "invariant" seem misleading. For instance, the statement: "we train the expert models to generate invariant representations with respect to their corresponding shift components" (lines 69-70) is unclear to me. It is not clear how the expert model can generate invariant representations given the training objective in Equation 3. Different experts are optimized using empirical risk minimization (ERM) with specific data augmentations, and there seems to be no regularization to enforce the model to learn invariant features.
+
+In my opinion, GraphMetro actually utilizes spurious (style) features in different distribution shifts learned by the expert models, rather than invariant features as discussed in the paper. When the test dataset exhibits specific distribution shifts that align with the data augmentations in the training set, the gating model can select the representations learned by a subset of experts and make use of them. A similar work that leverages spurious features for OOD generalization is [1], where the distribution shifts are reflected in different environments. Please correct me if I am wrong, further discussions regarding this are also welcomed.
+
+One of my concern of this method is that the distribution shifts are correlated with random data augmentation, which may restrict its efficacy. For instance, consider scaffold shift or assay shift, which are prevalent in molecular[2] or drug-discovery[3] datasets. It is unclear whether GraphMetro would be effective for such datasets, where there is only one type of distribution shift, which may not align with a specific type of random data augmentation.
+
+Reference
+
+Yao et al., Improving Domain Generalization with Domain Relations, ICLR 2024.
+Hu et al., Open Graph Benchmark: Datasets for Machine Learning on Graphs, NeurIPS 2020.
+Ji et al., DrugOOD: Out-of-Distribution Dataset Curator and Benchmark for AI-Aided Drug Discovery – a Focus on Affinity Prediction Problems with Noise Annotations, AAAI 2023.
+Questions:
+How does GraphMetro perform on other datasets, such as OGBG-Molbace, OGBG-Molbbbp, or DrugOOD, which exhibit typical and single distribution shifts like scaffold shift?
+Limitations:
+N/A
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 5: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

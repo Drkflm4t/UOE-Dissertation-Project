@@ -1,0 +1,24 @@
+Summary:
+The paper introduces Agent S, a groundbreaking framework designed to automate complex, multi-step tasks on computers through Graphical User Interface (GUI) interaction for human usage. Agent S tackles the challenges of acquiring domain-specific knowledge, planning over long task horizons, and navigating dynamic interfaces by employing experience-augmented hierarchical planning, which leverages both external web knowledge and internal experience retrieval. It also utilizes an Agent-Computer Interface (ACI) to enhance the reasoning and control capabilities of GUI agents based on Multimodal Large Language Models (MLLMs). The framework demonstrated significant improvements in task success rates on the OSWorld benchmark and showed broad generalizability to different operating systems, setting a new state-of-the-art in autonomous GUI agent performance.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+Agent S stands out for its task automation through experience-augmented hierarchical planning. This method harnesses external web knowledge and draws upon internal memories, enabling the agent to decompose complex tasks into executable subtasks.
+The introduction of the Agent-Computer Interface (ACI) is a notable strength of Agent S. This interface serves as a critical abstraction layer that facilitates precise perception and action in GUI environments. By defining a bounded action space with language-based primitives and incorporating a dual-input strategy, ACI enhances the agent's ability to ground actions and receive immediate environmental feedback. This innovation allows Agent S to operate more effectively and efficiently, setting a new standard for MLLM-based GUI agents.
+Weaknesses:
+The paper does not address the scalability and efficiency of the framework when handling a large volume of tasks or more complex workflows. There is a need to evaluate how the agent performs under increased load and whether the hierarchical planning and memory update mechanisms can scale without compromising the speed and accuracy of task completion.
+The framework's performance could potentially falter in scenarios where reliable web knowledge is scarce or when there are frequent, rapid changes in application interfaces that outpace the web's ability to update corresponding information.
+The paper acknowledges a high rate of execution errors, indicating that Agent S may struggle with decision-making and behavior adjustment during task execution.
+Questions:
+Could you elaborate on how Agent S differentiates between when to retrieve external web knowledge versus when to leverage internal memories? How is this decision balanced?
+How does Agent S handle the cold start problem, especially when it encounters a task that neither memories has prior experience with? Could you explain the strategies for quickly adapting to new tasks?
+Your error analysis indicates a high rate of execution errors. Could you present a more detailed breakdown of the types of execution errors encountered and discuss potential improvements to the Action Generator to reduce these errors, especially in complex, long-horizon tasks?
+Flag For Ethics Review: No ethics review needed.
+Details Of Ethics Concerns:
+N/A
+
+Rating: 6: marginally above the acceptance threshold
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

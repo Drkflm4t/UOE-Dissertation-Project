@@ -1,0 +1,51 @@
+Summary:
+The paper derives bounds on the quality of coresets, as measured by forward and reverse KL divergence. The lower bound is used to study importance weighted coresets, leading to the conclusion that importance weighting leads to a large (forward or reverse) KL divergence between the approximate posterior and the posterior unless 
+ points are sampled into the coreset. They also use these results to show that under additional conditions, any coreset must be of size at least 
+, where 
+ is the dimensionality of the parametric class to avoid a large KL divergence. The upper bound is used to show that coresets of size 
+ are sufficient to maintain bounded KL divergences for the subsample-optimize approach.
+
+Soundness: 4: excellent
+Presentation: 3: good
+Contribution: 4: excellent
+Strengths:
+The corollaries of the main results have consequences for the choice of method for coreset construction that seem insightful.
+Conditions are carefully stated throughout the main text and examples are given to show that the conditions assumed in results do not exclude all interesting cases.
+Weaknesses:
+Several statements are made in text that seem overly strong. For example, the authors claim that “handling large-scale data in Bayesian inference…”requires exploiting redundancy in the data”. This seems overly strong (without proof). Further, I think there are large-scale data problems in Bayesian inference that can be solved via exploring structure that cannot be solved via exploiting data redundancy. For example, the likelihood in Gaussian process inference with a regularly spaced one-dimensional data can be computed quickly by exploiting structure in the prior/posterior, but I don’t think would be well-addressed by coreset methods (since there is very little data redundancy). Of course, this isn’t really meant as a criticism of coresets, or to suggest this is the type of problem the authors try to solve. I simply think strong claims should be made specific and supported by results.
+(Minor) I find the notation used around measures to be somewhat confusing and I think unorthodox. For example, my understanding is that 
+ is a measure, but in assumption 3.2, it is also used for a density. Similarly, in assumption 3.2, using 
+ for the measure itself (without an integral) seems unusual. And the integration notation without a differential element seems unorthodox (I would expect either 
+ or maybe 
+). I have also not seen the push forward measure written without either a 
+ or 
+, or more directly as a composition. Perhaps the authors can point me to a standard reference using these notations.
+(Minor) The definition of f in Lemma 3.1 seems unnecessarily complicated. In particular, if 
+, f is just 0. Defining f in cases would likely make it more interpretable if space allows.
+Questions:
+Could the authors provide proof that 
+ smoothness from below implies Lipschitz smoothness? At a minimum it seems differentiability is required in 
+-smoothness. But also it looks to me more like a Lipschitz condition on the derivate of f instead of f itself.
+The authors claim that (2) and (3) satisfy the earlier assumptions, but no reference is provided. I didn’t see a checking of assumptions in the appendix. Could the authors either include this, or point me to the correct section if it is already included?
+Line 191: “Nonuniform probabilities require at least 
+ time and memory…”, should this be 
+? I’m not convinces at least 
+ makes sense as a notion, since 
+ includes, for example, constant time algorithms.
+In section 6, the authors make several references to “exact coresets” without previously introducing the concept. What is meant by this? Does this mean a coreset that results in exactly recovering the posterior, or something else?
+This is certainly beyond the scope of the current work, but I am curious. Are the approximation results presented strong enough to establish contraction for the approximate posterior produced by Bayesian coreset methods? (perhaps following a similar argument to Ray and Szabo, 2020 Theorem 5).
+Reference
+Ray and Szabo. Variational Bayes for high-dimensional linear regression with sparse priors. 2020.
+
+Limitations:
+Limitations seem well-adressed.
+
+Other Comments:
+Consider defining the various big-O etc notation used in a footnote or appendix. These are all reasonably standard, but some come up less than others and I think it would be useful for many readers. Relatedly, 
+ and 
+ are quite hard to tell apart. I don’t know if there is a fix for this, but perhaps it is worth considering.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 8: Strong Accept: Technically strong paper, with novel ideas, excellent impact on at least one area, or high-to-excellent impact on multiple areas, with excellent evaluation, resources, and reproducibility, and no unaddressed ethical considerations.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

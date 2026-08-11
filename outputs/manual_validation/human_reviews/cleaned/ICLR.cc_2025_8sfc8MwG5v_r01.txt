@@ -1,0 +1,33 @@
+Summary:
+This paper investigates an adaptive concept bottleneck approach for converting non-interpretable foundation models into interpretable decision-making pipelines using high-level concept vectors. This method is particularly useful for handling distribution shifts, especially when there is unlabeled data from the target domain. The key ideas behind this work are inspired by Concept Bottleneck Models (CBM) and Test-Time Adaptation (TTA).
+
+This paper provides several insightful observations: (1) a naive application of CBMs is insufficient for fully leveraging the robustness and expressiveness of foundation model (FM) features under test-time shifts, as illustrated in Figure 1; (2) the identification of failure modes in concept bottlenecks for foundation models, based on a definition of distribution shifts “in the wild.” Based on these observations, the paper proposes a three-stage approach to align the concept bottleneck, label predictor, and Residual Concept Bottleneck, allowing for the extension of additional concept vectors. This approach is combined with a new architectural design and regularization strategies to enhance test-time adaptation, coherency, and interpretability.
+
+Experimental testing on five datasets and three baselines demonstrates that the proposed approach effectively improves the test-time performance of deployed CBMs in most cases.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+This work is the first to study the post-deployment performance of concept bottlenecks for foundation models. The research question is both interesting and practical.
+
+The experimental results are reasonable, demonstrating that the proposed method improves performance in most cases.
+
+The writing is well-organized, clearly outlining the scope, motivation, and insights regarding shift types and failure modes of concept bottlenecks during test-time adaptation.
+
+Weaknesses:
+The definition of a Concept Bottleneck should be clarified. From my reading of the paper, it seems that the concept bottleneck is a learnable mapping function that transforms hidden features from foundation models into lower-dimensional concept features. However, it’s unclear whether this bottleneck acts as a dictionary or codebook that links concepts (text) to embeddings. Additionally, a more thorough introduction to the three baselines used for constructing the concept bottleneck is needed. The current explanations are somewhat abstract and too brief, making it difficult for readers to grasp the details.
+
+The ablation study reveals that the influence of individual components is inconsistent. In different scenarios, different components demonstrate varying levels of importance. In some cases, individual components even outperform hybrid strategies, or all components have a negative influence in the worst cases. (Additionally, please correct the left plot in Figure 3.) Rather than focusing solely on individual contributions, it would be more informative to evaluate combinations of components. Specifically, removing components one by one to assess the impact on performance using the remaining components would provide a clearer understanding of their collective contributions.
+
+The poor performance on the Camelyon17 dataset is largely due to the inappropriate choice of foundation model. MedCLIP, which is pretrained on chest X-rays, is not well-suited for pathology data such as Camelyon17. To fairly demonstrate the effectiveness of the proposed method, the authors should use data from the chest X-ray domain, as the foundation model significantly impacts pseudo-labeling quality. Alternatively, models like BiomedGPT (Zhang, Kai, et al. “A generalist vision–language foundation model for diverse biomedical tasks.” Nature Medicine (2024): 1-13) or BiomedCLIP (Zhang, Sheng, et al. “BiomedCLIP: a multimodal biomedical foundation model pretrained from fifteen million scientific image-text pairs.” arXiv preprint arXiv:2303.00915 (2023)) could be more appropriate due to their pretraining on diverse medical domains. Additionally, the results highlight the significant influence of foundation models on performance. From my perspective, this is a crucial analysis point that should be explored in more depth in this paper.
+
+Questions:
+The main question concerns the definition of the concept bottleneck, as outlined in the “weakness” section. I suggest that the authors provide a concrete explanation or illustrative figures to clarify this concept within the context of the paper.
+
+My primary concern regarding the acceptance of this paper is the necessity of introducing the residual concept bottleneck, as it does not appear to offer significant benefits in modeling. Although a case study shows adjustments in the concept-to-class mappings (Figure 4), this is based on a single example. I recommend providing a more comprehensive analysis, ideally with quantified interpretation results, to better explain this phenomenon.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: marginally above the acceptance threshold
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

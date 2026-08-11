@@ -1,0 +1,35 @@
+Summary:
+This paper introduces a novel Graph Neural Network (GNN) architecture designed to handle complex distribution shifts in graph data. GraphMETRO uses a Mixture-of-Experts (MoE) model, with multiple expert models each targeting specific distribution shifts. Additionally, this paper uses a gating model to identify the most portable shifts. The approach aims to produce invariant representations, aligning expert outputs for smooth optimization. GraphMETRO demonstrates state-of-the-art results on various datasets, outperforming existing methods in generalizing to real-world distribution shifts.
+
+Soundness: 2: fair
+Presentation: 3: good
+Contribution: 2: fair
+Strengths:
+This paper proposes a framework that is able to decompose any distribution shift into multiple shift components.
+
+Based on the MoE structure, the authors design an architecture with a gating model and multiple expert models to identify strong distribution shift components.
+
+The proposed method achieves state-of-the-art results on real-world GOOD benchmarks and provides interpretability of distribution shifts on unknown datasets
+
+Weaknesses:
+The alignment of expert representations with the reference model using the Frobenius norm might lead to the incorporation of undesired information (e.g., node degree or feature noise). The impact of this on the generalizability of the proposed framework remains unclear.
+
+Although each expert model is intended to correspond to an individual shift component, the outputs of a GNN or MLP may include extraneous information beyond the distribution shift [1]. This raises questions about whether the expert model can consistently produce invariant features.
+
+The number of experts is determined by the parameter k, which influences the identification of individual shift components. The choice of k could impact the generalizability of the framework, yet the effects of different k values on the framework’s performance are not clearly elucidated.
+
+[1] Li, Haoyang, et al. "Disentangled Graph Self-supervised Learning for Out-of-Distribution Generalization." Forty-first International Conference on Machine Learning. 2024
+
+Questions:
+Based on the weakness section, the questions are as follows:
+
+Does each expert encode undesired information from the reference model?
+Can the expert model consistently produce invariant features using GNN or MLP architectures?
+How does the choice of the parameter k impact the model’s generalizability?
+Limitations:
+The authors adequately addressed the limitations and potential negative societal impact of the work.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: Weak Accept: Technically solid, moderate-to-high impact paper, with no major concerns with respect to evaluation, resources, reproducibility, ethical considerations.
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes

@@ -1,0 +1,31 @@
+Summary:
+This paper proposes a safe RL algorithm that adjusts the sample number during one on-policy update based on the conflict between the reward gradient and the cost gradient. When the policy's cost value is near the constraint threshold and there is a gradient conflict, a larger sample number is used; otherwise, a smaller sample number is applied. The paper also provides theoretical results about convergence rates, reducing oscillation, and sample efficiency. Finally, the paper evaluates the algorithm on two safe RL benchmarks.
+
+Soundness: 3: good
+Presentation: 2: fair
+Contribution: 2: fair
+Strengths:
+It is an interesting and innovative attempt to improve sample efficiency for safe RL by dynamically adjusting the sample number of on-policy updates based on gradient conflict.
+Some efforts on theoretical analysis are provided to justify the proposed approach.
+Empirical results demonstrate the capability of this work to improve performance and sample efficiency.
+Weaknesses:
+The sample manipulation is an interesting mechanism, and the gradient conflict, as a manipulation signal, occurs widely in many safe RL algorithms, including both primal and primal-dual methods. However, it is solely applied to PCRPO, which may weaken its generalization and persuasiveness and makes it seem like a minor improvement tailored to PCRPO.
+The description of the main backbone PCRPO is insufficient, making it difficult to understand the whole algorithm pipeline without prior knowledge of PCRPO. See question 1, 2.
+Some points about the theoretical results remain to be clarified. See questions 3 and 4.
+Some experimental settings are debatable. See question 5.
+Questions:
+Eq. (3)(4) of PCRPO, serving as an essential component of your algorithmic pipeline, is kind of indigestible. How to set 
+, 
+? And how is Eq. (3) functioning as 'projecting reward and cost gradients onto their normal planes'? It would be better to add more details or illustrations about PCRPO (at least in the appendix).
+I see the 
+ dynamically change in rows 4, 7 in Algorithm 1 ESPO. Is it an existing component of PCRPO or a new trick in ESPO?
+From the description of Theorem 4.1 and Proposition 4.2, I cannot find the association between sample manipulation and these two theoretical results. Can I view them as conclusions about PCRPO and not tailored to ESPO?
+It seems that Assumption A.7, which bridges sample size and performance, serves as a very important theoretical base to verify the sample size manipulation. There should be more intuitive explanations and discussions to justify this assumption.
+I guess you use a fixed number of training epochs for all algorithms. But training epochs are not a good metric for comparison, especially when each epoch corresponds to different sample steps, so maybe the x-axis of Figures 2 and 3 should be set to sample steps rather than training epochs to fairly demonstrate the sample efficiency of all algorithms. Besides, Table 1 should report the sample steps used to reach the same performance rather than the sample steps in a fixed number of epochs.
+Limitations:
+The limitations are discussed in the paper.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 5: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

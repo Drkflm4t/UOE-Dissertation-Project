@@ -1,0 +1,37 @@
+Summary:
+This paper studies an interesting problem, i.e., how to transform non-interpretable foundation models into concept-based interpretable decision-making pipelines under different types of distribution shifts. To address this problem, this paper proposes an adaptive concept bottleneck framework (CONDA) to address these distribution shifts, that dynamically adapts the concept-vector bank and the prediction layer based on unlabeled data from the target domain. The authors also conduct experiments to evaluate the performance of the proposed method.
+
+Soundness: 2: fair
+Presentation: 2: fair
+Contribution: 2: fair
+Strengths:
+[+] This paper lists several possible failure modes of the decision-making pipeline of a foundation model equipped with a Concept Bottleneck Model (CBM)
+
+[+] To handle the potential incomplete and new concepts to bridge the distribution gap between the source and target domains, this paper introduces a residual CBM with additional concept vectors and a linear predictor.
+
+Weaknesses:
+[-] More explanations should be provided to clarify the rationale behind the techniques adopted in the proposed method. For example, this paper introduces 
+ additional concept vectors. Could you clarify the potential criteria to select these additional vectors? What are the connections between these different criteria? How would different criteria influence the performance of your proposed method?
+
+[-] The authors fail to provide the complexity analysis of the proposed method. The proposed method consists of some components, which could involve several different steps (e.g., using an ensemble of zero-shot predictor and linear probing predictor to get pseudo-labels). It would be better if the authors could provide the detailed complexity analysis of the proposed method.
+
+[-] The experiments to support the proposed method are not sufficient. For example, it is unclear about how the cosine similarity-based regularization in the objective can ensure that the new concept vectors are "minimally" redundant with each other and have "minimal" overlap with existing concept vectors? It would be helpful if they could include experiments and a high-level analysis to support this "minimal" overlap.
+
+[-] Some typos, e.g., Appendix ?? in line 875.
+
+Questions:
+[1] This paper introduces 
+ additional concept vectors. Could you clarify the potential criteria to select these additional vectors? What are the connections between these different criteria? How would different criteria influence the performance of your proposed method?
+
+[2] This paper mentions that the parameters of the residual CBM are randomly initialized. What are the potential effective randomization techniques for the residual CBM? Do these different randomization techniques have difference influence degrees on the performance of the proposed method?
+
+[3] How to show that the adopted cosine similarity-based regularization in the objective can ensure that the new concept vectors in are minimally redundant with each other, and also have minimal overlap with the existing concept vectors? It would be better if the authors could provide the experiments and high-level analysis for this.
+
+[4] How to determine the effective top-
+ nearest neighbors for different 
+? How would different choices influence of the performance of the proposed method?
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: marginally above the acceptance threshold
+Confidence: 3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.
+Code Of Conduct: Yes

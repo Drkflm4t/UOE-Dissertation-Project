@@ -1,0 +1,33 @@
+Summary:
+This paper studies the private streering for large language models alignment via activation editing. Based on previous work that (update to complete the summary, no change for other comments) computing the activations of several layers could align model with human values, this work propose PSA to privatize the average of activations of each layers to protect the sensitive data with differential privacy. The evaluations include multi-choice and open-ended generations tasks ranging the alignment performance and the general capabilities. This work also did empirical privacy leakage estimation for the proposed method.
+
+Soundness: 3: good
+Presentation: 3: good
+Contribution: 3: good
+Strengths:
+The experiments are thorough, measuring the alignment performance, text generation quality, general capability, and designing privacy evaluation.
+
+Weaknesses:
+One non-private baseline is missing. Wu et al. 2024 provides the non-private baseline both for setting 
+ for their methods and original non-private method. It seems to me that this work only provides the non-private one while the 
+ is missing. It would be helpful to understand the clipping impact. For example, it seems to me that the norm of the non-private activations steering is unknown and maybe it shows different distribution than the norms are all within 1. If so, it is unclear to me why the private version and non-private version has similar performance.
+
+The technical contribution is limited. The non-private version is to compute the activation and average, and the private method proposed in this work is to privatized such mean value. I appreciate the experimental evaluation, and I think it would be helpful to provide the codebase to improve reproducibility. Besides, I wonder if there is any reference for the mean steering and other advanced steering (no new experiments for this result needed, more like a reference). It would be also better to provide the privacy parameters 
+ to improve reproducibility. For example, when stating 
+, I wonder if it is 
+ for the full model? If so, then each layer should allocate 
+ with 5 layers as editing. Similarly, it is unclear the 
+ in Table 2 is for the all five layers or just a single layer. Also, the privacy estimation seems to be very tight for PSA (
+ vs 
+), while prior work like Nasr et al. 2021 needs to design gradient canary rather than input canary and train more than 10k models to achieve such tight analysis. As empirical privacy estimation only provides the the lowest 
+, it would be helpful to provide the privacy parameters to understand the canary property in this case.
+
+I am willing to increase my score if my concerns addressed.
+
+Questions:
+See above.
+
+Flag For Ethics Review: No ethics review needed.
+Rating: 6: marginally above the acceptance threshold
+Confidence: 4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.
+Code Of Conduct: Yes
